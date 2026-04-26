@@ -266,6 +266,17 @@
     position: relative;
   }
   .job-card:hover { border-color: var(--teal); box-shadow: var(--shadow-md); }
+  .btn-save {
+    position: absolute; top: 14px; inset-inline-start: 14px;
+    width: 32px; height: 32px; border-radius: 999px;
+    background: var(--cream); color: var(--ink-mute);
+    display: flex; align-items: center; justify-content: center;
+    transition: background .15s, color .15s, transform .1s;
+    z-index: 2;
+  }
+  .btn-save:hover { background: var(--green-pale); color: var(--teal-deep); transform: scale(1.08); }
+  .btn-save.saved { background: #FCE7F3; color: #BE185D; }
+  .btn-save.saved svg { fill: #BE185D; }
   .job-source {
     font-size: 11px; font-weight: 700; color: var(--teal-deep);
     letter-spacing: 0.5px; text-transform: uppercase;
@@ -501,6 +512,8 @@
     <nav class="header-cta">
       <a href="teachers.html" class="btn-teachers"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="vertical-align:-2px;margin-left:6px"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>מורים מחפשי עבודה</a>
       <a href="manager-tenders.html" class="btn-tenders">מכרזי ניהול</a>
+      <a href="saved.html" class="btn-text">המשרות שלי</a>
+      <a href="about.html" class="btn-text">על אדורה</a>
       <a href="chat.html" class="btn-primary"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="vertical-align:-2px;margin-left:6px"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>בוט חיפוש</a>
     </nav>
   </div>
@@ -576,6 +589,7 @@
       <h3>מורה מחפש/ת משרה?</h3>
       <p>שיחה קצרה עם הבוט שלנו תמצא לך את המשרות המתאימות ביותר. אפשר גם לסנן ידנית, לפנות ישירות למייל בית הספר, או להעלות קו"ח לקבלת ציון התאמה אישי.</p>
       <a href="chat.html" class="btn">פתחו בוט חיפוש</a>
+      <a href="saved.html" style="display:inline-block;margin-inline-start:12px;color:var(--green-deep);font-weight:600;font-size:14px;text-decoration:underline;">או הירשמו להתראה יומית במייל ←</a>
     </div>
     <div class="cta-card dark">
       <h3>מנהל/ת מחפש/ת מורה?</h3>
@@ -642,6 +656,9 @@
 <script>
 const JOBS_URL = 'data/jobs.json';
 const TEACHERS_URL = 'data/teachers.json';
+// POST endpoint לשליחת מועמדויות, פרסום משרות והרשמה להתראות.
+// אם ריק — נופלים ל-mailto (התנהגות ישנה). אחרי deploy של submissions-apps-script.gs, להחליף ל-URL החדש.
+const SUBMISSIONS_URL = '';
 let allJobs = [];
 let allTeachers = [];
 let filtered = [];
@@ -655,6 +672,47 @@ function esc(s) {
     .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
     .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
 }
+
+const SAVED_KEY = 'edura.chat.saved.v1';
+function getSavedJobs() {
+  try { return JSON.parse(localStorage.getItem(SAVED_KEY) || '[]'); } catch (e) { return []; }
+}
+function jobSaveKey(j) { return j.id || ((j.school || j.title || '') + (j.email || '')); }
+function isSavedJob(j) {
+  const key = jobSaveKey(j);
+  return getSavedJobs().some(s => s.id === key);
+}
+function toggleSaveJob(idx, btnEl) {
+  const j = allJobs[idx];
+  if (!j) return;
+  const saved = getSavedJobs();
+  const key = jobSaveKey(j);
+  const existing = saved.findIndex(s => s.id === key);
+  if (existing >= 0) {
+    saved.splice(existing, 1);
+    btnEl.classList.remove('saved');
+    btnEl.querySelector('svg').setAttribute('fill', 'none');
+    showToast('הוסר מהרשימה');
+    trk('save_job_remove', 'job=' + (j.id || ''));
+  } else {
+    saved.unshift({
+      id: key,
+      title: j.title || j.school || '',
+      email: j.email || '',
+      phone: j.phone || '',
+      sourceName: j.source_name || j.source || '',
+      savedAt: Date.now()
+    });
+    localStorage.setItem(SAVED_KEY, JSON.stringify(saved.slice(0, 50)));
+    btnEl.classList.add('saved');
+    btnEl.querySelector('svg').setAttribute('fill', 'currentColor');
+    showToast('נשמר ✓ — לצפייה ב"המשרות שלי"');
+    trk('save_job_add', 'job=' + (j.id || ''));
+    return;
+  }
+  localStorage.setItem(SAVED_KEY, JSON.stringify(saved));
+}
+window.toggleSaveJob = toggleSaveJob;
 
 function buildWaLink(phone, jobTitle) {
   if (!phone) return '';
@@ -804,8 +862,11 @@ function render() {
       }
     }
 
+    const isSaved = isSavedJob(j);
+    const heart = '<svg width="16" height="16" viewBox="0 0 24 24" fill="' + (isSaved ? 'currentColor' : 'none') + '" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.29 1.51 4.04 3 5.5l7 7Z"/></svg>';
     return (
       '<article class="job-card">' +
+        '<button class="btn-save' + (isSaved ? ' saved' : '') + '" onclick=\'toggleSaveJob(' + j.jobsIndex + ', this)\' aria-label="שמרי משרה" title="שמרי משרה">' + heart + '</button>' +
         '<div class="job-source">' + esc(j.source_name || j.source) + '</div>' +
         '<h3 class="job-title">' + esc(j.title) + '</h3>' +
         schoolLine +
@@ -936,12 +997,79 @@ async function submitApplication() {
 
   if (!name || !email) { showToast('שם ומייל הם שדות חובה'); return; }
   if (!currentApply) return;
+  if (file && file.size > 5 * 1024 * 1024) {
+    showToast('הקובץ גדול מדי. עד 5MB בבקשה.');
+    return;
+  }
 
   const btn = $('apply-submit');
   btn.disabled = true;
   btn.textContent = 'שולח...';
 
-  // For now, open mailto with prefilled body. Future: Apps Script with file upload.
+  // POST לאפס סקריפט אם מוגדר; נפילה ל-mailto אם לא.
+  if (SUBMISSIONS_URL) {
+    try {
+      const cv = file ? await fileToBase64(file) : null;
+      const payload = {
+        action: 'submit_application',
+        jobId: currentApply.id || '',
+        jobTitle: currentApply.title || '',
+        school: currentApply.school || '',
+        schoolEmail: currentApply.email || '',
+        name: name,
+        email: email,
+        phone: phone,
+        message: message,
+        cvBase64: cv ? cv.base64 : '',
+        cvFilename: cv ? cv.filename : '',
+        cvMime: cv ? cv.mime : ''
+      };
+      const res = await fetch(SUBMISSIONS_URL, {
+        method: 'POST',
+        body: JSON.stringify(payload),
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' }
+      });
+      const data = await res.json();
+      if (data.ok) {
+        trk('apply_submit', 'job=' + (currentApply.id || '') + '|via=endpoint|ref=' + data.refId);
+        showToast('✓ נשלח! מספר פנייה: ' + data.refId);
+        setTimeout(closeApplyModal, 1200);
+      } else {
+        throw new Error(data.error || 'שליחה נכשלה');
+      }
+    } catch (err) {
+      trk('apply_submit_fail', 'job=' + (currentApply.id || '') + '|err=' + String(err).slice(0, 80));
+      showToast('שליחה נכשלה: ' + (err.message || err) + ' — מנסים דרך הדואר שלך.');
+      sendApplicationViaMailto(name, email, phone, message, file);
+    }
+  } else {
+    sendApplicationViaMailto(name, email, phone, message, file);
+  }
+
+  setTimeout(() => {
+    btn.disabled = false;
+    btn.textContent = 'שלח פנייה ✓';
+  }, 1500);
+}
+
+function fileToBase64(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => {
+      const result = String(reader.result || '');
+      const comma = result.indexOf(',');
+      resolve({
+        base64: comma >= 0 ? result.slice(comma + 1) : result,
+        filename: file.name,
+        mime: file.type || 'application/octet-stream'
+      });
+    };
+    reader.onerror = () => reject(reader.error);
+    reader.readAsDataURL(file);
+  });
+}
+
+function sendApplicationViaMailto(name, email, phone, message, file) {
   const subject = 'פנייה למשרת ' + (currentApply.title || 'הוראה') + ' דרך אדורה';
   const body =
     'שלום,\n\n' +
@@ -960,6 +1088,7 @@ async function submitApplication() {
     trk('apply_submit', 'job=' + (currentApply.id || '') + '|via=mailto');
     window.location.href = mailto;
     showToast('פותח את הדואר שלך... זכרי לצרף ידנית את הקובץ ' + (file ? file.name : 'הקו"ח'));
+    setTimeout(closeApplyModal, 800);
   } else if (currentApply.url) {
     trk('apply_submit', 'job=' + (currentApply.id || '') + '|via=source');
     showToast('המודעה לא חושפת מייל ישיר — נפתח את המקור');
@@ -968,12 +1097,6 @@ async function submitApplication() {
     trk('apply_submit_fail', 'job=' + (currentApply.id || ''));
     showToast('לא ניתן לשלוח — אין פרטי קשר');
   }
-
-  setTimeout(() => {
-    btn.disabled = false;
-    btn.textContent = 'שלח פנייה ✓';
-    closeApplyModal();
-  }, 1000);
 }
 
 function showToast(msg) {
@@ -1026,22 +1149,25 @@ if (sessionStorage.getItem('edura:open-post-job') === '1' || window.location.has
   setTimeout(openPostJobModal, 100);
 }
 
-function submitPostJob() {
-  const school = document.getElementById('pj-school').value.trim();
-  const subject = document.getElementById('pj-subject').value.trim();
-  const role = document.getElementById('pj-role').value;
-  const region = document.getElementById('pj-region').value;
-  const city = document.getElementById('pj-city').value.trim();
-  const level = document.getElementById('pj-level').value;
-  const sector = document.getElementById('pj-sector').value;
-  const scope = document.getElementById('pj-scope').value;
-  const description = document.getElementById('pj-desc').value.trim();
-  const contactName = document.getElementById('pj-contact-name').value.trim();
-  const email = document.getElementById('pj-email').value.trim();
-  const phone = document.getElementById('pj-phone').value.trim();
+async function submitPostJob() {
+  const payload = {
+    action: 'submit_job',
+    school: document.getElementById('pj-school').value.trim(),
+    subject: document.getElementById('pj-subject').value.trim(),
+    role: document.getElementById('pj-role').value,
+    region: document.getElementById('pj-region').value,
+    city: document.getElementById('pj-city').value.trim(),
+    level: document.getElementById('pj-level').value,
+    sector: document.getElementById('pj-sector').value,
+    scope: document.getElementById('pj-scope').value,
+    description: document.getElementById('pj-desc').value.trim(),
+    contactName: document.getElementById('pj-contact-name').value.trim(),
+    email: document.getElementById('pj-email').value.trim(),
+    phone: document.getElementById('pj-phone').value.trim()
+  };
   const consent = document.getElementById('pj-consent').checked;
 
-  if (!school || !subject || !email || !phone || !contactName || !consent) {
+  if (!payload.school || !payload.subject || !payload.email || !payload.phone || !payload.contactName || !consent) {
     showToast('שם בית ספר, מקצוע, איש קשר, מייל, טלפון ואישור — חובה.');
     return;
   }
@@ -1050,37 +1176,51 @@ function submitPostJob() {
   btn.disabled = true;
   btn.textContent = 'שולח...';
 
-  const subj = '[Edura] פרסום משרה — ' + school + ' (' + subject + ')';
-  const body = [
-    'בקשה לפרסום משרת הוראה באתר אדורה.',
-    '',
-    'בית ספר: ' + school,
-    'מקצוע: ' + subject,
-    'תפקיד: ' + role,
-    'אזור: ' + region,
-    'עיר: ' + city,
-    'שכבה: ' + level,
-    'מגזר: ' + sector,
-    'היקף: ' + scope,
-    '',
-    'תיאור המשרה:',
-    description,
-    '',
-    '— פרטי איש קשר —',
-    'איש קשר: ' + contactName,
-    'מייל: ' + email,
-    'טלפון: ' + phone,
-    '',
-    'אישור פרסום: ✓ אני מנהל/ת בית הספר ומאשר/ת פרסום המשרה באדורה.'
-  ].join('\n');
-  const mailto = 'mailto:meytal@edura.co.il?subject=' + encodeURIComponent(subj) + '&body=' + encodeURIComponent(body);
-  window.location.href = mailto;
-  showToast('✓ פרטי המשרה הוכנו לשליחה. נוסיף ב-24 שעות.');
+  if (SUBMISSIONS_URL) {
+    try {
+      const res = await fetch(SUBMISSIONS_URL, {
+        method: 'POST',
+        body: JSON.stringify(payload),
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' }
+      });
+      const data = await res.json();
+      if (data.ok) {
+        trk('post_job_submit', 'school=' + payload.school + '|ref=' + data.refId);
+        showToast('✓ נשלח! מספר פנייה: ' + data.refId + ' — נעלה את המשרה תוך 24 שעות.');
+        setTimeout(closePostJobModal, 1500);
+      } else {
+        throw new Error(data.error || 'שליחה נכשלה');
+      }
+    } catch (err) {
+      trk('post_job_fail', String(err).slice(0, 80));
+      showToast('שליחה נכשלה — נופלים לדואר שלך.');
+      submitPostJobViaMailto(payload);
+    }
+  } else {
+    submitPostJobViaMailto(payload);
+  }
+
   setTimeout(() => {
     btn.disabled = false;
     btn.textContent = 'פרסם משרה ✓';
-    closePostJobModal();
-  }, 2000);
+  }, 1800);
+}
+
+function submitPostJobViaMailto(p) {
+  const subj = '[Edura] פרסום משרה — ' + p.school + ' (' + p.subject + ')';
+  const body = [
+    'בקשה לפרסום משרת הוראה באתר אדורה.', '',
+    'בית ספר: ' + p.school, 'מקצוע: ' + p.subject, 'תפקיד: ' + p.role,
+    'אזור: ' + p.region, 'עיר: ' + p.city, 'שכבה: ' + p.level,
+    'מגזר: ' + p.sector, 'היקף: ' + p.scope, '',
+    'תיאור המשרה:', p.description, '',
+    '— פרטי איש קשר —',
+    'איש קשר: ' + p.contactName, 'מייל: ' + p.email, 'טלפון: ' + p.phone, '',
+    'אישור פרסום: ✓ אני מנהל/ת בית הספר ומאשר/ת פרסום המשרה באדורה.'
+  ].join('\n');
+  window.location.href = 'mailto:meytal@edura.co.il?subject=' + encodeURIComponent(subj) + '&body=' + encodeURIComponent(body);
+  showToast('✓ פרטי המשרה הוכנו לשליחה. נוסיף ב-24 שעות.');
+  setTimeout(closePostJobModal, 1500);
 }
 window.submitPostJob = submitPostJob;
 </script>

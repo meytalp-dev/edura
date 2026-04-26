@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>המשרות שלי · אדורה</title>
+<meta name="description" content="המשרות ששמרת באדורה + הרשמה להתראות יומיות ולמכרזי ניהול." />
+<meta name="robots" content="noindex" />
+<link rel="canonical" href="https://edura.co.il/saved.html" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;800;900&family=Assistant:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --green-deep: #0B2A4A; --green-soft: #1E3A5F; --green-pale: #CCFBF1;
+    --teal: #14B8A6; --teal-deep: #0D9488;
+    --cream: #F8FAFC; --cream-deep: #EEF2F6;
+    --orange: #D97706; --orange-soft: #FEF3C7;
+    --ink: #0B2A4A; --ink-soft: #1E3A5F; --ink-mute: #475569;
+    --line: #E2E8F0; --bg: #F8FAFC; --white: #FFFFFF;
+    --shadow-sm: 0 1px 2px rgba(11,42,74,.04), 0 1px 3px rgba(11,42,74,.06);
+    --shadow-md: 0 4px 12px rgba(11,42,74,.08), 0 2px 4px rgba(11,42,74,.04);
+    --radius: 12px; --radius-lg: 16px;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: rgba(20,184,166,.18); }
+  :where(button, a, input, select):focus-visible { outline: 3px solid var(--teal-deep); outline-offset: 2px; border-radius: 6px; }
+  body { font-family: 'Heebo', 'Assistant', sans-serif; background: var(--bg); color: var(--ink); line-height: 1.5; -webkit-font-smoothing: antialiased; }
+  a { color: inherit; text-decoration: none; }
+  button { font: inherit; cursor: pointer; border: none; background: none; }
+  input, select { font: inherit; }
+  @media (max-width: 768px) { input, select { font-size: 16px; } }
+
+  /* Header */
+  .header { background: var(--white); border-bottom: 1px solid var(--line); position: sticky; top: 0; z-index: 50; }
+  .header-inner { max-width: 1200px; margin: 0 auto; padding: 16px 24px; display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+  .logo { display: flex; align-items: center; gap: 4px; }
+  .logo-svg { height: 32px; width: auto; display: block; }
+  .logo-nikud { font-family: 'Heebo', sans-serif; font-weight: 900; font-size: 36px; letter-spacing: -1.5px; fill: var(--teal); }
+  .logo-word { font-family: 'Heebo', sans-serif; font-weight: 900; font-size: 36px; letter-spacing: -1.5px; fill: var(--ink); }
+  .logo-h { fill: var(--teal); }
+  .header-cta { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; justify-content: flex-end; }
+  .btn-text { color: var(--ink-soft); font-weight: 500; font-size: 15px; padding: 10px 14px; border-radius: 8px; transition: background .15s; min-height: 44px; display: inline-flex; align-items: center; }
+  .btn-text:hover { background: var(--cream); }
+  .btn-text.active { background: var(--green-pale); color: var(--green-deep); font-weight: 700; }
+  .btn-primary { background: var(--green-deep); color: var(--white); padding: 10px 20px; border-radius: 999px; font-weight: 600; font-size: 15px; }
+  .btn-primary:hover { background: var(--green-soft); }
+  @media (max-width: 700px) {
+    .header-inner { flex-wrap: wrap; padding: 12px 16px; gap: 10px; }
+    .header-cta { width: 100%; justify-content: center; gap: 6px; }
+    .header-cta a { font-size: 13px !important; padding: 8px 10px !important; min-height: 40px; }
+  }
+
+  /* Hero */
+  .hero { background: linear-gradient(180deg, var(--cream) 0%, var(--bg) 100%); padding: 56px 24px 36px; text-align: center; }
+  .hero-badge { display: inline-block; background: var(--green-pale); color: var(--green-deep); font-size: 13px; font-weight: 600; padding: 6px 14px; border-radius: 999px; margin-bottom: 16px; }
+  .hero h1 { font-size: clamp(28px, 4.5vw, 40px); font-weight: 800; line-height: 1.15; letter-spacing: -1px; max-width: 720px; margin: 0 auto 12px; }
+  .hero h1 .accent { color: var(--teal-deep); }
+  .hero-sub { font-size: clamp(15px, 1.8vw, 18px); color: var(--ink-soft); max-width: 600px; margin: 0 auto; }
+
+  /* Layout */
+  .wrap { max-width: 1100px; margin: 0 auto; padding: 48px 24px 80px; display: grid; grid-template-columns: 1fr; gap: 40px; }
+
+  /* Section header */
+  .section-head { display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; margin-bottom: 18px; }
+  .section-head h2 { font-size: clamp(20px, 2.6vw, 26px); font-weight: 800; color: var(--ink); letter-spacing: -0.4px; display: flex; align-items: center; gap: 10px; }
+  .section-head .count { font-size: 14px; color: var(--ink-mute); font-weight: 500; }
+  .section-icon { width: 32px; height: 32px; border-radius: 8px; background: var(--green-pale); color: var(--green-deep); display: inline-flex; align-items: center; justify-content: center; }
+
+  /* Saved jobs */
+  .saved-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 14px; }
+  .saved-card {
+    background: var(--white); border: 1px solid var(--line); border-radius: var(--radius);
+    padding: 18px 20px; display: flex; flex-direction: column; gap: 10px;
+    transition: border-color .15s, box-shadow .15s;
+  }
+  .saved-card:hover { border-color: var(--teal); box-shadow: var(--shadow-md); }
+  .saved-card .source { font-size: 11px; font-weight: 700; color: var(--teal-deep); text-transform: uppercase; letter-spacing: 0.4px; }
+  .saved-card .title { font-size: 15px; font-weight: 700; color: var(--ink); line-height: 1.35; }
+  .saved-card .meta { font-size: 12px; color: var(--ink-mute); }
+  .saved-card .actions { display: flex; gap: 8px; margin-top: auto; padding-top: 10px; border-top: 1px solid var(--line); flex-wrap: wrap; }
+  .saved-card .btn { padding: 8px 14px; border-radius: 8px; font-weight: 600; font-size: 13px; }
+  .saved-card .btn-primary-sm { background: var(--green-deep); color: var(--white); flex: 1; min-width: 110px; text-align: center; }
+  .saved-card .btn-primary-sm:hover { background: var(--green-soft); }
+  .saved-card .btn-secondary-sm { background: var(--cream-deep); color: var(--ink-soft); }
+  .saved-card .btn-secondary-sm:hover { background: var(--line); }
+  .saved-card .btn-remove { color: #DC2626; background: #FEE2E2; padding: 8px 12px; }
+  .saved-card .btn-remove:hover { background: #FECACA; }
+
+  /* Empty state */
+  .empty { background: var(--white); border: 2px dashed var(--line); border-radius: var(--radius-lg); padding: 56px 24px; text-align: center; }
+  .empty h3 { font-size: 18px; font-weight: 700; margin-bottom: 8px; color: var(--ink); }
+  .empty p { font-size: 14px; color: var(--ink-mute); margin-bottom: 20px; }
+  .empty .btn { display: inline-block; background: var(--green-deep); color: var(--white); padding: 12px 24px; border-radius: 999px; font-weight: 600; font-size: 14px; }
+
+  /* Alert subscribe cards */
+  .alerts-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+  @media (max-width: 800px) { .alerts-grid { grid-template-columns: 1fr; } }
+  .alert-card {
+    background: var(--white); border: 1px solid var(--line); border-radius: var(--radius-lg);
+    padding: 28px 28px; transition: border-color .15s, box-shadow .15s;
+  }
+  .alert-card:hover { border-color: var(--teal); box-shadow: var(--shadow-md); }
+  .alert-card.principals { background: linear-gradient(135deg, var(--green-deep) 0%, var(--green-soft) 100%); color: var(--white); border: none; }
+  .alert-card .eyebrow { font-size: 11px; font-weight: 700; letter-spacing: 0.5px; text-transform: uppercase; color: var(--teal-deep); margin-bottom: 6px; }
+  .alert-card.principals .eyebrow { color: var(--green-pale); }
+  .alert-card h3 { font-size: 20px; font-weight: 800; line-height: 1.25; margin-bottom: 8px; }
+  .alert-card p { font-size: 14px; line-height: 1.5; margin-bottom: 18px; opacity: .9; }
+  .alert-card .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px; }
+  @media (max-width: 480px) { .alert-card .form-row { grid-template-columns: 1fr; } }
+  .alert-card label { display: block; font-size: 12px; font-weight: 600; margin-bottom: 4px; opacity: .85; }
+  .alert-card input, .alert-card select {
+    width: 100%; padding: 10px 12px; border-radius: 8px; border: 1px solid var(--line);
+    background: var(--bg); font-size: 14px; color: var(--ink);
+  }
+  .alert-card.principals input, .alert-card.principals select { background: rgba(255,255,255,.95); border-color: rgba(255,255,255,.3); }
+  .alert-card input:focus, .alert-card select:focus { outline: none; border-color: var(--teal); background: var(--white); }
+  .alert-card .btn-submit {
+    background: var(--green-deep); color: var(--white); padding: 12px 20px; border-radius: 999px;
+    font-weight: 600; font-size: 14px; width: 100%; margin-top: 12px;
+    transition: background .15s, transform .1s;
+  }
+  .alert-card .btn-submit:hover { background: var(--green-soft); }
+  .alert-card .btn-submit:active { transform: scale(.98); }
+  .alert-card .btn-submit:disabled { opacity: .6; cursor: not-allowed; }
+  .alert-card.principals .btn-submit { background: var(--white); color: var(--green-deep); }
+  .alert-card.principals .btn-submit:hover { background: var(--green-pale); }
+  .alert-card .privacy-note { font-size: 11px; opacity: .7; margin-top: 10px; line-height: 1.5; }
+  .alert-card .privacy-note a { text-decoration: underline; }
+
+  /* Toast */
+  .toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(120%); background: var(--ink); color: var(--white); padding: 14px 24px; border-radius: 999px; font-size: 14px; font-weight: 500; box-shadow: 0 10px 30px rgba(11,42,74,.3); z-index: 200; transition: transform .25s; max-width: 90vw; text-align: center; }
+  .toast.show { transform: translateX(-50%) translateY(0); }
+
+  /* Footer */
+  .footer { background: var(--ink); color: var(--cream); padding: 40px 24px; text-align: center; font-size: 13px; }
+  .footer p { opacity: .7; margin-bottom: 8px; }
+  .footer a { color: var(--teal); text-decoration: underline; }
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="header-inner">
+    <a href="index.html" class="logo" aria-label="אדורה — לדף הבית">
+      <svg class="logo-svg" viewBox="0 0 200 50" aria-hidden="true">
+        <text x="100" y="38" text-anchor="middle" direction="rtl" class="logo-nikud">אֶדורֶה</text>
+        <text x="100" y="38" text-anchor="middle" direction="rtl" class="logo-word">אדור<tspan class="logo-h">ה</tspan></text>
+      </svg>
+    </a>
+    <nav class="header-cta">
+      <a href="index.html" class="btn-text">משרות</a>
+      <a href="teachers.html" class="btn-text">מורים</a>
+      <a href="manager-tenders.html" class="btn-text">מכרזי ניהול</a>
+      <a href="saved.html" class="btn-text active">המשרות שלי</a>
+      <a href="about.html" class="btn-text">על אדורה</a>
+      <a href="chat.html" class="btn-primary">בוט חיפוש</a>
+    </nav>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="hero-badge">המרחב האישי שלך</div>
+  <h1>המשרות שלי + <span class="accent">התראות אישיות</span></h1>
+  <p class="hero-sub">המשרות ששמרת בשיחה עם הבוט, יחד עם הרשמה להתראה יומית במייל ולסבב הבא של מכרזי ניהול.</p>
+</section>
+
+<main class="wrap">
+
+  <!-- 1. Saved jobs -->
+  <section>
+    <div class="section-head">
+      <h2>
+        <span class="section-icon">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+        </span>
+        משרות שמורות
+      </h2>
+      <div class="count" id="saved-count">טוען...</div>
+    </div>
+    <div id="saved-list"></div>
+  </section>
+
+  <!-- 2. Daily alerts -->
+  <section>
+    <div class="section-head">
+      <h2>
+        <span class="section-icon">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+        </span>
+        התראות
+      </h2>
+    </div>
+
+    <div class="alerts-grid">
+      <!-- Daily teacher alerts -->
+      <div class="alert-card">
+        <div class="eyebrow">למורות ולמורים</div>
+        <h3>התראה יומית במייל</h3>
+        <p>כל בוקר ב-06:15, מייל עם המשרות החדשות שמתאימות לקריטריונים שלך. אם אין משרות חדשות — לא נשלח כלום.</p>
+
+        <div class="form-row">
+          <div>
+            <label for="al-name">שם</label>
+            <input type="text" id="al-name" placeholder="ישראלה ישראלי" />
+          </div>
+          <div>
+            <label for="al-email">מייל *</label>
+            <input type="email" id="al-email" placeholder="example@gmail.com" required />
+          </div>
+        </div>
+        <div class="form-row">
+          <div>
+            <label for="al-region">אזור</label>
+            <select id="al-region">
+              <option value="">הכל</option>
+              <option value="ירושלים">ירושלים</option>
+              <option value="מרכז">מרכז</option>
+              <option value="צפון">צפון</option>
+              <option value="דרום">דרום</option>
+              <option value="שפלה">שפלה</option>
+            </select>
+          </div>
+          <div>
+            <label for="al-level">שכבה</label>
+            <select id="al-level">
+              <option value="">הכל</option>
+              <option value="יסודי">יסודי</option>
+              <option value="חט&quot;ב">חט"ב</option>
+              <option value="תיכון">תיכון</option>
+              <option value="גן">גן</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-row">
+          <div>
+            <label for="al-subject">מקצוע</label>
+            <input type="text" id="al-subject" placeholder="מתמטיקה, אנגלית, חינוך מיוחד..." />
+          </div>
+          <div>
+            <label for="al-role">תפקיד</label>
+            <select id="al-role">
+              <option value="">הכל</option>
+              <option value="מורה">מורה</option>
+              <option value="מחנך/ת">מחנך/ת</option>
+              <option value="רכז/ת">רכז/ת</option>
+              <option value="יועץ/ת">יועץ/ת</option>
+            </select>
+          </div>
+        </div>
+
+        <button class="btn-submit" id="al-submit" onclick="subscribeAlerts()">הרשמי להתראה יומית</button>
+        <div class="privacy-note">לא מוכרים נתונים, לא שולחים ספאם. <a href="about.html#section-4">שקיפות מלאה</a></div>
+      </div>
+
+      <!-- Principal tender alerts -->
+      <div class="alert-card principals" id="principal-alerts">
+        <div class="eyebrow">למנהלים ובעלי תפקידים בכירים</div>
+        <h3>התראה על סבב מכרזי ניהול הבא</h3>
+        <p>סבב מכרזי ניהול בית ספר בישראל נפתח בערך ינואר-מרץ. נעדכן אותך ברגע שהוא ייפתח, עם רשימת המכרזים הרלוונטיים לאזור שלך.</p>
+
+        <div class="form-row">
+          <div>
+            <label for="pa-name">שם</label>
+            <input type="text" id="pa-name" placeholder="ישראלה ישראלי" />
+          </div>
+          <div>
+            <label for="pa-email">מייל *</label>
+            <input type="email" id="pa-email" placeholder="example@gmail.com" required />
+          </div>
+        </div>
+        <div class="form-row">
+          <div>
+            <label for="pa-region">אזור מועדף</label>
+            <select id="pa-region">
+              <option value="">הכל</option>
+              <option value="ירושלים">ירושלים</option>
+              <option value="מרכז">מרכז</option>
+              <option value="צפון">צפון</option>
+              <option value="דרום">דרום</option>
+              <option value="שפלה">שפלה</option>
+            </select>
+          </div>
+          <div>
+            <label for="pa-phone">טלפון (לא חובה)</label>
+            <input type="tel" id="pa-phone" placeholder="050-1234567" />
+          </div>
+        </div>
+
+        <button class="btn-submit" id="pa-submit" onclick="subscribePrincipals()">הרשמי להתראה</button>
+        <div class="privacy-note">נשלח רק כשייפתח סבב חדש. אפשר להסיר בכל רגע.</div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<div class="toast" id="toast"></div>
+
+<footer class="footer">
+  <p><a href="about.html">על אדורה</a> · <a href="mailto:meytal@edura.co.il">צור קשר</a></p>
+  <p>© 2026 אדורה · edura.co.il</p>
+</footer>
+
+<script>
+const SAVED_KEY = 'edura.chat.saved.v1';
+// אם פרסת submissions-apps-script.gs — שימי כאן את ה-URL.
+const SUBMISSIONS_URL = '';
+
+const $ = (id) => document.getElementById(id);
+function esc(s) {
+  return String(s == null ? '' : s)
+    .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+}
+function showToast(msg, ms) {
+  const t = $('toast'); t.textContent = msg; t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), ms || 3500);
+}
+function timeAgo(ts) {
+  if (!ts) return '';
+  const days = Math.floor((Date.now() - ts) / 86400000);
+  if (days <= 0) return 'נשמר היום';
+  if (days === 1) return 'נשמר אתמול';
+  if (days < 7) return 'נשמר לפני ' + days + ' ימים';
+  if (days < 30) return 'נשמר לפני ' + Math.floor(days / 7) + ' שבועות';
+  return 'נשמר לפני ' + Math.floor(days / 30) + ' חודשים';
+}
+
+function loadSaved() {
+  let saved = [];
+  try { saved = JSON.parse(localStorage.getItem(SAVED_KEY) || '[]'); } catch (e) {}
+
+  const list = $('saved-list');
+  const count = $('saved-count');
+
+  if (!saved.length) {
+    count.textContent = '0 משרות';
+    list.innerHTML = '' +
+      '<div class="empty">' +
+        '<h3>עדיין לא שמרת משרות</h3>' +
+        '<p>שמרי משרות בשיחה עם הבוט שלנו או בלוח הראשי — והן יופיעו כאן לחזור אליהן בכל רגע.</p>' +
+        '<a href="chat.html" class="btn">פתחו את הבוט</a>' +
+      '</div>';
+    return;
+  }
+
+  count.textContent = saved.length + ' משרות';
+  list.innerHTML = '<div class="saved-grid">' + saved.map(buildCard).join('') + '</div>';
+}
+
+function buildCard(j) {
+  const waLink = j.phone ? buildWa(j.phone, j.title) : '';
+  return '<div class="saved-card">' +
+    (j.sourceName ? '<div class="source">' + esc(j.sourceName) + '</div>' : '') +
+    '<div class="title">' + esc(j.title || 'משרת הוראה') + '</div>' +
+    '<div class="meta">' + esc(timeAgo(j.savedAt)) + (j.email ? ' · ' + esc(j.email) : '') + '</div>' +
+    '<div class="actions">' +
+      (j.email ? '<a class="btn btn-primary-sm" href="mailto:' + esc(j.email) + '?subject=' + encodeURIComponent('פנייה דרך אדורה') + '">שלח מייל</a>' : '') +
+      (waLink ? '<a class="btn btn-secondary-sm" href="' + waLink + '" target="_blank" rel="noopener">WhatsApp</a>' : '') +
+      '<button class="btn btn-remove" data-id="' + esc(j.id) + '">הסרי</button>' +
+    '</div>' +
+  '</div>';
+}
+
+function buildWa(phone, title) {
+  let p = String(phone).replace(/\D/g, '');
+  if (!p) return '';
+  if (p.startsWith('0')) p = '972' + p.slice(1);
+  return 'https://api.whatsapp.com/send?phone=' + p + '&text=' + encodeURIComponent('שלום, ראיתי את המודעה דרך אדורה: ' + (title || ''));
+}
+
+function removeJob(id) {
+  let saved = [];
+  try { saved = JSON.parse(localStorage.getItem(SAVED_KEY) || '[]'); } catch (e) {}
+  saved = saved.filter(s => s.id !== id);
+  localStorage.setItem(SAVED_KEY, JSON.stringify(saved));
+  showToast('הוסר ✓');
+  loadSaved();
+}
+document.addEventListener('click', (e) => {
+  const btn = e.target.closest('.btn-remove[data-id]');
+  if (btn) removeJob(btn.getAttribute('data-id'));
+});
+
+async function postJSON(payload) {
+  if (!SUBMISSIONS_URL) {
+    return { ok: false, error: 'הטופס עוד לא מחובר. כתבי במייל ל-meytal@edura.co.il ואחבר אותך ידנית.' };
+  }
+  const res = await fetch(SUBMISSIONS_URL, {
+    method: 'POST', body: JSON.stringify(payload),
+    headers: { 'Content-Type': 'text/plain;charset=utf-8' }
+  });
+  return await res.json();
+}
+
+async function subscribeAlerts() {
+  const email = $('al-email').value.trim();
+  if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { showToast('מייל לא תקין'); return; }
+
+  const btn = $('al-submit');
+  btn.disabled = true; btn.textContent = 'שולח...';
+
+  const payload = {
+    action: 'subscribe_alerts',
+    email: email,
+    name: $('al-name').value.trim(),
+    region: $('al-region').value,
+    level: $('al-level').value,
+    subject: $('al-subject').value.trim(),
+    role: $('al-role').value,
+    scope: ''
+  };
+
+  try {
+    const data = await postJSON(payload);
+    if (data.ok) {
+      showToast('✓ נרשמת! מייל אישור בדרך אלייך.');
+      btn.textContent = '✓ נרשמת';
+    } else {
+      throw new Error(data.error || 'שליחה נכשלה');
+    }
+  } catch (err) {
+    showToast('שליחה נכשלה: ' + (err.message || err));
+    btn.disabled = false; btn.textContent = 'הרשמי להתראה יומית';
+  }
+}
+window.subscribeAlerts = subscribeAlerts;
+
+async function subscribePrincipals() {
+  const email = $('pa-email').value.trim();
+  if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { showToast('מייל לא תקין'); return; }
+
+  const btn = $('pa-submit');
+  btn.disabled = true; btn.textContent = 'שולח...';
+
+  const payload = {
+    action: 'subscribe_principal',
+    email: email,
+    name: $('pa-name').value.trim(),
+    region: $('pa-region').value,
+    phone: $('pa-phone').value.trim()
+  };
+
+  try {
+    const data = await postJSON(payload);
+    if (data.ok) {
+      showToast('✓ נרשמת! נעדכן ברגע שייפתח סבב חדש.');
+      btn.textContent = '✓ נרשמת';
+    } else {
+      throw new Error(data.error || 'שליחה נכשלה');
+    }
+  } catch (err) {
+    showToast('שליחה נכשלה: ' + (err.message || err));
+    btn.disabled = false; btn.textContent = 'הרשמי להתראה';
+  }
+}
+window.subscribePrincipals = subscribePrincipals;
+
+loadSaved();
+</script>
+
+</body>
+</html>
