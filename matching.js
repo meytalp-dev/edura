@@ -1,4 +1,4 @@
-// Edura matching engine — match teachers ↔ jobs by subject + region (+ city bonus)
+// Edura matching engine — match teachers ↔ jobs by subject + region + level (+ city must match if both have one)
 // Usage:
 //   const matches = findJobsForTeacher(teacher, allJobs);   // sorted, score >= MIN
 //   const matches = findTeachersForJob(job, allTeachers);   // sorted, score >= MIN
@@ -7,6 +7,30 @@
   'use strict';
 
   const MIN_SCORE = 50;
+
+  // Level synonyms — group equivalent stage names (יסודי/חט"ב/תיכון/גן)
+  const LEVEL_SYNONYMS = [
+    ['יסודי', 'בית ספר יסודי', 'יסודית'],
+    ['חטיבת ביניים', 'חט"ב', 'חטב', 'חטיבה', 'חטיבת-ביניים'],
+    ['תיכון', 'על-יסודי', 'על יסודי', 'תיכונית'],
+    ['גן', 'גני ילדים', 'גן ילדים', 'גנים'],
+    ['חינוך מיוחד', 'חנ"מ', 'חנמ'],
+  ];
+
+  const _levelKey = (() => {
+    const map = new Map();
+    LEVEL_SYNONYMS.forEach(group => {
+      const canonical = group[0];
+      group.forEach(s => map.set(normalizeText(s), canonical));
+    });
+    return map;
+  })();
+
+  function canonicalLevel(level) {
+    const norm = normalizeText(level);
+    if (!norm) return '';
+    return _levelKey.get(norm) || norm;
+  }
 
   // Subject synonyms — group equivalent subject names so spelling/aliasing don't break matches
   const SUBJECT_SYNONYMS = [
@@ -97,12 +121,34 @@
     return a === b ? 10 : 0;
   }
 
+  // City must match if both sides specify a city — otherwise it's a hard fail
+  // (subject + level + same region without same city = different teacher altogether)
+  function cityCompatible(cA, cB) {
+    const a = normalizeText(cA);
+    const b = normalizeText(cB);
+    if (!a || !b) return true; // missing data on either side → don't penalize
+    return a === b;
+  }
+
+  // Level must match if both sides specify one (יסודי≠תיכון).
+  // If either side is missing — don't penalize (lots of jobs/teachers don't tag level).
+  function levelCompatible(lA, lB) {
+    const a = canonicalLevel(lA);
+    const b = canonicalLevel(lB);
+    if (!a || !b) return true;
+    return a === b;
+  }
+
   function scoreMatch(teacher, job) {
     const subj = subjectScore(teacher.subject, job.subject);
     if (subj === 0) return 0;
     // אזור הוא חובה: בלי חפיפה אזורית/שכנה — אין התאמה, גם אם המקצוע זהה
     const reg = regionScore(teacher.region, job.region);
     if (reg === 0) return 0;
+    // שכבה חובה אם שני הצדדים ציינו (יסודי≠תיכון)
+    if (!levelCompatible(teacher.level, job.level)) return 0;
+    // עיר חובה אם שני הצדדים ציינו
+    if (!cityCompatible(teacher.city, job.city)) return 0;
     const city = cityBonus(teacher.city, job.city);
     return subj + reg + city;
   }
