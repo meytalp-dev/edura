@@ -253,6 +253,28 @@
     transition: background .15s, transform .1s; cursor: pointer;
   }
   .btn-publish-job:hover { background: #FDE68A; transform: translateY(-1px); }
+  .btn-cta-teacher, .btn-cta-principal {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 9px 16px; border-radius: 999px;
+    font-size: 13px; font-weight: 600;
+    border: 1.5px solid transparent; cursor: pointer;
+    transition: background .15s, transform .1s, box-shadow .15s;
+    min-height: 44px; line-height: 1.2; white-space: nowrap;
+  }
+  .btn-cta-teacher strong, .btn-cta-principal strong { font-weight: 800; }
+  .btn-cta-teacher {
+    background: #FCE7F3; color: #9D174D; border-color: #FBCFE8;
+  }
+  .btn-cta-teacher:hover { background: #FBCFE8; transform: translateY(-1px); box-shadow: 0 4px 14px rgba(190,24,93,.18); }
+  .btn-cta-principal {
+    background: #FEF3C7; color: #92400E; border-color: #FDE68A;
+  }
+  .btn-cta-principal:hover { background: #FDE68A; transform: translateY(-1px); box-shadow: 0 4px 14px rgba(217,119,6,.18); }
+  @media (max-width: 700px) {
+    .btn-cta-teacher, .btn-cta-principal {
+      font-size: 12px !important; padding: 8px 12px !important; min-height: 40px;
+    }
+  }
   .modal-supra-publish { font-size: 13px; color: var(--orange); font-weight: 700; margin-bottom: 8px; letter-spacing: 0.5px; text-transform: uppercase; }
   .modal-info-publish {
     background: var(--orange-soft); border-right: 3px solid var(--orange);
@@ -1093,10 +1115,10 @@
     <nav class="header-cta">
       <a href="index.html" class="btn-text active">משרות</a>
       <a href="teachers.html" class="btn-text">מורים</a>
-      <a href="manager-tenders.html" class="btn-text">מכרזי ניהול</a>
       <a href="saved.html" class="btn-text">המשרות שלי</a>
       <a href="about.html" class="btn-text">על אדורה</a>
-      <button class="btn-publish-job" onclick="openPublishChooser()">+ פרסם משרה</button>
+      <a href="cv-builder.html" class="btn-cta-teacher" aria-label="מורה? מלאי ונמצא לך התאמה מושלמת"><strong>מורה?</strong> מלאי ונמצא לך התאמה מושלמת</a>
+      <button type="button" class="btn-cta-principal" onclick="openPostJobModal()" aria-label="מנהל? נמצא לך שידוך"><strong>מנהל?</strong> נמצא לך שידוך</button>
       <a href="chat.html" class="btn-primary" style="display:inline-flex;align-items:center"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="vertical-align:-2px;margin-left:6px"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>בוט חיפוש</a>
     </nav>
   </div>
@@ -1502,6 +1524,9 @@ async function loadJobs() {
     allTeachers = teachersResults
       .filter(Boolean)
       .flatMap(d => Array.isArray(d) ? d : (d.teachers || []));
+    // אותו תיקון city→region שמיושם על משרות, מיושם גם על מורים
+    // כדי שמורה בפרדס חנה (מסומן "מרכז" ב-source) לא יתאים למשרה בגן יבנה (שפלה).
+    allTeachers.forEach(fixJobRegion);
     populateFilters();
     applyFilters();
     $('stat-total').textContent = allJobs.length;

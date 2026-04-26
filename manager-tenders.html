@@ -68,8 +68,25 @@
   .header-cta { display: flex; gap: 12px; align-items: center; }
   .btn-text { color: var(--ink-soft); font-weight: 500; font-size: 15px; padding: 10px 14px; border-radius: 8px; transition: background .15s; min-height: 44px; display: inline-flex; align-items: center; }
   .btn-text:hover { background: var(--cream); }
+  .btn-text.active { background: var(--green-pale); color: var(--green-deep); font-weight: 700; }
   .btn-primary { background: var(--green-deep); color: var(--white); padding: 10px 20px; border-radius: 999px; font-weight: 600; font-size: 15px; transition: background .15s, transform .1s; }
   .btn-primary:hover { background: var(--green-soft); }
+  .btn-cta-teacher, .btn-cta-principal {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 9px 16px; border-radius: 999px;
+    font-size: 13px; font-weight: 600;
+    border: 1.5px solid transparent; cursor: pointer;
+    transition: background .15s, transform .1s, box-shadow .15s;
+    min-height: 44px; line-height: 1.2; white-space: nowrap;
+  }
+  .btn-cta-teacher strong, .btn-cta-principal strong { font-weight: 800; }
+  .btn-cta-teacher { background: #FCE7F3; color: #9D174D; border-color: #FBCFE8; }
+  .btn-cta-teacher:hover { background: #FBCFE8; transform: translateY(-1px); box-shadow: 0 4px 14px rgba(190,24,93,.18); }
+  .btn-cta-principal { background: #FEF3C7; color: #92400E; border-color: #FDE68A; }
+  .btn-cta-principal:hover { background: #FDE68A; transform: translateY(-1px); box-shadow: 0 4px 14px rgba(217,119,6,.18); }
+  @media (max-width: 700px) {
+    .btn-cta-teacher, .btn-cta-principal { font-size: 12px !important; padding: 8px 12px !important; min-height: 40px; }
+  }
 
   /* Hero */
   .hero { background: linear-gradient(180deg, var(--cream) 0%, var(--bg) 100%); padding: 64px 24px 40px; text-align: center; }
@@ -186,11 +203,13 @@
       </svg><span class="logo-tagline">האתר הגדול למשרות חינוך בישראל</span>
     </a>
     <nav class="header-cta">
-      <a href="index.html" class="btn-text">משרות הוראה</a>
+      <a href="index.html" class="btn-text">משרות</a>
       <a href="teachers.html" class="btn-text">מורים</a>
       <a href="saved.html" class="btn-text">המשרות שלי</a>
       <a href="about.html" class="btn-text">על אדורה</a>
-      <a href="#process" class="btn-primary">איך מגישים מכרז</a>
+      <a href="cv-builder.html" class="btn-cta-teacher" aria-label="מורה? מלאי ונמצא לך התאמה מושלמת"><strong>מורה?</strong> מלאי ונמצא לך התאמה מושלמת</a>
+      <a href="index.html#post-job" class="btn-cta-principal" aria-label="מנהל? נמצא לך שידוך"><strong>מנהל?</strong> נמצא לך שידוך</a>
+      <a href="chat.html" class="btn-primary">בוט חיפוש</a>
     </nav>
   </div>
 </header>

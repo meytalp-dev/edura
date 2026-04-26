@@ -71,10 +71,24 @@
     transition: background .15s, transform .1s;
   }
   .btn-primary:hover { background: var(--green-soft); }
+  .btn-cta-teacher, .btn-cta-principal {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 9px 16px; border-radius: 999px;
+    font-size: 13px; font-weight: 600;
+    border: 1.5px solid transparent; cursor: pointer;
+    transition: background .15s, transform .1s, box-shadow .15s;
+    min-height: 44px; line-height: 1.2; white-space: nowrap;
+  }
+  .btn-cta-teacher strong, .btn-cta-principal strong { font-weight: 800; }
+  .btn-cta-teacher { background: #FCE7F3; color: #9D174D; border-color: #FBCFE8; }
+  .btn-cta-teacher:hover { background: #FBCFE8; transform: translateY(-1px); box-shadow: 0 4px 14px rgba(190,24,93,.18); }
+  .btn-cta-principal { background: #FEF3C7; color: #92400E; border-color: #FDE68A; }
+  .btn-cta-principal:hover { background: #FDE68A; transform: translateY(-1px); box-shadow: 0 4px 14px rgba(217,119,6,.18); }
   @media (max-width: 700px) {
     .header-inner { flex-wrap: wrap; padding: 12px 16px; gap: 10px; }
     .header-cta { width: 100%; justify-content: center; gap: 6px; flex-wrap: wrap; }
-    .header-cta a { font-size: 13px !important; padding: 8px 10px !important; min-height: 40px; }
+    .header-cta a, .header-cta button { font-size: 13px !important; padding: 8px 10px !important; min-height: 40px; }
+    .btn-cta-teacher, .btn-cta-principal { font-size: 12px !important; padding: 8px 12px !important; }
   }
 
   /* Hero */
@@ -222,9 +236,11 @@
     </a>
     <nav class="header-cta">
       <a href="index.html" class="btn-text">משרות</a>
-      <a href="teachers.html" class="btn-text">מורים מחפשי עבודה</a>
-      <a href="manager-tenders.html" class="btn-text">מכרזי ניהול</a>
+      <a href="teachers.html" class="btn-text">מורים</a>
+      <a href="saved.html" class="btn-text">המשרות שלי</a>
       <a href="about.html" class="btn-text active">על אדורה</a>
+      <a href="cv-builder.html" class="btn-cta-teacher" aria-label="מורה? מלאי ונמצא לך התאמה מושלמת"><strong>מורה?</strong> מלאי ונמצא לך התאמה מושלמת</a>
+      <a href="index.html#post-job" class="btn-cta-principal" aria-label="מנהל? נמצא לך שידוך"><strong>מנהל?</strong> נמצא לך שידוך</a>
       <a href="chat.html" class="btn-primary">בוט חיפוש</a>
     </nav>
   </div>
