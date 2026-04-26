@@ -1446,7 +1446,7 @@ function toggleSaveJob(idx, btnEl) {
     saved.splice(existing, 1);
     btnEl.classList.remove('saved');
     btnEl.querySelector('svg').setAttribute('fill', 'none');
-    showToast('הוסר מהרשימה');
+    showToast((window.EduraCopy && EduraCopy.pickToast('save_removed')) || 'הוסר מהרשימה');
     trk('save_job_remove', 'job=' + (j.id || ''));
   } else {
     saved.unshift({
@@ -1460,7 +1460,7 @@ function toggleSaveJob(idx, btnEl) {
     localStorage.setItem(SAVED_KEY, JSON.stringify(saved.slice(0, 50)));
     btnEl.classList.add('saved');
     btnEl.querySelector('svg').setAttribute('fill', 'currentColor');
-    showToast('נשמר ✓ — לצפייה ב"המשרות שלי"');
+    showToast((window.EduraCopy && EduraCopy.pickToast('save_added')) || 'נשמר ✓ — לצפייה ב"המשרות שלי"');
     trk('save_job_add', 'job=' + (j.id || ''));
     return;
   }
@@ -1773,7 +1773,8 @@ function render() {
   clearBtn.hidden = !hasFilter;
 
   if (filtered.length === 0) {
-    grid.innerHTML = '<div class="empty"><h3>לא נמצאו משרות</h3><p>נסו לשנות סינונים</p></div>';
+    grid.innerHTML = (window.EduraCopy && EduraCopy.pickEmpty(EduraCopy.emptyJobsFilter)) ||
+      '<div class="empty"><h3>לא נמצאו משרות</h3><p>נסו לשנות סינונים</p></div>';
     return;
   }
 
@@ -2040,7 +2041,7 @@ function submitGate() {
   const acc = { email, name, joinedAt: Date.now() };
   saveAccount(acc);
   hideGate();
-  showToast('ברוכ/ה הבא/ה' + (name ? ' ' + name : '') + ' ✓');
+  showToast(((window.EduraCopy && EduraCopy.pickToast('welcome')) || 'ברוכ/ה הבא/ה ✓') + (name ? ' · ' + name : ''));
   trk('signup', 'email_only');
   // אופציונלי: שלח ל-Apps Script אם SUBMISSIONS_URL מוגדר
   if (SUBMISSIONS_URL) {
@@ -2172,7 +2173,7 @@ async function submitPostJob() {
       const data = await res.json();
       if (data.ok) {
         trk('post_job_submit', 'school=' + payload.school + '|ref=' + data.refId);
-        showToast('✓ נשלח! מספר פנייה: ' + data.refId + ' — נעלה את המשרה תוך 24 שעות.');
+        showToast(((window.EduraCopy && EduraCopy.pickToast('post_sent')) || '✓ נשלח') + ' · מספר פנייה: ' + data.refId);
         setTimeout(closePostJobModal, 1500);
       } else {
         throw new Error(data.error || 'שליחה נכשלה');
@@ -2205,7 +2206,7 @@ function submitPostJobViaMailto(p) {
     'אישור פרסום: ✓ אני מנהל/ת בית הספר ומאשר/ת פרסום המשרה באדורה.'
   ].join('\n');
   window.location.href = 'mailto:meytal@edura.co.il?subject=' + encodeURIComponent(subj) + '&body=' + encodeURIComponent(body);
-  showToast('✓ פרטי המשרה הוכנו לשליחה. נוסיף ב-24 שעות.');
+  showToast((window.EduraCopy && EduraCopy.pickToast('post_sent')) || '✓ פרטי המשרה הוכנו לשליחה. נוסיף ב-24 שעות.');
   setTimeout(closePostJobModal, 1500);
 }
 window.submitPostJob = submitPostJob;

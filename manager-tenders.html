@@ -444,7 +444,8 @@ async function loadTenders() {
     applyFilters();
     $('meta-total').textContent = allTenders.length;
   } catch (err) {
-    $('tenders').innerHTML = '<div class="empty"><h3>בעיה בטעינת הנתונים</h3><p>נסו לרענן את הדף בעוד רגע</p></div>';
+    $('tenders').innerHTML = (window.EduraCopy && EduraCopy.pickEmpty(EduraCopy.emptyTendersError)) ||
+      '<div class="empty"><h3>בעיה בטעינת הנתונים</h3><p>נסו לרענן את הדף בעוד רגע</p></div>';
     console.error(err);
   }
 }
@@ -490,7 +491,8 @@ function render() {
   clearBtn.hidden = !hasFilter;
 
   if (filtered.length === 0) {
-    grid.innerHTML = '<div class="empty"><h3>לא נמצאו מכרזים</h3><p>נסו לשנות סינונים או לחפש במונח אחר</p></div>';
+    grid.innerHTML = (window.EduraCopy && EduraCopy.pickEmpty(EduraCopy.emptyTenders)) ||
+      '<div class="empty"><h3>לא נמצאו מכרזים</h3><p>נסו לשנות סינונים או לחפש במונח אחר</p></div>';
     return;
   }
 
@@ -537,6 +539,18 @@ $('clear-filters').addEventListener('click', () => {
 loadTenders();
 </script>
 
+<script src="copy.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  if (!window.EduraCopy) return;
+  const rc = document.getElementById('results-count');
+  if (rc && rc.textContent.trim() === 'טוען מכרזים...') {
+    rc.textContent = EduraCopy.pick(EduraCopy.tenderLoading) + '...';
+  }
+  const lp = document.querySelector('main .loading p');
+  if (lp) lp.textContent = EduraCopy.pick(EduraCopy.tenderLoading) + '...';
+});
+</script>
 <script src="analytics.js"></script>
 <script src="feedback-widget.js" defer></script>
 

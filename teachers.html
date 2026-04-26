@@ -493,8 +493,21 @@
   <p>© 2026 אדורה · edura.co.il</p>
 </footer>
 
+<script src="copy.js"></script>
 <script src="analytics.js"></script>
 <script src="matching.js"></script>
+<script>
+// רוטציה של טעינה — בכל refresh
+document.addEventListener('DOMContentLoaded', () => {
+  if (!window.EduraCopy) return;
+  const rc = document.getElementById('results-count');
+  if (rc && rc.textContent.trim() === 'טוען מורים...') {
+    rc.textContent = EduraCopy.pick(EduraCopy.teacherLoading) + '...';
+  }
+  const lp = document.querySelector('main .loading p');
+  if (lp) lp.textContent = EduraCopy.pick(EduraCopy.teacherLoading) + '...';
+});
+</script>
 <script>
 const TEACHERS_URL = 'data/teachers.json';
 const FB_TEACHERS_URL = 'data/fb-teachers.json';
@@ -586,7 +599,8 @@ async function loadTeachers() {
     const subjects = new Set(allT.map(t => t.subject).filter(Boolean));
     $('stat-subjects').textContent = subjects.size;
   } catch (err) {
-    $('teachers').innerHTML = '<div class="empty"><h3>בעיה זמנית בטעינה</h3><p>נסו שוב בעוד רגע</p></div>';
+    $('teachers').innerHTML = (window.EduraCopy && EduraCopy.pickEmpty(EduraCopy.emptyTeachersError)) ||
+      '<div class="empty"><h3>בעיה זמנית בטעינה</h3><p>נסו שוב בעוד רגע</p></div>';
     console.error(err);
   }
 }
@@ -652,7 +666,8 @@ function render() {
   clearBtn.hidden = !hasFilter;
 
   if (filtered.length === 0) {
-    grid.innerHTML = '<div class="empty"><h3>אין התאמות</h3><p>נסו לשנות את הסינון</p></div>';
+    grid.innerHTML = (window.EduraCopy && EduraCopy.pickEmpty(EduraCopy.emptyTeachersFilter)) ||
+      '<div class="empty"><h3>אין התאמות</h3><p>נסו לשנות את הסינון</p></div>';
     return;
   }
 
@@ -845,7 +860,7 @@ async function submitPublish() {
   const mailto = 'mailto:meytal@edura.co.il?subject=' + encodeURIComponent(subj) + '&body=' + encodeURIComponent(body);
   trk('publish_submit', subject + '|' + region + '|' + city);
   window.location.href = mailto;
-  showToast('✓ פרטיך הוכנו לשליחה. אנחנו נוסיף אותך למאגר ב-24 שעות.');
+  showToast((window.EduraCopy && EduraCopy.pickToast('teacher_added')) || '✓ פרטיך הוכנו לשליחה. אנחנו נוסיף אותך למאגר ב-24 שעות.');
   setTimeout(() => {
     btn.disabled = false;
     btn.textContent = 'פרסם פרופיל ✓';

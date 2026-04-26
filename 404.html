@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>אדורה · 404</title>
+<meta name="description" content="הדף הזה כבר לא קיים — חזרו לדף הבית של אדורה." />
+<meta name="robots" content="noindex" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600;700;800&family=Assistant:wght@400;500;600&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --green-deep: #0B2A4A;
+    --teal: #14B8A6;
+    --teal-deep: #0D9488;
+    --cream: #F8FAFC;
+    --ink: #0B2A4A;
+    --ink-mute: #475569;
+    --line: #E2E8F0;
+    --white: #FFFFFF;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Heebo', 'Assistant', sans-serif;
+    background: var(--cream);
+    color: var(--ink);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+  .card {
+    max-width: 520px;
+    background: var(--white);
+    border: 1px solid var(--line);
+    border-radius: 20px;
+    padding: 48px 32px;
+    text-align: center;
+    box-shadow: 0 4px 16px rgba(11,42,74,.06);
+  }
+  .num {
+    font-size: 88px;
+    font-weight: 800;
+    color: var(--teal-deep);
+    line-height: 1;
+    margin-bottom: 16px;
+    letter-spacing: -2px;
+  }
+  h1 {
+    font-size: 22px;
+    font-weight: 700;
+    margin-bottom: 12px;
+    color: var(--ink);
+  }
+  p {
+    font-size: 16px;
+    color: var(--ink-mute);
+    margin-bottom: 28px;
+  }
+  .btns {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+  .btn {
+    display: inline-block;
+    padding: 12px 24px;
+    border-radius: 999px;
+    font-weight: 600;
+    font-size: 15px;
+    text-decoration: none;
+    transition: transform .15s;
+  }
+  .btn:active { transform: translateY(1px); }
+  .btn-primary {
+    background: var(--green-deep);
+    color: var(--white);
+  }
+  .btn-secondary {
+    background: var(--white);
+    color: var(--green-deep);
+    border: 1.5px solid var(--line);
+  }
+  .btn-primary:hover { background: var(--teal-deep); }
+  .btn-secondary:hover { border-color: var(--teal); color: var(--teal-deep); }
+  @media (max-width: 480px) {
+    .num { font-size: 72px; }
+    h1 { font-size: 19px; }
+    p { font-size: 15px; }
+  }
+</style>
+</head>
+<body>
+  <div class="card">
+    <div class="num">404</div>
+    <h1 id="h">הדף הזה ברח כמו ממלא מקום ביום שני בבוקר.</h1>
+    <p id="p">בואו נחזיר אתכם הביתה.</p>
+    <div class="btns">
+      <a href="/" class="btn btn-primary">לדף הבית</a>
+      <a href="/teachers.html" class="btn btn-secondary">למאגר המורים</a>
+    </div>
+  </div>
+<script src="copy.js"></script>
+<script>
+  if (window.EduraCopy && EduraCopy.fourOhFour) {
+    const e = EduraCopy.pick(EduraCopy.fourOhFour);
+    if (e) {
+      document.getElementById('h').textContent = e.h;
+      document.getElementById('p').textContent = e.p;
+    }
+  }
+</script>
+</body>
+</html>

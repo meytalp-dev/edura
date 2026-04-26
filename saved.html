@@ -302,6 +302,7 @@
   <p>© 2026 אדורה · edura.co.il</p>
 </footer>
 
+<script src="copy.js"></script>
 <script>
 const SAVED_KEY = 'edura.chat.saved.v1';
 const SUBMISSIONS_URL = 'https://script.google.com/macros/s/AKfycbwleldcwH8c5k9OZ8EMDIKZ8veRbrtO1M7XwYFWg7HHbEV-SrZkLTElbFRiq4cHPlyarw/exec';
@@ -335,10 +336,12 @@ function loadSaved() {
 
   if (!saved.length) {
     count.textContent = '0 משרות';
+    const e = (window.EduraCopy && EduraCopy.pick(EduraCopy.emptySaved)) ||
+      { h: 'עדיין לא שמרת משרות', p: 'שמרי משרות בשיחה עם הבוט שלנו או בלוח הראשי — והן יופיעו כאן לחזור אליהן בכל רגע.' };
     list.innerHTML = '' +
       '<div class="empty">' +
-        '<h3>עדיין לא שמרת משרות</h3>' +
-        '<p>שמרי משרות בשיחה עם הבוט שלנו או בלוח הראשי — והן יופיעו כאן לחזור אליהן בכל רגע.</p>' +
+        '<h3>' + e.h + '</h3>' +
+        '<p>' + e.p + '</p>' +
         '<a href="chat.html" class="btn">פתחו את הבוט</a>' +
       '</div>';
     return;
@@ -374,7 +377,7 @@ function removeJob(id) {
   try { saved = JSON.parse(localStorage.getItem(SAVED_KEY) || '[]'); } catch (e) {}
   saved = saved.filter(s => s.id !== id);
   localStorage.setItem(SAVED_KEY, JSON.stringify(saved));
-  showToast('הוסר ✓');
+  showToast((window.EduraCopy && EduraCopy.pickToast('save_removed')) || 'הוסר ✓');
   loadSaved();
 }
 document.addEventListener('click', (e) => {
@@ -414,7 +417,7 @@ async function subscribeAlerts() {
   try {
     const data = await postJSON(payload);
     if (data.ok) {
-      showToast('✓ נרשמת! מייל אישור בדרך אלייך.');
+      showToast((window.EduraCopy && EduraCopy.pickToast('alert_subscribed')) || '✓ נרשמת! מייל אישור בדרך אלייך.');
       btn.textContent = '✓ נרשמת';
     } else {
       throw new Error(data.error || 'שליחה נכשלה');
@@ -444,7 +447,7 @@ async function subscribePrincipals() {
   try {
     const data = await postJSON(payload);
     if (data.ok) {
-      showToast('✓ נרשמת! נעדכן ברגע שייפתח סבב חדש.');
+      showToast((window.EduraCopy && EduraCopy.pickToast('principal_subscribed')) || '✓ נרשמת! נעדכן ברגע שייפתח סבב חדש.');
       btn.textContent = '✓ נרשמת';
     } else {
       throw new Error(data.error || 'שליחה נכשלה');
