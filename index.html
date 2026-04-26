@@ -15,7 +15,7 @@
 <link rel="canonical" href="https://edura.co.il/" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;800;900&family=Assistant:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;800;900&family=Assistant:wght@300;400;500;600;700;800&family=Playpen+Sans+Hebrew:wght@400;500;600;700&family=Pacifico&display=swap" rel="stylesheet" />
 <style>
   :root {
     --green-deep: #0B2A4A;
@@ -86,18 +86,138 @@
     display: flex; gap: 8px; align-items: center;
   }
   .logo-block { display: flex; align-items: center; gap: 12px; }
+  .logo-stack { display: flex; flex-direction: column; align-items: flex-start; gap: 0; }
   .logo { display: flex; align-items: center; gap: 4px; transition: transform .15s; }
   .logo:hover { transform: translateY(-1px); }
   .logo-svg { height: 32px; width: auto; display: block; }
   .logo-nikud { font-family: 'Heebo', sans-serif; font-weight: 900; font-size: 36px; letter-spacing: -1.5px; fill: var(--teal); }
   .logo-word { font-family: 'Heebo', sans-serif; font-weight: 900; font-size: 36px; letter-spacing: -1.5px; fill: var(--ink); }
   .logo-h { fill: var(--teal); }
+  .brand-tagline {
+    font-family: 'Playpen Sans Hebrew', 'Heebo', sans-serif;
+    font-weight: 500;
+    font-size: 13px;
+    color: var(--teal-deep);
+    line-height: 1.1;
+    margin-top: 2px;
+    margin-inline-start: 8px;
+    letter-spacing: -0.2px;
+    transform: rotate(-1.5deg);
+    transform-origin: right center;
+    white-space: nowrap;
+  }
   .header-cta { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; justify-content: flex-end; }
   @media (max-width: 700px) {
-    .header-inner { flex-wrap: wrap; padding: 12px 16px; gap: 10px; }
-    .header-cta { width: 100%; justify-content: center; gap: 8px; }
-    .header-cta a, .header-cta button { font-size: 13px !important; padding: 10px 12px !important; min-height: 40px; }
+    .header-inner { flex-wrap: nowrap; padding: 12px 16px; gap: 10px; }
+    .brand-tagline { font-size: 11px; }
   }
+  /* Hamburger button */
+  .menu-toggle {
+    width: 44px; height: 44px; border-radius: 12px;
+    background: var(--cream); color: var(--ink);
+    display: inline-flex; align-items: center; justify-content: center;
+    transition: background .15s, transform .1s;
+    border: 1px solid var(--line);
+    flex-shrink: 0;
+    position: relative;
+  }
+  .menu-toggle:hover { background: var(--green-pale); border-color: var(--teal); }
+  .menu-toggle:active { transform: scale(.95); }
+  .menu-toggle svg { width: 22px; height: 22px; }
+  .menu-toggle .menu-dot {
+    position: absolute; top: 6px; inset-inline-start: 6px;
+    width: 8px; height: 8px; border-radius: 50%;
+    background: var(--orange); border: 2px solid var(--white);
+    display: none;
+  }
+  .menu-toggle.has-update .menu-dot { display: block; }
+  /* Side menu drawer */
+  .menu-overlay {
+    position: fixed; inset: 0; background: rgba(11,42,74,.55);
+    backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px);
+    z-index: 90; opacity: 0; pointer-events: none;
+    transition: opacity .25s ease;
+  }
+  .menu-overlay.open { opacity: 1; pointer-events: auto; }
+  .side-menu {
+    position: fixed; top: 0; inset-inline-start: 0; height: 100dvh;
+    width: min(380px, 92vw); background: var(--white);
+    z-index: 95; transform: translateX(-100%);
+    transition: transform .3s cubic-bezier(.2,.7,.2,1);
+    display: flex; flex-direction: column;
+    box-shadow: 4px 0 30px rgba(11,42,74,.18);
+    overflow-y: auto;
+  }
+  [dir="rtl"] .side-menu { inset-inline-start: auto; inset-inline-end: 0; transform: translateX(100%); }
+  .side-menu.open { transform: translateX(0) !important; }
+  .side-menu-header {
+    padding: 22px 24px 18px;
+    background: linear-gradient(135deg, var(--green-deep) 0%, var(--green-soft) 100%);
+    color: var(--white); position: relative;
+  }
+  .side-menu-close {
+    position: absolute; top: 14px; inset-inline-end: 14px;
+    width: 36px; height: 36px; border-radius: 999px;
+    background: rgba(255,255,255,.18); color: var(--white);
+    display: flex; align-items: center; justify-content: center; font-size: 22px;
+    transition: background .15s;
+  }
+  .side-menu-close:hover { background: rgba(255,255,255,.3); }
+  .side-menu-greet {
+    font-family: 'Playpen Sans Hebrew', 'Heebo', sans-serif;
+    font-size: 13px; opacity: .85; margin-bottom: 4px;
+  }
+  .side-menu-name {
+    font-family: 'Heebo', sans-serif;
+    font-size: 22px; font-weight: 800; line-height: 1.2;
+  }
+  .side-menu-sub {
+    font-size: 12px; opacity: .8; margin-top: 4px;
+  }
+  .side-menu-section {
+    padding: 14px 12px 8px; border-top: 1px solid var(--line);
+  }
+  .side-menu-section:first-of-type { border-top: 0; }
+  .side-menu-label {
+    font-size: 11px; font-weight: 700; color: var(--ink-mute);
+    letter-spacing: 0.8px; text-transform: uppercase;
+    padding: 6px 14px 8px;
+  }
+  .side-menu-link {
+    display: flex; align-items: center; gap: 12px;
+    padding: 12px 14px; border-radius: 10px;
+    color: var(--ink); font-weight: 500; font-size: 15px;
+    transition: background .12s, color .12s, transform .1s;
+    cursor: pointer;
+  }
+  .side-menu-link:hover { background: var(--cream); color: var(--teal-deep); }
+  .side-menu-link:active { transform: scale(.98); }
+  .side-menu-link .icon-wrap {
+    width: 36px; height: 36px; border-radius: 10px;
+    background: var(--green-pale); color: var(--teal-deep);
+    display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+  }
+  .side-menu-link.cv .icon-wrap { background: #FCE7F3; color: #BE185D; }
+  .side-menu-link.map .icon-wrap { background: #FEF3C7; color: var(--orange); }
+  .side-menu-link.blog .icon-wrap { background: #DBEAFE; color: #1E40AF; }
+  .side-menu-link.tenders .icon-wrap { background: #E0E7FF; color: #4338CA; }
+  .side-menu-link .link-meta {
+    flex: 1;
+    display: flex; flex-direction: column; gap: 2px;
+  }
+  .side-menu-link .link-title { font-weight: 600; line-height: 1.2; }
+  .side-menu-link .link-sub { font-size: 12px; color: var(--ink-mute); line-height: 1.3; }
+  .side-menu-link .badge-new {
+    background: var(--teal); color: var(--white);
+    font-size: 10px; font-weight: 700; padding: 2px 8px;
+    border-radius: 999px; letter-spacing: 0.3px;
+  }
+  .side-menu-footer {
+    margin-top: auto; padding: 18px 24px; border-top: 1px solid var(--line);
+    font-size: 12px; color: var(--ink-mute); text-align: center;
+  }
+  .side-menu-footer .out-link { color: var(--orange); font-weight: 600; cursor: pointer; }
+  body.menu-open { overflow: hidden; }
   .btn-text {
     color: var(--ink-soft); font-weight: 500; font-size: 15px;
     padding: 10px 14px; border-radius: 8px; transition: background .15s; min-height: 44px;
@@ -169,7 +289,23 @@
     color: var(--ink); line-height: 1.15; letter-spacing: -1px;
     margin-bottom: 16px; max-width: 760px; margin-left: auto; margin-right: auto;
   }
-  .hero h1 .accent { color: var(--teal-deep); }
+  .hero h1 .accent { color: var(--teal-deep); position: relative; display: inline-block; }
+  .hero h1 .accent .underline-svg {
+    position: absolute; left: -6px; right: -6px; bottom: -10px;
+    width: calc(100% + 12px); height: 14px; pointer-events: none;
+    overflow: visible;
+  }
+  .hero h1 .accent .underline-svg path {
+    fill: none; stroke: var(--teal); stroke-width: 4;
+    stroke-linecap: round;
+    stroke-dasharray: 240; stroke-dashoffset: 240;
+    animation: drawUnderline 1.1s cubic-bezier(.5,.1,.3,1) .25s forwards;
+    filter: drop-shadow(0 1px 0 rgba(20,184,166,.3));
+  }
+  @keyframes drawUnderline { to { stroke-dashoffset: 0; } }
+  @media (prefers-reduced-motion: reduce) {
+    .hero h1 .accent .underline-svg path { animation: none; stroke-dashoffset: 0; }
+  }
   .hero-sub {
     font-size: clamp(16px, 2vw, 18px); color: var(--ink-soft);
     max-width: 600px; margin: 0 auto 32px;
@@ -210,32 +346,124 @@
     .tenders-banner-btn { width: 100%; text-align: center; }
   }
 
-  /* ─── Filters ─── */
+  /* ─── Filters — chip-based, distinctive ─── */
   .filters-wrap { max-width: 1200px; margin: 0 auto; padding: 0 24px 24px; }
-  .filters {
+  .search-mega {
+    position: relative; max-width: 760px; margin: 0 auto 18px;
+  }
+  .search-mega .search-shadow {
+    position: absolute; inset: 6px -2px -6px 6px;
+    background: linear-gradient(135deg, var(--teal) 0%, var(--green-deep) 100%);
+    border-radius: 22px; opacity: .14; z-index: 0;
+    transition: opacity .2s;
+  }
+  .search-mega:focus-within .search-shadow { opacity: .25; inset: 4px -4px -8px 4px; }
+  .search-mega .search-row {
+    position: relative; z-index: 1;
+    background: var(--white);
+    border: 2px solid var(--line);
+    border-radius: 22px;
+    padding: 8px 10px 8px 18px;
+    display: flex; align-items: center; gap: 10px;
+    box-shadow: 0 4px 18px rgba(11,42,74,.06);
+    transition: border-color .18s, box-shadow .18s;
+  }
+  .search-mega:focus-within .search-row { border-color: var(--teal); box-shadow: 0 6px 22px rgba(20,184,166,.18); }
+  .search-mega input.search-input {
+    flex: 1; border: 0; background: transparent;
+    font-size: 16px; color: var(--ink);
+    padding: 12px 4px; min-height: 44px; outline: none;
+    font-family: inherit;
+  }
+  .search-mega input.search-input::placeholder { color: var(--ink-mute); font-weight: 400; }
+  .search-mega .search-icon-wrap {
+    width: 38px; height: 38px; border-radius: 50%;
+    background: var(--green-pale); color: var(--teal-deep);
+    display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+  }
+  .search-mega .search-go {
+    background: var(--green-deep); color: var(--white);
+    width: 44px; height: 44px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0; transition: background .15s, transform .1s;
+  }
+  .search-mega .search-go:hover { background: var(--teal-deep); transform: rotate(-12deg); }
+  .search-mega .search-hint {
+    text-align: center; font-size: 13px; color: var(--ink-mute);
+    margin-top: 12px; font-family: 'Playpen Sans Hebrew', 'Heebo', sans-serif;
+  }
+  .search-mega .search-hint strong { color: var(--teal-deep); font-weight: 600; }
+
+  /* Chip rows */
+  .chip-rows {
     background: var(--white); border: 1px solid var(--line);
-    border-radius: var(--radius-lg); padding: 20px;
+    border-radius: var(--radius-lg); padding: 16px 18px;
     box-shadow: var(--shadow-sm);
-    display: grid;
-    grid-template-columns: 1fr repeat(6, minmax(120px, 1fr));
-    gap: 12px; align-items: end;
+    display: flex; flex-direction: column; gap: 12px;
   }
-  @media (max-width: 1100px) { .filters { grid-template-columns: 1fr 1fr 1fr; } }
-  @media (max-width: 700px) { .filters { grid-template-columns: 1fr 1fr; } }
-  @media (max-width: 480px) { .filters { grid-template-columns: 1fr; } }
-  .filter-group { display: flex; flex-direction: column; gap: 6px; }
-  .filter-label { font-size: 12px; font-weight: 600; color: var(--ink-mute); letter-spacing: 0.3px; }
-  .filter-input, .filter-select {
-    background: var(--bg); border: 1px solid var(--line);
-    border-radius: 10px; padding: 10px 14px;
-    font-size: 14px; color: var(--ink);
-    transition: border-color .15s, background .15s;
-    width: 100%;
+  .chip-row {
+    display: flex; align-items: center; gap: 8px;
+    overflow-x: auto; scrollbar-width: thin;
+    scrollbar-color: var(--line) transparent;
+    padding-bottom: 4px;
   }
-  .filter-input:focus, .filter-select:focus { outline: none; border-color: var(--teal); background: var(--white); }
-  .filter-input { padding-inline-start: 38px; }
-  .filter-input-wrap { position: relative; }
-  .filter-input-wrap svg { position: absolute; inset-inline-start: 12px; top: 50%; transform: translateY(-50%); pointer-events: none; color: var(--ink-mute); }
+  .chip-row::-webkit-scrollbar { height: 4px; }
+  .chip-row::-webkit-scrollbar-thumb { background: var(--line); border-radius: 4px; }
+  .chip-row-label {
+    font-size: 12px; font-weight: 700; color: var(--ink-mute);
+    letter-spacing: 0.4px; flex-shrink: 0;
+    min-width: 64px; padding-inline-end: 6px;
+    border-inline-end: 1px solid var(--line);
+    margin-inline-end: 4px;
+    text-transform: uppercase;
+  }
+  .chip {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 8px 14px; border-radius: 999px;
+    background: var(--cream); color: var(--ink-soft);
+    font-size: 13px; font-weight: 600;
+    border: 1.5px solid transparent;
+    cursor: pointer; flex-shrink: 0;
+    transition: background .15s, color .15s, border-color .15s, transform .1s;
+    white-space: nowrap;
+    min-height: 36px;
+  }
+  .chip:hover { background: var(--green-pale); color: var(--teal-deep); }
+  .chip.active {
+    background: var(--green-deep); color: var(--white);
+    border-color: var(--green-deep);
+    box-shadow: 0 2px 8px rgba(11,42,74,.18);
+  }
+  .chip.active.region { background: var(--teal-deep); border-color: var(--teal-deep); }
+  .chip.active.level { background: #6B4FBC; border-color: #6B4FBC; }
+  .chip.active.sector { background: #BE185D; border-color: #BE185D; }
+  .chip.active.subject { background: var(--orange); border-color: var(--orange); }
+  .chip.active.role { background: #1E40AF; border-color: #1E40AF; }
+  .chip.active.scope { background: var(--green-soft); border-color: var(--green-soft); }
+  .chip.active.city { background: var(--ink); border-color: var(--ink); }
+  .chip svg { width: 14px; height: 14px; flex-shrink: 0; }
+  .chip-count { font-size: 10px; opacity: .7; margin-inline-start: 2px; font-weight: 500; }
+  .chip.more {
+    background: transparent; color: var(--teal-deep);
+    border: 1.5px dashed var(--line);
+  }
+  .chip.more:hover { border-color: var(--teal); color: var(--teal-deep); background: transparent; }
+
+  .chip-more-wrap { position: relative; flex-shrink: 0; }
+  .chip-popover {
+    position: absolute; top: calc(100% + 8px); inset-inline-start: 0;
+    background: var(--white); border: 1px solid var(--line);
+    border-radius: 14px; padding: 10px;
+    box-shadow: 0 10px 30px rgba(11,42,74,.18);
+    display: none; z-index: 30;
+    min-width: 220px; max-height: 320px; overflow-y: auto;
+  }
+  .chip-popover.open { display: block; }
+  .chip-popover .chip { margin: 3px; }
+
+  @media (max-width: 700px) {
+    .chip-row-label { min-width: auto; border-inline-end: 0; padding-inline-end: 4px; font-size: 11px; }
+  }
 
   /* ─── Active filters / Result count ─── */
   .results-bar {
@@ -481,6 +709,90 @@
   }
   .modal-close:hover { background: var(--line); color: var(--ink); }
 
+  /* ─── Signup gate ─── */
+  .gate-overlay {
+    position: fixed; inset: 0; background: rgba(11,42,74,.72);
+    backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+    display: none; align-items: center; justify-content: center;
+    z-index: 110; padding: 20px;
+    animation: fadeIn .3s ease;
+  }
+  .gate-overlay.open { display: flex; }
+  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+  .gate-card {
+    background: var(--white); border-radius: 24px;
+    max-width: 460px; width: 100%; padding: 36px 32px;
+    box-shadow: 0 30px 80px rgba(11,42,74,.4);
+    text-align: center; position: relative;
+    animation: slideUp .35s cubic-bezier(.2,.7,.2,1);
+  }
+  @keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+  .gate-logo {
+    width: 64px; height: 64px; border-radius: 18px;
+    background: linear-gradient(135deg, var(--teal) 0%, var(--green-deep) 100%);
+    display: flex; align-items: center; justify-content: center;
+    margin: 0 auto 16px;
+    box-shadow: 0 8px 24px rgba(20,184,166,.35);
+    color: var(--white);
+  }
+  .gate-supra {
+    font-family: 'Playpen Sans Hebrew', 'Heebo', sans-serif;
+    font-size: 14px; color: var(--teal-deep); margin-bottom: 6px;
+    transform: rotate(-1deg); display: inline-block;
+  }
+  .gate-card h2 {
+    font-size: 26px; font-weight: 800; line-height: 1.2;
+    color: var(--ink); margin-bottom: 10px;
+  }
+  .gate-card p.gate-sub {
+    font-size: 15px; color: var(--ink-soft); line-height: 1.5;
+    margin-bottom: 22px;
+  }
+  .gate-perks {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 10px;
+    margin-bottom: 22px; text-align: right;
+  }
+  @media (max-width: 420px) { .gate-perks { grid-template-columns: 1fr; } }
+  .gate-perk {
+    display: flex; align-items: flex-start; gap: 8px;
+    font-size: 12px; color: var(--ink-soft); line-height: 1.35;
+    background: var(--cream); padding: 10px; border-radius: 10px;
+  }
+  .gate-perk .check {
+    color: var(--teal-deep); flex-shrink: 0; margin-top: 1px;
+  }
+  .gate-input-wrap {
+    position: relative; margin-bottom: 12px;
+  }
+  .gate-input {
+    width: 100%; padding: 14px 18px 14px 18px;
+    border: 2px solid var(--line); border-radius: 14px;
+    font-size: 16px; color: var(--ink); background: var(--bg);
+    transition: border-color .15s, background .15s;
+    text-align: center;
+    font-family: inherit;
+  }
+  .gate-input:focus { outline: none; border-color: var(--teal); background: var(--white); }
+  .gate-input::placeholder { color: var(--ink-mute); }
+  .gate-name-input { margin-bottom: 10px; }
+  .gate-submit {
+    width: 100%; padding: 14px;
+    background: linear-gradient(135deg, var(--green-deep) 0%, var(--teal-deep) 100%);
+    color: var(--white); font-weight: 700; font-size: 16px;
+    border-radius: 14px; cursor: pointer;
+    transition: transform .1s, box-shadow .15s;
+  }
+  .gate-submit:hover { transform: translateY(-1px); box-shadow: 0 6px 18px rgba(20,184,166,.35); }
+  .gate-submit:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+  .gate-skip {
+    margin-top: 16px; font-size: 13px; color: var(--ink-mute);
+    text-decoration: underline; cursor: pointer; background: none; border: none;
+  }
+  .gate-skip:hover { color: var(--ink-soft); }
+  .gate-footer-note {
+    font-size: 11px; color: var(--ink-mute); margin-top: 14px; line-height: 1.4;
+  }
+
   /* ─── Toast ─── */
   .toast {
     position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(120%);
@@ -499,30 +811,103 @@
 <header class="header">
   <div class="header-inner">
     <div class="logo-block">
-      <a href="index.html" class="logo" aria-label="אדורה — לוח משרות הוראה">
-        <svg class="logo-svg" viewBox="0 0 200 50" aria-hidden="true">
-          <text x="100" y="38" text-anchor="middle" direction="rtl" class="logo-nikud">אֶדורֶה</text>
-          <text x="100" y="38" text-anchor="middle" direction="rtl" class="logo-word">אדור<tspan class="logo-h">ה</tspan></text>
-        </svg>
-      </a>
-      <div class="header-side">
-        <button class="btn-publish-job" onclick="openPostJobModal()">+ פרסם משרה</button>
+      <button class="menu-toggle" onclick="openSideMenu()" aria-label="תפריט ראשי" id="menu-toggle-btn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+        <span class="menu-dot" aria-hidden="true"></span>
+      </button>
+      <div class="logo-stack">
+        <a href="index.html" class="logo" aria-label="אדורה — לוח משרות הוראה">
+          <svg class="logo-svg" viewBox="0 0 200 50" aria-hidden="true">
+            <text x="100" y="38" text-anchor="middle" direction="rtl" class="logo-nikud">אֶדורֶה</text>
+            <text x="100" y="38" text-anchor="middle" direction="rtl" class="logo-word">אדור<tspan class="logo-h">ה</tspan></text>
+          </svg>
+        </a>
+        <div class="brand-tagline">אתר המשרות לאנשי החינוך בישראל</div>
       </div>
     </div>
     <nav class="header-cta">
-      <a href="teachers.html" class="btn-teachers"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="vertical-align:-2px;margin-left:6px"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>מורים מחפשי עבודה</a>
-      <a href="manager-tenders.html" class="btn-tenders">מכרזי ניהול</a>
-      <a href="saved.html" class="btn-text">המשרות שלי</a>
-      <a href="about.html" class="btn-text">על אדורה</a>
-      <a href="chat.html" class="btn-primary"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="vertical-align:-2px;margin-left:6px"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>בוט חיפוש</a>
+      <button class="btn-publish-job" onclick="openPostJobModal()">+ פרסם משרה</button>
+      <a href="chat.html" class="btn-primary" style="display:inline-flex;align-items:center"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="vertical-align:-2px;margin-left:6px"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>בוט חיפוש</a>
     </nav>
   </div>
 </header>
 
+<!-- Hamburger side menu -->
+<div class="menu-overlay" id="menu-overlay" onclick="closeSideMenu()"></div>
+<aside class="side-menu" id="side-menu" aria-label="תפריט ראשי">
+  <div class="side-menu-header">
+    <button class="side-menu-close" onclick="closeSideMenu()" aria-label="סגור תפריט">×</button>
+    <div class="side-menu-greet" id="side-greet">שלום</div>
+    <div class="side-menu-name" id="side-name">ברוכים הבאים לאדורה</div>
+    <div class="side-menu-sub">המשרה הבאה שלך בחינוך</div>
+  </div>
+
+  <div class="side-menu-section">
+    <div class="side-menu-label">הכלים שלי</div>
+    <a href="saved.html" class="side-menu-link">
+      <span class="icon-wrap"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.29 1.51 4.04 3 5.5l7 7Z"/></svg></span>
+      <span class="link-meta"><span class="link-title">המשרות שלי</span><span class="link-sub">משרות ששמרת + התראות יומיות</span></span>
+    </a>
+    <a href="cv-builder.html" class="side-menu-link cv">
+      <span class="icon-wrap"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="9" y1="15" x2="15" y2="15"/><line x1="9" y1="11" x2="15" y2="11"/></svg></span>
+      <span class="link-meta"><span class="link-title">מחולל קורות חיים</span><span class="link-sub">קו"ח מקצועיים בעברית, להורדה כ-PDF</span></span>
+      <span class="badge-new">חדש</span>
+    </a>
+    <a href="chat.html" class="side-menu-link">
+      <span class="icon-wrap"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></span>
+      <span class="link-meta"><span class="link-title">בוט חיפוש חכם</span><span class="link-sub">שיחה ביידיש: "אנגלית רעננה חצי משרה"</span></span>
+    </a>
+  </div>
+
+  <div class="side-menu-section">
+    <div class="side-menu-label">חוקרים את השוק</div>
+    <a href="israel-map.html" class="side-menu-link map">
+      <span class="icon-wrap"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg></span>
+      <span class="link-meta"><span class="link-title">מפת המשרות בארץ</span><span class="link-sub">איפה הביקוש הכי חזק? נקודות חמות לפי אזור</span></span>
+      <span class="badge-new">חדש</span>
+    </a>
+    <a href="blog/" class="side-menu-link blog">
+      <span class="icon-wrap"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg></span>
+      <span class="link-meta"><span class="link-title">מדריכים וכתבות</span><span class="link-sub">קו"ח, ראיונות, שכר, חיפוש משרה ראשונה</span></span>
+      <span class="badge-new">חדש</span>
+    </a>
+    <a href="manager-tenders.html" class="side-menu-link tenders">
+      <span class="icon-wrap"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></span>
+      <span class="link-meta"><span class="link-title">מכרזי ניהול</span><span class="link-sub">משרות מנהל/ת, סגן/ית, רכז/ת בכיר</span></span>
+    </a>
+  </div>
+
+  <div class="side-menu-section">
+    <div class="side-menu-label">למנהלים</div>
+    <a href="javascript:void(0)" class="side-menu-link" onclick="closeSideMenu();openPostJobModal()">
+      <span class="icon-wrap" style="background:var(--orange-soft);color:var(--orange)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></span>
+      <span class="link-meta"><span class="link-title">פרסום משרה</span><span class="link-sub">חינם · משרה תפורסם תוך 24 שעות</span></span>
+    </a>
+    <a href="teachers.html" class="side-menu-link">
+      <span class="icon-wrap" style="background:#FCE7F3;color:#BE185D"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span>
+      <span class="link-meta"><span class="link-title">מאגר מורים</span><span class="link-sub">מורים מחפשי עבודה — מקצוע, אזור, היקף</span></span>
+    </a>
+  </div>
+
+  <div class="side-menu-section">
+    <div class="side-menu-label">עוד</div>
+    <a href="about.html" class="side-menu-link">
+      <span class="icon-wrap" style="background:var(--cream-deep);color:var(--ink-soft)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg></span>
+      <span class="link-meta"><span class="link-title">על אדורה</span><span class="link-sub">מי אנחנו, ממה זה בנוי, איך זה עובד</span></span>
+    </a>
+  </div>
+
+  <div class="side-menu-footer">
+    <span id="side-foot-status">לא מחובר/ת</span>
+    · <button class="out-link" onclick="signOutUser()" id="side-foot-out" hidden>יציאה</button>
+    <div style="margin-top:8px">© 2026 אדורה · edura.co.il</div>
+  </div>
+</aside>
+
 <section class="hero">
   <div class="hero-badge">לוח דרושים ייעודי לחינוך · עדכון יומי</div>
-  <h1>המשרה הבאה שלך <span class="accent">בחינוך</span></h1>
-  <p class="hero-sub">כל המשרות מארגון המורים, הסתדרות המורים ושתיל — במקום אחד. סינון לפי אזור, שכבה, מגזר והיקף. חינם, ללא הרשמה.</p>
+  <h1>המשרה הבאה שלך <span class="accent">בחינוך<svg class="underline-svg" viewBox="0 0 200 14" preserveAspectRatio="none" aria-hidden="true"><path d="M4 9 Q 50 2, 100 7 T 196 5"/></svg></span></h1>
+  <p class="hero-sub">כל המשרות מארגון המורים, הסתדרות המורים ושתיל — במקום אחד. סינון לפי אזור, שכבה, מגזר והיקף. הרשמה חינם.</p>
   <div class="hero-stats">
     <div class="stat"><span class="stat-num" id="stat-total">—</span><span class="stat-label">משרות פתוחות</span></div>
     <div class="stat"><span class="stat-num">3</span><span class="stat-label">מקורות מאומתים</span></div>
@@ -532,43 +917,68 @@
 </section>
 
 <div class="filters-wrap">
-  <div class="filters">
-    <div class="filter-group" style="grid-column: 1 / -1;">
-      <label class="filter-label" for="search">חיפוש חופשי</label>
-      <div class="filter-input-wrap">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.3-4.3"></path></svg>
-        <input id="search" type="text" class="filter-input" placeholder="מורה לאנגלית רעננה, חינוך מיוחד צפון, רכז שכבה..." />
-      </div>
+  <!-- Mega search bar -->
+  <form class="search-mega" onsubmit="event.preventDefault();applyFilters()">
+    <div class="search-shadow" aria-hidden="true"></div>
+    <div class="search-row">
+      <span class="search-icon-wrap">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.3-4.3"></path></svg>
+      </span>
+      <input id="search" type="text" class="search-input" placeholder='נסו: "אנגלית רעננה חצי משרה", "רכזת שכבה ירושלים"' autocomplete="off" />
+      <button type="submit" class="search-go" aria-label="חפש">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+      </button>
     </div>
-    <div class="filter-group">
-      <label class="filter-label" for="region">אזור</label>
-      <select id="region" class="filter-select"><option value="">הכל</option></select>
+    <div class="search-hint">או בחרו <strong>אזור · שכבה · מקצוע</strong> מהתגיות למטה ↓</div>
+  </form>
+
+  <!-- Chip filter rows -->
+  <div class="chip-rows" id="chip-rows">
+    <div class="chip-row" data-filter="region">
+      <span class="chip-row-label">אזור</span>
+      <button type="button" class="chip region active" data-value=""><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/></svg>הכל</button>
+      <!-- region chips injected by JS -->
     </div>
-    <div class="filter-group">
-      <label class="filter-label" for="city">עיר</label>
-      <select id="city" class="filter-select"><option value="">הכל</option></select>
+    <div class="chip-row" data-filter="level">
+      <span class="chip-row-label">שכבה</span>
+      <button type="button" class="chip level active" data-value="">הכל</button>
+      <!-- level chips injected by JS -->
     </div>
-    <div class="filter-group">
-      <label class="filter-label" for="level">שכבה</label>
-      <select id="level" class="filter-select"><option value="">הכל</option></select>
+    <div class="chip-row" data-filter="sector">
+      <span class="chip-row-label">מגזר</span>
+      <button type="button" class="chip sector active" data-value="">הכל</button>
+      <!-- sector chips injected by JS -->
     </div>
-    <div class="filter-group">
-      <label class="filter-label" for="sector">מגזר</label>
-      <select id="sector" class="filter-select"><option value="">הכל</option></select>
+    <div class="chip-row" data-filter="subject">
+      <span class="chip-row-label">מקצוע</span>
+      <button type="button" class="chip subject active" data-value="">הכל</button>
+      <!-- subject chips injected by JS -->
     </div>
-    <div class="filter-group">
-      <label class="filter-label" for="subject">מקצוע</label>
-      <select id="subject" class="filter-select"><option value="">הכל</option></select>
+    <div class="chip-row" data-filter="role">
+      <span class="chip-row-label">תפקיד</span>
+      <button type="button" class="chip role active" data-value="">הכל</button>
+      <!-- role chips injected by JS -->
     </div>
-    <div class="filter-group">
-      <label class="filter-label" for="role">תפקיד</label>
-      <select id="role" class="filter-select"><option value="">הכל</option></select>
+    <div class="chip-row" data-filter="scope">
+      <span class="chip-row-label">היקף</span>
+      <button type="button" class="chip scope active" data-value="">הכל</button>
+      <!-- scope chips injected by JS -->
     </div>
-    <div class="filter-group">
-      <label class="filter-label" for="scope">היקף</label>
-      <select id="scope" class="filter-select"><option value="">הכל</option></select>
+    <div class="chip-row" data-filter="city" id="chip-row-city" hidden>
+      <span class="chip-row-label">עיר</span>
+      <button type="button" class="chip city active" data-value="">הכל</button>
+      <!-- city chips injected by JS -->
     </div>
   </div>
+
+  <!-- Hidden selects for backward compatibility (other JS reads .value) -->
+  <select id="region" hidden><option value="" selected></option></select>
+  <select id="city" hidden><option value="" selected></option></select>
+  <select id="level" hidden><option value="" selected></option></select>
+  <select id="sector" hidden><option value="" selected></option></select>
+  <select id="subject" hidden><option value="" selected></option></select>
+  <select id="role" hidden><option value="" selected></option></select>
+  <select id="scope" hidden><option value="" selected></option></select>
 </div>
 
 <div class="results-bar">
@@ -649,6 +1059,31 @@
   </div>
 </div>
 
+<!-- Signup gate -->
+<div class="gate-overlay" id="gate-overlay">
+  <div class="gate-card">
+    <div class="gate-logo">
+      <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+    </div>
+    <div class="gate-supra">ברגע אחד</div>
+    <h2>נעים להכיר! איך לקרוא לכם?</h2>
+    <p class="gate-sub">אדורה — לוח המשרות המלא של אנשי החינוך בישראל. הרשמה חינם, ללא תשלום וללא ספאם.</p>
+    <div class="gate-perks">
+      <div class="gate-perk"><svg class="check" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>גישה מלאה לכל המשרות</div>
+      <div class="gate-perk"><svg class="check" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>שמירת משרות אהובות</div>
+      <div class="gate-perk"><svg class="check" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>התראה יומית במייל</div>
+      <div class="gate-perk"><svg class="check" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>מחולל קו"ח חינם</div>
+    </div>
+    <input type="text" class="gate-input gate-name-input" id="gate-name" placeholder="שם פרטי" autocomplete="given-name" />
+    <div class="gate-input-wrap">
+      <input type="email" class="gate-input" id="gate-email" placeholder="המייל שלך" autocomplete="email" />
+    </div>
+    <button class="gate-submit" id="gate-submit" onclick="submitGate()">כניסה ←</button>
+    <button class="gate-skip" onclick="skipGate()">אולי אחר כך</button>
+    <div class="gate-footer-note">לא משתפים את הפרטים שלכם. רק שולחים לכם משרות מתאימות, אם תרצו.</div>
+  </div>
+</div>
+
 <div class="toast" id="toast"></div>
 
 <script src="analytics.js"></script>
@@ -657,8 +1092,7 @@
 const JOBS_URL = 'data/jobs.json';
 const TEACHERS_URL = 'data/teachers.json';
 // POST endpoint לשליחת מועמדויות, פרסום משרות והרשמה להתראות.
-// אם ריק — נופלים ל-mailto (התנהגות ישנה). אחרי deploy של submissions-apps-script.gs, להחליף ל-URL החדש.
-const SUBMISSIONS_URL = '';
+const SUBMISSIONS_URL = 'https://script.google.com/macros/s/AKfycbwleldcwH8c5k9OZ8EMDIKZ8veRbrtO1M7XwYFWg7HHbEV-SrZkLTElbFRiq4cHPlyarw/exec';
 let allJobs = [];
 let allTeachers = [];
 let filtered = [];
@@ -740,6 +1174,7 @@ async function loadJobs() {
     ]);
     const data = await resJ.json();
     allJobs = data.jobs || [];
+    normalizeAllJobs();
     allJobs.forEach((j, i) => { j.jobsIndex = i; });
     const teachersData = resT && resT.ok ? await resT.json() : null;
     allTeachers = (teachersData && teachersData.teachers) || [];
@@ -754,28 +1189,168 @@ async function loadJobs() {
   }
 }
 
+// ─── City → Region normalization (fix for wrong matches) ──────────────
+// המקור (Apps Script) מזין region לפי כללי גזירה לא מדויקים.
+// פה אנחנו מאלצים מיפוי נכון לערים שמופיעות שגויות בנתונים.
+const CITY_REGION_FIX = {
+  // ───── ירושלים ─────
+  'ירושלים': 'ירושלים', 'מעלה אדומים': 'ירושלים', 'מבשרת ציון': 'ירושלים', 'מבשרת': 'ירושלים',
+  'קרית ענבים': 'ירושלים', 'מטה יהודה': 'ירושלים',
+  // ───── מרכז ─────
+  'תל אביב': 'מרכז', 'תל אביב - יפו': 'מרכז', 'תל אביב יפו': 'מרכז', 'ת"א': 'מרכז',
+  'רמת גן': 'מרכז', 'גבעתיים': 'מרכז', 'בני ברק': 'מרכז', 'הרצליה': 'מרכז',
+  'רעננה': 'מרכז', 'כפר סבא': 'מרכז', 'הוד השרון': 'מרכז', 'רמת השרון': 'מרכז',
+  'פתח תקווה': 'מרכז', 'פ"ת': 'מרכז', 'ראשון לציון': 'מרכז', 'ראשל"צ': 'מרכז',
+  'חולון': 'מרכז', 'בת ים': 'מרכז', 'נתניה': 'מרכז', 'ראש העין': 'מרכז',
+  'אור יהודה': 'מרכז', 'יהוד': 'מרכז', 'יהוד-מונוסון': 'מרכז', 'גני תקווה': 'מרכז',
+  'סביון': 'מרכז', 'גבעת שמואל': 'מרכז', 'קריית אונו': 'מרכז', 'קרית אונו': 'מרכז',
+  'נס ציונה': 'מרכז', 'רחובות': 'מרכז', 'מקווה ישראל': 'מרכז',
+  'חוף השרון': 'מרכז', 'אבן יהודה': 'מרכז', 'כפר יונה': 'מרכז', 'כפר מונש': 'מרכז',
+  'נווה ירק': 'מרכז', 'בית דגן': 'מרכז', 'באר יעקב': 'מרכז',
+  'עמק חפר': 'מרכז', 'וינגייט': 'מרכז', 'הכפר הירוק': 'מרכז',
+  'כפר אורנים': 'מרכז', 'כפר האורנים': 'מרכז',
+  'כפר הנוער עיינות': 'מרכז', 'בן שמן': 'מרכז',
+  // ───── שפלה ─────
+  'מודיעין': 'שפלה', 'מודיעין מכבים רעות': 'שפלה', 'מודיעין-מכבים-רעות': 'שפלה',
+  'בית שמש': 'שפלה', 'לוד': 'שפלה', 'רמלה': 'שפלה', 'יבנה': 'שפלה', 'גן יבנה': 'שפלה',
+  'גדרה': 'שפלה', 'נתיבות': 'שפלה',
+  // ───── דרום ─────
+  'אשדוד': 'דרום', 'אשקלון': 'דרום', 'באר שבע': 'דרום', 'דימונה': 'דרום',
+  'ערד': 'דרום', 'אילת': 'דרום', 'שדרות': 'דרום', 'אופקים': 'דרום',
+  'אשכול': 'דרום', 'יד מרדכי': 'דרום', 'קיבוץ כרמיה': 'דרום', 'כרמיה': 'דרום',
+  'שדה צבי': 'דרום', 'כפר סילבר': 'דרום',
+  // ───── צפון ─────
+  'חיפה': 'צפון', 'נצרת': 'צפון', 'עכו': 'צפון', 'נהריה': 'צפון',
+  'קריות': 'צפון', 'קרית מוצקין': 'צפון', 'קרית ביאליק': 'צפון', 'קרית ים': 'צפון', 'קרית אתא': 'צפון',
+  'טבריה': 'צפון', 'צפת': 'צפון', 'כרמיאל': 'צפון', 'יקנעם': 'צפון',
+  'טבעון': 'צפון', 'טירת כרמל': 'צפון', 'עתלית': 'צפון', 'זכרון יעקב': 'צפון',
+  'פרדס חנה': 'צפון', 'פרדס חנה-כרכור': 'צפון', 'בנימינה': 'צפון', 'אור עקיבא': 'צפון',
+  'גליל': 'צפון', 'הגליל': 'צפון', 'הגליל העליון': 'צפון', 'גולן': 'צפון',
+  'חוף הכרמל': 'צפון', 'כברי': 'צפון', 'עין חרוד': 'צפון',
+  // ───── יו"ש (אם רוצים בעתיד — כרגע מסווגים למרכז) ─────
+  'אריאל': 'מרכז'
+};
+
+function fixJobRegion(j) {
+  // העדפה: אם יש city מנורמלת → השתמש בה.
+  // אחרת בדוק אם title/school/snippet מכילים שם של עיר ידועה.
+  if (j.city) {
+    const c = j.city.trim();
+    if (CITY_REGION_FIX[c]) {
+      j.region = CITY_REGION_FIX[c];
+      return;
+    }
+  }
+  const text = ((j.title || '') + ' ' + (j.school || '') + ' ' + (j.snippet || ''));
+  for (const city in CITY_REGION_FIX) {
+    if (text.indexOf(city) !== -1) {
+      j.region = CITY_REGION_FIX[city];
+      // חלץ את העיר אם חסר
+      if (!j.city) j.city = city;
+      return;
+    }
+  }
+}
+
+function normalizeAllJobs() {
+  allJobs.forEach(fixJobRegion);
+}
+
+// ─── Chip-row icons ─────────────────────────────────────────────
+const REGION_ICONS = {
+  'ירושלים': '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2 L2 12 L12 22 L22 12 Z"/></svg>',
+  'מרכז':    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="3" fill="currentColor"/></svg>',
+  'צפון':    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12,3 5,21 12,17 19,21"/></svg>',
+  'דרום':    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 21 L12 6 L21 21"/><circle cx="12" cy="14" r="2"/></svg>',
+  'שפלה':    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 18 Q 8 10, 12 14 T 21 12"/></svg>',
+  'ארצי':    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2 a15.3 15.3 0 0 1 0 20"/></svg>'
+};
+const LEVEL_ICONS = {
+  'גן':            '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M5 21 c0-3 3-5 7-5 s7 2 7 5"/></svg>',
+  'יסודי':         '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18v14H3z"/><path d="M3 6l9-4 9 4"/></svg>',
+  'חטיבת ביניים':  '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 8h20l-10-6z"/><path d="M5 11v8h14v-8"/></svg>',
+  'תיכון':         '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 8l10-5 10 5-10 5z"/><path d="M6 11v5c0 2 3 3 6 3s6-1 6-3v-5"/></svg>',
+  'חינוך מיוחד':   '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>'
+};
+
 function populateFilters() {
-  const regions = new Set(), cities = new Set(), levels = new Set(), sectors = new Set(), subjects = new Set(), roles = new Set(), scopes = new Set();
+  const regions = new Set(), cities = {}, levels = new Set(), sectors = new Set(), subjects = {}, roles = {}, scopes = new Set();
   allJobs.forEach(j => {
     if (j.region) regions.add(j.region);
-    if (j.city) cities.add(j.city);
+    if (j.city) cities[j.city] = (cities[j.city] || 0) + 1;
     if (j.level) levels.add(j.level);
     if (j.sector) sectors.add(j.sector);
-    if (j.subject) subjects.add(j.subject);
-    if (j.role) roles.add(j.role);
+    if (j.subject) subjects[j.subject] = (subjects[j.subject] || 0) + 1;
+    if (j.role) roles[j.role] = (roles[j.role] || 0) + 1;
     if (j.scope) scopes.add(j.scope);
   });
+
+  // hidden selects (for backward compat)
   fillSelect('region', [...regions].sort());
-  fillSelect('city', [...cities].sort((a, b) => a.localeCompare(b, 'he')));
+  fillSelect('city', Object.keys(cities).sort((a, b) => a.localeCompare(b, 'he')));
   fillSelect('level', ['יסודי', 'חטיבת ביניים', 'תיכון', 'חינוך מיוחד', 'גן'].filter(l => levels.has(l)));
   fillSelect('sector', ['ממלכתי', 'ממ"ד', 'חרדי', 'ערבי'].filter(s => sectors.has(s)));
-  fillSelect('subject', [...subjects].sort());
-  fillSelect('role', [...roles].sort());
+  fillSelect('subject', Object.keys(subjects).sort((a, b) => subjects[b] - subjects[a]));
+  fillSelect('role', Object.keys(roles).sort((a, b) => roles[b] - roles[a]));
   fillSelect('scope', [...scopes].sort());
+
+  // Chip rows
+  const REGION_ORDER = ['ירושלים', 'מרכז', 'שפלה', 'צפון', 'דרום', 'ארצי'];
+  buildChipRow('region', REGION_ORDER.filter(r => regions.has(r)).concat([...regions].filter(r => REGION_ORDER.indexOf(r) === -1)), REGION_ICONS);
+  buildChipRow('level', ['יסודי', 'חטיבת ביניים', 'תיכון', 'חינוך מיוחד', 'גן'].filter(l => levels.has(l)), LEVEL_ICONS);
+  buildChipRow('sector', ['ממלכתי', 'ממ"ד', 'חרדי', 'ערבי'].filter(s => sectors.has(s)));
+  buildChipRow('subject', Object.keys(subjects).sort((a, b) => subjects[b] - subjects[a]).slice(0, 12));
+  buildChipRow('role', Object.keys(roles).sort((a, b) => roles[b] - roles[a]).slice(0, 8));
+  buildChipRow('scope', [...scopes].filter(s => s && !s.match(/^\d/) && s.length < 22));
+  // City chip row hidden until user selects a region
+  const cityList = Object.keys(cities).sort((a, b) => cities[b] - cities[a]).slice(0, 24);
+  buildChipRow('city', cityList);
+}
+
+function buildChipRow(name, options, iconMap) {
+  const row = document.querySelector(`.chip-row[data-filter="${name}"]`);
+  if (!row) return;
+  // Remove existing chips except the "הכל" base + label
+  row.querySelectorAll('.chip:not([data-value=""])').forEach(c => c.remove());
+  // Re-build
+  options.forEach(opt => {
+    if (!opt) return;
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'chip ' + name;
+    btn.dataset.value = opt;
+    const icon = iconMap && iconMap[opt] ? iconMap[opt] : '';
+    btn.innerHTML = icon + esc(opt);
+    btn.addEventListener('click', () => selectChip(name, opt, btn));
+    row.appendChild(btn);
+  });
+  // Wire up the "הכל" button
+  const allBtn = row.querySelector('.chip[data-value=""]');
+  if (allBtn && !allBtn.dataset.wired) {
+    allBtn.addEventListener('click', () => selectChip(name, '', allBtn));
+    allBtn.dataset.wired = '1';
+  }
+}
+
+function selectChip(name, value, btn) {
+  const row = document.querySelector(`.chip-row[data-filter="${name}"]`);
+  if (row) row.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+  btn.classList.add('active');
+  $(name).value = value;
+  // Show city row when region is selected
+  if (name === 'region') {
+    const cityRow = $('chip-row-city');
+    if (cityRow) cityRow.hidden = !value;
+  }
+  applyFilters();
+  trk('filter_' + name, value || 'all');
 }
 
 function fillSelect(id, options) {
   const sel = $(id);
+  if (!sel) return;
+  // Clear existing non-empty options
+  Array.from(sel.querySelectorAll('option')).forEach((o, i) => { if (i > 0) o.remove(); });
   options.forEach(opt => {
     const o = document.createElement('option');
     o.value = opt;
@@ -867,7 +1442,6 @@ function render() {
     return (
       '<article class="job-card">' +
         '<button class="btn-save' + (isSaved ? ' saved' : '') + '" onclick=\'toggleSaveJob(' + j.jobsIndex + ', this)\' aria-label="שמרי משרה" title="שמרי משרה">' + heart + '</button>' +
-        '<div class="job-source">' + esc(j.source_name || j.source) + '</div>' +
         '<h3 class="job-title">' + esc(j.title) + '</h3>' +
         schoolLine +
         '<div class="job-tags">' + tags.join('') + '</div>' +
