@@ -14,7 +14,7 @@
 <link rel="canonical" href="https://edura.co.il/chat.html" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;800&family=Assistant:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;800&family=Assistant:wght@400;500;600;700&family=Playpen+Sans+Hebrew:wght@400;500;600;700&display=swap" rel="stylesheet" />
 <style>
   :root {
     --green-deep: #0B2A4A;
@@ -58,26 +58,26 @@
   a { color: inherit; text-decoration: none; }
   button { font: inherit; cursor: pointer; border: none; background: none; }
 
-  .header {
-    background: var(--white);
-    border-bottom: 1px solid var(--line);
-    position: sticky; top: 0; z-index: 50;
-  }
-  .header-inner {
-    max-width: 720px; margin: 0 auto;
-    padding: 14px 20px;
-    display: flex; align-items: center; justify-content: space-between;
-  }
-  .logo {
-    display: flex; align-items: center;
-    transition: transform .15s;
-  }
+  .header { background: var(--white); border-bottom: 1px solid var(--line); position: sticky; top: 0; z-index: 50; }
+  .header-inner { max-width: 1200px; margin: 0 auto; padding: 16px 24px; display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+  .logo { display: inline-flex; flex-direction: column; align-items: flex-end; gap: 1px; transition: transform .15s; }
+  .logo-tagline { font-family: 'Playpen Sans Hebrew', cursive; font-style: normal; font-size: 12px; color: var(--teal-deep); font-weight: 500; letter-spacing: 0.1px; line-height: 1.1; margin-top: 0; white-space: nowrap; transform: rotate(-1deg); transform-origin: right center; }
   .logo:hover { transform: translateY(-1px); }
-  .logo-svg { height: 36px; width: auto; display: block; }
-  .back-link {
-    color: var(--ink-soft); font-size: 14px; font-weight: 500;
+  .logo-svg { height: 32px; width: auto; display: block; }
+  .logo-nikud { font-family: 'Heebo', sans-serif; font-weight: 900; font-size: 36px; letter-spacing: -1.5px; fill: var(--teal); }
+  .logo-word { font-family: 'Heebo', sans-serif; font-weight: 900; font-size: 36px; letter-spacing: -1.5px; fill: var(--ink); }
+  .logo-h { fill: var(--teal); }
+  .header-cta { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; justify-content: flex-end; }
+  .btn-text { color: var(--ink-soft); font-weight: 500; font-size: 15px; padding: 10px 14px; border-radius: 8px; transition: background .15s; min-height: 44px; display: inline-flex; align-items: center; }
+  .btn-text:hover { background: var(--cream); }
+  .btn-text.active { background: var(--green-pale); color: var(--green-deep); font-weight: 700; }
+  .btn-primary { background: var(--green-deep); color: var(--white); padding: 10px 20px; border-radius: 999px; font-weight: 600; font-size: 15px; }
+  .btn-primary:hover { background: var(--green-soft); }
+  @media (max-width: 700px) {
+    .header-inner { flex-wrap: wrap; padding: 12px 16px; gap: 10px; }
+    .header-cta { width: 100%; justify-content: center; gap: 6px; }
+    .header-cta a { font-size: 13px !important; padding: 8px 10px !important; min-height: 40px; }
   }
-  .back-link:hover { color: var(--green-deep); }
 
   main {
     max-width: 720px;
@@ -338,15 +338,19 @@
 <header class="header">
   <div class="header-inner">
     <a href="index.html" class="logo" aria-label="אדורה — לדף הבית">
-      <svg class="logo-svg" viewBox="0 0 320 80" xmlns="http://www.w3.org/2000/svg" role="img" aria-hidden="true">
-        <text x="160" y="56" text-anchor="middle" direction="rtl"
-              font-family="Heebo, sans-serif" font-weight="900" font-size="56" letter-spacing="-2"
-              fill="var(--green-deep)">אדור<tspan fill="var(--teal,#14B8A6)">ה</tspan></text>
-        <circle cx="120" cy="68" r="3" fill="var(--teal,#14B8A6)"/>
-        <circle cx="190" cy="68" r="3" fill="var(--teal,#14B8A6)"/>
-      </svg>
+      <svg class="logo-svg" viewBox="0 0 200 50" aria-hidden="true">
+        <text x="100" y="38" text-anchor="middle" direction="rtl" class="logo-nikud">אֶדורֶה</text>
+        <text x="100" y="38" text-anchor="middle" direction="rtl" class="logo-word">אדור<tspan class="logo-h">ה</tspan></text>
+      </svg><span class="logo-tagline">האתר הגדול למשרות חינוך בישראל</span>
     </a>
-    <a href="index.html" class="back-link">← לכל המשרות</a>
+    <nav class="header-cta">
+      <a href="index.html" class="btn-text">משרות</a>
+      <a href="teachers.html" class="btn-text">מורים</a>
+      <a href="manager-tenders.html" class="btn-text">מכרזי ניהול</a>
+      <a href="saved.html" class="btn-text">המשרות שלי</a>
+      <a href="about.html" class="btn-text">על אדורה</a>
+      <a href="chat.html" class="btn-primary active" style="background:var(--teal-deep);">בוט חיפוש</a>
+    </nav>
   </div>
 </header>
 

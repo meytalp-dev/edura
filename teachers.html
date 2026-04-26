@@ -14,7 +14,7 @@
 <link rel="canonical" href="https://edura.co.il/teachers.html" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;800;900&family=Assistant:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;800;900&family=Assistant:wght@300;400;500;600;700;800&family=Playpen+Sans+Hebrew:wght@400;500;600;700&display=swap" rel="stylesheet" />
 <style>
   :root {
     --green-deep: #0B2A4A;
@@ -76,7 +76,8 @@
   }
   .logo-block { display: flex; align-items: center; gap: 12px; }
   .header-side { display: flex; gap: 8px; align-items: center; }
-  .logo { display: flex; align-items: center; gap: 4px; transition: transform .15s; }
+  .logo { display: inline-flex; flex-direction: column; align-items: flex-end; gap: 1px; transition: transform .15s; }
+  .logo-tagline { font-family: 'Playpen Sans Hebrew', cursive; font-style: normal; font-size: 12px; color: var(--teal-deep); font-weight: 500; letter-spacing: 0.1px; line-height: 1.1; margin-top: 0; white-space: nowrap; transform: rotate(-1deg); transform-origin: right center; }
   .logo:hover { transform: translateY(-1px); }
   .logo-svg { height: 32px; width: auto; display: block; }
   .logo-nikud { font-family: 'Heebo', sans-serif; font-weight: 900; font-size: 36px; letter-spacing: -1.5px; fill: var(--teal); }
@@ -382,23 +383,19 @@
 
 <header class="header">
   <div class="header-inner">
-    <div class="logo-block">
-      <a href="index.html" class="logo" aria-label="אדורה — לוח משרות הוראה">
-        <svg class="logo-svg" viewBox="0 0 200 50" aria-hidden="true">
-          <text x="100" y="38" text-anchor="middle" direction="rtl" class="logo-nikud">אֶדורֶה</text>
-          <text x="100" y="38" text-anchor="middle" direction="rtl" class="logo-word">אדור<tspan class="logo-h">ה</tspan></text>
-        </svg>
-      </a>
-      <div class="header-side">
-        <button class="btn-publish" onclick="openPublishModal()">+ פרסום עצמי</button>
-      </div>
-    </div>
+    <a href="index.html" class="logo" aria-label="אדורה — לדף הבית">
+      <svg class="logo-svg" viewBox="0 0 200 50" aria-hidden="true">
+        <text x="100" y="38" text-anchor="middle" direction="rtl" class="logo-nikud">אֶדורֶה</text>
+        <text x="100" y="38" text-anchor="middle" direction="rtl" class="logo-word">אדור<tspan class="logo-h">ה</tspan></text>
+      </svg><span class="logo-tagline">האתר הגדול למשרות חינוך בישראל</span>
+    </a>
     <nav class="header-cta">
       <a href="index.html" class="btn-text">משרות</a>
-      <a href="teachers.html" class="btn-text active">מורים מחפשי עבודה</a>
+      <a href="teachers.html" class="btn-text active">מורים</a>
       <a href="manager-tenders.html" class="btn-text">מכרזי ניהול</a>
       <a href="saved.html" class="btn-text">המשרות שלי</a>
       <a href="about.html" class="btn-text">על אדורה</a>
+      <button class="btn-publish" onclick="openPublishModal()" style="background:var(--orange-soft);color:var(--orange);font-weight:700;font-size:14px;padding:8px 14px;border-radius:999px;cursor:pointer;border:0;">+ פרסום עצמי</button>
       <a href="chat.html" class="btn-primary"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="vertical-align:-2px;margin-left:6px"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>בוט חיפוש</a>
     </nav>
   </div>
