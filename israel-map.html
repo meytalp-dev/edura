@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>מפת המשרות בישראל · אדורה</title>
+<meta name="description" content="מפת המשרות החינוכיות בישראל — איפה הביקוש הכי גבוה? נקודות חמות לפי אזור, בזמן אמת." />
+<link rel="canonical" href="https://edura.co.il/israel-map.html" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;800;900&family=Playpen+Sans+Hebrew:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --green-deep: #0B2A4A; --teal: #14B8A6; --teal-deep: #0D9488;
+    --green-pale: #CCFBF1; --cream: #F8FAFC; --cream-deep: #EEF2F6;
+    --orange: #D97706; --orange-soft: #FEF3C7;
+    --ink: #0B2A4A; --ink-soft: #1E3A5F; --ink-mute: #475569;
+    --line: #E2E8F0; --bg: #F8FAFC; --white: #FFFFFF;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Heebo', sans-serif; background: var(--bg); color: var(--ink); line-height: 1.5; }
+  a { color: inherit; text-decoration: none; }
+  button { font: inherit; cursor: pointer; border: none; background: none; }
+
+  .header { background: var(--white); border-bottom: 1px solid var(--line); position: sticky; top: 0; z-index: 50; }
+  .header-inner { max-width: 1400px; margin: 0 auto; padding: 14px 22px; display: flex; align-items: center; gap: 12px; }
+  .back-btn { display: inline-flex; align-items: center; gap: 6px; color: var(--ink-soft); font-weight: 500; font-size: 14px; padding: 8px 12px; border-radius: 8px; transition: background .15s; }
+  .back-btn:hover { background: var(--cream); color: var(--teal-deep); }
+  .page-tag { font-family: 'Playpen Sans Hebrew', sans-serif; font-size: 13px; color: var(--teal-deep); transform: rotate(-1deg); display: inline-block; }
+
+  .hero { padding: 36px 22px 18px; max-width: 1100px; margin: 0 auto; text-align: center; }
+  .hero h1 { font-size: clamp(24px, 4vw, 36px); font-weight: 800; letter-spacing: -.5px; margin-bottom: 10px; }
+  .hero p { color: var(--ink-soft); font-size: 16px; max-width: 600px; margin: 0 auto; }
+
+  .map-wrap {
+    max-width: 1100px; margin: 24px auto;
+    padding: 0 22px;
+    display: grid; grid-template-columns: 1.4fr 1fr; gap: 28px;
+  }
+  @media (max-width: 880px) { .map-wrap { grid-template-columns: 1fr; } }
+
+  .map-frame {
+    background: var(--white); border-radius: 20px; padding: 18px;
+    box-shadow: 0 4px 24px rgba(11,42,74,.06);
+  }
+  .map-svg { width: 100%; height: auto; display: block; }
+  .region-shape {
+    fill: var(--cream-deep); stroke: var(--line); stroke-width: 1.5;
+    cursor: pointer; transition: fill .2s;
+  }
+  .region-shape:hover { fill: var(--green-pale); }
+  .region-shape.active { fill: var(--teal); stroke: var(--teal-deep); stroke-width: 2; }
+  .region-label {
+    font-family: 'Heebo', sans-serif; font-weight: 700;
+    font-size: 11px; fill: var(--ink); pointer-events: none;
+    text-anchor: middle;
+  }
+  .hot-circle {
+    fill: var(--orange); opacity: .8;
+    cursor: pointer; transition: opacity .15s, transform .15s;
+    transform-origin: center;
+  }
+  .hot-circle:hover { opacity: 1; }
+  .hot-pulse {
+    fill: var(--orange); opacity: .35;
+    animation: hotpulse 2.4s ease-out infinite;
+    transform-origin: center;
+    pointer-events: none;
+  }
+  @keyframes hotpulse {
+    0% { transform: scale(1); opacity: .55; }
+    100% { transform: scale(2.6); opacity: 0; }
+  }
+  .city-label {
+    font-size: 9px; fill: var(--ink); font-weight: 600;
+    text-anchor: middle; pointer-events: none;
+  }
+  .city-count {
+    font-size: 9px; fill: var(--white); font-weight: 800;
+    text-anchor: middle; pointer-events: none;
+  }
+
+  .legend {
+    display: flex; align-items: center; gap: 16px;
+    margin-top: 14px; padding: 10px 14px;
+    background: var(--cream); border-radius: 10px;
+    font-size: 12px; color: var(--ink-mute);
+    flex-wrap: wrap;
+  }
+  .legend-dot {
+    display: inline-block; width: 12px; height: 12px;
+    border-radius: 50%; background: var(--orange); margin-inline-end: 6px;
+  }
+
+  /* Right panel */
+  .stats-panel { display: flex; flex-direction: column; gap: 14px; }
+  .stat-card {
+    background: var(--white); border-radius: 14px; padding: 18px 20px;
+    box-shadow: 0 2px 8px rgba(11,42,74,.04);
+    cursor: pointer; transition: transform .12s, box-shadow .15s;
+    border: 1px solid var(--line);
+  }
+  .stat-card:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(11,42,74,.08); border-color: var(--teal); }
+  .stat-card.active { border-color: var(--teal); background: linear-gradient(135deg, var(--white) 0%, #F0FDFA 100%); }
+  .stat-row { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+  .stat-region { font-size: 16px; font-weight: 700; color: var(--ink); }
+  .stat-num { font-size: 22px; font-weight: 800; color: var(--teal-deep); font-variant-numeric: tabular-nums; }
+  .stat-bar { height: 6px; background: var(--cream-deep); border-radius: 4px; margin-top: 10px; overflow: hidden; }
+  .stat-bar-fill { height: 100%; background: linear-gradient(90deg, var(--teal) 0%, var(--green-deep) 100%); border-radius: 4px; transition: width .6s ease; }
+  .stat-meta { font-size: 11px; color: var(--ink-mute); margin-top: 6px; display: flex; gap: 12px; flex-wrap: wrap; }
+  .stat-meta span strong { color: var(--ink-soft); }
+
+  .empty-state { text-align: center; padding: 48px 22px; color: var(--ink-mute); }
+
+  .top-cities {
+    background: var(--white); border-radius: 14px; padding: 18px 20px;
+    border: 1px solid var(--line);
+  }
+  .top-cities h3 { font-size: 14px; font-weight: 800; color: var(--ink-mute); letter-spacing: .4px; text-transform: uppercase; margin-bottom: 10px; }
+  .top-city-row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid var(--line); font-size: 14px; }
+  .top-city-row:last-child { border-bottom: 0; }
+  .top-city-row a { color: var(--teal-deep); font-weight: 600; }
+
+  .summary-banner {
+    margin: 0 auto 0; max-width: 1100px; padding: 0 22px 24px;
+  }
+  .summary-banner-card {
+    background: linear-gradient(135deg, var(--green-deep) 0%, var(--teal-deep) 100%);
+    color: var(--white); padding: 20px 26px; border-radius: 16px;
+    display: flex; align-items: center; justify-content: space-between; gap: 18px;
+    flex-wrap: wrap;
+  }
+  .summary-banner-text { font-size: 14px; opacity: .92; }
+  .summary-banner strong { font-size: 22px; font-weight: 800; }
+  .summary-banner-btn {
+    background: var(--white); color: var(--green-deep);
+    padding: 10px 22px; border-radius: 999px; font-weight: 700; font-size: 14px;
+    transition: transform .1s;
+  }
+  .summary-banner-btn:hover { transform: translateY(-1px); }
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="header-inner">
+    <a href="index.html" class="back-btn">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+      חזרה לאדורה
+    </a>
+    <span class="page-tag">מפת המשרות</span>
+  </div>
+</header>
+
+<section class="hero">
+  <h1>איפה הביקוש החזק ביותר למורים?</h1>
+  <p>תמונת מצב חיה — מפת המשרות הפתוחות בארץ. הקליקו על אזור או נקודה חמה כדי לראות פירוט.</p>
+</section>
+
+<div class="map-wrap">
+  <div class="map-frame">
+    <svg class="map-svg" viewBox="0 0 320 580" xmlns="http://www.w3.org/2000/svg" aria-label="מפת ישראל לפי אזורים">
+      <!-- Sea backdrop hint -->
+      <rect x="0" y="0" width="320" height="580" fill="#F0F9FF" rx="14"/>
+
+      <!-- Region shapes — stylized, not topographically accurate.
+           Each region is a clickable area with a label. -->
+
+      <!-- צפון -->
+      <path id="r-north" class="region-shape" data-region="צפון"
+            d="M 200 30 L 290 60 L 280 130 L 230 170 L 165 175 L 150 130 L 145 80 Z"/>
+      <text class="region-label" x="220" y="105">צפון</text>
+
+      <!-- מרכז -->
+      <path id="r-center" class="region-shape" data-region="מרכז"
+            d="M 165 175 L 230 170 L 240 240 L 215 290 L 155 305 L 130 250 Z"/>
+      <text class="region-label" x="195" y="240">מרכז</text>
+
+      <!-- ירושלים -->
+      <path id="r-jerusalem" class="region-shape" data-region="ירושלים"
+            d="M 215 290 L 270 300 L 270 360 L 230 380 L 205 360 L 200 320 Z"/>
+      <text class="region-label" x="240" y="335">ירושלים</text>
+
+      <!-- שפלה -->
+      <path id="r-shfela" class="region-shape" data-region="שפלה"
+            d="M 130 250 L 155 305 L 200 320 L 205 360 L 175 395 L 130 405 L 105 350 Z"/>
+      <text class="region-label" x="160" y="350">שפלה</text>
+
+      <!-- דרום -->
+      <path id="r-south" class="region-shape" data-region="דרום"
+            d="M 105 350 L 175 395 L 230 380 L 270 360 L 280 470 L 200 555 L 110 510 L 80 430 Z"/>
+      <text class="region-label" x="190" y="460">דרום</text>
+
+      <!-- Hot points — populated by JS -->
+      <g id="hot-points"></g>
+    </svg>
+    <div class="legend">
+      <span><span class="legend-dot"></span>נקודה חמה = עיר עם 3+ משרות פתוחות</span>
+      <span style="margin-inline-start:auto;color:var(--ink-mute)" id="last-update">—</span>
+    </div>
+  </div>
+
+  <aside class="stats-panel" id="stats-panel">
+    <div class="empty-state">טוען נתונים…</div>
+  </aside>
+</div>
+
+<div class="summary-banner">
+  <div class="summary-banner-card">
+    <div class="summary-banner-text"><strong id="grand-total">—</strong> משרות פתוחות בישראל ברגע זה. רוצה לסנן לפי האזור והמקצוע שלך?</div>
+    <a href="index.html" class="summary-banner-btn">לכל המשרות ←</a>
+  </div>
+</div>
+
+<script>
+const $ = id => document.getElementById(id);
+function esc(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+
+// City coordinates on the SVG map (approx)
+const CITY_COORDS = {
+  // ירושלים
+  'ירושלים': [232, 332], 'מעלה אדומים': [255, 332], 'מבשרת ציון': [220, 322],
+  // מרכז
+  'תל אביב - יפו': [165, 220], 'תל אביב': [165, 220], 'ת"א': [165, 220],
+  'רמת גן': [180, 220], 'גבעתיים': [178, 225], 'בני ברק': [185, 215],
+  'הרצליה': [165, 200], 'רעננה': [180, 195], 'כפר סבא': [195, 195], 'הוד השרון': [185, 200],
+  'פתח תקווה': [195, 220], 'ראשון לציון': [165, 250], 'חולון': [160, 240],
+  'בת ים': [155, 240], 'נתניה': [170, 175], 'ראש העין': [205, 215],
+  'אור יהודה': [180, 230], 'יהוד': [185, 230], 'נס ציונה': [165, 260],
+  'רחובות': [170, 270], 'גבעת שמואל': [188, 220],
+  'פרדס חנה-כרכור': [180, 155], 'זכרון יעקב': [170, 145],
+  // שפלה
+  'מודיעין': [180, 290], 'בית שמש': [185, 320], 'לוד': [175, 270], 'רמלה': [172, 280],
+  'יבנה': [155, 285], 'גן יבנה': [150, 295],
+  // דרום
+  'אשדוד': [135, 320], 'אשקלון': [125, 350], 'באר שבע': [185, 425],
+  'דימונה': [225, 460], 'ערד': [255, 445], 'אילת': [220, 555],
+  'נתיבות': [150, 380], 'אופקים': [160, 395],
+  // צפון
+  'חיפה': [195, 130], 'נצרת': [225, 115], 'עכו': [200, 100], 'נהריה': [200, 80],
+  'קרית מוצקין': [200, 120], 'טבריה': [240, 105], 'צפת': [240, 80],
+  'כרמיאל': [225, 100], 'יקנעם': [205, 130], 'טבעון': [210, 125], 'טירת כרמל': [185, 135]
+};
+
+let allJobs = [];
+let selectedRegion = '';
+
+async function load() {
+  try {
+    const res = await fetch('data/jobs.json', { cache: 'no-store' });
+    const data = await res.json();
+    allJobs = data.jobs || [];
+    normalizeAllJobs();
+    if (data.updated_at) $('last-update').textContent = 'עדכון אחרון: ' + data.updated_at;
+    render();
+  } catch (e) {
+    $('stats-panel').innerHTML = '<div class="empty-state">בעיה בטעינת הנתונים. נסי שוב.</div>';
+  }
+}
+
+// Reuse the same city→region fix as index.html
+const CITY_REGION_FIX = {
+  'ירושלים':'ירושלים','מעלה אדומים':'ירושלים','מבשרת ציון':'ירושלים','מבשרת':'ירושלים','קרית ענבים':'ירושלים','מטה יהודה':'ירושלים',
+  'תל אביב':'מרכז','תל אביב - יפו':'מרכז','תל אביב יפו':'מרכז','ת"א':'מרכז','רמת גן':'מרכז','גבעתיים':'מרכז','בני ברק':'מרכז','הרצליה':'מרכז','רעננה':'מרכז','כפר סבא':'מרכז','הוד השרון':'מרכז','רמת השרון':'מרכז','פתח תקווה':'מרכז','פ"ת':'מרכז','ראשון לציון':'מרכז','ראשל"צ':'מרכז','חולון':'מרכז','בת ים':'מרכז','נתניה':'מרכז','ראש העין':'מרכז','אור יהודה':'מרכז','יהוד':'מרכז','יהוד-מונוסון':'מרכז','גני תקווה':'מרכז','סביון':'מרכז','גבעת שמואל':'מרכז','קריית אונו':'מרכז','קרית אונו':'מרכז','נס ציונה':'מרכז','רחובות':'מרכז','מקווה ישראל':'מרכז','חוף השרון':'מרכז','אבן יהודה':'מרכז','כפר יונה':'מרכז','כפר מונש':'מרכז','נווה ירק':'מרכז','בית דגן':'מרכז','באר יעקב':'מרכז','עמק חפר':'מרכז','וינגייט':'מרכז','הכפר הירוק':'מרכז','כפר אורנים':'מרכז','כפר האורנים':'מרכז','כפר הנוער עיינות':'מרכז','בן שמן':'מרכז',
+  'מודיעין':'שפלה','בית שמש':'שפלה','לוד':'שפלה','רמלה':'שפלה','יבנה':'שפלה','גן יבנה':'שפלה','גדרה':'שפלה','נתיבות':'שפלה',
+  'אשדוד':'דרום','אשקלון':'דרום','באר שבע':'דרום','דימונה':'דרום','ערד':'דרום','אילת':'דרום','שדרות':'דרום','אופקים':'דרום','אשכול':'דרום','יד מרדכי':'דרום','קיבוץ כרמיה':'דרום','כרמיה':'דרום','שדה צבי':'דרום','כפר סילבר':'דרום',
+  'חיפה':'צפון','נצרת':'צפון','עכו':'צפון','נהריה':'צפון','קריות':'צפון','קרית מוצקין':'צפון','קרית ביאליק':'צפון','קרית ים':'צפון','קרית אתא':'צפון','טבריה':'צפון','צפת':'צפון','כרמיאל':'צפון','יקנעם':'צפון','טבעון':'צפון','טירת כרמל':'צפון','עתלית':'צפון','זכרון יעקב':'צפון','פרדס חנה':'צפון','פרדס חנה-כרכור':'צפון','בנימינה':'צפון','אור עקיבא':'צפון','גליל':'צפון','הגליל':'צפון','הגליל העליון':'צפון','גולן':'צפון','חוף הכרמל':'צפון','כברי':'צפון','עין חרוד':'צפון','אריאל':'מרכז'
+};
+function normalizeAllJobs() {
+  allJobs.forEach(j => {
+    if (j.city && CITY_REGION_FIX[j.city.trim()]) { j.region = CITY_REGION_FIX[j.city.trim()]; }
+  });
+}
+
+function render() {
+  // Aggregate by region
+  const byRegion = {};
+  const byCity = {};
+  allJobs.forEach(j => {
+    const r = j.region || 'אחר';
+    byRegion[r] = (byRegion[r] || 0) + 1;
+    if (j.city) byCity[j.city] = (byCity[j.city] || 0) + 1;
+  });
+
+  $('grand-total').textContent = allJobs.length;
+
+  // Stats panel
+  const REGION_ORDER = ['מרכז','ירושלים','שפלה','צפון','דרום'];
+  const max = Math.max(...Object.values(byRegion), 1);
+  const panel = $('stats-panel');
+  panel.innerHTML = '';
+  REGION_ORDER.forEach(r => {
+    const count = byRegion[r] || 0;
+    const filtered = allJobs.filter(j => j.region === r);
+    const cities = {};
+    filtered.forEach(j => { if (j.city) cities[j.city] = (cities[j.city] || 0) + 1; });
+    const topCities = Object.keys(cities).sort((a,b) => cities[b]-cities[a]).slice(0, 3);
+    const subjects = {};
+    filtered.forEach(j => { if (j.subject) subjects[j.subject] = (subjects[j.subject] || 0) + 1; });
+    const topSubject = Object.keys(subjects).sort((a,b) => subjects[b]-subjects[a])[0];
+    const card = document.createElement('div');
+    card.className = 'stat-card' + (selectedRegion === r ? ' active' : '');
+    card.onclick = () => { selectedRegion = (selectedRegion === r ? '' : r); render(); };
+    card.innerHTML = `
+      <div class="stat-row">
+        <span class="stat-region">${esc(r)}</span>
+        <span class="stat-num">${count}</span>
+      </div>
+      <div class="stat-bar"><div class="stat-bar-fill" style="width:${(count/max*100).toFixed(0)}%"></div></div>
+      <div class="stat-meta">
+        ${topCities.length ? '<span>ערים מובילות: <strong>' + topCities.join(' · ') + '</strong></span>' : ''}
+        ${topSubject ? '<span>מקצוע מבוקש: <strong>' + esc(topSubject) + '</strong></span>' : ''}
+      </div>
+    `;
+    panel.appendChild(card);
+  });
+
+  // Top cities card
+  const topCitiesAll = Object.keys(byCity).sort((a,b) => byCity[b]-byCity[a]).slice(0, 8);
+  if (topCitiesAll.length) {
+    const top = document.createElement('div');
+    top.className = 'top-cities';
+    top.innerHTML = '<h3>הערים החמות בארץ</h3>' + topCitiesAll.map(c =>
+      `<div class="top-city-row"><span>${esc(c)}</span><a href="index.html#city=${encodeURIComponent(c)}">${byCity[c]} משרות ←</a></div>`
+    ).join('');
+    panel.appendChild(top);
+  }
+
+  // Region shapes — highlight selected
+  document.querySelectorAll('.region-shape').forEach(s => {
+    s.classList.toggle('active', s.dataset.region === selectedRegion);
+    s.onclick = () => { selectedRegion = (selectedRegion === s.dataset.region ? '' : s.dataset.region); render(); };
+  });
+
+  // Hot points (cities with 3+ jobs)
+  const hot = $('hot-points');
+  hot.innerHTML = '';
+  Object.keys(byCity)
+    .filter(c => byCity[c] >= 3 && CITY_COORDS[c])
+    .filter(c => !selectedRegion || (CITY_REGION_FIX[c] === selectedRegion))
+    .sort((a,b) => byCity[b]-byCity[a])
+    .slice(0, 14)
+    .forEach(c => {
+      const [x,y] = CITY_COORDS[c];
+      const r = Math.min(15, 5 + Math.sqrt(byCity[c]));
+      const g = document.createElementNS('http://www.w3.org/2000/svg','g');
+      g.innerHTML = `
+        <circle class="hot-pulse" cx="${x}" cy="${y}" r="${r}"/>
+        <circle class="hot-circle" cx="${x}" cy="${y}" r="${r}"><title>${esc(c)} — ${byCity[c]} משרות</title></circle>
+        <text class="city-count" x="${x}" y="${y+3}">${byCity[c]}</text>
+        <text class="city-label" x="${x}" y="${y+r+10}">${esc(c)}</text>
+      `;
+      g.style.cursor = 'pointer';
+      g.onclick = () => { window.location.href = 'index.html#city=' + encodeURIComponent(c); };
+      hot.appendChild(g);
+    });
+}
+
+load();
+</script>
+</body>
+</html>

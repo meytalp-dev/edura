@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>מחולל קורות חיים למורים · אדורה</title>
+<meta name="description" content="קורות חיים מקצועיים למורים ולאנשי חינוך — תבנית עברית מוכנה, להורדה כ-PDF. בחינם, ללא הרשמה." />
+<link rel="canonical" href="https://edura.co.il/cv-builder.html" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;800;900&family=Assistant:wght@300;400;500;600;700;800&family=Playpen+Sans+Hebrew:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --green-deep: #0B2A4A; --teal: #14B8A6; --teal-deep: #0D9488;
+    --green-pale: #CCFBF1; --cream: #F8FAFC; --cream-deep: #EEF2F6;
+    --orange: #D97706; --orange-soft: #FEF3C7;
+    --ink: #0B2A4A; --ink-soft: #1E3A5F; --ink-mute: #475569;
+    --line: #E2E8F0; --bg: #F8FAFC; --white: #FFFFFF;
+    --shadow-md: 0 4px 12px rgba(11,42,74,.08), 0 2px 4px rgba(11,42,74,.04);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Heebo', 'Assistant', sans-serif; background: var(--bg); color: var(--ink); line-height: 1.5; -webkit-font-smoothing: antialiased; }
+  a { color: inherit; text-decoration: none; }
+  button { font: inherit; cursor: pointer; border: none; background: none; }
+
+  .header { background: var(--white); border-bottom: 1px solid var(--line); position: sticky; top: 0; z-index: 50; }
+  .header-inner { max-width: 1400px; margin: 0 auto; padding: 14px 22px; display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+  .logo-line { display: flex; align-items: center; gap: 10px; }
+  .back-btn { display: inline-flex; align-items: center; gap: 6px; color: var(--ink-soft); font-weight: 500; font-size: 14px; padding: 8px 12px; border-radius: 8px; transition: background .15s; }
+  .back-btn:hover { background: var(--cream); color: var(--teal-deep); }
+  .page-tag { font-family: 'Playpen Sans Hebrew', sans-serif; font-size: 13px; color: var(--teal-deep); transform: rotate(-1deg); display: inline-block; }
+
+  .layout { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; max-width: 1400px; margin: 24px auto; padding: 0 22px; }
+  @media (max-width: 980px) { .layout { grid-template-columns: 1fr; } }
+
+  .builder-pane, .preview-pane { background: var(--white); border-radius: 16px; box-shadow: var(--shadow-md); padding: 26px 24px; }
+  .builder-pane h2, .preview-pane h2 { font-size: 20px; font-weight: 800; margin-bottom: 4px; }
+  .builder-pane .pane-sub { font-size: 13px; color: var(--ink-mute); margin-bottom: 18px; }
+
+  .field-group { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px; }
+  .field { display: flex; flex-direction: column; gap: 4px; grid-column: span 1; }
+  .field.full { grid-column: 1 / -1; }
+  .field label { font-size: 12px; font-weight: 600; color: var(--ink-mute); }
+  .field input, .field textarea, .field select {
+    background: var(--bg); border: 1px solid var(--line); border-radius: 8px;
+    padding: 10px 12px; font-size: 14px; color: var(--ink);
+    font-family: inherit; transition: border-color .15s, background .15s;
+  }
+  .field input:focus, .field textarea:focus, .field select:focus { outline: none; border-color: var(--teal); background: var(--white); }
+  .field textarea { min-height: 80px; resize: vertical; }
+  .section-title { font-size: 15px; font-weight: 700; color: var(--ink); margin: 22px 0 10px; padding-top: 16px; border-top: 1px dashed var(--line); display: flex; align-items: center; justify-content: space-between; }
+  .section-title:first-of-type { border-top: 0; padding-top: 0; }
+  .add-row {
+    background: var(--green-pale); color: var(--teal-deep); font-weight: 700;
+    font-size: 12px; padding: 6px 12px; border-radius: 999px;
+    transition: background .15s;
+  }
+  .add-row:hover { background: #99F6E4; }
+  .row-card {
+    background: var(--bg); border: 1px solid var(--line); border-radius: 10px;
+    padding: 12px; margin-bottom: 10px; position: relative;
+  }
+  .remove-row {
+    position: absolute; top: 8px; inset-inline-end: 8px;
+    width: 24px; height: 24px; border-radius: 50%; background: var(--cream-deep);
+    color: var(--ink-mute); font-size: 14px;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .remove-row:hover { background: #FEE2E2; color: #B91C1C; }
+  .skill-pill {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: var(--green-pale); color: var(--teal-deep);
+    font-size: 13px; font-weight: 600; padding: 6px 12px; border-radius: 999px;
+    margin: 4px 4px 0 0;
+  }
+  .skill-pill .x { cursor: pointer; opacity: .6; }
+
+  .actions-bar {
+    position: sticky; bottom: 0; background: var(--white);
+    padding: 14px 22px; border-top: 1px solid var(--line);
+    display: flex; gap: 10px; flex-wrap: wrap; justify-content: center;
+    box-shadow: 0 -4px 16px rgba(11,42,74,.04);
+    margin-top: 24px;
+  }
+  .btn-primary { background: var(--green-deep); color: var(--white); padding: 12px 22px; border-radius: 999px; font-weight: 700; font-size: 14px; transition: background .15s, transform .1s; }
+  .btn-primary:hover { background: var(--teal-deep); }
+  .btn-primary:active { transform: scale(.98); }
+  .btn-secondary { background: var(--cream); color: var(--ink-soft); padding: 12px 18px; border-radius: 999px; font-weight: 600; font-size: 14px; border: 1px solid var(--line); }
+  .btn-secondary:hover { background: var(--cream-deep); }
+
+  /* CV preview */
+  .cv-preview {
+    background: white; padding: 36px 32px; border-radius: 8px;
+    color: #0B2A4A; font-family: 'Heebo', sans-serif;
+    line-height: 1.55;
+    min-height: 800px;
+    max-height: 80vh; overflow-y: auto;
+  }
+  .cv-head { padding-bottom: 16px; border-bottom: 3px solid var(--teal); margin-bottom: 18px; }
+  .cv-name { font-size: 30px; font-weight: 800; letter-spacing: -.5px; line-height: 1.1; }
+  .cv-title { font-size: 15px; color: var(--teal-deep); font-weight: 600; margin-top: 4px; }
+  .cv-contact { display: flex; flex-wrap: wrap; gap: 14px; margin-top: 10px; font-size: 12px; color: var(--ink-mute); }
+  .cv-contact span { display: inline-flex; align-items: center; gap: 4px; }
+  .cv-section-title { font-size: 14px; font-weight: 800; color: var(--green-deep); letter-spacing: 0.5px; text-transform: uppercase; margin: 18px 0 8px; padding-bottom: 4px; border-bottom: 1px solid var(--line); }
+  .cv-summary { font-size: 13px; color: var(--ink-soft); line-height: 1.6; }
+  .cv-row { margin-bottom: 12px; }
+  .cv-row-head { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; flex-wrap: wrap; }
+  .cv-row-title { font-size: 14px; font-weight: 700; color: var(--ink); }
+  .cv-row-org { font-size: 13px; color: var(--ink-soft); font-weight: 500; }
+  .cv-row-date { font-size: 12px; color: var(--ink-mute); white-space: nowrap; }
+  .cv-row-desc { font-size: 12.5px; color: var(--ink-soft); margin-top: 4px; line-height: 1.55; white-space: pre-line; }
+  .cv-skills-flex { display: flex; flex-wrap: wrap; gap: 6px; }
+  .cv-skill { font-size: 12px; background: var(--green-pale); color: var(--teal-deep); padding: 4px 10px; border-radius: 4px; font-weight: 600; }
+  .cv-empty { color: var(--ink-mute); font-size: 13px; font-style: italic; }
+
+  @media print {
+    @page { size: A4; margin: 1.4cm 1.2cm; }
+    body { background: white; }
+    body > *:not(.print-only) { display: none !important; }
+    body > .print-only { display: block !important; }
+    body > .print-only .cv-preview { box-shadow: none; padding: 0; max-height: none; overflow: visible; border-radius: 0; }
+  }
+  .print-only { display: none; }
+
+  .hint {
+    background: var(--cream); border-right: 3px solid var(--teal);
+    padding: 10px 14px; border-radius: 8px; font-size: 12px;
+    color: var(--ink-soft); margin-bottom: 12px; line-height: 1.5;
+  }
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="header-inner">
+    <div class="logo-line">
+      <a href="index.html" class="back-btn">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+        חזרה לאדורה
+      </a>
+      <span class="page-tag">מחולל קורות חיים</span>
+    </div>
+    <button class="btn-primary" onclick="window.print()" style="font-size:13px;padding:10px 18px">הורדה כ-PDF ↓</button>
+  </div>
+</header>
+
+<div class="layout">
+  <!-- Form -->
+  <section class="builder-pane">
+    <h2>הפרטים שלך</h2>
+    <p class="pane-sub">ממלאים בצד אחד, רואים את התוצאה בצד השני. הכל נשמר אוטומטית בדפדפן.</p>
+
+    <div class="hint">💡 קו"ח להוראה צריכים להיות עד עמוד אחד. תתמקדו בשלושה פרטים: ניסיון רלוונטי, התמחות מקצועית, וערך ייחודי.</div>
+
+    <div class="section-title">פרטים אישיים</div>
+    <div class="field-group">
+      <div class="field"><label for="cv-name">שם מלא</label><input id="cv-name" type="text" placeholder="ישראלה ישראלי" /></div>
+      <div class="field"><label for="cv-title">תפקיד / כותרת</label><input id="cv-title" type="text" placeholder="מורה לאנגלית · רכזת שכבה" /></div>
+      <div class="field"><label for="cv-email">מייל</label><input id="cv-email" type="email" placeholder="example@gmail.com" /></div>
+      <div class="field"><label for="cv-phone">טלפון</label><input id="cv-phone" type="tel" placeholder="050-1234567" /></div>
+      <div class="field"><label for="cv-city">עיר מגורים</label><input id="cv-city" type="text" placeholder="רמת גן" /></div>
+      <div class="field"><label for="cv-license">תעודת הוראה</label><input id="cv-license" type="text" placeholder="כן · משרד החינוך 2018" /></div>
+    </div>
+
+    <div class="section-title">תקציר אישי</div>
+    <div class="field full">
+      <textarea id="cv-summary" placeholder='2-3 משפטים. לדוגמה: "מורה לאנגלית עם 8 שנות ניסיון בחטיבת הביניים. מתמחה בלמידה דיפרנציאלית ובהכנה לבגרות לתלמידים עם קשיי קשב. מאמינה שכל תלמיד יכול להצליח כשמדברים אליו בגובה העיניים."'></textarea>
+    </div>
+
+    <div class="section-title">ניסיון בהוראה <button class="add-row" onclick="addRow('experience')">+ הוסף תפקיד</button></div>
+    <div id="experience-rows"></div>
+
+    <div class="section-title">השכלה <button class="add-row" onclick="addRow('education')">+ הוסף תואר</button></div>
+    <div id="education-rows"></div>
+
+    <div class="section-title">מקצועות הוראה</div>
+    <div class="field full">
+      <input id="cv-subject-input" type="text" placeholder="הקלדה ו-Enter: אנגלית, תנ&quot;ך, אזרחות..." />
+      <div id="cv-subjects"></div>
+    </div>
+
+    <div class="section-title">השתלמויות וכישורים נוספים</div>
+    <div class="field full">
+      <textarea id="cv-extras" placeholder='שורה לכל פריט. לדוגמה:
+השתלמות "הוראה דיפרנציאלית" — מכון מנדל, 2024
+מנחת קבוצות הורים בנושא קשב וריכוז
+שליטה בכלי AI בהוראה (NotebookLM, Claude)'></textarea>
+    </div>
+  </section>
+
+  <!-- Preview -->
+  <section class="preview-pane">
+    <h2>תצוגה מקדימה</h2>
+    <p class="pane-sub">כך הקובץ ייראה לאחר ההורדה.</p>
+    <div class="cv-preview" id="cv-preview"></div>
+  </section>
+</div>
+
+<div class="actions-bar">
+  <button class="btn-primary" onclick="window.print()">הורדה כ-PDF ↓</button>
+  <button class="btn-secondary" onclick="if(confirm('לאפס הכל?')){localStorage.removeItem(STORAGE_KEY);location.reload()}">איפוס</button>
+  <a href="index.html" class="btn-secondary" style="display:inline-flex;align-items:center;text-decoration:none">חזרה למשרות</a>
+</div>
+
+<!-- Print container — appears only on print -->
+<div class="print-only" id="print-container"></div>
+
+<script>
+const STORAGE_KEY = 'edura.cv.v1';
+const $ = id => document.getElementById(id);
+
+let state = loadState() || {
+  name: '', title: '', email: '', phone: '', city: '', license: '',
+  summary: '',
+  experience: [{ role: '', org: '', from: '', to: '', desc: '' }],
+  education: [{ degree: '', school: '', year: '' }],
+  subjects: [],
+  extras: ''
+};
+
+function loadState() {
+  try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || 'null'); } catch (e) { return null; }
+}
+function saveState() { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }
+
+function bind(id, key) {
+  const el = $(id); if (!el) return;
+  el.value = state[key] || '';
+  el.addEventListener('input', () => { state[key] = el.value; saveState(); render(); });
+}
+['cv-name:name','cv-title:title','cv-email:email','cv-phone:phone','cv-city:city','cv-license:license','cv-summary:summary','cv-extras:extras'].forEach(p => {
+  const [id, key] = p.split(':');
+  bind(id, key);
+});
+
+function addRow(section) {
+  if (section === 'experience') state.experience.push({ role: '', org: '', from: '', to: '', desc: '' });
+  if (section === 'education') state.education.push({ degree: '', school: '', year: '' });
+  saveState(); renderRows(); render();
+}
+function removeRow(section, idx) {
+  state[section].splice(idx, 1);
+  saveState(); renderRows(); render();
+}
+window.addRow = addRow;
+window.removeRow = removeRow;
+
+function renderRows() {
+  // Experience
+  $('experience-rows').innerHTML = state.experience.map((r, i) => `
+    <div class="row-card">
+      <button class="remove-row" onclick="removeRow('experience',${i})" aria-label="הסר">×</button>
+      <div class="field-group">
+        <div class="field"><label>תפקיד</label><input type="text" value="${escAttr(r.role)}" oninput="updateRow('experience',${i},'role',this.value)" placeholder="מורה לאנגלית" /></div>
+        <div class="field"><label>בית ספר / ארגון</label><input type="text" value="${escAttr(r.org)}" oninput="updateRow('experience',${i},'org',this.value)" placeholder="תיכון אורט אורנית" /></div>
+        <div class="field"><label>מתאריך</label><input type="text" value="${escAttr(r.from)}" oninput="updateRow('experience',${i},'from',this.value)" placeholder="2020" /></div>
+        <div class="field"><label>עד תאריך</label><input type="text" value="${escAttr(r.to)}" oninput="updateRow('experience',${i},'to',this.value)" placeholder="היום" /></div>
+        <div class="field full"><label>פירוט</label><textarea oninput="updateRow('experience',${i},'desc',this.value)" placeholder='הישגים בולטים: שיפור ציוני הבגרות מ-72 ל-86. הקמה והובלה של מועדון דיבייט. ליווי 4 תלמידים לזכייה בתחרות אנגלית ארצית.'>${esc(r.desc)}</textarea></div>
+      </div>
+    </div>
+  `).join('') || '<div class="cv-empty" style="padding:14px">לחצו "הוסף תפקיד" כדי להתחיל</div>';
+
+  // Education
+  $('education-rows').innerHTML = state.education.map((r, i) => `
+    <div class="row-card">
+      <button class="remove-row" onclick="removeRow('education',${i})" aria-label="הסר">×</button>
+      <div class="field-group">
+        <div class="field"><label>תואר / תעודה</label><input type="text" value="${escAttr(r.degree)}" oninput="updateRow('education',${i},'degree',this.value)" placeholder='B.A. ספרות אנגלית · תעודת הוראה' /></div>
+        <div class="field"><label>מוסד</label><input type="text" value="${escAttr(r.school)}" oninput="updateRow('education',${i},'school',this.value)" placeholder='האוניברסיטה העברית' /></div>
+        <div class="field"><label>שנת סיום</label><input type="text" value="${escAttr(r.year)}" oninput="updateRow('education',${i},'year',this.value)" placeholder='2018' /></div>
+      </div>
+    </div>
+  `).join('') || '<div class="cv-empty" style="padding:14px">לחצו "הוסף תואר" כדי להתחיל</div>';
+
+  // Subjects
+  $('cv-subjects').innerHTML = state.subjects.map((s, i) =>
+    `<span class="skill-pill">${esc(s)}<span class="x" onclick="removeSubject(${i})">×</span></span>`
+  ).join('');
+}
+function updateRow(section, idx, key, val) {
+  if (state[section][idx]) state[section][idx][key] = val;
+  saveState(); render();
+}
+window.updateRow = updateRow;
+function removeSubject(idx) { state.subjects.splice(idx, 1); saveState(); renderRows(); render(); }
+window.removeSubject = removeSubject;
+
+$('cv-subject-input').addEventListener('keydown', (e) => {
+  if (e.key === 'Enter' || e.key === ',') {
+    e.preventDefault();
+    const v = e.target.value.trim().replace(/,$/, '');
+    if (v && state.subjects.indexOf(v) === -1) {
+      state.subjects.push(v);
+      saveState(); renderRows(); render();
+    }
+    e.target.value = '';
+  }
+});
+
+function esc(s) { return String(s == null ? '' : s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+function escAttr(s) { return esc(s).replace(/"/g, '&quot;'); }
+
+function render() {
+  const html = renderCv();
+  $('cv-preview').innerHTML = html;
+  $('print-container').innerHTML = '<div class="cv-preview">' + html + '</div>';
+}
+
+function renderCv() {
+  const s = state;
+  const contact = [];
+  if (s.email) contact.push(`<span>✉️ ${esc(s.email)}</span>`);
+  if (s.phone) contact.push(`<span>📱 ${esc(s.phone)}</span>`);
+  if (s.city) contact.push(`<span>📍 ${esc(s.city)}</span>`);
+  if (s.license) contact.push(`<span>🎓 ${esc(s.license)}</span>`);
+
+  const expHtml = s.experience.filter(r => r.role || r.org).map(r => `
+    <div class="cv-row">
+      <div class="cv-row-head">
+        <div><span class="cv-row-title">${esc(r.role || '')}</span>${r.org ? ' · <span class="cv-row-org">' + esc(r.org) + '</span>' : ''}</div>
+        <div class="cv-row-date">${esc(r.from || '')}${r.to ? ' – ' + esc(r.to) : ''}</div>
+      </div>
+      ${r.desc ? '<div class="cv-row-desc">' + esc(r.desc) + '</div>' : ''}
+    </div>
+  `).join('');
+
+  const eduHtml = s.education.filter(r => r.degree || r.school).map(r => `
+    <div class="cv-row">
+      <div class="cv-row-head">
+        <div><span class="cv-row-title">${esc(r.degree || '')}</span>${r.school ? ' · <span class="cv-row-org">' + esc(r.school) + '</span>' : ''}</div>
+        <div class="cv-row-date">${esc(r.year || '')}</div>
+      </div>
+    </div>
+  `).join('');
+
+  const subjectsHtml = s.subjects.length ? `<div class="cv-skills-flex">${s.subjects.map(x => '<span class="cv-skill">' + esc(x) + '</span>').join('')}</div>` : '';
+
+  return `
+    <div class="cv-head">
+      <div class="cv-name">${esc(s.name) || '<span class="cv-empty">השם שלך</span>'}</div>
+      ${s.title ? '<div class="cv-title">' + esc(s.title) + '</div>' : ''}
+      ${contact.length ? '<div class="cv-contact">' + contact.join('') + '</div>' : ''}
+    </div>
+    ${s.summary ? '<div class="cv-section-title">תקציר</div><div class="cv-summary">' + esc(s.summary) + '</div>' : ''}
+    ${expHtml ? '<div class="cv-section-title">ניסיון בהוראה</div>' + expHtml : ''}
+    ${eduHtml ? '<div class="cv-section-title">השכלה</div>' + eduHtml : ''}
+    ${subjectsHtml ? '<div class="cv-section-title">מקצועות הוראה</div>' + subjectsHtml : ''}
+    ${s.extras ? '<div class="cv-section-title">השתלמויות וכישורים</div><div class="cv-row-desc" style="white-space:pre-line">' + esc(s.extras) + '</div>' : ''}
+  `;
+}
+
+renderRows();
+render();
+</script>
+</body>
+</html>

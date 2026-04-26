@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>מדריכים וכתבות לאנשי חינוך · אדורה</title>
+<meta name="description" content="מדריכים מעשיים לאנשי חינוך — איך לכתוב קו&quot;ח, איך להתכונן לראיון, מה השכר, ואיך להתקבל לבית ספר טוב." />
+<link rel="canonical" href="https://edura.co.il/blog/" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;800;900&family=Frank+Ruhl+Libre:wght@400;500;700;900&family=Playpen+Sans+Hebrew:wght@400;500;600&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --green-deep: #0B2A4A; --teal: #14B8A6; --teal-deep: #0D9488;
+    --green-pale: #CCFBF1; --cream: #F8FAFC; --cream-deep: #EEF2F6;
+    --orange: #D97706; --orange-soft: #FEF3C7;
+    --ink: #0B2A4A; --ink-soft: #1E3A5F; --ink-mute: #475569;
+    --line: #E2E8F0; --bg: #F8FAFC; --white: #FFFFFF;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Heebo', sans-serif; background: var(--bg); color: var(--ink); line-height: 1.6; }
+  a { color: inherit; text-decoration: none; }
+  button { font: inherit; cursor: pointer; border: none; background: none; }
+
+  .header { background: var(--white); border-bottom: 1px solid var(--line); position: sticky; top: 0; z-index: 50; }
+  .header-inner { max-width: 1100px; margin: 0 auto; padding: 14px 22px; display: flex; align-items: center; gap: 12px; }
+  .back-btn { display: inline-flex; align-items: center; gap: 6px; color: var(--ink-soft); font-weight: 500; font-size: 14px; padding: 8px 12px; border-radius: 8px; transition: background .15s; }
+  .back-btn:hover { background: var(--cream); color: var(--teal-deep); }
+  .page-tag { font-family: 'Playpen Sans Hebrew', sans-serif; font-size: 13px; color: var(--teal-deep); transform: rotate(-1deg); display: inline-block; }
+
+  .hero { padding: 56px 22px 28px; max-width: 800px; margin: 0 auto; text-align: center; }
+  .hero h1 {
+    font-family: 'Frank Ruhl Libre', serif;
+    font-size: clamp(32px, 5vw, 48px); font-weight: 900;
+    color: var(--ink); line-height: 1.15; letter-spacing: -1px; margin-bottom: 14px;
+  }
+  .hero p { color: var(--ink-soft); font-size: 17px; max-width: 600px; margin: 0 auto; }
+
+  .articles {
+    max-width: 1100px; margin: 28px auto 64px;
+    padding: 0 22px;
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(310px, 1fr));
+    gap: 22px;
+  }
+  .article-card {
+    background: var(--white); border: 1px solid var(--line);
+    border-radius: 16px; overflow: hidden;
+    transition: transform .2s, box-shadow .2s;
+    display: flex; flex-direction: column;
+  }
+  .article-card:hover { transform: translateY(-4px); box-shadow: 0 10px 24px rgba(11,42,74,.1); }
+  .article-cover {
+    height: 140px; padding: 24px;
+    display: flex; align-items: center; justify-content: center;
+    color: var(--white); font-family: 'Frank Ruhl Libre', serif;
+    font-size: 22px; font-weight: 800; letter-spacing: -.5px;
+    line-height: 1.2; text-align: center;
+  }
+  .article-cover.cv      { background: linear-gradient(135deg, #14B8A6 0%, #0D9488 100%); }
+  .article-cover.iview   { background: linear-gradient(135deg, #6B4FBC 0%, #4F46E5 100%); }
+  .article-cover.salary  { background: linear-gradient(135deg, #D97706 0%, #B45309 100%); }
+  .article-cover.first   { background: linear-gradient(135deg, #BE185D 0%, #9D174D 100%); }
+  .article-cover.special { background: linear-gradient(135deg, #0B2A4A 0%, #1E3A5F 100%); }
+  .article-cover.where   { background: linear-gradient(135deg, #15803D 0%, #166534 100%); }
+
+  .article-meta {
+    padding: 18px 22px;
+    display: flex; flex-direction: column; gap: 6px; flex: 1;
+  }
+  .article-tag {
+    font-size: 11px; font-weight: 700; color: var(--teal-deep);
+    letter-spacing: 0.6px; text-transform: uppercase;
+  }
+  .article-title {
+    font-family: 'Frank Ruhl Libre', serif;
+    font-size: 19px; font-weight: 700; color: var(--ink); line-height: 1.3;
+  }
+  .article-sub { font-size: 14px; color: var(--ink-soft); margin-top: 4px; }
+  .article-foot {
+    margin-top: auto; padding-top: 12px;
+    font-size: 13px; color: var(--teal-deep); font-weight: 600;
+  }
+  .article-foot.locked { color: var(--ink-mute); font-weight: 500; }
+
+  .cta {
+    background: var(--green-deep); color: var(--white);
+    padding: 40px 22px; text-align: center;
+  }
+  .cta h2 { font-size: 26px; font-weight: 800; margin-bottom: 10px; }
+  .cta p { font-size: 15px; opacity: .85; max-width: 520px; margin: 0 auto 18px; }
+  .cta a { background: var(--teal); color: var(--white); padding: 12px 26px; border-radius: 999px; font-weight: 700; font-size: 15px; display: inline-block; transition: background .15s; }
+  .cta a:hover { background: #0F9285; }
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="header-inner">
+    <a href="../index.html" class="back-btn">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+      חזרה לאדורה
+    </a>
+    <span class="page-tag">מדריכים וכתבות</span>
+  </div>
+</header>
+
+<section class="hero">
+  <h1>כל מה שצריך לדעת על קריירה בחינוך</h1>
+  <p>מדריכים מעשיים לאנשי חינוך — מהשורה הראשונה. כתבנו אותם בעזרת מורים, מנהלים ויועצי קריירה.</p>
+</section>
+
+<main class="articles">
+
+  <a href="cv-tips.html" class="article-card">
+    <div class="article-cover cv">איך לכתוב קו"ח להוראה שמתקבלים אליהם בחזרה</div>
+    <div class="article-meta">
+      <span class="article-tag">מדריך · 8 דקות קריאה</span>
+      <h2 class="article-title">7 טעויות נפוצות בקורות חיים של מורים — ואיך להימנע מהן</h2>
+      <p class="article-sub">למה הקו"ח שלכם נופלים בשלב הסינון, ומה משכנע מנהלי בתי ספר להתקשר חזרה.</p>
+      <span class="article-foot">לקריאה ←</span>
+    </div>
+  </a>
+
+  <a href="javascript:void(0)" class="article-card" onclick="alert('הכתבה בכתיבה — מצטרפים לרשימת הקריאה דרך אדורה')">
+    <div class="article-cover iview">איך מתכוננים לראיון לתפקיד הוראה</div>
+    <div class="article-meta">
+      <span class="article-tag">בקרוב</span>
+      <h2 class="article-title">10 השאלות שכל מנהל בית ספר ישאל בראיון — ואיך לענות עליהן</h2>
+      <p class="article-sub">מה לעשות בראיון, מה לא לעשות, ואיך מציגים את עצמכם נכון אם אין לכם ניסיון.</p>
+      <span class="article-foot locked">בקרוב</span>
+    </div>
+  </a>
+
+  <a href="javascript:void(0)" class="article-card" onclick="alert('הכתבה בכתיבה — מצטרפים לרשימת הקריאה דרך אדורה')">
+    <div class="article-cover salary">כמה באמת מרוויחה מורה בישראל ב-2026</div>
+    <div class="article-meta">
+      <span class="article-tag">בקרוב</span>
+      <h2 class="article-title">משכורת המורה — פירוק מלא לפי דרגה, ניסיון ובית ספר</h2>
+      <p class="article-sub">למה מורה מתחילה מרוויחה 8,200 ש"ח, ולמה אחרי 12 שנה אפשר להגיע ל-17,500 ש"ח. הסבר ללא קישוטים.</p>
+      <span class="article-foot locked">בקרוב</span>
+    </div>
+  </a>
+
+  <a href="javascript:void(0)" class="article-card" onclick="alert('הכתבה בכתיבה — מצטרפים לרשימת הקריאה דרך אדורה')">
+    <div class="article-cover first">המשרה הראשונה שלי בהוראה</div>
+    <div class="article-meta">
+      <span class="article-tag">בקרוב</span>
+      <h2 class="article-title">איך מקבלים משרה ראשונה בהוראה כשאין לכם ניסיון?</h2>
+      <p class="article-sub">המסלולים החזקים ביותר — סטאז', מתמחה, החלפה, סייעת. מתי לבחור מה, ומתי כדאי לחכות לתחילת השנה.</p>
+      <span class="article-foot locked">בקרוב</span>
+    </div>
+  </a>
+
+  <a href="javascript:void(0)" class="article-card" onclick="alert('הכתבה בכתיבה — מצטרפים לרשימת הקריאה דרך אדורה')">
+    <div class="article-cover special">להוראה בחינוך מיוחד — מאיפה מתחילים</div>
+    <div class="article-meta">
+      <span class="article-tag">בקרוב</span>
+      <h2 class="article-title">קריירה בחינוך מיוחד — שכר, התמחויות, מסלולים והכשרות</h2>
+      <p class="article-sub">איך עוברים מהוראה רגילה לחינוך מיוחד, מה דורש משרד החינוך, ומה ההבדל בין משרה במסגרת לבין שילוב.</p>
+      <span class="article-foot locked">בקרוב</span>
+    </div>
+  </a>
+
+  <a href="javascript:void(0)" class="article-card" onclick="alert('הכתבה בכתיבה — מצטרפים לרשימת הקריאה דרך אדורה')">
+    <div class="article-cover where">איפה הכי כדאי ללמד? מפת בתי הספר</div>
+    <div class="article-meta">
+      <span class="article-tag">בקרוב</span>
+      <h2 class="article-title">בחירת בית ספר — אילו 5 שאלות לשאול לפני שמקבלים משרה</h2>
+      <p class="article-sub">מה ההבדל בין רשת חינוך, רשת עירונית ובי"ס פרטי. איך מזהים בית ספר טוב מבחוץ ומבפנים.</p>
+      <span class="article-foot locked">בקרוב</span>
+    </div>
+  </a>
+
+</main>
+
+<section class="cta">
+  <h2>קבלו את כל הכתבות החדשות במייל</h2>
+  <p>אנחנו מוציאים מדריך חדש כל שבועיים — קצר, מעשי, בלי בלה־בלה. הרשמה חינם דרך אדורה.</p>
+  <a href="../index.html">להרשמה ←</a>
+</section>
+
+</body>
+</html>
