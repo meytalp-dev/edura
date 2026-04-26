@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 280" width="600" height="280" role="img" aria-label="אדורה — לוגו טיפוגרפי עם ניקוד, כיוון חם ואנושי">
+  <defs>
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Frank+Ruhl+Libre:wght@900&amp;family=Assistant:wght@400;500&amp;display=swap');
+      .bg{fill:#F8E8DD}
+      .word-base{font-family:'Frank Ruhl Libre',serif;font-weight:900;font-size:148px;letter-spacing:-4px}
+      .nikud{fill:#E8A04A}
+      .word-fg{fill:#5C2A3F}
+      .tag{font-family:'Assistant',sans-serif;font-weight:500;font-size:20px;fill:#5C2A3F;letter-spacing:14px}
+    </style>
+  </defs>
+  <rect class="bg" width="600" height="280"/>
+  <text x="300" y="160" text-anchor="middle" direction="rtl" class="word-base nikud">אֶדורֶה</text>
+  <text x="300" y="160" text-anchor="middle" direction="rtl" class="word-base word-fg">אדורה</text>
+  <line x1="250" y1="222" x2="350" y2="222" stroke="#87A87E" stroke-width="2.5" stroke-linecap="round"/>
+  <text x="300" y="252" text-anchor="middle" class="tag">EDURA</text>
+</svg>

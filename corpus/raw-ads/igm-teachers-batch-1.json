@@ -1,0 +1,25 @@
+{
+  "source": "igm-teachers",
+  "source_name": "ארגון המורים - מורים זמינים לעבודה",
+  "url": "https://www.igm.org.il/site/pg/igm_wanted_teacher_index&p1=10",
+  "type": "teacher_seeking",
+  "collected_at": "2026-04-25",
+  "date_filter": "35 ימים אחרונים (21/03/2026 - 25/04/2026)",
+  "total_relevant_teachers": 18,
+  "by_region": {
+    "מרכז": 11,
+    "צפון": 3,
+    "דרום": 2,
+    "ירושלים והסביבה": 2
+  },
+  "by_subject": {
+    "אנגלית": 2, "מתמטיקה": 2, "חינוך מיוחד": 2,
+    "מורים": 1, "אזרחות": 1, "הבנת הנקרא": 1, "מדעים": 1,
+    "יועצ/ת חינוכי/ת": 1, "לשון": 1, "ספרות": 1,
+    "גיאוגרפיה": 1, "היסטוריה": 1, "כללי": 1,
+    "כימיה": 1, "חינוך גופני": 1
+  },
+  "schema": "{id, date, name, subject, scope, mainRegion, subRegion, city, contact, email, phone}",
+  "structured_data": true,
+  "note": "מורים מחפשים עבודה - מאגר המורים ל-Edura. כל רשומה עם מייל+טלפון לפנייה ישירה."
+}

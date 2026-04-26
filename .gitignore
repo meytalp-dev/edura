@@ -1,0 +1,33 @@
+# PII — never commit
+data/raw/
+data/teachers-private.json
+data/*-private.json
+
+# Working drafts
+design-preview-atlas.html
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Editor
+.vscode/
+.idea/
+*.swp
+*~
+
+# Python (merge.py / make-teachers.py local runs)
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# Node (if added in future)
+node_modules/
+
+# Playwright
+.playwright-mcp/
+
+# Logs
+*.log

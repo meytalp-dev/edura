@@ -1,0 +1,18 @@
+{
+  "source": "itu",
+  "source_name": "הסתדרות המורים - לוח משרות",
+  "url": "https://www.itu.org.il/לובי-ההסתדרות-בשבילך/משרות/",
+  "collected_at": "2026-04-25",
+  "date_filter": "45 ימים אחרונים",
+  "total_relevant_jobs": 96,
+  "by_category": { "school_ad": 93, "unknown": 3 },
+  "structured_data": true,
+  "schema": "{id (data-careerid), title, date, subject, field, institute, excerpt, fullText, email, phone}",
+  "by_subject": {
+    "מחנך/מחנכת": 12, "אנגלית": 9, "מתמטיקה": 9, "חינוך מיוחד": 9,
+    "אחר": 6, "עברית": 5, "תנ\"ך": 4, "מדעים": 4, "חינוך גופני": 4, "לשון": 4,
+    "היסטוריה": 3, "ערבית": 2, "אזרחות": 2, "מוסיקה": 2, "חקלאות": 2,
+    "מורה": 2, "מורה כולל/ת": 2, "מינהל": 2
+  },
+  "note": "כל 96 המודעות מ-23/04 (אותו יום) - סביר שזה batch אחד וצריך לבדוק עוד עמודים/scroll."
+}

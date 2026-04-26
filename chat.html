@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>אדורה · בוט חיפוש משרה</title>
+<meta name="description" content="בוט חכם שמוצא לך משרת הוראה מותאמת — אזור, מקצוע, שכבה. מאות משרות פתוחות, מתעדכן יומית." />
+<meta property="og:title" content="אדורה · בוט חיפוש משרה" />
+<meta property="og:description" content="המשרה הבאה שלך — בשיחה אחת." />
+<meta property="og:type" content="website" />
+<meta property="og:locale" content="he_IL" />
+<meta property="og:url" content="https://edura.co.il/chat.html" />
+<meta property="og:site_name" content="אדורה" />
+<link rel="canonical" href="https://edura.co.il/chat.html" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;800&family=Assistant:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --green-deep: #0B2A4A;
+    --green-soft: #1E3A5F;
+    --green-pale: #CCFBF1;
+    --teal: #14B8A6;
+    --teal-deep: #0D9488;
+    --cream: #F8FAFC;
+    --cream-deep: #EEF2F6;
+    --orange: #D97706;
+    --orange-soft: #FEF3C7;
+    --ink: #0B2A4A;
+    --ink-soft: #1E3A5F;
+    --ink-mute: #64748B;
+    --line: #E2E8F0;
+    --bg: #F8FAFC;
+    --white: #FFFFFF;
+    --shadow-sm: 0 1px 2px rgba(11,42,74,.04), 0 1px 3px rgba(11,42,74,.06);
+    --shadow-md: 0 4px 12px rgba(11,42,74,.08), 0 2px 4px rgba(11,42,74,.04);
+    --radius: 12px;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  /* Focus indicator לכל כפתור/קישור — חיוני למשתמשי מקלדת */
+  a:focus-visible, button:focus-visible, input:focus-visible {
+    outline: 2px solid var(--teal);
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+  /* Reduced motion — מכובד בקשת משתמש */
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { transition: none !important; animation: none !important; }
+  }
+  body {
+    font-family: 'Heebo', 'Assistant', sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    min-height: 100vh;
+  }
+  a { color: inherit; text-decoration: none; }
+  button { font: inherit; cursor: pointer; border: none; background: none; }
+
+  .header {
+    background: var(--white);
+    border-bottom: 1px solid var(--line);
+    position: sticky; top: 0; z-index: 50;
+  }
+  .header-inner {
+    max-width: 720px; margin: 0 auto;
+    padding: 14px 20px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .logo {
+    display: flex; align-items: center;
+    transition: transform .15s;
+  }
+  .logo:hover { transform: translateY(-1px); }
+  .logo-svg { height: 36px; width: auto; display: block; }
+  .back-link {
+    color: var(--ink-soft); font-size: 14px; font-weight: 500;
+  }
+  .back-link:hover { color: var(--green-deep); }
+
+  main {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 24px 16px 40px;
+    min-height: calc(100vh - 120px);
+    display: flex; flex-direction: column;
+  }
+
+  .chat-intro {
+    text-align: center;
+    margin-bottom: 16px;
+  }
+  .chat-intro h1 {
+    font-size: 28px; font-weight: 800;
+    color: var(--green-deep);
+    margin-bottom: 6px;
+    letter-spacing: -0.5px;
+  }
+  .chat-intro p {
+    color: var(--ink-soft); font-size: 15px;
+  }
+
+  #ec-root {
+    background: var(--white);
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    box-shadow: var(--shadow-md);
+    flex: 1;
+    display: flex; flex-direction: column;
+    overflow: hidden;
+    min-height: 60vh;
+  }
+
+  .ec-stream {
+    flex: 1;
+    overflow-y: auto;
+    padding: 20px;
+    display: flex; flex-direction: column;
+    gap: 12px;
+  }
+
+  .ec-msg {
+    display: flex; flex-direction: column;
+    gap: 8px;
+    max-width: 85%;
+  }
+  .ec-msg-bot { align-self: flex-start; }
+  .ec-msg-user { align-self: flex-end; align-items: flex-end; }
+
+  .ec-bubble {
+    padding: 12px 16px;
+    border-radius: 16px;
+    font-size: 15px;
+    line-height: 1.55;
+    box-shadow: var(--shadow-sm);
+    white-space: pre-wrap;
+  }
+  .ec-msg-bot .ec-bubble {
+    background: var(--green-pale);
+    color: var(--ink);
+    border-bottom-right-radius: 4px;
+  }
+  .ec-msg-user .ec-bubble {
+    background: var(--green-deep);
+    color: var(--white);
+    border-bottom-left-radius: 4px;
+  }
+
+  .ec-actions {
+    display: flex; flex-wrap: wrap;
+    gap: 8px;
+  }
+  .ec-action {
+    min-height: 44px;
+    padding: 10px 16px;
+    background: var(--white);
+    border: 1.5px solid var(--green-soft);
+    color: var(--green-deep);
+    border-radius: 999px;
+    font-size: 14px; font-weight: 600;
+    transition: all .15s ease;
+  }
+  .ec-action:hover:not(:disabled) {
+    background: var(--green-soft); color: var(--white);
+  }
+  .ec-action:disabled {
+    opacity: .5; cursor: not-allowed;
+  }
+
+  .ec-job-card {
+    background: var(--cream);
+    border: 1px solid var(--cream-deep);
+    border-radius: var(--radius);
+    padding: 16px;
+    max-width: 100%;
+  }
+  .ec-job-source {
+    font-size: 12px; font-weight: 600;
+    color: var(--green-soft);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 4px;
+  }
+  .ec-job-title {
+    font-size: 16px; font-weight: 700;
+    color: var(--ink);
+    margin-bottom: 8px;
+    line-height: 1.4;
+  }
+  .ec-job-tags {
+    display: flex; flex-wrap: wrap; gap: 6px;
+    margin-bottom: 8px;
+  }
+  .ec-tag {
+    font-size: 11px; font-weight: 600;
+    padding: 3px 8px;
+    border-radius: 6px;
+    background: var(--white);
+    color: var(--ink-soft);
+    border: 1px solid var(--line);
+  }
+  .ec-job-snippet {
+    font-size: 13px;
+    color: var(--ink-soft);
+    margin-bottom: 10px;
+    line-height: 1.5;
+  }
+  .ec-job-contact {
+    font-size: 12px;
+    color: var(--ink-soft);
+    margin-bottom: 4px;
+  }
+  .ec-job-contact a { color: var(--green-deep); font-weight: 600; }
+  .ec-job-date {
+    font-size: 11px;
+    color: var(--ink-mute);
+    text-transform: none;
+    letter-spacing: 0;
+    font-weight: 400;
+  }
+  .ec-job-actions {
+    display: flex; gap: 8px; align-items: center;
+  }
+  .ec-job-cta {
+    flex: 1;
+    min-height: 44px;
+    text-align: center;
+    padding: 12px 16px;
+    background: var(--orange);
+    color: var(--white);
+    border-radius: 8px;
+    font-size: 14px; font-weight: 700;
+    transition: background .15s ease;
+    display: inline-flex; align-items: center; justify-content: center;
+  }
+  .ec-job-cta:hover { background: #B45309; }
+  .ec-job-cta-tel {
+    background: var(--green-deep) !important;
+  }
+  .ec-job-cta-tel:hover { background: var(--green-soft) !important; }
+  .ec-job-cta-link {
+    background: var(--white) !important;
+    color: var(--green-deep) !important;
+    border: 1.5px solid var(--line);
+  }
+  .ec-job-cta-link:hover { background: var(--cream) !important; border-color: var(--green-deep); }
+  .ec-job-save {
+    padding: 10px 14px;
+    border: 1.5px solid var(--line);
+    color: var(--ink-soft);
+    border-radius: 8px;
+    font-size: 14px; font-weight: 600;
+  }
+  .ec-job-save:hover:not(:disabled) {
+    border-color: var(--green-soft); color: var(--green-deep);
+  }
+  .ec-job-save:disabled { opacity: .6; cursor: default; }
+
+  .ec-status {
+    padding: 8px 20px;
+    color: var(--ink-mute);
+    font-size: 13px;
+    text-align: center;
+    display: none;
+  }
+
+  .ec-input-row {
+    display: flex; gap: 8px;
+    padding: 12px 16px;
+    border-top: 1px solid var(--line);
+    background: var(--white);
+  }
+  .ec-input-row input {
+    flex: 1;
+    padding: 10px 14px;
+    border: 1.5px solid var(--line);
+    border-radius: 999px;
+    font-size: 15px;
+    font-family: inherit;
+    outline: none;
+    transition: border-color .15s;
+  }
+  .ec-input-row input:focus { border-color: var(--green-soft); }
+  .ec-send-btn {
+    padding: 10px 20px;
+    background: var(--green-deep);
+    color: var(--white);
+    border-radius: 999px;
+    font-weight: 700;
+  }
+  .ec-send-btn:hover { background: var(--green-soft); }
+
+  @media (max-width: 600px) {
+    .chat-intro h1 { font-size: 22px; }
+    .ec-msg { max-width: 92%; }
+    .ec-stream { padding: 16px; }
+  }
+
+  /* ─── Footer ─── */
+  .ec-footer {
+    border-top: 1px solid var(--line);
+    background: var(--white);
+    padding: 20px 16px;
+    margin-top: 24px;
+  }
+  .ec-footer-inner {
+    max-width: 720px; margin: 0 auto;
+    display: flex; justify-content: space-between; align-items: center;
+    flex-wrap: wrap; gap: 12px;
+  }
+  .ec-footer-credit {
+    font-size: 13px; color: var(--ink-mute);
+  }
+  .ec-footer-credit strong { color: var(--ink-soft); font-weight: 700; }
+  .ec-footer-social {
+    display: flex; gap: 10px;
+  }
+  .ec-footer-social a {
+    width: 36px; height: 36px;
+    display: flex; align-items: center; justify-content: center;
+    border: 1px solid var(--line);
+    border-radius: 50%;
+    color: var(--ink-mute);
+    transition: color .15s, border-color .15s, background .15s;
+  }
+  .ec-footer-social a:hover {
+    color: var(--green-deep); border-color: var(--green-deep);
+    background: var(--green-pale);
+  }
+  @media (max-width: 480px) {
+    .ec-footer-inner { flex-direction: column; text-align: center; }
+  }
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="header-inner">
+    <a href="index.html" class="logo" aria-label="אדורה — לדף הבית">
+      <svg class="logo-svg" viewBox="0 0 320 80" xmlns="http://www.w3.org/2000/svg" role="img" aria-hidden="true">
+        <text x="160" y="56" text-anchor="middle" direction="rtl"
+              font-family="Heebo, sans-serif" font-weight="900" font-size="56" letter-spacing="-2"
+              fill="var(--green-deep)">אדור<tspan fill="var(--teal,#14B8A6)">ה</tspan></text>
+        <circle cx="120" cy="68" r="3" fill="var(--teal,#14B8A6)"/>
+        <circle cx="190" cy="68" r="3" fill="var(--teal,#14B8A6)"/>
+      </svg>
+    </a>
+    <a href="index.html" class="back-link">← לכל המשרות</a>
+  </div>
+</header>
+
+<main>
+  <div class="chat-intro">
+    <h1>בואו נמצא לך משרה</h1>
+    <p>שיחה קצרה. תשובות מותאמות. פנייה ישירה לבית הספר.</p>
+  </div>
+  <div id="ec-root"></div>
+</main>
+
+<footer class="ec-footer">
+  <div class="ec-footer-inner">
+    <p class="ec-footer-credit">
+      עוצב ופותח על ידי <strong>מיטל פלג</strong> · &copy; 2026 אדורה · כל הזכויות שמורות
+    </p>
+    <div class="ec-footer-social" aria-label="רשתות חברתיות">
+      <a href="https://www.linkedin.com/in/meytal-peleg-839265378" target="_blank" rel="noopener" aria-label="LinkedIn">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor" aria-hidden="true">
+          <path d="M20.5 2h-17A1.5 1.5 0 0 0 2 3.5v17A1.5 1.5 0 0 0 3.5 22h17a1.5 1.5 0 0 0 1.5-1.5v-17A1.5 1.5 0 0 0 20.5 2zM8 19H5v-9h3zM6.5 8.25A1.75 1.75 0 1 1 8.3 6.5a1.78 1.78 0 0 1-1.8 1.75zM19 19h-3v-4.74c0-1.42-.6-1.93-1.38-1.93A1.74 1.74 0 0 0 13 14.19a.66.66 0 0 0 0 .14V19h-3v-9h2.9v1.3a3.11 3.11 0 0 1 2.7-1.4c1.55 0 3.36.86 3.36 3.66z"/>
+        </svg>
+      </a>
+      <a href="https://www.instagram.com/learni.ai/" target="_blank" rel="noopener" aria-label="Instagram">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/>
+          <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/>
+          <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/>
+        </svg>
+      </a>
+      <a href="https://www.facebook.com/profile.php?id=752991207892637" target="_blank" rel="noopener" aria-label="Facebook">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor" aria-hidden="true">
+          <path d="M22 12a10 10 0 1 0-11.56 9.88v-6.99H7.9V12h2.54V9.8c0-2.51 1.49-3.89 3.77-3.89 1.09 0 2.24.2 2.24.2v2.46h-1.26c-1.24 0-1.63.77-1.63 1.56V12h2.77l-.44 2.89h-2.33v6.99A10 10 0 0 0 22 12z"/>
+        </svg>
+      </a>
+    </div>
+  </div>
+</footer>
+
+<script src="chat-engine.js"></script>
+<script>
+  const chat = new EduraChat(document.getElementById('ec-root'));
+  chat.start();
+</script>
+
+<script src="analytics.js"></script>
+<script src="feedback-widget.js" defer></script>
+
+</body>
+</html>

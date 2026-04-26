@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 280" width="720" height="280" role="img" aria-label="אדורה — לוגו עם סמל שמש עולה וניקוד, כיוון חם ואנושי">
+  <defs>
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Frank+Ruhl+Libre:wght@900&amp;family=Assistant:wght@400;500&amp;display=swap');
+      .bg{fill:#F8E8DD}
+      .word-base{font-family:'Frank Ruhl Libre',serif;font-weight:900;font-size:128px;letter-spacing:-4px}
+      .nikud{fill:#E8A04A}
+      .word-fg{fill:#5C2A3F}
+      .tag{font-family:'Assistant',sans-serif;font-weight:500;font-size:18px;fill:#5C2A3F;letter-spacing:10px}
+    </style>
+    <linearGradient id="sun1" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#F4C674"/>
+      <stop offset="55%" stop-color="#E8A04A"/>
+      <stop offset="100%" stop-color="#5C2A3F"/>
+    </linearGradient>
+  </defs>
+  <rect class="bg" width="720" height="280"/>
+  <g transform="translate(610 140)">
+    <circle r="78" fill="none" stroke="#87A87E" stroke-width="2.5" opacity="0.55"/>
+    <path d="M-72 18 A72 72 0 0 1 72 18 Z" fill="url(#sun1)"/>
+    <line x1="-92" y1="30" x2="92" y2="30" stroke="#5C2A3F" stroke-width="4" stroke-linecap="round"/>
+    <circle cx="0" cy="-2" r="6" fill="#F8E8DD"/>
+    <circle cx="-30" cy="6" r="4" fill="#F8E8DD" opacity="0.7"/>
+    <circle cx="30" cy="6" r="4" fill="#F8E8DD" opacity="0.7"/>
+  </g>
+  <text x="280" y="158" text-anchor="middle" direction="rtl" class="word-base nikud">אֶדורֶה</text>
+  <text x="280" y="158" text-anchor="middle" direction="rtl" class="word-base word-fg">אדורה</text>
+  <text x="280" y="200" text-anchor="middle" class="tag">משרות הוראה · EDURA</text>
+</svg>

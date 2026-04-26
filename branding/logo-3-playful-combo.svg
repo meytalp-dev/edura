@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 240" width="720" height="240" role="img" aria-label="אדורה — לוגו עם סמל ניצוץ, כיוון שובב וצבעוני">
+  <defs>
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Playpen+Sans+Hebrew:wght@800&amp;family=Assistant:wght@600&amp;display=swap');
+      .bg{fill:#FFFCEF}
+      .word{font-family:'Playpen Sans Hebrew',cursive;font-weight:800;font-size:108px;letter-spacing:0}
+      .l1{fill:#8B5CF6}
+      .l2{fill:#F472B6}
+      .l3{fill:#FBBF24}
+      .l4{fill:#10B981}
+      .l5{fill:#EF4444}
+      .tag{font-family:'Assistant',sans-serif;font-weight:600;font-size:18px;fill:#6B21A8;letter-spacing:6px}
+    </style>
+  </defs>
+  <rect class="bg" width="720" height="240"/>
+  <g transform="translate(610 120) rotate(-8)">
+    <path d="M0 -78 L18 -22 L74 -8 L26 18 L40 76 L0 38 L-40 76 L-26 18 L-74 -8 L-18 -22 Z" fill="#FBBF24" stroke="#8B5CF6" stroke-width="5" stroke-linejoin="round"/>
+    <circle cx="-2" cy="-2" r="14" fill="#F472B6"/>
+    <circle cx="-50" cy="-44" r="6" fill="#10B981"/>
+    <circle cx="52" cy="44" r="5" fill="#EF4444"/>
+  </g>
+  <text x="280" y="138" text-anchor="middle" direction="rtl" class="word"><tspan class="l1">א</tspan><tspan class="l2">ד</tspan><tspan class="l3">ו</tspan><tspan class="l4">ר</tspan><tspan class="l5">ה</tspan></text>
+  <text x="280" y="178" text-anchor="middle" class="tag">משרות הוראה · EDURA</text>
+</svg>

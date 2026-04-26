@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta http-equiv="cache-control" content="no-cache, no-store, must-revalidate" />
+<meta http-equiv="pragma" content="no-cache" />
+<meta http-equiv="expires" content="0" />
+<title>Edura — אימות נתונים · 438 משרות (v10)</title>
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; }
+  body { font-family: 'Heebo', system-ui, sans-serif; margin: 0; background: #f9f7f3; color: #1a1a1a; }
+  header { padding: 24px 32px; background: #fff; border-bottom: 1px solid #e5e0d6; position: sticky; top: 0; z-index: 10; }
+  header h1 { margin: 0 0 8px; font-size: 20px; }
+  header .meta { font-size: 13px; color: #666; }
+  header .stats { margin-top: 12px; display: flex; gap: 16px; flex-wrap: wrap; font-size: 13px; }
+  header .stats span { background: #f1ede4; padding: 4px 10px; border-radius: 999px; }
+  .filters { padding: 16px 32px; background: #fff; border-bottom: 1px solid #e5e0d6; display: flex; gap: 12px; flex-wrap: wrap; align-items: center; }
+  .filters input, .filters select { padding: 8px 12px; border: 1px solid #ccc; border-radius: 6px; font-family: inherit; font-size: 13px; }
+  .filters input { flex: 1; min-width: 200px; }
+  .filters .count { margin-right: auto; font-weight: 700; color: #b8860b; }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; background: #fff; }
+  th { background: #f1ede4; padding: 12px 8px; text-align: right; font-weight: 700; border-bottom: 2px solid #d4cdb8; position: sticky; top: 130px; cursor: pointer; user-select: none; }
+  th:hover { background: #e8e2d2; }
+  th.sorted-asc::after { content: ' ↑'; }
+  th.sorted-desc::after { content: ' ↓'; }
+  td { padding: 10px 8px; border-bottom: 1px solid #ece9df; vertical-align: top; }
+  tr:hover { background: #fcfaf4; }
+  .src-badge { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 700; }
+  .src-igm { background: #e8f5e9; color: #1b5e20; }
+  .src-itu { background: #e3f2fd; color: #0d47a1; }
+  .src-shatil { background: #fff3e0; color: #e65100; }
+  .role-badge { background: #f3e8ff; color: #6b21a8; padding: 2px 6px; border-radius: 3px; font-size: 11px; }
+  .region-badge { background: #fef3c7; color: #92400e; padding: 2px 6px; border-radius: 3px; font-size: 11px; }
+  td.snippet { max-width: 320px; color: #555; line-height: 1.4; }
+  td a { color: #0066cc; text-decoration: none; }
+  td a:hover { text-decoration: underline; }
+  .nowrap { white-space: nowrap; }
+  .empty { padding: 60px 32px; text-align: center; color: #999; }
+  .pager { padding: 16px 32px; text-align: center; }
+  .pager button { padding: 6px 14px; margin: 0 4px; border: 1px solid #ccc; background: #fff; border-radius: 4px; cursor: pointer; font-family: inherit; }
+  .pager button:hover:not(:disabled) { background: #f1ede4; }
+  .pager button:disabled { opacity: 0.4; cursor: not-allowed; }
+  .pager span { margin: 0 12px; font-size: 13px; }
+  .btn-del { background: #fff; border: 1px solid #ddd; color: #c00; padding: 4px 8px; border-radius: 4px; cursor: pointer; font-family: inherit; font-size: 12px; }
+  .btn-del:hover { background: #fde8e8; border-color: #c00; }
+  .toolbar { padding: 12px 32px; background: #fff8e1; border-bottom: 1px solid #f5d97a; display: flex; gap: 12px; align-items: center; font-size: 13px; }
+  .toolbar button { padding: 6px 12px; background: #fff; border: 1px solid #d4af37; border-radius: 4px; cursor: pointer; font-family: inherit; font-size: 12px; }
+  .toolbar button:hover { background: #fff8e1; }
+  .toolbar .count-deleted { font-weight: 700; color: #b8860b; }
+  td.editable { cursor: pointer; position: relative; }
+  td.editable:hover { background: #fef9e7; outline: 1px dashed #d4af37; }
+  td.editable.empty { color: #c00; font-style: italic; }
+  td.editable.edited { background: #e8f5e9; }
+  td.editable input { width: 100%; padding: 4px; border: 1px solid #4caf50; border-radius: 3px; font-family: inherit; font-size: 13px; }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Edura — אימות נתונים</h1>
+  <div class="meta">טבלת כל המשרות שנאספו, עם סינון ומיון. השוואה ישירה מול המקור.</div>
+  <div class="stats" id="stats">טוען…</div>
+</header>
+
+<div class="toolbar">
+  <strong>עריכת שדות:</strong>
+  <span>כל תא צבעוני ניתן לעריכה — לחיצה ועריכה. השמירה אוטומטית (localStorage). ערך ערוך = רקע ירוק.</span>
+  <span class="count-deleted" id="count-edits">0 עריכות</span>
+  <button onclick="exportEdits()">📋 העתק את כל העריכות לזיכרון</button>
+  <button onclick="downloadEdits()">⬇ הורד JSON</button>
+  <button onclick="resetAllEdits()" style="color: #c00;">איפוס כל העריכות</button>
+  <span style="border-right: 1px solid #ddd; margin: 0 4px; height: 20px;"></span>
+  <span class="count-deleted" id="count-deleted">0 נמחקו</span>
+  <button onclick="exportDeleted()">העתק רשימת נמחקות</button>
+  <button onclick="undoLast()">↩ ביטול מחיקה</button>
+  <button onclick="resetDeleted()" style="color: #c00;">איפוס מחיקות</button>
+</div>
+
+<div class="filters">
+  <input id="q" placeholder="חיפוש: בית ספר, מקצוע, עיר, איש קשר…" />
+  <select id="src">
+    <option value="">מקור: הכל</option>
+    <option value="igm">ארגון המורים</option>
+    <option value="itu">הסתדרות המורים</option>
+    <option value="shatil">שתיל</option>
+  </select>
+  <select id="region">
+    <option value="">אזור: הכל</option>
+  </select>
+  <select id="level">
+    <option value="">שכבה: הכל</option>
+    <option value="יסודי">יסודי</option>
+    <option value="חטיבת ביניים">חטיבת ביניים</option>
+    <option value="תיכון">תיכון</option>
+    <option value="גן">גן</option>
+    <option value="חינוך מיוחד">חינוך מיוחד</option>
+  </select>
+  <select id="sector">
+    <option value="">מגזר: הכל</option>
+    <option value="ממלכתי">ממלכתי</option>
+    <option value='ממ"ד'>ממ"ד</option>
+    <option value="חרדי">חרדי</option>
+    <option value="ערבי">ערבי</option>
+  </select>
+  <select id="scope">
+    <option value="">היקף: הכל</option>
+    <option value="מלאה">מלאה</option>
+    <option value="חלקית">חלקית</option>
+    <option value="מלאה/חלקית">מלאה/חלקית</option>
+    <option value="גמישה">גמישה</option>
+  </select>
+  <select id="role">
+    <option value="">תפקיד: הכל</option>
+  </select>
+  <select id="has">
+    <option value="">פרטי קשר: הכל</option>
+    <option value="email">יש מייל</option>
+    <option value="phone">יש טלפון</option>
+    <option value="both">גם וגם</option>
+    <option value="none">אין כלום</option>
+  </select>
+  <span class="count" id="count">…</span>
+</div>
+
+<table>
+  <thead>
+    <tr>
+      <th data-sort="source">מקור</th>
+      <th data-sort="date_iso">תאריך</th>
+      <th data-sort="region">אזור</th>
+      <th data-sort="city">עיר</th>
+      <th data-sort="school">בית ספר / כותרת</th>
+      <th data-sort="subject">מקצוע</th>
+      <th data-sort="level">שכבה</th>
+      <th data-sort="sector">מגזר</th>
+      <th data-sort="role">תפקיד</th>
+      <th data-sort="scope">היקף</th>
+      <th>תיאור</th>
+      <th>איש קשר</th>
+      <th>מייל</th>
+      <th>טלפון</th>
+      <th>קישור</th>
+      <th>פעולה</th>
+    </tr>
+  </thead>
+  <tbody id="tbody"></tbody>
+</table>
+
+<div class="pager" id="pager"></div>
+
+<script>
+let allJobs = [];
+let filtered = [];
+let sortBy = 'date_iso';
+let sortDir = 'desc';
+let page = 0;
+const PER_PAGE = 100;
+const DEL_KEY = 'edura-deleted-jobs';
+const EDITS_KEY = 'edura-field-edits';
+const LEGACY_CITY = 'edura-city-edits';
+const LEGACY_SCHOOL = 'edura-school-edits';
+let deleted = new Set(JSON.parse(localStorage.getItem(DEL_KEY) || '[]'));
+// Unified store: { jobId: { field: newValue, ... }, ... }
+let edits = JSON.parse(localStorage.getItem(EDITS_KEY) || '{}');
+let deleteHistory = [];
+
+// Migrate legacy stores once
+(function migrate() {
+  let changed = false;
+  const legacyCity = JSON.parse(localStorage.getItem(LEGACY_CITY) || '{}');
+  const legacySchool = JSON.parse(localStorage.getItem(LEGACY_SCHOOL) || '{}');
+  Object.entries(legacyCity).forEach(([id, v]) => {
+    if (!edits[id]) edits[id] = {};
+    if (edits[id].city === undefined) { edits[id].city = v; changed = true; }
+  });
+  Object.entries(legacySchool).forEach(([id, v]) => {
+    if (!edits[id]) edits[id] = {};
+    if (edits[id].school === undefined) { edits[id].school = v; changed = true; }
+  });
+  if (changed) localStorage.setItem(EDITS_KEY, JSON.stringify(edits));
+})();
+
+function persistEdits() {
+  localStorage.setItem(EDITS_KEY, JSON.stringify(edits));
+  updateEditsCount();
+}
+function updateEditsCount() {
+  const total = Object.values(edits).reduce((n, fields) => n + Object.keys(fields).length, 0);
+  const el = document.getElementById('count-edits');
+  if (el) el.textContent = `${total} עריכות`;
+}
+function getEditedValue(j, field) {
+  return (edits[j.id] && edits[j.id][field] !== undefined) ? edits[j.id][field] : (j[field] ?? '');
+}
+function isEdited(jobId, field) {
+  return edits[jobId] && edits[jobId][field] !== undefined;
+}
+
+// Allowed editable fields. Type controls input widget.
+const FIELDS = {
+  region:       { type: 'select', options: ['', 'ירושלים', 'מרכז', 'צפון', 'דרום', 'שפלה', 'ארצי', 'מקוון', 'חו"ל'] },
+  city:         { type: 'text' },
+  school:       { type: 'text' },
+  subject:      { type: 'text' },
+  level:        { type: 'select', options: ['', 'יסודי', 'חטיבת ביניים', 'תיכון', 'גן', 'חינוך מיוחד'] },
+  sector:       { type: 'select', options: ['', 'ממלכתי', 'ממ"ד', 'חרדי', 'ערבי'] },
+  role:         { type: 'select', options: ['', 'מורה', 'מחנך/ת', 'רכז/ת', 'יועץ/ת', 'מדריך/ה', 'מטפל/ת', 'סייע/ת', 'מנהל/ת', 'סגן/ית', 'אחר'] },
+  scope:        { type: 'select', options: ['', 'מלאה', 'חלקית', 'מלאה/חלקית', 'גמישה'] },
+  contact_name: { type: 'text' },
+  email:        { type: 'text' },
+  phone:        { type: 'text' },
+  snippet:      { type: 'textarea' },
+};
+
+function editCell(td, jobId, field) {
+  if (td.querySelector('input, textarea, select')) return;
+  const job = allJobs.find(x => x.id === jobId);
+  if (!job) return;
+  const cur = getEditedValue(job, field);
+  const cfg = FIELDS[field] || { type: 'text' };
+  let inp;
+  if (cfg.type === 'select') {
+    inp = document.createElement('select');
+    cfg.options.forEach(opt => {
+      const o = document.createElement('option');
+      o.value = opt;
+      o.textContent = opt || '— בחרי —';
+      if (opt === cur) o.selected = true;
+      inp.appendChild(o);
+    });
+  } else if (cfg.type === 'textarea') {
+    inp = document.createElement('textarea');
+    inp.value = cur || '';
+    inp.style.width = '100%'; inp.style.minHeight = '60px'; inp.style.fontFamily = 'inherit';
+  } else {
+    inp = document.createElement('input');
+    inp.type = 'text';
+    inp.value = cur || '';
+  }
+  td.innerHTML = '';
+  td.appendChild(inp);
+  inp.focus();
+  if (inp.select) inp.select();
+
+  function save() {
+    const v = (inp.value || '').trim();
+    const orig = (job[field] ?? '').toString().trim();
+    if (!edits[jobId]) edits[jobId] = {};
+    if (v === orig) {
+      delete edits[jobId][field];
+      if (Object.keys(edits[jobId]).length === 0) delete edits[jobId];
+    } else {
+      edits[jobId][field] = v;
+    }
+    persistEdits();
+    applyFilters();
+  }
+  inp.addEventListener('blur', save);
+  inp.addEventListener('keydown', e => {
+    if (e.key === 'Enter' && cfg.type !== 'textarea') { e.preventDefault(); save(); }
+    if (e.key === 'Escape') { e.preventDefault(); applyFilters(); }
+  });
+}
+
+function exportEdits() {
+  const totalEdits = Object.values(edits).reduce((n, f) => n + Object.keys(f).length, 0);
+  const lines = [];
+  Object.entries(edits).forEach(([id, fields]) => {
+    Object.entries(fields).forEach(([field, value]) => {
+      lines.push(`${id} | ${field} | ${value || '(נמחק)'}`);
+    });
+  });
+  const json = JSON.stringify(edits, null, 2);
+  const text = `Edura — עריכות ידניות (${totalEdits} שינויים על ${Object.keys(edits).length} משרות):\n\n${lines.join('\n')}\n\n--- JSON ---\n${json}`;
+  navigator.clipboard.writeText(text).then(
+    () => alert(`✓ הועתקו ${totalEdits} עריכות ל-clipboard.\nהדביקי בצ׳אט עם Claude לשמירה ב-jobs.json.`),
+    () => prompt('העתיקי ידנית:', text)
+  );
+}
+function resetAllEdits() {
+  const total = Object.values(edits).reduce((n, f) => n + Object.keys(f).length, 0);
+  if (!confirm(`לאפס את כל ${total} העריכות?`)) return;
+  edits = {};
+  persistEdits();
+  applyFilters();
+}
+function downloadEdits() {
+  const blob = new Blob([JSON.stringify(edits, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = 'edura-edits.json';
+  a.click();
+  URL.revokeObjectURL(url);
+}
+window.editCell = editCell;
+window.exportEdits = exportEdits;
+window.resetAllEdits = resetAllEdits;
+window.downloadEdits = downloadEdits;
+
+function persistDeleted() {
+  localStorage.setItem(DEL_KEY, JSON.stringify([...deleted]));
+  document.getElementById('count-deleted').textContent = `${deleted.size} נמחקו`;
+}
+function deleteJob(id) {
+  deleted.add(id);
+  deleteHistory.push(id);
+  persistDeleted();
+  applyFilters();
+}
+function undoLast() {
+  const last = deleteHistory.pop();
+  if (last) { deleted.delete(last); persistDeleted(); applyFilters(); }
+}
+function resetDeleted() {
+  if (!confirm(`למחוק את כל ${deleted.size} הסימונים?`)) return;
+  deleted.clear(); deleteHistory = []; persistDeleted(); applyFilters();
+}
+function exportDeleted() {
+  const ids = [...deleted].sort();
+  const text = `Edura — IDs שסומנו כלא-רלוונטיים (${ids.length}):\n\n${ids.join('\n')}`;
+  navigator.clipboard.writeText(text).then(
+    () => alert(`✓ הועתק ל-clipboard: ${ids.length} IDs.\n\nהדביקי לקלוד והוא ישמור בזיכרון.`),
+    () => prompt('העתיקי ידנית:', text)
+  );
+}
+window.deleteJob = deleteJob;
+window.undoLast = undoLast;
+window.resetDeleted = resetDeleted;
+window.exportDeleted = exportDeleted;
+
+function escapeHtml(s) {
+  return String(s == null ? '' : s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+function render() {
+  const tbody = document.getElementById('tbody');
+  if (filtered.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="16" class="empty">אין תוצאות לסינון הנוכחי</td></tr>';
+    document.getElementById('pager').innerHTML = '';
+    return;
+  }
+  const start = page * PER_PAGE;
+  const slice = filtered.slice(start, start + PER_PAGE);
+  function cellHtml(j, field, displayFn) {
+    const eff = getEditedValue(j, field);
+    const display = displayFn ? displayFn(eff) : (eff || '');
+    const edited = isEdited(j.id, field);
+    const empty = !eff;
+    const cls = ['editable', edited ? 'edited' : '', empty ? 'empty' : ''].filter(Boolean).join(' ');
+    return `<td class="${cls}" onclick="editCell(this, '${escapeHtml(j.id)}', '${field}')" title="לחיצה לעריכה">${escapeHtml(display || '— הוסיפי —')}</td>`;
+  }
+
+  tbody.innerHTML = slice.map(j => {
+    const cellRegion  = cellHtml(j, 'region',  v => v);
+    const cellCity    = cellHtml(j, 'city',    v => v);
+    const cellSchool  = cellHtml(j, 'school',  v => (v || '').slice(0, 60));
+    const cellSubject = cellHtml(j, 'subject', v => v);
+    const cellLevel   = cellHtml(j, 'level',   v => v);
+    const cellSector  = cellHtml(j, 'sector',  v => v);
+    const cellRole    = cellHtml(j, 'role',    v => v);
+    const cellScope   = cellHtml(j, 'scope',   v => v);
+    const cellContact = cellHtml(j, 'contact_name', v => v);
+    const cellEmail   = cellHtml(j, 'email',   v => v);
+    const cellPhone   = cellHtml(j, 'phone',   v => v);
+    const cellSnippet = cellHtml(j, 'snippet', v => (v || j.description || '').slice(0, 200));
+    return `
+    <tr>
+      <td class="nowrap"><span class="src-badge src-${j.source}">${escapeHtml(j.source_name || j.source)}</span></td>
+      <td class="nowrap">${escapeHtml(j.date || j.date_iso || '')}</td>
+      ${cellRegion}
+      ${cellCity}
+      ${cellSchool}
+      ${cellSubject}
+      ${cellLevel}
+      ${cellSector}
+      ${cellRole}
+      ${cellScope}
+      ${cellSnippet}
+      ${cellContact}
+      ${cellEmail}
+      ${cellPhone}
+      <td>${j.url ? `<a href="${escapeHtml(j.url)}" target="_blank" rel="noopener">↗</a>` : '—'}</td>
+      <td><button class="btn-del" onclick="deleteJob('${escapeHtml(j.id)}')" title="הסר — לא רלוונטי">×</button></td>
+    </tr>`;
+  }).join('');
+
+  // Pager
+  const totalPages = Math.ceil(filtered.length / PER_PAGE);
+  document.getElementById('pager').innerHTML = `
+    <button onclick="goPage(0)" ${page === 0 ? 'disabled' : ''}>«</button>
+    <button onclick="goPage(${page - 1})" ${page === 0 ? 'disabled' : ''}>‹</button>
+    <span>עמוד ${page + 1} מתוך ${totalPages} · ${filtered.length} תוצאות</span>
+    <button onclick="goPage(${page + 1})" ${page >= totalPages - 1 ? 'disabled' : ''}>›</button>
+    <button onclick="goPage(${totalPages - 1})" ${page >= totalPages - 1 ? 'disabled' : ''}>»</button>
+  `;
+}
+
+function goPage(p) { page = p; render(); window.scrollTo(0, 130); }
+window.goPage = goPage;
+
+function applyFilters() {
+  const q = document.getElementById('q').value.trim().toLowerCase();
+  const src = document.getElementById('src').value;
+  const region = document.getElementById('region').value;
+  const level = document.getElementById('level').value;
+  const sector = document.getElementById('sector').value;
+  const scopeF = document.getElementById('scope').value;
+  const role = document.getElementById('role').value;
+  const has = document.getElementById('has').value;
+
+  filtered = allJobs.filter(j => {
+    if (deleted.has(j.id)) return false;
+    const effRegion = getEditedValue(j, 'region');
+    const effLevel = getEditedValue(j, 'level');
+    const effSector = getEditedValue(j, 'sector');
+    const effRole = getEditedValue(j, 'role');
+    const effEmail = getEditedValue(j, 'email');
+    const effPhone = getEditedValue(j, 'phone');
+    if (src && j.source !== src) return false;
+    if (region && effRegion !== region) return false;
+    if (level && effLevel !== level) return false;
+    if (sector && effSector !== sector) return false;
+    if (scopeF && getEditedValue(j, 'scope') !== scopeF) return false;
+    if (role && effRole !== role) return false;
+    if (has === 'email' && !effEmail) return false;
+    if (has === 'phone' && !effPhone) return false;
+    if (has === 'both' && (!effEmail || !effPhone)) return false;
+    if (has === 'none' && (effEmail || effPhone)) return false;
+    if (q) {
+      const hay = [
+        getEditedValue(j, 'school'), j.title, getEditedValue(j, 'subject'),
+        getEditedValue(j, 'city'), effRegion, getEditedValue(j, 'contact_name'),
+        effEmail, effRole, getEditedValue(j, 'snippet'), j.description
+      ].join(' ').toLowerCase();
+      if (!hay.includes(q)) return false;
+    }
+    return true;
+  });
+
+  // Sort
+  filtered.sort((a, b) => {
+    const va = (a[sortBy] || '').toString();
+    const vb = (b[sortBy] || '').toString();
+    if (va < vb) return sortDir === 'asc' ? -1 : 1;
+    if (va > vb) return sortDir === 'asc' ? 1 : -1;
+    return 0;
+  });
+
+  // Don't auto-reset page when called after an inline edit. Only when triggered
+  // by a filter/search input change (handled by event listeners that set _resetPage=true).
+  if (window._resetPage) {
+    page = 0;
+    window._resetPage = false;
+  }
+  // Clamp page to valid range (in case filter shrunk the list)
+  const totalPages = Math.max(1, Math.ceil(filtered.length / PER_PAGE));
+  if (page >= totalPages) page = totalPages - 1;
+  document.getElementById('count').textContent = `${filtered.length} מ-${allJobs.length - deleted.size} משרות (${deleted.size} נמחקו)`;
+  render();
+}
+
+document.querySelectorAll('th[data-sort]').forEach(th => {
+  th.addEventListener('click', () => {
+    const col = th.dataset.sort;
+    if (sortBy === col) {
+      sortDir = sortDir === 'asc' ? 'desc' : 'asc';
+    } else {
+      sortBy = col;
+      sortDir = 'asc';
+    }
+    document.querySelectorAll('th').forEach(t => t.classList.remove('sorted-asc', 'sorted-desc'));
+    th.classList.add('sorted-' + sortDir);
+    applyFilters();
+  });
+});
+
+function applyFiltersResetPage() { window._resetPage = true; applyFilters(); }
+['q', 'src', 'region', 'level', 'sector', 'scope', 'role', 'has'].forEach(id => {
+  document.getElementById(id).addEventListener('input', applyFiltersResetPage);
+  document.getElementById(id).addEventListener('change', applyFiltersResetPage);
+});
+
+async function init() {
+  const res = await fetch('jobs.json', { cache: 'no-store' });
+  const data = await res.json();
+  allJobs = data.jobs;
+  document.getElementById('count-deleted').textContent = `${deleted.size} נמחקו`;
+  updateEditsCount();
+  // Stats
+  const withEmail = allJobs.filter(j => j.email).length;
+  const withPhone = allJobs.filter(j => j.phone).length;
+  const withDesc = allJobs.filter(j => j.description && j.description.length > 30).length;
+  document.getElementById('stats').innerHTML = `
+    <span>סה"כ: <strong>${data.total}</strong></span>
+    <span>עם מייל: <strong>${withEmail}</strong> (${Math.round(withEmail/data.total*100)}%)</span>
+    <span>עם טלפון: <strong>${withPhone}</strong> (${Math.round(withPhone/data.total*100)}%)</span>
+    <span>עם תיאור: <strong>${withDesc}</strong> (${Math.round(withDesc/data.total*100)}%)</span>
+    <span>מקור: igm ${data.by_source.igm} · itu ${data.by_source.itu} · shatil ${data.by_source.shatil}</span>
+    <span>עודכן: ${data.updated_at}</span>
+  `;
+  // Populate region dropdown
+  const regions = [...new Set(allJobs.map(j => j.region).filter(Boolean))].sort();
+  document.getElementById('region').innerHTML = '<option value="">אזור: הכל</option>' +
+    regions.map(r => `<option value="${escapeHtml(r)}">${escapeHtml(r)}</option>`).join('');
+  // Populate role dropdown
+  const roles = [...new Set(allJobs.map(j => j.role).filter(Boolean))].sort();
+  document.getElementById('role').innerHTML = '<option value="">תפקיד: הכל</option>' +
+    roles.map(r => `<option value="${escapeHtml(r)}">${escapeHtml(r)}</option>`).join('');
+
+  document.querySelector('th[data-sort="date_iso"]').classList.add('sorted-desc');
+  applyFilters();
+}
+
+init().catch(err => {
+  document.getElementById('tbody').innerHTML = `<tr><td colspan="13" class="empty">שגיאה בטעינת jobs.json: ${err.message}</td></tr>`;
+});
+</script>
+
+</body>
+</html>

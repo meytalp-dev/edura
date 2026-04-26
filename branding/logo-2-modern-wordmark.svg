@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 240" width="600" height="240" role="img" aria-label="אדורה — לוגו טיפוגרפי עם ניקוד, כיוון חד ומודרני">
+  <defs>
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Heebo:wght@900&amp;family=Rubik:wght@500&amp;display=swap');
+      .bg{fill:#0B2A4A}
+      .word-base{font-family:'Heebo',sans-serif;font-weight:900;font-size:144px;letter-spacing:-6px}
+      .nikud{fill:#14B8A6}
+      .word-fg-white{fill:#FFFFFF}
+      .word-fg-accent{fill:#14B8A6}
+      .tag{font-family:'Rubik',sans-serif;font-weight:500;font-size:18px;fill:#94A3B8;letter-spacing:14px}
+      .bar{fill:#14B8A6}
+    </style>
+  </defs>
+  <rect class="bg" width="600" height="240"/>
+  <rect class="bar" x="80" y="80" width="6" height="80"/>
+  <text x="300" y="140" text-anchor="middle" direction="rtl" class="word-base nikud">אֶדורֶה</text>
+  <text x="300" y="140" text-anchor="middle" direction="rtl" class="word-base word-fg-white">אדור<tspan class="word-fg-accent">ה</tspan></text>
+  <text x="300" y="200" text-anchor="middle" class="tag">לוח משרות הוראה</text>
+</svg>

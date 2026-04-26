@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 240" width="720" height="240" role="img" aria-label="אדורה — לוגו עם סמל גיאומטרי וניקוד, כיוון חד ומודרני">
+  <defs>
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Heebo:wght@900&amp;family=Rubik:wght@500&amp;display=swap');
+      .bg{fill:#FFFFFF}
+      .word-base{font-family:'Heebo',sans-serif;font-weight:900;font-size:120px;letter-spacing:-5px}
+      .nikud{fill:#14B8A6}
+      .word-fg{fill:#0B2A4A}
+      .tag{font-family:'Rubik',sans-serif;font-weight:500;font-size:16px;fill:#475569;letter-spacing:10px}
+    </style>
+  </defs>
+  <rect class="bg" width="720" height="240"/>
+  <g transform="translate(600 120)">
+    <rect x="-72" y="-72" width="144" height="144" rx="20" fill="#0B2A4A"/>
+    <rect x="-72" y="-72" width="144" height="144" rx="20" fill="none" stroke="#14B8A6" stroke-width="3"/>
+    <path d="M-30 38 L0 -42 L30 38 M-18 14 L18 14" stroke="#FFFFFF" stroke-width="10" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+    <circle cx="42" cy="-42" r="9" fill="#14B8A6"/>
+  </g>
+  <text x="280" y="138" text-anchor="middle" direction="rtl" class="word-base nikud">אֶדורֶה</text>
+  <text x="280" y="138" text-anchor="middle" direction="rtl" class="word-base word-fg">אדורה</text>
+  <text x="280" y="178" text-anchor="middle" class="tag">לוח משרות הוראה</text>
+  <line x1="80" y1="200" x2="480" y2="200" stroke="#14B8A6" stroke-width="2"/>
+</svg>

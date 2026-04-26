@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>אדורה · מכרזי ניהול בתי ספר תשפ"ז</title>
+<meta name="description" content="כל מכרזי ניהול בתי הספר של משרד החינוך לתשפ&quot;ז. סינון לפי מחוז, מגזר ושכבת גיל. הסבר על הליך ההגשה ושאלות נפוצות." />
+<meta property="og:title" content="אדורה · מכרזי ניהול בתי ספר תשפ&quot;ז" />
+<meta property="og:description" content="כל מכרזי ניהול בתי הספר במקום אחד, עם סינון חכם והסבר מלא על תהליך ההגשה." />
+<meta property="og:type" content="website" />
+<meta property="og:locale" content="he_IL" />
+<meta property="og:url" content="https://edura.co.il/manager-tenders.html" />
+<meta property="og:site_name" content="אדורה" />
+<link rel="canonical" href="https://edura.co.il/manager-tenders.html" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;800;900&family=Assistant:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --green-deep: #0B2A4A;
+    --green-soft: #1E3A5F;
+    --green-pale: #CCFBF1;
+    --teal: #14B8A6;
+    --teal-deep: #0D9488;
+    --cream: #F8FAFC;
+    --cream-deep: #EEF2F6;
+    --orange: #D97706;
+    --orange-soft: #FEF3C7;
+    --ink: #0B2A4A;
+    --ink-soft: #1E3A5F;
+    --ink-mute: #64748B;
+    --line: #E2E8F0;
+    --bg: #F8FAFC;
+    --white: #FFFFFF;
+    --shadow-sm: 0 1px 2px rgba(11,42,74,.04), 0 1px 3px rgba(11,42,74,.06);
+    --shadow-md: 0 4px 12px rgba(11,42,74,.08), 0 2px 4px rgba(11,42,74,.04);
+    --radius: 12px;
+    --radius-lg: 16px;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: rgba(20,184,166,.18); }
+  html { scroll-behavior: smooth; }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; }
+  }
+  body {
+    font-family: 'Heebo', 'Assistant', sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+  a { color: inherit; text-decoration: none; }
+  button { font: inherit; cursor: pointer; border: none; background: none; }
+  input, select { font: inherit; }
+
+  /* Header */
+  .header { background: var(--white); border-bottom: 1px solid var(--line); position: sticky; top: 0; z-index: 50; }
+  .header-inner { max-width: 1200px; margin: 0 auto; padding: 16px 24px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; }
+  @media (max-width: 700px) { .header-inner { padding: 12px 16px; } .header-cta { width: 100%; justify-content: center; } }
+  .logo { display: flex; align-items: center; gap: 4px; transition: transform .15s; }
+  .logo:hover { transform: translateY(-1px); }
+  .logo-svg { height: 32px; width: auto; display: block; }
+  .logo-nikud { font-family: 'Heebo', sans-serif; font-weight: 900; font-size: 36px; letter-spacing: -1.5px; fill: var(--teal); }
+  .logo-word { font-family: 'Heebo', sans-serif; font-weight: 900; font-size: 36px; letter-spacing: -1.5px; fill: var(--ink); }
+  .logo-h { fill: var(--teal); }
+  .header-cta { display: flex; gap: 12px; align-items: center; }
+  .btn-text { color: var(--ink-soft); font-weight: 500; font-size: 15px; padding: 8px 12px; border-radius: 8px; transition: background .15s; }
+  .btn-text:hover { background: var(--cream); }
+  .btn-primary { background: var(--green-deep); color: var(--white); padding: 10px 20px; border-radius: 999px; font-weight: 600; font-size: 15px; transition: background .15s, transform .1s; }
+  .btn-primary:hover { background: var(--green-soft); }
+
+  /* Hero */
+  .hero { background: linear-gradient(180deg, var(--cream) 0%, var(--bg) 100%); padding: 64px 24px 40px; text-align: center; }
+  .hero-badge { display: inline-block; background: var(--orange-soft); color: var(--orange); font-size: 13px; font-weight: 600; padding: 6px 14px; border-radius: 999px; margin-bottom: 20px; letter-spacing: 0.3px; }
+  .hero h1 { font-size: clamp(32px, 5vw, 46px); font-weight: 800; color: var(--ink); line-height: 1.15; letter-spacing: -1px; margin-bottom: 16px; max-width: 820px; margin-left: auto; margin-right: auto; }
+  .hero h1 .accent { color: var(--green-deep); }
+  .hero-sub { font-size: clamp(16px, 2vw, 18px); color: var(--ink-soft); max-width: 620px; margin: 0 auto 28px; }
+  .hero-meta { display: inline-flex; gap: 24px; flex-wrap: wrap; justify-content: center; font-size: 14px; color: var(--ink-mute); }
+  .hero-meta strong { color: var(--ink); font-weight: 700; }
+  .hero-meta .sep { color: var(--line); }
+
+  /* Filters */
+  .filters-wrap { max-width: 1200px; margin: 0 auto; padding: 24px; }
+  .filters { background: var(--white); border: 1px solid var(--line); border-radius: var(--radius-lg); padding: 20px; box-shadow: var(--shadow-sm); display: grid; grid-template-columns: 1.4fr repeat(3, 1fr); gap: 12px; align-items: end; }
+  @media (max-width: 800px) { .filters { grid-template-columns: 1fr 1fr; } }
+  @media (max-width: 480px) { .filters { grid-template-columns: 1fr; } }
+  .filter-group { display: flex; flex-direction: column; gap: 6px; }
+  .filter-label { font-size: 12px; font-weight: 600; color: var(--ink-mute); letter-spacing: 0.3px; }
+  .filter-input, .filter-select { background: var(--bg); border: 1px solid var(--line); border-radius: 10px; padding: 10px 14px; font-size: 14px; color: var(--ink); transition: border-color .15s, background .15s; width: 100%; }
+  .filter-input:focus, .filter-select:focus { outline: none; border-color: var(--green-deep); background: var(--white); }
+  .filter-input { padding-inline-start: 38px; }
+  .filter-input-wrap { position: relative; }
+  .filter-input-wrap svg { position: absolute; inset-inline-start: 12px; top: 50%; transform: translateY(-50%); pointer-events: none; color: var(--ink-mute); }
+
+  /* Results bar */
+  .results-bar { max-width: 1200px; margin: 0 auto; padding: 0 24px 16px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; }
+  .results-count { font-size: 14px; color: var(--ink-soft); }
+  .results-count strong { color: var(--ink); font-weight: 700; }
+  .clear-filters { color: var(--orange); font-size: 13px; font-weight: 600; padding: 4px 10px; border-radius: 6px; transition: background .15s; }
+  .clear-filters:hover { background: var(--orange-soft); }
+  .clear-filters[hidden] { display: none; }
+
+  /* Tenders grid */
+  .tenders { max-width: 1200px; margin: 0 auto; padding: 0 24px 64px; display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 16px; }
+  .tender-card { background: var(--white); border: 1px solid var(--line); border-radius: var(--radius); padding: 20px; transition: border-color .15s, box-shadow .15s; display: flex; flex-direction: column; gap: 12px; }
+  .tender-card:hover { border-color: var(--green-deep); box-shadow: var(--shadow-md); }
+  .tender-id { font-size: 11px; font-weight: 700; color: var(--green-deep); letter-spacing: 0.5px; }
+  .tender-name { font-size: 17px; font-weight: 700; color: var(--ink); line-height: 1.3; }
+  .tender-loc { font-size: 14px; color: var(--ink-soft); display: flex; align-items: center; gap: 6px; }
+  .tender-loc svg { color: var(--ink-mute); flex-shrink: 0; }
+  .tender-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 4px; }
+  .tag { font-size: 11px; font-weight: 600; padding: 3px 10px; border-radius: 999px; letter-spacing: 0.2px; }
+  .tag-district { background: var(--green-pale); color: var(--green-deep); }
+  .tag-sector-mamlachti { background: #E8F1FE; color: #2A5DB0; }
+  .tag-sector-mamad { background: #FBF1E0; color: #B07A2A; }
+  .tag-sector-haredi { background: #F1ECFE; color: #6B4FBC; }
+  .tag-sector-hityashvuti { background: #E8F4ED; color: #2D8B47; }
+  .tag-level { background: var(--cream-deep); color: var(--ink-soft); }
+  .tender-meta { margin-top: auto; padding-top: 12px; border-top: 1px solid var(--line); font-size: 12px; color: var(--ink-mute); display: flex; justify-content: space-between; align-items: center; gap: 8px; flex-wrap: wrap; }
+  .vacancy-permanent { color: var(--green-deep); font-weight: 600; }
+  .vacancy-temp { color: var(--orange); font-weight: 600; }
+  .complexity-pill { background: var(--bg); border: 1px solid var(--line); padding: 2px 8px; border-radius: 999px; font-size: 11px; color: var(--ink-soft); }
+
+  .empty, .loading { grid-column: 1 / -1; text-align: center; padding: 80px 24px; color: var(--ink-mute); }
+  .empty h3 { color: var(--ink); font-size: 18px; margin-bottom: 8px; font-weight: 700; }
+  .spinner { display: inline-block; width: 32px; height: 32px; border: 3px solid var(--line); border-top-color: var(--green-deep); border-radius: 50%; animation: spin .8s linear infinite; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* Process section */
+  .process-section { background: var(--white); border-top: 1px solid var(--line); padding: 64px 24px; }
+  .section-inner { max-width: 1000px; margin: 0 auto; }
+  .section-title { font-size: clamp(26px, 3.5vw, 34px); font-weight: 800; color: var(--ink); margin-bottom: 12px; letter-spacing: -0.5px; }
+  .section-sub { font-size: 16px; color: var(--ink-soft); margin-bottom: 36px; max-width: 640px; }
+  .steps { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; }
+  .step { background: var(--cream); border: 1px solid var(--line); border-radius: var(--radius-lg); padding: 24px 22px; position: relative; }
+  .step-num { position: absolute; top: -14px; inset-inline-end: 22px; background: var(--green-deep); color: var(--white); width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px; }
+  .step h3 { font-size: 16px; font-weight: 700; color: var(--ink); margin-bottom: 8px; line-height: 1.3; }
+  .step p { font-size: 14px; color: var(--ink-soft); line-height: 1.6; }
+  .step a { color: var(--green-deep); font-weight: 600; border-bottom: 1px solid currentColor; }
+
+  /* FAQ */
+  .faq-section { background: var(--bg); padding: 64px 24px; border-top: 1px solid var(--line); }
+  .faq-list { display: flex; flex-direction: column; gap: 10px; }
+  .faq-item { background: var(--white); border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden; transition: border-color .15s; }
+  .faq-item[open] { border-color: var(--green-deep); }
+  .faq-item summary { padding: 18px 22px; font-weight: 600; font-size: 16px; color: var(--ink); cursor: pointer; list-style: none; display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+  .faq-item summary::-webkit-details-marker { display: none; }
+  .faq-item summary::after { content: '+'; font-size: 22px; color: var(--ink-mute); font-weight: 300; flex-shrink: 0; transition: transform .2s; }
+  .faq-item[open] summary::after { content: '−'; color: var(--green-deep); }
+  .faq-body { padding: 0 22px 20px; color: var(--ink-soft); font-size: 15px; line-height: 1.65; }
+  .faq-body p + p { margin-top: 10px; }
+  .faq-body strong { color: var(--ink); font-weight: 600; }
+  .faq-body a { color: var(--green-deep); font-weight: 600; border-bottom: 1px solid currentColor; }
+  .faq-body ul { padding-inline-start: 20px; margin-top: 8px; }
+  .faq-body li { margin-bottom: 4px; }
+
+  /* CTA */
+  .cta-section { background: var(--white); padding: 56px 24px; border-top: 1px solid var(--line); }
+  .cta-card { max-width: 720px; margin: 0 auto; background: var(--green-deep); color: var(--white); border-radius: var(--radius-lg); padding: 36px 32px; text-align: center; }
+  .cta-card h3 { font-size: 24px; font-weight: 800; margin-bottom: 10px; }
+  .cta-card p { font-size: 15px; opacity: .9; margin-bottom: 22px; line-height: 1.5; }
+  .cta-card .btn { background: var(--white); color: var(--green-deep); padding: 12px 28px; border-radius: 999px; font-weight: 700; font-size: 15px; display: inline-block; transition: transform .1s; }
+  .cta-card .btn:active { transform: scale(.98); }
+
+  /* Footer */
+  .footer { background: var(--ink); color: var(--cream); padding: 40px 24px; text-align: center; font-size: 13px; }
+  .footer p { opacity: .7; margin-bottom: 8px; }
+  .footer .footer-logo { color: var(--white); font-weight: 800; font-size: 18px; margin-bottom: 8px; display: block; }
+  .footer-logo-svg { height: 44px; width: auto; display: block; margin: 0 auto 12px; }
+  .footer-logo-nikud { font-family: 'Heebo', sans-serif; font-weight: 900; font-size: 80px; letter-spacing: -2px; fill: var(--teal); }
+  .footer-logo-word { font-family: 'Heebo', sans-serif; font-weight: 900; font-size: 80px; letter-spacing: -2px; fill: var(--white); }
+  .footer-logo-h { fill: var(--teal); }
+  .footer a { color: var(--white); border-bottom: 1px solid rgba(255,255,255,.3); }
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="header-inner">
+    <a href="index.html" class="logo" aria-label="אדורה — לוח משרות הוראה">
+      <svg class="logo-svg" viewBox="0 0 200 50" aria-hidden="true">
+        <text x="100" y="38" text-anchor="middle" direction="rtl" class="logo-nikud">אֶדורֶה</text>
+        <text x="100" y="38" text-anchor="middle" direction="rtl" class="logo-word">אדור<tspan class="logo-h">ה</tspan></text>
+      </svg>
+    </a>
+    <nav class="header-cta">
+      <a href="index.html" class="btn-text">משרות הוראה</a>
+      <a href="#process" class="btn-primary">איך מגישים מכרז</a>
+    </nav>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="hero-badge" id="round-badge">מכרזי ניהול תשפ"ז · סבב ראשון הסתיים</div>
+  <h1>מכרזי <span class="accent">ניהול בתי ספר</span><br/>של משרד החינוך</h1>
+  <p class="hero-sub">סבב ההגשה הראשון לתשפ"ז (מועד אחרון 25.04.2026) הסתיים. הדף נשמר כארכיון ולמכרזים שיפתחו בסבבים הבאים. ההגשה הרשמית בפורטל עובדי הוראה.</p>
+  <div class="hero-meta">
+    <span><strong id="meta-total">—</strong> משרות בארכיון הסבב</span>
+    <span class="sep">·</span>
+    <span>הסבב הראשון נסגר: <strong>25.04.2026</strong></span>
+    <span class="sep">·</span>
+    <span>מקור: <strong>משרד החינוך</strong></span>
+  </div>
+</section>
+
+<div class="filters-wrap">
+  <div class="filters">
+    <div class="filter-group">
+      <label class="filter-label" for="search">חיפוש בית ספר / יישוב</label>
+      <div class="filter-input-wrap">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.3-4.3"></path></svg>
+        <input id="search" type="text" class="filter-input" placeholder="לדוגמה: יובלים, ראשון לציון, אורט..." />
+      </div>
+    </div>
+    <div class="filter-group">
+      <label class="filter-label" for="district">מחוז / אזור</label>
+      <select id="district" class="filter-select"><option value="">כל המחוזות</option></select>
+    </div>
+    <div class="filter-group">
+      <label class="filter-label" for="sector">מגזר / סוג בית ספר</label>
+      <select id="sector" class="filter-select">
+        <option value="">כל המגזרים</option>
+        <option value="ממלכתי">ממלכתי</option>
+        <option value="ממלכתי דתי">ממלכתי דתי</option>
+        <option value="חרדי">חרדי</option>
+        <option value="התיישבותי">התיישבותי</option>
+      </select>
+    </div>
+    <div class="filter-group">
+      <label class="filter-label" for="level">שכבת גיל</label>
+      <select id="level" class="filter-select">
+        <option value="">כל השכבות</option>
+        <option value="יסודי">יסודי</option>
+        <option value="חטיבת ביניים">חטיבת ביניים</option>
+        <option value="תיכון">תיכון</option>
+        <option value="מרכז מקצועי">מרכז מקצועי / מתי"א</option>
+      </select>
+    </div>
+  </div>
+</div>
+
+<div class="results-bar">
+  <div class="results-count" id="results-count">טוען מכרזים...</div>
+  <button class="clear-filters" id="clear-filters" hidden>נקה סינונים ✕</button>
+</div>
+
+<main class="tenders" id="tenders">
+  <div class="loading">
+    <div class="spinner"></div>
+    <p style="margin-top: 16px;">טוען נתוני מכרזים...</p>
+  </div>
+</main>
+
+<!-- ────────── תהליך הגשה ────────── -->
+<section class="process-section" id="process">
+  <div class="section-inner">
+    <h2 class="section-title">איך מגישים מועמדות למכרז ניהול</h2>
+    <p class="section-sub">תהליך ההגשה הוא מקוון לחלוטין דרך פורטל עובדי הוראה של משרד החינוך. להלן השלבים העיקריים.</p>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <h3>הזדהות בפורטל</h3>
+        <p>נכנסים ל<a href="https://poh.education.gov.il/administrative/training-management-supervision/appoint-managers/" target="_blank" rel="noopener">פורטל עובדי הוראה</a> ומזדהים. ההגשה אפשרית רק לעובד הוראה המנוהל במאגרי המשרד.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <h3>בחירת משרה והגשת טופס</h3>
+        <p>בוחרים את המשרה הרצויה מתוך הרשימה ומגישים טופס מועמדות מקוון. ניתן להגיש לכמה משרות, מועמדות נפרדת לכל אחת.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <h3>בדיקת תנאי סף</h3>
+        <p>המערכת בודקת אוטומטית עמידה בדרישות כל משרה. תוצאת הבדיקה מוצגת למועמד/ת בזמן אמת.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">4</div>
+        <h3>זימון לוועדת יועצים</h3>
+        <p>מועמדים שעברו את תנאי הסף מזומנים לראיון מול ועדת יועצים. הזימון נשלח בדוא"ל לפחות יומיים מראש.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">5</div>
+        <h3>החלטת מינוי</h3>
+        <p>המנהל הכללי של משרד החינוך מקבל את ההחלטה לאחר עיון בפרוטוקול הוועדה ובחומרי המועמד.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">6</div>
+        <h3>עדכון ושינוי</h3>
+        <p>ניתן לעדכן או להסיר את המועמדות בכל עת — עד למועד האחרון להגשה (25.04.2026).</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ────────── שאלות ותשובות ────────── -->
+<section class="faq-section" id="faq">
+  <div class="section-inner">
+    <h2 class="section-title">שאלות ותשובות נפוצות</h2>
+    <p class="section-sub">המידע מבוסס על פורטל עובדי הוראה של משרד החינוך — מינוי מנהלים בחינוך.</p>
+
+    <div class="faq-list">
+      <details class="faq-item">
+        <summary>מי רשאי להגיש מועמדות למכרז ניהול?</summary>
+        <div class="faq-body">
+          <p>רק <strong>עובד/ת הוראה המנוהל/ת במאגרי משרד החינוך</strong> רשאי/ת להגיש. לכל משרה מוגדרים תנאי סף נוספים (ותק בהוראה, השכלה, ניסיון בתפקיד ניהולי וכד') שמופיעים בחומר הפרסום של אותה משרה.</p>
+          <p>חשוב: <strong>תואר אקוויוולנטי לא מוכר</strong> כתואר להגשת מועמדות.</p>
+        </div>
+      </details>
+
+      <details class="faq-item">
+        <summary>איך נרשמים בפועל? כל ההגשה מקוונת?</summary>
+        <div class="faq-body">
+          <p>כן — <strong>ההגשה מקוונת בלבד</strong> דרך עמוד ההזדהות ב<a href="https://poh.education.gov.il/administrative/training-management-supervision/appoint-managers/" target="_blank" rel="noopener">פורטל עובדי הוראה</a>. אין הגשה ידנית או בדוא"ל.</p>
+          <p>לפני ההגשה — מומלץ לעדכן את כל הפרטים האישיים, ההשכלה והניסיון התעסוקתי בפורטל, כי המערכת מושכת מהם את הנתונים לבדיקת תנאי הסף.</p>
+        </div>
+      </details>
+
+      <details class="faq-item">
+        <summary>האם אפשר להגיש לכמה משרות?</summary>
+        <div class="faq-body">
+          <p>כן — אפשר להגיש לכמה משרות שמתאימות לכם. <strong>לכל משרה יש להגיש מועמדות נפרדת</strong>. גם הזימונים לראיונות מתבצעים בנפרד לכל משרה.</p>
+        </div>
+      </details>
+
+      <details class="faq-item">
+        <summary>אפשר לעדכן או להסיר מועמדות אחרי שהגשתי?</summary>
+        <div class="faq-body">
+          <p>כן. ניתן <strong>לעדכן את הטופס או להסיר את המועמדות</strong> דרך המערכת המקוונת בכל עת — כל עוד לא חלף המועד האחרון להגשה (25.04.2026).</p>
+          <p>גם אם הסרתם מועמדות והתחרטתם — תוכלו להגיש שוב לפני המועד האחרון.</p>
+        </div>
+      </details>
+
+      <details class="faq-item">
+        <summary>עברתי את תנאי הסף ולא קיבלתי זימון לראיון. מה עושים?</summary>
+        <div class="faq-body">
+          <p>בדקו לפי הסדר:</p>
+          <ul>
+            <li>שאמצעי הקשר שלכם (טלפון, דוא"ל) <strong>מעודכנים בפורטל</strong>.</li>
+            <li>שתיבת הדוא"ל לא חסומה ושהזימון לא נכנס לתיקיית <strong>spam</strong>.</li>
+            <li>אם הכל תקין — פנו ישירות ל<strong>רפרנט/ית של המחוז</strong> שלכם.</li>
+          </ul>
+        </div>
+      </details>
+
+      <details class="faq-item">
+        <summary>מה קורה אם המערכת מציגה "שגיאה ביישום" בעת השליחה?</summary>
+        <div class="faq-body">
+          <p>בדרך כלל הסיבה היא <strong>קבצים מצורפים כבדים מדי</strong>. נסו:</p>
+          <ul>
+            <li>שליחה <strong>ללא צירופים</strong> כדי לבדוק שהבעיה היא בקבצים.</li>
+            <li>אם זו הסיבה — צרפו קבצים <strong>עד 3MB</strong> בלבד.</li>
+            <li>אם הבעיה ממשיכה — פנו לרפרנט/ית במחוז.</li>
+          </ul>
+        </div>
+      </details>
+
+      <details class="faq-item">
+        <summary>מה ההבדל בין "פנויה לחלוטין" ל"פנויה עם אפשרות הארכה"?</summary>
+        <div class="faq-body">
+          <p><strong>פנויה לחלוטין</strong> — המשרה נפתחת באופן קבוע, ללא חזרה צפויה של המנהל/ת הקודם/ת.</p>
+          <p><strong>פנויה לשנה עם אפשרות הארכה</strong> — מינוי לשנה אחת בתחילה, עם אפשרות להמשיך בכפוף להחלטות מאוחרות יותר.</p>
+        </div>
+      </details>
+
+      <details class="faq-item">
+        <summary>מה זה "מורכבות" ולמה זה חשוב?</summary>
+        <div class="faq-body">
+          <p><strong>מורכבות</strong> היא דירוג של בית הספר לפי גודל, מאפיינים סוציו-אקונומיים ואתגרים פדגוגיים. הדירוג נע מ-1 (נמוך) עד 8+ (גבוה מאוד) ומשפיע על שכר המנהל/ת ועל היקף האחריות.</p>
+        </div>
+      </details>
+
+      <details class="faq-item">
+        <summary>למי פונים בכל מחוז?</summary>
+        <div class="faq-body">
+          <p>רפרנטים אחראים על עדכון פרטי השכלה, שאלות על תנאי סף ובירורים נוספים:</p>
+          <ul>
+            <li><strong>צפון:</strong> רותי איצקוביץ</li>
+            <li><strong>חיפה:</strong> משה טהר, רינת חן אלוש</li>
+            <li><strong>תל אביב:</strong> זימרה סנדקה, שולי איבן</li>
+            <li><strong>מרכז:</strong> קרול לוי, רעיה בסלו</li>
+            <li><strong>ירושלים:</strong> רחל צראפי</li>
+            <li><strong>דרום:</strong> אוריה אלמליח, עופרה אלוף</li>
+            <li><strong>התיישבותי:</strong> שחר פורשטט</li>
+            <li><strong>חרדי:</strong> ציפי עטיה, רז בכבוד</li>
+          </ul>
+        </div>
+      </details>
+
+      <details class="faq-item">
+        <summary>איך אדורה משיגה את הנתונים? האם הם עדכניים?</summary>
+        <div class="faq-body">
+          <p>הנתונים שמוצגים כאן מבוססים על <strong>הפרסום הרשמי של משרד החינוך</strong> — מערכת מינוי מנהלים, סבב ראשון תשפ"ז (פורסם ב-16.04.2026).</p>
+          <p>למידע המעודכן ולהגשת מועמדות — תמיד יש להיכנס ישירות ל<a href="https://poh.education.gov.il/administrative/training-management-supervision/appoint-managers/" target="_blank" rel="noopener">פורטל עובדי הוראה</a>.</p>
+        </div>
+      </details>
+    </div>
+  </div>
+</section>
+
+<!-- ────────── CTA ────────── -->
+<section class="cta-section">
+  <div class="cta-card">
+    <h3>מוכנים להגיש?</h3>
+    <p>מועד אחרון להגשה: 25.04.2026 · ההגשה מקוונת בלבד דרך פורטל עובדי הוראה.</p>
+    <a href="https://poh.education.gov.il/administrative/training-management-supervision/appoint-managers/" target="_blank" rel="noopener" class="btn">פתח את פורטל ההגשה ←</a>
+  </div>
+</section>
+
+<footer class="footer">
+  <svg class="footer-logo-svg" viewBox="0 0 360 100" aria-label="אדורה">
+    <text x="180" y="76" text-anchor="middle" direction="rtl" class="footer-logo-nikud">אֶדורֶה</text>
+    <text x="180" y="76" text-anchor="middle" direction="rtl" class="footer-logo-word">אדור<tspan class="footer-logo-h">ה</tspan></text>
+  </svg>
+  <p>כל משרות החינוך במקום אחד · מותג ישראלי עצמאי</p>
+  <p>הנתונים לעיון בלבד · המקור הקובע: <a href="https://poh.education.gov.il/" target="_blank" rel="noopener">פורטל עובדי הוראה</a></p>
+  <p>© 2026 אדורה · edura.co.il</p>
+</footer>
+
+<script>
+const $ = (id) => document.getElementById(id);
+const debounce = (fn, ms = 150) => { let t; return (...a) => { clearTimeout(t); t = setTimeout(() => fn(...a), ms); }; };
+
+let allTenders = [];
+let filtered = [];
+
+const SECTOR_CLASS = {
+  'ממלכתי': 'tag-sector-mamlachti',
+  'ממלכתי דתי': 'tag-sector-mamad',
+  'חרדי': 'tag-sector-haredi',
+  'התיישבותי': 'tag-sector-hityashvuti',
+};
+
+async function loadTenders() {
+  try {
+    const res = await fetch('principal-positions.json');
+    const data = await res.json();
+    allTenders = (data.positions || []).filter(p => p.id);
+    populateDistricts();
+    applyFilters();
+    $('meta-total').textContent = allTenders.length;
+  } catch (err) {
+    $('tenders').innerHTML = '<div class="empty"><h3>בעיה בטעינת הנתונים</h3><p>נסו לרענן את הדף בעוד רגע</p></div>';
+    console.error(err);
+  }
+}
+
+function populateDistricts() {
+  const dists = new Set();
+  allTenders.forEach(p => { if (p.district) dists.add(p.district); });
+  const sel = $('district');
+  [...dists].sort().forEach(d => {
+    const o = document.createElement('option');
+    o.value = d; o.textContent = d;
+    sel.appendChild(o);
+  });
+}
+
+function applyFilters() {
+  const q = $('search').value.toLowerCase().trim();
+  const district = $('district').value;
+  const sector = $('sector').value;
+  const level = $('level').value;
+
+  filtered = allTenders.filter(p => {
+    if (district && p.district !== district) return false;
+    if (sector && p.sector !== sector) return false;
+    if (level && p.level !== level) return false;
+    if (q) {
+      const text = ((p.school_name || '') + ' ' + (p.city || '') + ' ' + (p.school_type_raw || '')).toLowerCase();
+      if (!text.includes(q)) return false;
+    }
+    return true;
+  });
+
+  render();
+}
+
+function render() {
+  const grid = $('tenders');
+  const count = $('results-count');
+  const clearBtn = $('clear-filters');
+
+  count.innerHTML = `<strong>${filtered.length}</strong> מתוך ${allTenders.length} מכרזים`;
+  const hasFilter = $('search').value || $('district').value || $('sector').value || $('level').value;
+  clearBtn.hidden = !hasFilter;
+
+  if (filtered.length === 0) {
+    grid.innerHTML = '<div class="empty"><h3>לא נמצאו מכרזים</h3><p>נסו לשנות סינונים או לחפש במונח אחר</p></div>';
+    return;
+  }
+
+  grid.innerHTML = filtered.map(p => {
+    const sectorClass = SECTOR_CLASS[p.sector] || 'tag-level';
+    const sectorTag = p.sector ? `<span class="tag ${sectorClass}">${esc(p.sector)}</span>` : '';
+    const levelTag = p.level && p.level !== 'אחר' ? `<span class="tag tag-level">${esc(p.level)}</span>` : '';
+    const districtTag = p.district ? `<span class="tag tag-district">${esc(p.district)}</span>` : '';
+    const cityLine = p.city ? `<div class="tender-loc"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a8 8 0 0 0-8 8c0 5.5 8 12 8 12s8-6.5 8-12a8 8 0 0 0-8-8z"></path><circle cx="12" cy="10" r="3"></circle></svg>${esc(p.city)}</div>` : '';
+    const vacancy = p.vacancy || '';
+    const vacancyClass = vacancy.includes('לחלוטין') ? 'vacancy-permanent' : 'vacancy-temp';
+    const vacancyText = vacancy.includes('לחלוטין') ? 'משרה קבועה' : 'לשנה + הארכה';
+    const complexity = p.complexity ? `<span class="complexity-pill">מורכבות ${esc(p.complexity)}</span>` : '';
+
+    return `
+      <article class="tender-card">
+        <div class="tender-id">מכרז #${esc(p.id)}</div>
+        <h3 class="tender-name">${esc(p.school_name || p.school_type_raw || 'בית ספר')}</h3>
+        ${cityLine}
+        <div class="tender-tags">${districtTag}${sectorTag}${levelTag}</div>
+        <div class="tender-meta">
+          <span class="${vacancyClass}">${vacancyText}</span>
+          ${complexity}
+        </div>
+      </article>
+    `;
+  }).join('');
+}
+
+function esc(s) {
+  return String(s == null ? '' : s)
+    .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+}
+
+['search','district','sector','level'].forEach(id => {
+  $(id).addEventListener('input', debounce(applyFilters, 100));
+});
+$('clear-filters').addEventListener('click', () => {
+  ['search','district','sector','level'].forEach(id => $(id).value = '');
+  applyFilters();
+});
+
+loadTenders();
+</script>
+
+<script src="analytics.js"></script>
+<script src="feedback-widget.js" defer></script>
+
+</body>
+</html>
