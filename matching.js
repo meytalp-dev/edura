@@ -121,13 +121,10 @@
     return a === b ? 10 : 0;
   }
 
-  // City must match if both sides specify a city — otherwise it's a hard fail
-  // (subject + level + same region without same city = different teacher altogether)
-  function cityCompatible(cA, cB) {
-    const a = normalizeText(cA);
-    const b = normalizeText(cB);
-    if (!a || !b) return true; // missing data on either side → don't penalize
-    return a === b;
+  // City is a sort bonus only — the matching unit is region.
+  // מורה שהצהיר אזור = מוכן לנסוע באזור. עיר היא איפה שהוא גר, לא איפה שהוא חייב לעבוד.
+  function cityCompatible() {
+    return true;
   }
 
   // Level must match if both sides specify one (יסודי≠תיכון).
