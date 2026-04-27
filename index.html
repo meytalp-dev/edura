@@ -257,27 +257,38 @@
     transition: background .15s, transform .1s; cursor: pointer;
   }
   .btn-publish-job:hover { background: #FDE68A; transform: translateY(-1px); }
-  .btn-cta-teacher, .btn-cta-principal {
-    display: inline-flex; align-items: center; gap: 6px;
-    padding: 9px 16px; border-radius: 999px;
+  /* ─── Floating CTA stack (left side) ─── */
+  .fab-cta-stack {
+    position: fixed; left: 18px; top: 50%; transform: translateY(-50%);
+    display: flex; flex-direction: column; gap: 12px;
+    z-index: 90;
+  }
+  .fab-cta {
+    display: inline-flex; align-items: center; gap: 10px;
+    padding: 12px 18px 12px 16px;
+    border-radius: 16px;
     font-size: 13px; font-weight: 600;
     border: 1.5px solid transparent; cursor: pointer;
-    transition: background .15s, transform .1s, box-shadow .15s;
-    min-height: 44px; line-height: 1.2; white-space: nowrap;
+    text-decoration: none;
+    box-shadow: 0 8px 24px rgba(11,42,74,.10), 0 2px 6px rgba(11,42,74,.06);
+    transition: transform .18s ease, box-shadow .18s ease, background .15s;
+    line-height: 1.15;
   }
-  .btn-cta-teacher strong, .btn-cta-principal strong { font-weight: 800; }
-  .btn-cta-teacher {
-    background: #FCE7F3; color: #9D174D; border-color: #FBCFE8;
-  }
-  .btn-cta-teacher:hover { background: #FBCFE8; transform: translateY(-1px); box-shadow: 0 4px 14px rgba(190,24,93,.18); }
-  .btn-cta-principal {
-    background: #FEF3C7; color: #92400E; border-color: #FDE68A;
-  }
-  .btn-cta-principal:hover { background: #FDE68A; transform: translateY(-1px); box-shadow: 0 4px 14px rgba(217,119,6,.18); }
-  @media (max-width: 700px) {
-    .btn-cta-teacher, .btn-cta-principal {
-      font-size: 12px !important; padding: 8px 12px !important; min-height: 40px;
-    }
+  .fab-cta svg { width: 22px; height: 22px; flex-shrink: 0; opacity: .9; }
+  .fab-cta-text { display: flex; flex-direction: column; gap: 2px; text-align: right; }
+  .fab-cta-text strong { font-weight: 800; font-size: 14px; }
+  .fab-cta-text span { font-size: 11.5px; opacity: .85; font-weight: 500; }
+  .fab-cta:hover { transform: translateX(-4px); box-shadow: 0 14px 32px rgba(11,42,74,.16), 0 4px 10px rgba(11,42,74,.08); }
+  .fab-cta-teacher { background: #FCE7F3; color: #9D174D; border-color: #FBCFE8; }
+  .fab-cta-teacher:hover { background: #FBCFE8; }
+  .fab-cta-principal { background: #FEF3C7; color: #92400E; border-color: #FDE68A; }
+  .fab-cta-principal:hover { background: #FDE68A; }
+  @media (max-width: 900px) {
+    .fab-cta-stack { left: 10px; top: auto; bottom: 16px; transform: none; flex-direction: row; gap: 8px; }
+    .fab-cta { padding: 10px 14px; border-radius: 999px; }
+    .fab-cta svg { width: 18px; height: 18px; }
+    .fab-cta-text strong { font-size: 13px; }
+    .fab-cta-text span { display: none; }
   }
   .modal-supra-publish { font-size: 13px; color: var(--orange); font-weight: 700; margin-bottom: 8px; letter-spacing: 0.5px; text-transform: uppercase; }
   .modal-info-publish {
@@ -1137,12 +1148,22 @@
       <a href="teachers.html" class="btn-text">מורים</a>
       <a href="saved.html" class="btn-text">המשרות שלי</a>
       <a href="about.html" class="btn-text">על אדורה</a>
-      <a href="cv-builder.html" class="btn-cta-teacher" aria-label="מורה? מלאי ונמצא לך התאמה מושלמת"><strong>מורה?</strong> מלאי ונמצא לך התאמה מושלמת</a>
-      <button type="button" class="btn-cta-principal" onclick="openPostJobModal()" aria-label="מנהל? נמצא לך שידוך"><strong>מנהל?</strong> נמצא לך שידוך</button>
       <a href="chat.html" class="btn-primary" style="display:inline-flex;align-items:center"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="vertical-align:-2px;margin-left:6px"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>בוט חיפוש</a>
     </nav>
   </div>
 </header>
+
+<!-- Floating CTA stack (left side) -->
+<div class="fab-cta-stack" aria-label="כניסה מהירה">
+  <a href="cv-builder.html" class="fab-cta fab-cta-teacher" aria-label="מורה? מלאי ונמצא לך התאמה מושלמת">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="9" y1="13" x2="15" y2="13"/><line x1="9" y1="17" x2="13" y2="17"/></svg>
+    <span class="fab-cta-text"><strong>מורה?</strong><span>מלאי ונמצא לך התאמה</span></span>
+  </a>
+  <button type="button" class="fab-cta fab-cta-principal" onclick="openPostJobModal()" aria-label="מנהל? נמצא לך שידוך">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>
+    <span class="fab-cta-text"><strong>מנהל?</strong><span>נמצא לך שידוך</span></span>
+  </button>
+</div>
 
 <!-- Hamburger side menu -->
 <div class="menu-overlay" id="menu-overlay" onclick="closeSideMenu()"></div>
@@ -1869,9 +1890,6 @@ function render() {
         (j.snippet ? '<p class="job-snippet">' + esc(j.snippet) + '</p>' : '') +
         matchBadge +
         (contacts.length ? '<div class="job-contact-row">' + contacts.join('') + '</div>' : '') +
-        (j.url ? '<div class="job-actions">' +
-          '<a class="btn-apply" href="' + esc(j.url) + '" target="_blank" rel="noopener" style="text-align:center;text-decoration:none">למודעה המלאה ↗</a>' +
-        '</div>' : '') +
         '<div class="job-meta">' + days + '</div>' +
       '</article>'
     );
