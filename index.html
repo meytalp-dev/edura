@@ -108,15 +108,19 @@
     white-space: nowrap;
   }
   .header-cta { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; justify-content: flex-end; }
-  @media (max-width: 700px) {
+  @media (max-width: 900px) {
     .header-inner { flex-wrap: nowrap; padding: 12px 16px; gap: 10px; }
     .brand-tagline { font-size: 11px; }
+    .header-cta { display: none; }
+    .menu-toggle { display: inline-flex !important; }
+    .logo-svg { height: 28px; }
+    .logo-tagline { font-size: 11px; }
   }
   /* Hamburger button */
   .menu-toggle {
     width: 44px; height: 44px; border-radius: 12px;
     background: var(--cream); color: var(--ink);
-    display: inline-flex; align-items: center; justify-content: center;
+    display: none; align-items: center; justify-content: center;
     transition: background .15s, transform .1s;
     border: 1px solid var(--line);
     flex-shrink: 0;
@@ -564,10 +568,18 @@
     100% { box-shadow: 0 0 0 0 rgba(16,185,129,0); }
   }
   @media (max-width: 700px) {
-    .hero-stats-stack { top: 12px; right: 12px; gap: 6px; }
-    .stat-pill { padding: 6px 11px; gap: 6px; }
-    .stat-pill .pill-num { font-size: 14px; }
-    .stat-pill .pill-label { font-size: 10.5px; }
+    .hero { padding: 24px 16px 32px; }
+    .hero-stats-stack {
+      position: static !important; top: auto !important; right: auto !important;
+      width: 100% !important; max-width: none !important;
+      display: flex !important; flex-wrap: wrap; gap: 6px !important;
+      justify-content: center; margin-bottom: 18px;
+    }
+    .hero-stats-stack .stat-pill {
+      margin: 0 !important; padding: 6px 11px !important; gap: 6px !important;
+    }
+    .hero-stats-stack .stat-pill .pill-num { font-size: 14px !important; }
+    .hero-stats-stack .stat-pill .pill-label { font-size: 11px !important; }
   }
 
   /* ─── Filters toggle button (opens drawer) ─── */
@@ -1112,6 +1124,14 @@
         <text x="100" y="38" text-anchor="middle" direction="rtl" class="logo-word">אדור<tspan class="logo-h">ה</tspan></text>
       </svg><span class="logo-tagline">האתר הגדול למשרות חינוך בישראל</span>
     </a>
+    <button type="button" class="menu-toggle" onclick="openSideMenu()" aria-label="פתח תפריט">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <line x1="3" y1="6" x2="21" y2="6"/>
+        <line x1="3" y1="12" x2="21" y2="12"/>
+        <line x1="3" y1="18" x2="21" y2="18"/>
+      </svg>
+      <span class="menu-dot" aria-hidden="true"></span>
+    </button>
     <nav class="header-cta">
       <a href="index.html" class="btn-text active">משרות</a>
       <a href="teachers.html" class="btn-text">מורים</a>

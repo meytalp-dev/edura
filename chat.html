@@ -73,10 +73,35 @@
   .btn-text.active { background: var(--green-pale); color: var(--green-deep); font-weight: 700; }
   .btn-primary { background: var(--green-deep); color: var(--white); padding: 10px 20px; border-radius: 999px; font-weight: 600; font-size: 15px; }
   .btn-primary:hover { background: var(--green-soft); }
-  @media (max-width: 700px) {
-    .header-inner { flex-wrap: wrap; padding: 12px 16px; gap: 10px; }
-    .header-cta { width: 100%; justify-content: center; gap: 6px; }
-    .header-cta a { font-size: 13px !important; padding: 8px 10px !important; min-height: 40px; }
+  .menu-toggle {
+    display: none;
+    width: 44px; height: 44px; border-radius: 12px;
+    background: var(--cream); color: var(--ink);
+    align-items: center; justify-content: center;
+    border: 1px solid var(--line); flex-shrink: 0; cursor: pointer;
+    transition: background .15s, transform .1s;
+  }
+  .menu-toggle:hover { background: var(--green-pale); }
+  .menu-toggle:active { transform: scale(.95); }
+  .menu-toggle svg { width: 22px; height: 22px; }
+  @media (max-width: 900px) {
+    .header-inner { position: relative; flex-wrap: nowrap; padding: 12px 16px; gap: 10px; }
+    .menu-toggle { display: inline-flex; }
+    .header-cta {
+      display: none !important;
+      position: absolute; top: calc(100% + 6px); inset-inline-end: 12px;
+      background: var(--white); border: 1px solid var(--line);
+      border-radius: 14px; box-shadow: 0 12px 32px rgba(11,42,74,.16);
+      padding: 12px; flex-direction: column !important; align-items: stretch !important;
+      width: min(280px, calc(100vw - 24px)); gap: 6px !important; z-index: 100;
+    }
+    .header-cta.open { display: flex !important; }
+    .header-cta a, .header-cta button {
+      width: 100%; justify-content: flex-start !important; text-align: start;
+      font-size: 14px !important; min-height: 42px;
+    }
+    .logo-svg { height: 28px; }
+    .logo-tagline { font-size: 11px; }
   }
 
   main {
@@ -343,6 +368,13 @@
         <text x="100" y="38" text-anchor="middle" direction="rtl" class="logo-word">אדור<tspan class="logo-h">ה</tspan></text>
       </svg><span class="logo-tagline">האתר הגדול למשרות חינוך בישראל</span>
     </a>
+    <button type="button" class="menu-toggle" onclick="document.querySelector('.header-cta').classList.toggle('open')" aria-label="פתח תפריט">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <line x1="3" y1="6" x2="21" y2="6"/>
+        <line x1="3" y1="12" x2="21" y2="12"/>
+        <line x1="3" y1="18" x2="21" y2="18"/>
+      </svg>
+    </button>
     <nav class="header-cta">
       <a href="index.html" class="btn-text">משרות</a>
       <a href="teachers.html" class="btn-text">מורים</a>
