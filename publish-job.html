@@ -108,6 +108,41 @@
   .hero-blob-2 { width: 320px; height: 320px; background: var(--orange-soft); bottom: -100px; right: 15%; opacity: .45; }
 
   .hero-text { position: relative; z-index: 1; }
+
+  .winks-marquee {
+    margin-bottom: 22px;
+    overflow: hidden;
+    max-width: 600px;
+    position: relative;
+    -webkit-mask-image: linear-gradient(to left, transparent, black 12%, black 88%, transparent);
+            mask-image: linear-gradient(to left, transparent, black 12%, black 88%, transparent);
+  }
+  .winks-track {
+    display: flex;
+    gap: 28px;
+    width: max-content;
+    animation: winksScroll 38s linear infinite;
+    white-space: nowrap;
+  }
+  .wink {
+    font-family: 'Playpen Sans Hebrew', cursive;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--teal-deep);
+    line-height: 1;
+    letter-spacing: -0.2px;
+    flex-shrink: 0;
+  }
+  .wink:nth-child(3n) { color: var(--orange); transform: rotate(-1deg); }
+  .wink:nth-child(3n+1) { transform: rotate(0.5deg); }
+  .wink:nth-child(3n+2) { color: var(--lavender); transform: rotate(-0.5deg); }
+  @keyframes winksScroll {
+    from { transform: translateX(0); }
+    to { transform: translateX(-50%); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .winks-track { animation: none; }
+  }
   .eyebrow {
     display: inline-flex; align-items: center; gap: 8px;
     font-size: 12px; font-weight: 700;
@@ -470,12 +505,37 @@
   <div class="hero-blob-2"></div>
   <div class="hero-grid">
     <div class="hero-text">
+      <div class="winks-marquee" aria-hidden="true">
+        <div class="winks-track">
+          <span class="wink">סוף סוף לוח שלא מבקש OTP ✦</span>
+          <span class="wink">פחות גלילה, יותר הוראה ✦</span>
+          <span class="wink">מורה? מנהלת? בואו נתאם ✦</span>
+          <span class="wink">המודעה לא נעלמת כעבור שעתיים ✦</span>
+          <span class="wink">מספיק "כבר נסגר, סליחה" ✦</span>
+          <span class="wink">פחות 7 קבוצות פייסבוק ✦</span>
+          <span class="wink">לא שדכנים. די קרוב. ✦</span>
+          <span class="wink">לחפש משרה זה כמעט עבודה ✦</span>
+          <span class="wink">המאגר עובד. אתם בקפה. ✦</span>
+          <span class="wink">פחות וואטסאפים, יותר חוזים ✦</span>
+          <!-- duplicate for seamless loop -->
+          <span class="wink">סוף סוף לוח שלא מבקש OTP ✦</span>
+          <span class="wink">פחות גלילה, יותר הוראה ✦</span>
+          <span class="wink">מורה? מנהלת? בואו נתאם ✦</span>
+          <span class="wink">המודעה לא נעלמת כעבור שעתיים ✦</span>
+          <span class="wink">מספיק "כבר נסגר, סליחה" ✦</span>
+          <span class="wink">פחות 7 קבוצות פייסבוק ✦</span>
+          <span class="wink">לא שדכנים. די קרוב. ✦</span>
+          <span class="wink">לחפש משרה זה כמעט עבודה ✦</span>
+          <span class="wink">המאגר עובד. אתם בקפה. ✦</span>
+          <span class="wink">פחות וואטסאפים, יותר חוזים ✦</span>
+        </div>
+      </div>
       <h1 class="hero-title">
         כל משרות החינוך<br>
         בישראל, <span class="underline-mark">במקום אחד</span>
       </h1>
       <p class="hero-lead">
-        אדורה מאגד מאות משרות הוראה <strong>מעשרות מקורות</strong>, במקום אחד. המאגר מבצע <strong>match אוטומטי</strong> בין משרות פנויות למורים מחפשי עבודה לפי <strong>אזור, מקצוע ושכבת גיל</strong> — כך שכל צד רואה רק את מה שרלוונטי לו.
+        אדורה מאגד מאות משרות הוראה <strong>מעשרות מקורות</strong>, במקום אחד. המאגר מבצע <strong>match אוטומטי</strong> בין משרות פנויות למורים מחפשי עבודה לפי <strong>אזור, מקצוע ושכבת גיל</strong>.
       </p>
       <p class="hero-sub">
         בלי לדפדף בעשרה לוחות, בלי מתווכים, בלי עמלות. ממלאים טופס פעם אחת — וההתאמה קורית מאחורי הקלעים.
