@@ -863,11 +863,21 @@
 
   // אם הגיעו עם #teacher / #school — לפתוח אוטומטית את הטופס המתאים
   function autoOpenFromHash() {
-    const h = (location.hash || '').toLowerCase();
-    if (h === '#teacher') openModal('modal-teacher');
-    else if (h === '#school' || h === '#post-job') openModal('modal-school');
+    try {
+      const h = (location.hash || '').toLowerCase();
+      console.log('[edura] autoOpenFromHash hash=', h);
+      if (h === '#teacher') openModal('modal-teacher');
+      else if (h === '#school' || h === '#post-job') openModal('modal-school');
+    } catch (e) {
+      console.error('[edura] autoOpenFromHash error', e);
+    }
   }
+  // Run immediately + after DOM ready + on next tick — covers any timing edge
   autoOpenFromHash();
+  if (document.readyState !== 'complete') {
+    window.addEventListener('load', autoOpenFromHash);
+  }
+  setTimeout(autoOpenFromHash, 50);
   window.addEventListener('hashchange', autoOpenFromHash);
 
   // Close on overlay click
