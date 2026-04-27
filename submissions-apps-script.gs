@@ -1,12 +1,17 @@
 /**
  * Edura — Submissions endpoint
  * ─────────────────────────────────────────────────────────────────
- *  פותחת 4 actions:
+ *  פותחת 5 actions:
  *
  *    1. submit_application   — מורה שולח מועמדות למשרה (כולל קובץ קו"ח)
- *    2. submit_job           — מנהל מפרסם משרה חדשה
- *    3. subscribe_alerts     — הרשמה להתראה יומית למורות
- *    4. subscribe_principal  — הרשמה להתראה על מכרזי ניהול הסבב הבא
+ *    2. submit_job           — מנהל מפרסם משרה חדשה (pending → מייל אישור למיטל)
+ *    3. submit_teacher       — מורה מפרסם פרופיל חיפוש (pending → מייל אישור למיטל)
+ *    4. subscribe_alerts     — הרשמה להתראה יומית למורות
+ *    5. subscribe_principal  — הרשמה להתראה על מכרזי ניהול הסבב הבא
+ *
+ *  + doGet endpoints:
+ *    ?action=approved        — מחזיר רק רשומות שאושרו (לתצוגה באתר)
+ *    ?action=approve&type=job|teacher&ref=…&token=… — אישור פרסום בלחיצה אחת מהמייל
  *
  *  הקמה (פעם אחת):
  *  1) Google Sheet חדש בשם "Edura — פניות והרשמות"
@@ -24,12 +29,17 @@
 
 const SHEET_APPLICATIONS = 'applications';
 const SHEET_POSTED_JOBS = 'posted_jobs';
+const SHEET_POSTED_TEACHERS = 'posted_teachers';
 const SHEET_ALERTS = 'alerts';
 const SHEET_PRINCIPAL_ALERTS = 'principal_alerts';
 const SHEET_LOG_SUB = 'log';
 
 // יעד לפניות שמגיעות בלי כתובת מייל ספציפית במשרה (ברירת מחדל)
 const ADMIN_EMAIL = 'meytal@edura.co.il';
+
+// סוד לחתימת טוקני אישור בקישורי "אשר פרסום" שמגיעים למייל
+// אם רוצים להחליף — שני את ערך זה והגדירי גרסה חדשה ב-Deploy
+const APPROVE_SECRET = 'edura-approve-2026-meytal';
 
 // URL של הסוכן הראשי (jobs scanner) — לשליפה ל-daily alerts
 const JOBS_API_URL = 'https://script.google.com/macros/s/AKfycbxFqT828xAhAAhe9mJ6h55Kt9i6zKjcRZBscMYjrPkUV1BUuKhqT_n7ZLqC7cNZs7wR-Q/exec';
@@ -40,6 +50,9 @@ const APPLICATIONS_HEADERS = ['timestamp', 'ref_id', 'job_id', 'job_title', 'sch
 const POSTED_JOBS_HEADERS = ['timestamp', 'ref_id', 'school', 'subject', 'role',
                              'region', 'city', 'level', 'sector', 'scope',
                              'description', 'contact_name', 'email', 'phone', 'status'];
+const POSTED_TEACHERS_HEADERS = ['timestamp', 'ref_id', 'name', 'subject', 'level',
+                                 'region', 'city', 'scope', 'notes',
+                                 'email', 'phone', 'status'];
 const ALERTS_HEADERS = ['timestamp', 'email', 'name', 'region', 'level', 'subject',
                         'role', 'scope', 'active', 'last_sent'];
 const PRINCIPAL_ALERTS_HEADERS = ['timestamp', 'email', 'name', 'region', 'phone', 'active', 'last_sent'];
@@ -55,6 +68,7 @@ function setup() {
   const ss = SpreadsheetApp.getActiveSpreadsheet();
   ensureSheet_(ss, SHEET_APPLICATIONS, APPLICATIONS_HEADERS);
   ensureSheet_(ss, SHEET_POSTED_JOBS, POSTED_JOBS_HEADERS);
+  ensureSheet_(ss, SHEET_POSTED_TEACHERS, POSTED_TEACHERS_HEADERS);
   ensureSheet_(ss, SHEET_ALERTS, ALERTS_HEADERS);
   ensureSheet_(ss, SHEET_PRINCIPAL_ALERTS, PRINCIPAL_ALERTS_HEADERS);
   ensureSheet_(ss, SHEET_LOG_SUB, LOG_HEADERS);
@@ -107,6 +121,7 @@ function doPost(e) {
 
     if (action === 'submit_application')   return json_(handleApplication_(body));
     if (action === 'submit_job')           return json_(handlePostJob_(body));
+    if (action === 'submit_teacher')       return json_(handlePostTeacher_(body));
     if (action === 'subscribe_alerts')     return json_(handleAlerts_(body));
     if (action === 'subscribe_principal')  return json_(handlePrincipal_(body));
 
@@ -117,9 +132,148 @@ function doPost(e) {
   }
 }
 
-// CORS preflight (Apps Script web apps don't support OPTIONS, but we keep doGet open)
+// doGet — service metadata + approve-by-link + public approved listing
 function doGet(e) {
-  return json_({ ok: true, service: 'Edura submissions', actions: ['submit_application', 'submit_job', 'subscribe_alerts', 'subscribe_principal'] });
+  try {
+    const params = (e && e.parameter) || {};
+    const action = String(params.action || '').toLowerCase();
+
+    if (action === 'approve') {
+      return handleApproveByLink_(params);
+    }
+    if (action === 'reject') {
+      return handleApproveByLink_(Object.assign({}, params, { decision: 'reject' }));
+    }
+    if (action === 'approved') {
+      return json_(getApprovedListings_());
+    }
+    return json_({
+      ok: true,
+      service: 'Edura submissions',
+      actions: ['submit_application', 'submit_job', 'submit_teacher', 'subscribe_alerts', 'subscribe_principal'],
+      get_actions: ['approved', 'approve', 'reject']
+    });
+  } catch (err) {
+    return json_({ ok: false, error: String(err) });
+  }
+}
+
+// ════════════════════════════════════════════════════════════════════
+// approve-by-link — נקודת הקצה שלוחצים עליה מהמייל
+// ════════════════════════════════════════════════════════════════════
+function handleApproveByLink_(params) {
+  const type = String(params.type || '').toLowerCase();   // 'job' | 'teacher'
+  const refId = String(params.ref || '').trim();
+  const token = String(params.token || '').trim();
+  const decision = String(params.decision || 'approve').toLowerCase();
+
+  if (!type || !refId || !token) {
+    return htmlPage_('שגיאה', 'חסרים פרמטרים: type · ref · token', false);
+  }
+  const expected = signToken_(type, refId);
+  if (token !== expected) {
+    return htmlPage_('שגיאת אימות', 'הקישור לא חתום נכון. אם זה ישן — בטח כבר אישרת את הרשומה.', false);
+  }
+
+  const sheetName = (type === 'teacher') ? SHEET_POSTED_TEACHERS : SHEET_POSTED_JOBS;
+  const headers = (type === 'teacher') ? POSTED_TEACHERS_HEADERS : POSTED_JOBS_HEADERS;
+  const sh = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(sheetName);
+  if (!sh) return htmlPage_('שגיאה', 'גיליון לא נמצא: ' + sheetName, false);
+
+  const last = sh.getLastRow();
+  if (last < 2) return htmlPage_('לא נמצא', 'אין הגשות בגיליון.', false);
+
+  const refCol = headers.indexOf('ref_id') + 1;
+  const statusCol = headers.indexOf('status') + 1;
+  const data = sh.getRange(2, 1, last - 1, headers.length).getValues();
+
+  for (let i = 0; i < data.length; i++) {
+    if (String(data[i][refCol - 1]) === refId) {
+      const rowNum = i + 2;
+      const currStatus = String(data[i][statusCol - 1] || '').toLowerCase();
+      const newStatus = (decision === 'reject') ? 'rejected' : 'approved';
+      if (currStatus === newStatus) {
+        return htmlPage_(
+          decision === 'reject' ? 'כבר נדחתה' : 'כבר אושרה',
+          'הרשומה ' + refId + ' כבר במצב "' + newStatus + '". לא בוצע שינוי נוסף.',
+          true
+        );
+      }
+      sh.getRange(rowNum, statusCol).setValue(newStatus);
+      log_('approve-link', refId + ' · ' + type + ' · → ' + newStatus);
+      const title = (decision === 'reject') ? 'נדחתה' : 'אושרה ופורסמה';
+      const msg = (decision === 'reject')
+        ? 'ההגשה ' + refId + ' סומנה כנדחית. היא לא תוצג באתר.'
+        : 'ההגשה ' + refId + ' אושרה ותופיע באתר. תודה!';
+      return htmlPage_(title, msg, true);
+    }
+  }
+  return htmlPage_('לא נמצא', 'לא נמצאה רשומה עם מזהה ' + refId, false);
+}
+
+function signToken_(type, refId) {
+  const raw = type + '|' + refId + '|' + APPROVE_SECRET;
+  const bytes = Utilities.computeDigest(Utilities.DigestAlgorithm.SHA_256, raw);
+  return bytes.map(function (b) { return ((b & 0xff) + 0x100).toString(16).slice(1); }).join('').slice(0, 24);
+}
+
+function approveLink_(type, refId, decision) {
+  const baseUrl = ScriptApp.getService().getUrl();
+  const token = signToken_(type, refId);
+  return baseUrl + '?action=' + (decision || 'approve') + '&type=' + encodeURIComponent(type) +
+         '&ref=' + encodeURIComponent(refId) + '&token=' + token;
+}
+
+function htmlPage_(title, msg, success) {
+  const color = success ? '#0F9285' : '#B91C1C';
+  const bg = success ? '#CCFBF1' : '#FEE2E2';
+  const html =
+    '<!DOCTYPE html><html lang="he" dir="rtl"><head><meta charset="utf-8">' +
+    '<meta name="viewport" content="width=device-width,initial-scale=1">' +
+    '<title>אדורה · ' + escHtml_(title) + '</title>' +
+    '<style>body{margin:0;font-family:Heebo,Arial,sans-serif;background:#F8FAFC;color:#0B2A4A;display:grid;place-items:center;min-height:100vh;padding:24px}' +
+    '.box{background:#fff;max-width:480px;width:100%;border-radius:18px;padding:32px 28px;box-shadow:0 10px 40px rgba(0,0,0,.06);text-align:center}' +
+    '.tag{display:inline-block;font-size:11px;font-weight:700;letter-spacing:0.5px;background:' + bg + ';color:' + color + ';padding:5px 12px;border-radius:999px;margin-bottom:14px}' +
+    'h1{margin:0 0 12px;font-size:22px}p{color:#475569;line-height:1.6;margin:0 0 18px}' +
+    'a.btn{display:inline-block;background:#0B2A4A;color:#fff;text-decoration:none;padding:10px 20px;border-radius:999px;font-weight:600;font-size:13px}' +
+    '</style></head><body><div class="box">' +
+    '<div class="tag">אדורה · ניהול פרסומים</div>' +
+    '<h1>' + escHtml_(title) + '</h1>' +
+    '<p>' + escHtml_(msg) + '</p>' +
+    '<a class="btn" href="https://edura.co.il">חזרה לאתר ←</a>' +
+    '</div></body></html>';
+  return HtmlService.createHtmlOutput(html).setXFrameOptionsMode(HtmlService.XFrameOptionsMode.ALLOWALL);
+}
+
+// ════════════════════════════════════════════════════════════════════
+// approved listing — מחזיר רק רשומות status='approved' לתצוגה באתר
+// ════════════════════════════════════════════════════════════════════
+function getApprovedListings_() {
+  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  const jobs = readApproved_(ss, SHEET_POSTED_JOBS, POSTED_JOBS_HEADERS);
+  const teachers = readApproved_(ss, SHEET_POSTED_TEACHERS, POSTED_TEACHERS_HEADERS);
+  return { ok: true, jobs: jobs, teachers: teachers, updated: new Date().toISOString() };
+}
+
+function readApproved_(ss, sheetName, headers) {
+  const sh = ss.getSheetByName(sheetName);
+  if (!sh) return [];
+  const last = sh.getLastRow();
+  if (last < 2) return [];
+  const statusIdx = headers.indexOf('status');
+  const data = sh.getRange(2, 1, last - 1, headers.length).getValues();
+  const out = [];
+  data.forEach(function (row) {
+    if (String(row[statusIdx] || '').toLowerCase() !== 'approved') return;
+    const obj = {};
+    for (let i = 0; i < headers.length; i++) {
+      let v = row[i];
+      if (v instanceof Date) v = v.toISOString();
+      obj[headers[i]] = v;
+    }
+    out.push(obj);
+  });
+  return out;
 }
 
 // ════════════════════════════════════════════════════════════════════
@@ -258,30 +412,41 @@ function handlePostJob_(b) {
   sh.appendRow([new Date(), refId, school, subject, role, region, city, level,
                 sector, scope, description, contactName, email, phone, 'pending']);
 
-  // התראה למיטל
-  const subj = '[אדורה · ' + refId + '] משרה חדשה לפרסום — ' + school;
-  const body =
-    'משרה חדשה הוגשה לפרסום באדורה.\n\n' +
-    'מספר פנייה: ' + refId + '\n' +
-    'בית ספר: ' + school + '\n' +
-    'מקצוע: ' + subject + '\n' +
-    'תפקיד: ' + role + '\n' +
-    'אזור: ' + region + ' · ' + city + '\n' +
-    'שכבה: ' + level + ' · מגזר: ' + sector + ' · היקף: ' + scope + '\n\n' +
-    'תיאור:\n' + description + '\n\n' +
-    '— איש קשר —\n' +
-    contactName + '\n' + email + '\n' + phone + '\n\n' +
-    'אישור פרסום: ✓\n\n' +
-    'לאישור פרסום, ערכי את הסטטוס בטאב posted_jobs ל-"approved".';
+  const approveUrl = approveLink_('job', refId, 'approve');
+  const rejectUrl = approveLink_('job', refId, 'reject');
+
+  const fields = [
+    { label: 'בית ספר', value: school },
+    { label: 'מקצוע', value: subject },
+    { label: 'תפקיד', value: role },
+    { label: 'אזור', value: region + (city ? ' · ' + city : '') },
+    { label: 'שכבה', value: level },
+    { label: 'מגזר', value: sector },
+    { label: 'היקף', value: scope },
+    { label: 'תיאור', value: description },
+    { label: 'איש קשר', value: contactName },
+    { label: 'מייל', value: email },
+    { label: 'טלפון', value: phone }
+  ];
+  const html = buildApprovalEmail_({
+    type: 'job',
+    title: 'משרה חדשה לפרסום — ' + school,
+    refId: refId,
+    fields: fields,
+    approveUrl: approveUrl,
+    rejectUrl: rejectUrl
+  });
 
   try {
-    MailApp.sendEmail(ADMIN_EMAIL, subj, body, { name: 'אדורה · edura.co.il', replyTo: email });
-    // אישור למנהל
+    MailApp.sendEmail(ADMIN_EMAIL, '[אדורה · ' + refId + '] משרה ממתינה לאישור — ' + school,
+      htmlToText_(html), { name: 'אדורה · edura.co.il', replyTo: email, htmlBody: html });
+
+    // אישור קבלה למנהל המגיש
     MailApp.sendEmail(email, 'התקבלה בקשת פרסום באדורה (' + refId + ')',
       'שלום ' + contactName + ',\n\n' +
-      'בקשת הפרסום של ' + school + ' למשרת ' + subject + ' התקבלה.\n' +
+      'בקשת הפרסום של ' + school + ' למשרת ' + subject + ' התקבלה ונמצאת בבדיקה.\n' +
       'מספר פנייה: ' + refId + '\n\n' +
-      'נעלה את המשרה לאדורה תוך 24 שעות. אם משהו דחוף — חזרי לכתובת הזו.\n\n' +
+      'אחרי אישור (תוך 24 שעות) המשרה תופיע באדורה ומורות יוכלו לפנות אלייך.\n\n' +
       '— אדורה · edura.co.il',
       { name: 'אדורה · edura.co.il', replyTo: ADMIN_EMAIL });
     log_('job-posted', refId + ' · ' + school);
@@ -290,6 +455,96 @@ function handlePostJob_(b) {
     log_('job-post-error', refId + ' · ' + String(err));
     return { ok: false, error: 'שמירה הצליחה אך מייל נכשל. נחזור אלייך תוך 24 שעות (' + refId + ')' };
   }
+}
+
+// ════════════════════════════════════════════════════════════════════
+// 3. submit_teacher — מורה מפרסם פרופיל חיפוש (ממתין לאישור מיטל)
+// ════════════════════════════════════════════════════════════════════
+function handlePostTeacher_(b) {
+  const name = String(b.name || '').trim();
+  const subject = String(b.subject || '').trim();
+  const level = String(b.level || '').trim();
+  const region = String(b.region || '').trim();
+  const city = String(b.city || '').trim();
+  const scope = String(b.scope || '').trim();
+  const notes = String(b.notes || '').trim();
+  const email = String(b.email || '').trim();
+  const phone = String(b.phone || '').trim();
+
+  if (!name || !subject || !email) {
+    return { ok: false, error: 'שם, מקצוע ומייל הם חובה' };
+  }
+  if (!isValidEmail_(email)) return { ok: false, error: 'מייל לא תקין' };
+
+  const refId = generateRefId_('TCH');
+  const sh = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(SHEET_POSTED_TEACHERS);
+  sh.appendRow([new Date(), refId, name, subject, level, region, city,
+                scope, notes, email, phone, 'pending']);
+
+  const approveUrl = approveLink_('teacher', refId, 'approve');
+  const rejectUrl = approveLink_('teacher', refId, 'reject');
+
+  const fields = [
+    { label: 'שם', value: name },
+    { label: 'מקצוע', value: subject },
+    { label: 'שכבה', value: level },
+    { label: 'אזור', value: region + (city ? ' · ' + city : '') },
+    { label: 'היקף', value: scope },
+    { label: 'הערות', value: notes },
+    { label: 'מייל', value: email },
+    { label: 'טלפון', value: phone }
+  ];
+  const html = buildApprovalEmail_({
+    type: 'teacher',
+    title: 'מורה חדש/ה לפרסום — ' + name,
+    refId: refId,
+    fields: fields,
+    approveUrl: approveUrl,
+    rejectUrl: rejectUrl
+  });
+
+  try {
+    MailApp.sendEmail(ADMIN_EMAIL, '[אדורה · ' + refId + '] מורה ממתין לאישור — ' + name,
+      htmlToText_(html), { name: 'אדורה · edura.co.il', replyTo: email, htmlBody: html });
+
+    // אישור קבלה למורה המגיש
+    MailApp.sendEmail(email, 'התקבלה בקשת פרסום באדורה (' + refId + ')',
+      'שלום ' + name + ',\n\n' +
+      'בקשת הפרסום שלך באדורה התקבלה ונמצאת בבדיקה.\n' +
+      'מספר פנייה: ' + refId + '\n\n' +
+      'אחרי אישור (תוך 24 שעות) הפרופיל יופיע באתר ומנהלי בתי ספר יוכלו לפנות אלייך.\n\n' +
+      '— אדורה · edura.co.il',
+      { name: 'אדורה · edura.co.il', replyTo: ADMIN_EMAIL });
+    log_('teacher-posted', refId + ' · ' + name);
+    return { ok: true, refId: refId };
+  } catch (err) {
+    log_('teacher-post-error', refId + ' · ' + String(err));
+    return { ok: false, error: 'שמירה הצליחה אך מייל נכשל. נחזור אלייך תוך 24 שעות (' + refId + ')' };
+  }
+}
+
+// ════════════════════════════════════════════════════════════════════
+// buildApprovalEmail_ — מייל אישור עם כפתורי "אשר ופרסם" / "דחה"
+// ════════════════════════════════════════════════════════════════════
+function buildApprovalEmail_(d) {
+  const rows = d.fields.filter(function (f) { return f.value && String(f.value).trim() !== ''; })
+    .map(function (f) {
+      return '<tr><td style="padding:8px 0;width:90px;color:#475569;vertical-align:top;">' + escHtml_(f.label) + ':</td>' +
+             '<td style="padding:8px 0;color:#0B2A4A;">' + escHtml_(f.value).replace(/\n/g, '<br>') + '</td></tr>';
+    }).join('');
+
+  return '' +
+    '<div dir="rtl" style="font-family:Arial,Helvetica,sans-serif;color:#0B2A4A;line-height:1.6;max-width:600px;background:#F8FAFC;padding:24px;">' +
+    '<div style="background:#fff;border-radius:14px;padding:24px;box-shadow:0 4px 20px rgba(0,0,0,.04);">' +
+    '<div style="font-size:11px;color:#0F9285;font-weight:700;letter-spacing:0.5px;margin-bottom:6px;">אדורה · ממתין לאישור · ' + escHtml_(d.refId) + '</div>' +
+    '<h2 style="margin:0 0 18px;font-size:20px;color:#0B2A4A;">' + escHtml_(d.title) + '</h2>' +
+    '<table style="border-collapse:collapse;width:100%;margin:0 0 22px;">' + rows + '</table>' +
+    '<div style="display:block;text-align:center;margin:18px 0 6px;">' +
+      '<a href="' + d.approveUrl + '" style="display:inline-block;background:#0F9285;color:#fff;text-decoration:none;padding:14px 28px;border-radius:999px;font-weight:700;font-size:15px;margin:4px;">✓ אשר ופרסם</a>' +
+      '<a href="' + d.rejectUrl + '" style="display:inline-block;background:#fff;color:#B91C1C;border:2px solid #FCA5A5;text-decoration:none;padding:12px 26px;border-radius:999px;font-weight:700;font-size:15px;margin:4px;">✕ דחה</a>' +
+    '</div>' +
+    '<p style="font-size:12px;color:#94A3B8;margin:18px 0 0;text-align:center;">אישור פותח עמוד אישור באדורה ומסמן את הרשומה ' + escHtml_(d.refId) + ' כ-approved. הקישור חתום ולא ניתן לזיוף.</p>' +
+    '</div></div>';
 }
 
 // ════════════════════════════════════════════════════════════════════

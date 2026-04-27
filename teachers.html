@@ -990,13 +990,49 @@ function fixTeacherRegion(t) {
 }
 function normalizeAllTeachers() { allT.forEach(fixTeacherRegion); }
 
+function normalizeSubmittedTeacher_(r) {
+  return {
+    id: r.ref_id,
+    source: 'submitted',
+    source_name: 'הגשה ישירה',
+    name: r.name || '',
+    subject: r.subject || '',
+    level: r.level || '',
+    region: r.region || '',
+    city: r.city || '',
+    scope: r.scope || '',
+    notes: r.notes || '',
+    email: r.email || '',
+    phone: r.phone || '',
+    date: r.timestamp || '',
+    date_iso: r.timestamp || '',
+    is_submitted: true
+  };
+}
+function normalizeSubmittedJob_(r) {
+  return {
+    id: r.ref_id, source: 'submitted', source_name: 'הגשה ישירה',
+    title: (r.subject ? r.subject + ' · ' : '') + (r.school || ''),
+    school: r.school || '', subject: r.subject || '', role: r.role || '',
+    region: r.region || '', city: r.city || '', level: r.level || '',
+    sector: r.sector || '', scope: r.scope || '', description: r.description || '',
+    email: r.email || '', phone: r.phone || '', contact_name: r.contact_name || '',
+    date: r.timestamp || '', date_iso: r.timestamp || '', url: '', is_submitted: true
+  };
+}
+
 async function loadTeachers() {
   try {
-    const [resA, resB, resB2, resJ] = await Promise.all([
+    const approvedFetch = (typeof SUBMISSIONS_URL !== 'undefined' && SUBMISSIONS_URL)
+      ? fetch(SUBMISSIONS_URL + '?action=approved', { cache: 'no-store' })
+          .then(r => r.ok ? r.json() : null).catch(() => null)
+      : Promise.resolve(null);
+    const [resA, resB, resB2, resJ, approvedData] = await Promise.all([
       fetch(TEACHERS_URL, { cache: 'no-store' }),
       fetch(FB_TEACHERS_URL, { cache: 'no-store' }).catch(() => null),
       fetch(FB_TEACHERS_2_URL, { cache: 'no-store' }).catch(() => null),
-      fetch(JOBS_URL, { cache: 'no-store' }).catch(() => null)
+      fetch(JOBS_URL, { cache: 'no-store' }).catch(() => null),
+      approvedFetch
     ]);
     const dataA = await resA.json();
     const fbData = resB && resB.ok ? await resB.json() : null;
@@ -1004,10 +1040,12 @@ async function loadTeachers() {
     const jobsData = resJ && resJ.ok ? await resJ.json() : null;
     const fbTeachers = fbData ? normalizeFbTeachers(fbData, 'fb') : [];
     const fbTeachers2 = fbData2 ? normalizeFbTeachers(fbData2, 'fb2') : [];
-    allT = [...(dataA.teachers || []), ...fbTeachers, ...fbTeachers2];
+    const submittedTeachers = (approvedData && approvedData.teachers) ? approvedData.teachers.map(normalizeSubmittedTeacher_) : [];
+    const submittedJobs = (approvedData && approvedData.jobs) ? approvedData.jobs.map(normalizeSubmittedJob_) : [];
+    allT = [...submittedTeachers, ...(dataA.teachers || []), ...fbTeachers, ...fbTeachers2];
     normalizeAllTeachers();
     allT.forEach((t, i) => { t.tIndex = i; });
-    allJobs = (jobsData && jobsData.jobs) || [];
+    allJobs = [...submittedJobs, ...((jobsData && jobsData.jobs) || [])];
     populateFilters();
     applyFilters();
   } catch (err) {

@@ -71,17 +71,14 @@
   .header-inner {
     max-width: 1200px; margin: 0 auto;
     padding: 0 28px;
-    display: flex; justify-content: space-between; align-items: center; gap: 16px;
+    display: flex; justify-content: center; align-items: center; gap: 16px;
   }
-  .logo { display: inline-flex; flex-direction: column; align-items: flex-end; gap: 1px; transition: transform .15s; }
-  .logo:hover { transform: translateY(-1px); }
+  .logo { display: inline-flex; flex-direction: column; align-items: center; gap: 1px; }
   .logo-svg { height: 32px; width: auto; display: block; }
   .logo-nikud { font-family: 'Heebo', sans-serif; font-weight: 900; font-size: 36px; letter-spacing: -1.5px; fill: var(--teal); }
   .logo-word { font-family: 'Heebo', sans-serif; font-weight: 900; font-size: 36px; letter-spacing: -1.5px; fill: var(--ink); }
   .logo-h { fill: var(--teal); }
-  .logo-tagline { font-family: 'Playpen Sans Hebrew', cursive; font-size: 12px; color: var(--teal-deep); font-weight: 500; line-height: 1.1; transform: rotate(-1deg); transform-origin: right center; white-space: nowrap; }
-  .back-link { color: var(--ink-mute); font-size: 14px; font-weight: 500; transition: color .15s; }
-  .back-link:hover { color: var(--teal-deep); }
+  .logo-tagline { font-family: 'Playpen Sans Hebrew', cursive; font-size: 12px; color: var(--teal-deep); font-weight: 500; line-height: 1.1; transform: rotate(-1deg); white-space: nowrap; }
 
   /* ─── Hero — editorial / asymmetric ─── */
   .hero {
@@ -181,6 +178,10 @@
   }
   .cta-primary svg { width: 18px; height: 18px; transition: transform .2s; }
   .cta-primary:hover svg { transform: translateX(-3px); }
+  .cta-primary.cta-teacher { background: var(--ink); }
+  .cta-primary.cta-teacher:hover { background: var(--ink-soft); }
+  .cta-primary.cta-school { background: var(--orange); box-shadow: 0 10px 24px rgba(217,119,6,.32); }
+  .cta-primary.cta-school:hover { background: #B45309; box-shadow: 0 16px 32px rgba(217,119,6,.40); }
   .cta-secondary {
     color: var(--ink-soft);
     font-size: 15px; font-weight: 600;
@@ -565,6 +566,49 @@
     font-size: 15px; color: var(--ink-mute); line-height: 1.65;
   }
 
+  /* ─── Compact reasons ─── */
+  .reasons-compact .section-head { margin-bottom: 36px; }
+  .reasons-mini {
+    max-width: 920px; margin: 0 auto 36px;
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    gap: 18px;
+  }
+  .mini-reason {
+    background: var(--white);
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    padding: 18px 20px;
+    display: flex; gap: 14px; align-items: flex-start;
+    transition: border-color .2s, transform .2s;
+  }
+  .mini-reason:hover { border-color: var(--teal-glow); transform: translateY(-2px); }
+  .mini-num {
+    font-family: 'Frank Ruhl Libre', serif;
+    font-size: 22px; font-weight: 900;
+    color: var(--teal-deep);
+    line-height: 1; flex-shrink: 0;
+    background: var(--teal-pale);
+    width: 36px; height: 36px;
+    border-radius: 10px;
+    display: grid; place-items: center;
+  }
+  .mini-reason:nth-child(2) .mini-num { color: var(--orange); background: var(--orange-soft); }
+  .mini-reason:nth-child(3) .mini-num { color: var(--lavender); background: var(--lavender-soft); }
+  .mini-reason strong {
+    display: block;
+    font-size: 14.5px; font-weight: 700;
+    color: var(--ink);
+    margin-bottom: 3px;
+  }
+  .mini-reason span {
+    font-size: 13px; color: var(--ink-mute);
+    line-height: 1.5;
+  }
+  .dual-cta {
+    max-width: 700px; margin: 0 auto;
+    display: flex; gap: 14px; justify-content: center; flex-wrap: wrap;
+  }
+
   /* ─── Final CTA ─── */
   .closing {
     padding: 96px 28px;
@@ -602,16 +646,19 @@
     margin-bottom: 36px;
     line-height: 1.65;
   }
-  .closing .cta-primary {
+  .closing-cta-row {
+    display: flex; gap: 14px; justify-content: center; flex-wrap: wrap;
+  }
+  .closing .cta-primary.cta-teacher {
     background: var(--white); color: var(--ink);
     box-shadow: 0 16px 32px rgba(0,0,0,.3);
   }
-  .closing .cta-primary:hover { background: var(--teal-glow); }
-  .closing .cta-secondary {
-    color: var(--white); border-color: rgba(255,255,255,.4);
-    margin-inline-start: 18px;
+  .closing .cta-primary.cta-teacher:hover { background: var(--teal-glow); color: var(--ink); }
+  .closing .cta-primary.cta-school {
+    background: var(--orange); color: var(--white);
+    box-shadow: 0 16px 32px rgba(217,119,6,.40);
   }
-  .closing .cta-secondary:hover { color: var(--teal-glow); border-color: var(--teal-glow); }
+  .closing .cta-primary.cta-school:hover { background: #B45309; }
   .closing-meta {
     margin-top: 28px;
     color: rgba(255,255,255,.65);
@@ -664,14 +711,13 @@
 
 <header class="header">
   <div class="header-inner">
-    <a href="index.html" class="logo" aria-label="אדורה — לדף הבית">
+    <div class="logo" aria-label="אדורה">
       <svg class="logo-svg" viewBox="0 0 200 50" aria-hidden="true">
         <text x="100" y="38" text-anchor="middle" direction="rtl" class="logo-nikud">אֶדורֶה</text>
         <text x="100" y="38" text-anchor="middle" direction="rtl" class="logo-word">אדור<tspan class="logo-h">ה</tspan></text>
       </svg>
       <span class="logo-tagline">האתר הגדול למשרות חינוך בישראל</span>
-    </a>
-    <a href="index.html" class="back-link">לעמוד הבית ←</a>
+    </div>
   </div>
 </header>
 
@@ -690,17 +736,29 @@
         בישראל, <span class="underline-mark">במקום אחד</span>
       </h1>
       <p class="hero-lead">
-        אדורה מאגד מאות משרות הוראה מעשרות מקורות — קבוצות מורות, פייסבוק, אתרי משרד החינוך וארגוני מורים. במקום לדפדף בעשרה לוחות שונים, מלאו פרופיל אחד וסננו את המאגר לפי מה שחשוב לכם.
+        אדורה מאגד מאות משרות הוראה מעשרות מקורות, במקום אחד. המאגר מבצע <strong>match אוטומטי</strong> בין משרות פנויות למורים מחפשי עבודה לפי <strong>אזור, מקצוע ושכבת גיל</strong> — כך שכל צד רואה רק את מה שרלוונטי לו.
       </p>
       <div class="hero-cta-row">
-        <a href="cv-builder.html" class="cta-primary" id="cta-top">
+        <a href="#register" class="cta-primary cta-teacher" id="cta-top-teacher">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-            <line x1="19" y1="12" x2="5" y2="12"/>
-            <polyline points="12 19 5 12 12 5"/>
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+            <polyline points="14 2 14 8 20 8"/>
+            <line x1="16" y1="13" x2="8" y2="13"/>
+            <line x1="16" y1="17" x2="8" y2="17"/>
           </svg>
-          התחילו פרופיל — דקה
+          הרשמה למורים
         </a>
-        <a href="teachers.html" class="cta-secondary">או לדפדף בכל המשרות</a>
+        <a href="#register" class="cta-primary cta-school" id="cta-top-school">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M3 21h18"/>
+            <path d="M5 21V7l8-4v18"/>
+            <path d="M19 21V11l-6-4"/>
+            <line x1="9" y1="9" x2="9" y2="9.01"/>
+            <line x1="9" y1="13" x2="9" y2="13.01"/>
+            <line x1="9" y1="17" x2="9" y2="17.01"/>
+          </svg>
+          הרשמה לבתי ספר
+        </a>
       </div>
       <div class="hero-meta">
         <span>
@@ -709,11 +767,11 @@
         </span>
         <span>
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-          ללא הרשמה
+          ללא הרשמה מסובכת
         </span>
         <span>
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-          פנייה ישירה לבית הספר
+          match אוטומטי
         </span>
       </div>
     </div>
@@ -854,14 +912,8 @@
 
     <div class="bento-card bento-sources">
       <div class="bento-label">מקורות</div>
-      <h3>עשרות מקורות, מקום אחד</h3>
-      <div class="source-list">
-        <span>ארגון המורים</span>
-        <span>הסתדרות המורים</span>
-        <span>שתיל</span>
-        <span>קבוצות פייסבוק</span>
-        <span>אתרי בתי ספר</span>
-      </div>
+      <h3>מעשרות מקורות, מקום אחד</h3>
+      <p>אגרגציה אוטומטית מכל לוחות הדרושים, ארגוני המורים וקבוצות העמיתות הרלוונטיים — בלי שתצטרכו לדפדף ידנית.</p>
     </div>
   </div>
 </section>
@@ -870,7 +922,7 @@
 <section class="block warm">
   <div class="pitch">
     <p class="pitch-text">
-      מורות שמחפשות עבודה לא צריכות לעבור בין <em>עשר קבוצות פייסבוק</em>, חמישה לוחות דרושים ושלוש קבוצות וואטסאפ. אדורה הוקמה כדי לחסוך לכן את הזמן הזה — מאגר אחד, חיפוש ממוקד, פנייה ישירה לבית הספר.
+      מורות שמחפשות עבודה לא צריכות לעבור בין <em>עשר קבוצות פייסבוק</em>, חמישה לוחות דרושים ושלוש קבוצות וואטסאפ. אדורה הוקמה כדי לחסוך לכן את הזמן הזה — מאגר אחד, match אוטומטי בין משרות לפרופיל.
     </p>
     <div class="pitch-author">— מיטל פלג, מקימת אדורה</div>
   </div>
@@ -914,44 +966,67 @@
       </div>
       <div class="mock-divider"></div>
       <div class="mock-result">
-        <strong>מתוך מאות משרות במאגר</strong> — האתר מציג קודם את אלו שתואמות לפרופיל שלך, ואחר כך את כל השאר.
+        <strong>Match אוטומטי</strong> — המאגר מצליב את הפרופיל שלך עם משרות פנויות באזור, מקצוע ושכבה תואמים, ומקפיץ את ההתאמות לראש.
       </div>
     </div>
 
     <div class="profile-text">
       <div class="section-eyebrow">איך זה עובד</div>
-      <h2>פרופיל אחד. <em>מיון חכם.</em></h2>
-      <p>במקום שתעברו על כל המאגר משרה-משרה — מלאו פרופיל קצר עם המקצועות, השכבות והאזורים שמתאימים לכם. זה לוקח כדקה, ובלי להירשם.</p>
-      <p>המערכת מסדרת את המאגר כך שמשרות תואמות יוצגו ראשונות. אתן רואות בעצמכן מה מעניין — ובוחרות אם לפנות.</p>
-      <div class="softnote">
-        אדורה לא מבטיחה לכן משרה ולא מתחייבת שכל משרה מתאימה. מה שכן — חוסכת לכן את הזמן של דפדוף בעשרה לוחות במקביל.
-      </div>
+      <h2>Match אוטומטי. <em>שני הכיוונים.</em></h2>
+      <p>מורות ממלאות פרופיל קצר עם המקצועות, השכבות והאזורים שלהן. בתי ספר מפרסמים משרה עם אותם פרמטרים. המאגר מצליב ומבצע match אוטומטי בין שני הצדדים.</p>
+      <p>התוצאה: מורות רואות בראש הרשימה את המשרות שתואמות לפרופיל שלהן, ובתי ספר רואים מועמדות שמתאימות לדרישות.</p>
     </div>
   </div>
 </section>
 
-<!-- ─── REASONS ─── -->
-<section class="block warm">
+<!-- ─── 3 REASONS TO REGISTER — compact ─── -->
+<section class="block warm reasons-compact" id="register">
   <div class="section-head">
-    <div class="section-eyebrow">למה אצלנו</div>
+    <div class="section-eyebrow">למה להירשם</div>
     <h2>שלוש סיבות <em>פשוטות</em></h2>
   </div>
-  <div class="reasons-grid">
-    <div class="reason-card r1">
-      <div class="reason-num">01</div>
-      <h3>המאגר הגדול בישראל</h3>
-      <p>כל משרות החינוך — מכל המקורות הפתוחים, ארגוני המורים, קבוצות עמיתות וקבוצות פייסבוק שאספנו — מגיעות לאדורה מדי יום.</p>
+  <div class="reasons-mini">
+    <div class="mini-reason">
+      <span class="mini-num">01</span>
+      <div>
+        <strong>גישה למאגר הגדול</strong>
+        <span>מאות משרות מעודכנות מעשרות מקורות — בלי לדפדף בלוחות שונים.</span>
+      </div>
     </div>
-    <div class="reason-card r2">
-      <div class="reason-num">02</div>
-      <h3>חיפוש שחוסך זמן</h3>
-      <p>סינון לפי מקצוע, שכבה, אזור ומגזר. פרופיל קצר מסדר את המאגר לפי מה שרלוונטי לכם — בלי שתצטרכו לבדוק כל משרה.</p>
+    <div class="mini-reason">
+      <span class="mini-num">02</span>
+      <div>
+        <strong>Match אוטומטי</strong>
+        <span>המאגר מצליב פרופיל ומשרה לפי אזור, מקצוע ושכבה — בלי לחפש ידנית.</span>
+      </div>
     </div>
-    <div class="reason-card r3">
-      <div class="reason-num">03</div>
-      <h3>בלי מתווכים</h3>
-      <p>חינם תמיד, ללא הרשמה, ללא עמלה. כל משרה כוללת פרטי קשר ישירים — אתן פונות ישירות לבית הספר.</p>
+    <div class="mini-reason">
+      <span class="mini-num">03</span>
+      <div>
+        <strong>חינם, בלי מתווכים</strong>
+        <span>אין עמלה, אין מתווך, אין התחייבות — אפשר להסיר פרופיל בכל רגע.</span>
+      </div>
     </div>
+  </div>
+
+  <div class="dual-cta">
+    <a href="cv-builder.html" class="cta-primary cta-teacher">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+        <polyline points="14 2 14 8 20 8"/>
+        <line x1="16" y1="13" x2="8" y2="13"/>
+        <line x1="16" y1="17" x2="8" y2="17"/>
+      </svg>
+      הרשמה למורים
+    </a>
+    <a href="#" class="cta-primary cta-school" id="cta-mid-school">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M3 21h18"/>
+        <path d="M5 21V7l8-4v18"/>
+        <path d="M19 21V11l-6-4"/>
+      </svg>
+      הרשמה לבתי ספר
+    </a>
   </div>
 </section>
 
@@ -959,17 +1034,26 @@
 <section class="closing">
   <div class="closing-inner">
     <div class="section-eyebrow">בואו נתחיל</div>
-    <h2>המשרה הבאה שלכן <em>מחכה</em></h2>
-    <p>פרופיל קצר, ללא הרשמה. תוכלו לחזור ולעדכן אותו מתי שתרצו, או פשוט לדפדף במאגר המלא.</p>
-    <div>
-      <a href="cv-builder.html" class="cta-primary" id="cta-bottom">
+    <h2>בחרו את <em>הצד שלכם</em></h2>
+    <p>הרשמה אחת, match אוטומטי, חינם. אין הרשמה מסובכת, אין עמלה, אין התחייבות.</p>
+    <div class="closing-cta-row">
+      <a href="cv-builder.html" class="cta-primary cta-teacher" id="cta-bottom-teacher">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-          <line x1="19" y1="12" x2="5" y2="12"/>
-          <polyline points="12 19 5 12 12 5"/>
+          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+          <polyline points="14 2 14 8 20 8"/>
+          <line x1="16" y1="13" x2="8" y2="13"/>
+          <line x1="16" y1="17" x2="8" y2="17"/>
         </svg>
-        להתחיל את הפרופיל
+        הרשמה למורים
       </a>
-      <a href="teachers.html" class="cta-secondary">או לדפדף חופשי במאגר</a>
+      <a href="#" class="cta-primary cta-school" id="cta-bottom-school">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M3 21h18"/>
+          <path d="M5 21V7l8-4v18"/>
+          <path d="M19 21V11l-6-4"/>
+        </svg>
+        הרשמה לבתי ספר
+      </a>
     </div>
     <div class="closing-meta">
       <span>
@@ -978,7 +1062,7 @@
       </span>
       <span>
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-        ללא הרשמה
+        match אוטומטי
       </span>
       <span>
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
@@ -986,7 +1070,7 @@
       </span>
       <span>
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-        פנייה ישירה
+        בלי מתווכים
       </span>
     </div>
   </div>
@@ -994,10 +1078,31 @@
 
 <footer>
   <div class="footer-text">
-    אדורה — האתר הגדול בישראל למשרות חינוך · <a href="index.html">edura.co.il</a>
+    אדורה — האתר הגדול בישראל למשרות חינוך
   </div>
 </footer>
 
+<script>
+  // Hero teacher CTA → smooth scroll to register section first
+  document.getElementById('cta-top-teacher').addEventListener('click', function(e){
+    e.preventDefault();
+    document.getElementById('register').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
+  document.getElementById('cta-top-school').addEventListener('click', function(e){
+    e.preventDefault();
+    document.getElementById('register').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
+  // School registration buttons → open post-job modal via deep-link
+  ['cta-mid-school', 'cta-bottom-school'].forEach(function(id){
+    var el = document.getElementById(id);
+    if (!el) return;
+    el.addEventListener('click', function(e){
+      e.preventDefault();
+      sessionStorage.setItem('edura:open-post-job', '1');
+      window.location.href = 'index.html';
+    });
+  });
+</script>
 <script src="analytics.js"></script>
 
 </body>
