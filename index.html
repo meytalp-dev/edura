@@ -1548,15 +1548,17 @@ async function loadJobs() {
     allTeachers.forEach(fixJobRegion);
     populateFilters();
     applyFilters();
-    $('stat-total').textContent = allJobs.length;
-    const citiesSet = new Set(); const schoolsSet = new Set();
-    allJobs.forEach(j => {
-      if (j.city) citiesSet.add(String(j.city).trim());
-      if (j.school) schoolsSet.add(String(j.school).trim());
-    });
+    if ($('stat-total')) $('stat-total').textContent = allJobs.length;
     if ($('stat-teachers')) $('stat-teachers').textContent = allTeachers.length;
-    if ($('stat-cities')) $('stat-cities').textContent = citiesSet.size;
-    if ($('stat-schools')) $('stat-schools').textContent = schoolsSet.size;
+    if ($('stat-cities') || $('stat-schools')) {
+      const citiesSet = new Set(); const schoolsSet = new Set();
+      allJobs.forEach(j => {
+        if (j.city) citiesSet.add(String(j.city).trim());
+        if (j.school) schoolsSet.add(String(j.school).trim());
+      });
+      if ($('stat-cities')) $('stat-cities').textContent = citiesSet.size;
+      if ($('stat-schools')) $('stat-schools').textContent = schoolsSet.size;
+    }
     const wcEl = $('stat-with-contact');
     if (wcEl) wcEl.textContent = allJobs.filter(j => j.email || j.phone).length;
   } catch (err) {
