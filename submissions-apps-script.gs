@@ -119,6 +119,13 @@ function doPost(e) {
     const body = JSON.parse(e.postData.contents || '{}');
     const action = body.action || '';
 
+    // ─── Bot protection: server-side honeypot ───
+    if (body.hp && String(body.hp).trim() !== '') {
+      log_('bot-blocked', 'honeypot · action=' + action);
+      // pretend success so bot doesn't retry, but don't write
+      return json_({ ok: true, refId: 'BOT-BLOCKED' });
+    }
+
     if (action === 'submit_application')   return json_(handleApplication_(body));
     if (action === 'submit_job')           return json_(handlePostJob_(body));
     if (action === 'submit_teacher')       return json_(handlePostTeacher_(body));

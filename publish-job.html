@@ -3,25 +3,70 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>אדורה · האתר הגדול בישראל למשרות חינוך</title>
-<meta name="description" content="אדורה — מאות משרות הוראה מעשרות מקורות במקום אחד. Match אוטומטי בין משרות פנויות למורים מחפשי עבודה לפי אזור, מקצוע ושכבה." />
-<meta property="og:title" content="אדורה · האתר הגדול בישראל למשרות חינוך" />
-<meta property="og:description" content="מאות משרות מעשרות מקורות, במקום אחד. Match אוטומטי בין משרות פנויות למורים מחפשי עבודה." />
+<title>אדורה · לוח דרושים למורים — כל משרות החינוך במקום אחד</title>
+<meta name="description" content="אדורה — לוח דרושים ייעודי למורים בישראל. ממלאים טופס אחד והמערכת מתאימה משרות לפי אזור, מקצוע ושכבה. חינם, בלי מתווכים." />
+<meta name="robots" content="index,follow,max-image-preview:large" />
+<meta property="og:title" content="אדורה · לוח דרושים למורים" />
+<meta property="og:description" content="ממלאים טופס אחד — והמערכת מתאימה משרות. חינם, בלי מתווכים." />
 <meta property="og:url" content="https://edura.co.il/publish-job.html" />
 <meta property="og:type" content="website" />
 <meta property="og:site_name" content="אדורה" />
 <meta property="og:locale" content="he_IL" />
+<meta property="og:image" content="https://edura.co.il/assets/og-publish-job.png" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:image:alt" content="אדורה — לוח דרושים למורים" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="אדורה · לוח דרושים למורים" />
+<meta name="twitter:description" content="ממלאים טופס אחד — והמערכת מתאימה משרות. חינם, בלי מתווכים." />
+<meta name="twitter:image" content="https://edura.co.il/assets/og-publish-job.png" />
 <link rel="canonical" href="https://edura.co.il/publish-job.html" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;800;900&family=Assistant:wght@400;500;600;700&family=Playpen+Sans+Hebrew:wght@400;500;600;700&family=Frank+Ruhl+Libre:wght@400;500;700;900&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;600;800;900&family=Playpen+Sans+Hebrew:wght@500;700&display=swap" rel="stylesheet" />
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  "name": "אדורה",
+  "alternateName": "Edura",
+  "url": "https://edura.co.il",
+  "inLanguage": "he-IL",
+  "description": "לוח דרושים ייעודי למורים בישראל",
+  "potentialAction": {
+    "@type": "SearchAction",
+    "target": "https://edura.co.il/?q={query}",
+    "query-input": "required name=query"
+  }
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  "name": "אדורה",
+  "url": "https://edura.co.il",
+  "logo": "https://edura.co.il/assets/logo.png",
+  "founder": {
+    "@type": "Person",
+    "name": "מיטל פלג",
+    "url": "https://www.linkedin.com/in/meytal-peleg-839265378"
+  },
+  "contactPoint": {
+    "@type": "ContactPoint",
+    "email": "meytal@edura.co.il",
+    "contactType": "customer support",
+    "availableLanguage": ["Hebrew"]
+  }
+}
+</script>
 <style>
   :root {
     --ink: #0B2A4A;
     --ink-soft: #1E3A5F;
     --ink-mute: #475569;
     --teal: #14B8A6;
-    --teal-deep: #0D9488;
+    --teal-deep: #0F766E;
     --teal-pale: #F0FDFA;
     --teal-glow: #CCFBF1;
     --orange: #D97706;
@@ -32,6 +77,10 @@
     --pink-soft: #FCE7F3;
     --lavender: #8B5CF6;
     --lavender-soft: #EDE9FE;
+    --error: #DC2626;
+    --error-soft: #FEE2E2;
+    --success: #059669;
+    --success-soft: #D1FAE5;
     --line: #E2E8F0;
     --line-soft: #F1F5F9;
     --bg: #FAF9F7;
@@ -48,7 +97,7 @@
     border-radius: 6px;
   }
   body {
-    font-family: 'Heebo', 'Assistant', sans-serif;
+    font-family: 'Heebo', system-ui, sans-serif;
     background: var(--bg);
     color: var(--ink);
     line-height: 1.55;
@@ -57,6 +106,16 @@
     min-height: 100vh;
   }
   ::selection { background: var(--teal-glow); color: var(--ink); }
+
+  /* honeypot — hidden from users, visible to bots */
+  .hp-field {
+    position: absolute !important;
+    left: -9999px !important;
+    top: auto !important;
+    width: 1px !important;
+    height: 1px !important;
+    overflow: hidden !important;
+  }
 
   /* ─── Header ─── */
   .header {
@@ -70,27 +129,37 @@
   .header-inner {
     max-width: 1200px; margin: 0 auto;
     padding: 0 28px;
-    display: flex; justify-content: center; align-items: center;
+    display: flex; justify-content: space-between; align-items: center;
+    gap: 16px;
   }
-  .logo { display: inline-flex; flex-direction: column; align-items: center; gap: 1px; }
-  .logo-svg { height: 32px; width: auto; display: block; }
-  .logo-nikud { font-family: 'Heebo', sans-serif; font-weight: 900; font-size: 36px; letter-spacing: -1.5px; fill: var(--teal); }
-  .logo-word { font-family: 'Heebo', sans-serif; font-weight: 900; font-size: 36px; letter-spacing: -1.5px; fill: var(--ink); }
-  .logo-h { fill: var(--teal); }
+  .logo {
+    display: inline-flex; flex-direction: column; align-items: flex-start;
+    gap: 2px; text-decoration: none;
+  }
+  .logo-svg { height: 30px; width: auto; display: block; }
+  .logo-word { font-family: 'Heebo', sans-serif; font-weight: 900; font-size: 32px; letter-spacing: -1.2px; fill: var(--ink); }
+  .logo-h { fill: var(--teal-deep); }
   .logo-tagline {
     font-family: 'Playpen Sans Hebrew', cursive;
-    font-size: 12px; color: var(--teal-deep); font-weight: 500;
-    line-height: 1.1; transform: rotate(-1deg);
+    font-size: 11.5px; color: var(--teal-deep); font-weight: 500;
+    line-height: 1.1;
     white-space: nowrap;
   }
+  .header-links {
+    display: flex; gap: 18px; align-items: center;
+    font-size: 13.5px; font-weight: 600;
+  }
+  .header-links a {
+    color: var(--ink-mute); text-decoration: none;
+    transition: color .15s;
+  }
+  .header-links a:hover { color: var(--teal-deep); }
 
   /* ─── Hero ─── */
   .hero {
     position: relative;
-    padding: 72px 28px 88px;
+    padding: 56px 28px 72px;
     overflow: hidden;
-    min-height: calc(100vh - 60px);
-    display: flex; align-items: center;
   }
   .hero-grid {
     max-width: 1200px; margin: 0 auto;
@@ -140,7 +209,6 @@
     direction: ltr;
     will-change: transform;
   }
-  .wink { unicode-bidi: plaintext; }
   .wink {
     font-family: 'Playpen Sans Hebrew', cursive;
     font-size: 14px;
@@ -149,6 +217,7 @@
     line-height: 1;
     letter-spacing: -0.2px;
     flex-shrink: 0;
+    unicode-bidi: plaintext;
   }
   .wink:nth-child(3n) { color: var(--orange); transform: rotate(-1deg); }
   .wink:nth-child(3n+1) { transform: rotate(0.5deg); }
@@ -157,31 +226,6 @@
     from { transform: translateX(0); }
     to { transform: translateX(-50%); }
   }
-  @media (prefers-reduced-motion: reduce) {
-    .winks-track { animation: none; }
-  }
-  .eyebrow {
-    display: inline-flex; align-items: center; gap: 8px;
-    font-size: 12px; font-weight: 700;
-    letter-spacing: 1.5px; text-transform: uppercase;
-    color: var(--teal-deep);
-    background: var(--white);
-    border: 1px solid var(--teal-glow);
-    padding: 7px 14px 7px 12px;
-    border-radius: 999px;
-    margin-bottom: 22px;
-    box-shadow: var(--shadow-sm);
-  }
-  .pulse-dot {
-    width: 8px; height: 8px; border-radius: 50%;
-    background: var(--teal); position: relative;
-  }
-  .pulse-dot::after {
-    content: ''; position: absolute; inset: -4px;
-    border-radius: 50%; background: var(--teal);
-    opacity: .35; animation: pulse 2s ease-out infinite;
-  }
-  @keyframes pulse { 0%{transform:scale(.6);opacity:.5} 100%{transform:scale(2.2);opacity:0} }
 
   h1.hero-title {
     font-family: 'Playpen Sans Hebrew', 'Heebo', cursive;
@@ -205,20 +249,20 @@
     color: var(--ink-soft);
     line-height: 1.65;
     margin-bottom: 14px;
-    max-width: 540px;
+    max-width: 560px;
   }
-  .hero-lead strong { color: var(--ink); font-weight: 700; }
+  .hero-lead strong { color: var(--ink); font-weight: 800; }
   .hero-sub {
     font-size: 15px;
     color: var(--ink-mute);
     line-height: 1.6;
-    margin-bottom: 30px;
-    max-width: 540px;
+    margin-bottom: 28px;
+    max-width: 560px;
   }
 
   .hero-cta-row {
     display: flex; flex-wrap: wrap; gap: 14px; align-items: center;
-    margin-bottom: 22px;
+    margin-bottom: 18px;
   }
   .cta-primary {
     display: inline-flex; align-items: center; gap: 10px;
@@ -229,6 +273,7 @@
     cursor: pointer;
     border: none;
     font-family: inherit;
+    min-height: 48px;
   }
   .cta-primary:hover { transform: translateY(-2px); }
   .cta-primary svg { width: 18px; height: 18px; transition: transform .2s; }
@@ -242,13 +287,26 @@
     box-shadow: 0 16px 32px rgba(11,42,74,.28);
   }
   .cta-school {
-    background: var(--orange); color: var(--white);
-    box-shadow: 0 10px 24px rgba(217,119,6,.32);
+    background: var(--white); color: var(--orange-deep);
+    border: 1.5px solid var(--orange);
+    box-shadow: 0 6px 18px rgba(217,119,6,.12);
   }
   .cta-school:hover {
-    background: var(--orange-deep);
-    box-shadow: 0 16px 32px rgba(217,119,6,.40);
+    background: var(--orange-pale);
+    border-color: var(--orange-deep);
+    box-shadow: 0 12px 24px rgba(217,119,6,.18);
   }
+
+  .browse-hint {
+    font-size: 13px; color: var(--ink-mute);
+    margin-bottom: 22px;
+  }
+  .browse-hint a {
+    color: var(--teal-deep); font-weight: 700;
+    text-decoration: none; border-bottom: 1px dashed currentColor;
+    padding-bottom: 1px;
+  }
+  .browse-hint a:hover { color: var(--ink); border-bottom-style: solid; }
 
   .hero-meta {
     font-size: 13px; color: var(--ink-mute);
@@ -256,6 +314,34 @@
   }
   .hero-meta span { display: inline-flex; align-items: center; gap: 6px; }
   .hero-meta svg { width: 14px; height: 14px; color: var(--teal-deep); }
+
+  /* ─── Social proof — real numbers ─── */
+  .social-proof {
+    display: flex; flex-wrap: wrap; gap: 22px;
+    margin-top: 22px;
+    padding: 14px 18px;
+    background: var(--white);
+    border: 1px solid var(--teal-glow);
+    border-radius: 14px;
+    box-shadow: var(--shadow-sm);
+    max-width: 560px;
+  }
+  .sp-item {
+    display: flex; flex-direction: column; gap: 1px;
+  }
+  .sp-num {
+    font-family: 'Heebo', sans-serif;
+    font-size: 22px; font-weight: 900;
+    color: var(--teal-deep);
+    line-height: 1;
+    letter-spacing: -0.5px;
+  }
+  .sp-label {
+    font-size: 11.5px; color: var(--ink-mute);
+    font-weight: 600;
+  }
+  .sp-item:nth-child(2) .sp-num { color: var(--orange); }
+  .sp-item:nth-child(3) .sp-num { color: var(--lavender); }
 
   /* ─── Hero collage — sample job cards ─── */
   .hero-collage {
@@ -269,7 +355,6 @@
     border-radius: 18px;
     padding: 16px 18px;
     box-shadow: var(--shadow-md);
-    transition: transform .3s ease, box-shadow .3s ease;
     animation: float 6s ease-in-out infinite;
   }
   .float-card .fc-tag {
@@ -289,21 +374,17 @@
   .float-card .fc-meta span::before { content: '·'; margin-inline-end: 8px; }
   .float-card .fc-meta span:first-child::before { content: ''; margin: 0; }
 
-  .float-card.fc1 { top: 20px; right: 20px; width: 240px; animation-delay: 0s; transform: rotate(2.5deg); }
+  .float-card.fc1 { top: 20px; right: 20px; width: 240px; animation-delay: 0s; --rot: 2.5deg; }
   .float-card.fc1 .fc-tag { background: var(--teal-glow); color: var(--teal-deep); }
-  .float-card.fc2 { top: 100px; left: 20px; width: 220px; animation-delay: 1.5s; transform: rotate(-3deg); }
+  .float-card.fc2 { top: 110px; left: 20px; width: 220px; animation-delay: 1.5s; --rot: -3deg; }
   .float-card.fc2 .fc-tag { background: var(--orange-soft); color: var(--orange); }
-  .float-card.fc3 { top: 230px; right: 50px; width: 230px; animation-delay: 3s; transform: rotate(-1.5deg); }
+  .float-card.fc3 { top: 240px; right: 50px; width: 230px; animation-delay: 3s; --rot: -1.5deg; }
   .float-card.fc3 .fc-tag { background: var(--lavender-soft); color: var(--lavender); }
-  .float-card.fc4 { top: 320px; left: 0; width: 200px; animation-delay: 2s; transform: rotate(2deg); }
+  .float-card.fc4 { top: 350px; left: 0; width: 200px; animation-delay: 2s; --rot: 2deg; }
   .float-card.fc4 .fc-tag { background: var(--pink-soft); color: var(--pink); }
   @keyframes float {
-    0%, 100% { translate: 0 0; }
-    50% { translate: 0 -8px; }
-  }
-  @media (prefers-reduced-motion: reduce) {
-    .float-card { animation: none; }
-    .pulse-dot::after { animation: none; }
+    0%, 100% { transform: rotate(var(--rot)) translateY(0); }
+    50%      { transform: rotate(var(--rot)) translateY(-8px); }
   }
 
   /* ─── Mini reasons — 3 reasons to register ─── */
@@ -312,13 +393,13 @@
     padding-top: 22px;
     border-top: 1px dashed var(--line);
     display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px;
-    max-width: 540px;
+    max-width: 560px;
   }
   .mini-reason {
     display: flex; gap: 8px; align-items: flex-start;
   }
   .mini-num {
-    font-family: 'Frank Ruhl Libre', serif;
+    font-family: 'Heebo', sans-serif;
     font-size: 14px; font-weight: 900;
     color: var(--teal-deep);
     line-height: 1; flex-shrink: 0;
@@ -345,10 +426,20 @@
   /* ─── Footer ─── */
   footer {
     border-top: 1px solid var(--line);
-    padding: 24px 28px 28px;
+    padding: 28px 28px 32px;
     text-align: center;
     background: var(--bg);
   }
+  .footer-links {
+    display: flex; flex-wrap: wrap; gap: 18px;
+    justify-content: center;
+    font-size: 13.5px; font-weight: 600;
+    margin-bottom: 14px;
+  }
+  .footer-links a {
+    color: var(--ink-soft); text-decoration: none;
+  }
+  .footer-links a:hover { color: var(--teal-deep); text-decoration: underline; }
   .footer-text { font-size: 12.5px; color: var(--ink-mute); line-height: 1.6; }
   .footer-signature {
     margin-top: 10px;
@@ -373,7 +464,7 @@
     backdrop-filter: blur(4px);
     -webkit-backdrop-filter: blur(4px);
     display: none;
-    align-items: center; justify-content: center;
+    align-items: flex-start; justify-content: center;
     z-index: 200;
     padding: 24px;
     overflow-y: auto;
@@ -383,8 +474,7 @@
     background: var(--white);
     border-radius: 24px;
     width: 100%; max-width: 580px;
-    max-height: 90vh;
-    overflow-y: auto;
+    margin: auto;
     padding: 36px 32px 28px;
     box-shadow: 0 32px 80px rgba(0,0,0,.32);
     position: relative;
@@ -396,7 +486,7 @@
   }
   .modal-close {
     position: absolute; top: 14px; left: 14px;
-    width: 36px; height: 36px;
+    width: 44px; height: 44px;
     border-radius: 50%;
     background: var(--bg);
     border: none;
@@ -408,17 +498,17 @@
   }
   .modal-close:hover { background: var(--line); color: var(--ink); }
   .modal-supra {
-    font-size: 11px; font-weight: 700;
+    font-size: 12px; font-weight: 800;
     letter-spacing: 1.5px; text-transform: uppercase;
     margin-bottom: 8px;
   }
   .modal-supra.teacher { color: var(--teal-deep); }
-  .modal-supra.school { color: var(--orange); }
+  .modal-supra.school { color: var(--orange-deep); }
   .modal h2 {
-    font-family: 'Frank Ruhl Libre', serif;
-    font-size: 28px; font-weight: 700;
+    font-family: 'Playpen Sans Hebrew', 'Heebo', sans-serif;
+    font-size: 26px; font-weight: 700;
     color: var(--ink);
-    line-height: 1.2;
+    line-height: 1.25;
     margin-bottom: 8px;
     letter-spacing: -0.5px;
   }
@@ -440,6 +530,7 @@
     color: var(--ink-soft);
     margin-bottom: 5px;
   }
+  .modal label .req { color: var(--error); margin-inline-start: 2px; }
   .modal input,
   .modal select,
   .modal textarea {
@@ -460,15 +551,45 @@
     border-color: var(--teal);
     box-shadow: 0 0 0 3px var(--teal-glow);
   }
+  .modal input.is-error,
+  .modal select.is-error,
+  .modal textarea.is-error {
+    border-color: var(--error);
+    background: var(--error-soft);
+  }
   .modal textarea { resize: vertical; min-height: 80px; }
   .modal .field { margin-bottom: 12px; }
+  .field-error {
+    display: none;
+    font-size: 11.5px;
+    color: var(--error);
+    margin-top: 4px;
+    font-weight: 600;
+  }
+  .field.is-error .field-error,
+  .form-row .is-error + .field-error { display: block; }
   .consent {
-    display: flex; gap: 8px; align-items: flex-start;
+    display: flex; gap: 10px; align-items: flex-start;
     margin-top: 14px; margin-bottom: 16px;
     font-size: 12.5px; color: var(--ink-mute);
     line-height: 1.5; cursor: pointer;
   }
-  .consent input { width: 16px; height: 16px; margin-top: 2px; flex-shrink: 0; }
+  .consent input {
+    width: 22px; height: 22px;
+    margin-top: 1px; flex-shrink: 0;
+    accent-color: var(--teal-deep);
+    cursor: pointer;
+  }
+  .consent.is-error { color: var(--error); }
+  .privacy-note {
+    font-size: 11.5px; color: var(--ink-mute);
+    margin-top: 4px; margin-bottom: 16px;
+    line-height: 1.5;
+    padding: 10px 12px;
+    background: var(--line-soft);
+    border-radius: 8px;
+  }
+  .privacy-note strong { color: var(--ink); }
   .submit-btn {
     width: 100%;
     padding: 14px 22px;
@@ -479,12 +600,103 @@
     border: none;
     font-family: inherit;
     transition: background .2s, transform .15s;
+    min-height: 50px;
+    display: inline-flex; align-items: center; justify-content: center; gap: 10px;
   }
-  .submit-btn:disabled { opacity: .6; cursor: not-allowed; }
+  .submit-btn:disabled { opacity: .65; cursor: not-allowed; }
   .submit-btn.teacher { background: var(--ink); }
   .submit-btn.teacher:hover:not(:disabled) { background: var(--ink-soft); }
   .submit-btn.school { background: var(--orange); }
   .submit-btn.school:hover:not(:disabled) { background: var(--orange-deep); }
+  .submit-btn .spinner {
+    display: none;
+    width: 16px; height: 16px;
+    border: 2.5px solid rgba(255,255,255,.35);
+    border-top-color: var(--white);
+    border-radius: 50%;
+    animation: spin .8s linear infinite;
+  }
+  .submit-btn.is-loading .spinner { display: inline-block; }
+  .submit-btn.is-loading .btn-label { opacity: .8; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* ─── Success state inside modal ─── */
+  .modal-success {
+    display: none;
+    text-align: center;
+    padding: 8px 0;
+  }
+  .modal.is-success .modal-form { display: none; }
+  .modal.is-success .modal-success { display: block; }
+  .success-icon {
+    width: 72px; height: 72px;
+    border-radius: 50%;
+    background: var(--success-soft);
+    color: var(--success);
+    display: grid; place-items: center;
+    margin: 0 auto 18px;
+  }
+  .success-icon svg { width: 38px; height: 38px; }
+  .modal-success h3 {
+    font-family: 'Playpen Sans Hebrew', 'Heebo', sans-serif;
+    font-size: 24px; font-weight: 700;
+    color: var(--ink);
+    margin-bottom: 10px;
+    letter-spacing: -0.5px;
+  }
+  .success-timeline {
+    text-align: start;
+    margin: 18px 0;
+    padding: 16px 18px;
+    background: var(--teal-pale);
+    border-radius: 14px;
+    border-inline-start: 3px solid var(--teal-deep);
+  }
+  .success-timeline-item {
+    display: flex; gap: 10px; align-items: flex-start;
+    margin-bottom: 8px;
+    font-size: 13px; color: var(--ink-soft);
+    line-height: 1.5;
+  }
+  .success-timeline-item:last-child { margin-bottom: 0; }
+  .success-timeline-item strong { color: var(--ink); display: block; }
+  .success-timeline-icon {
+    flex-shrink: 0;
+    width: 24px; height: 24px;
+    border-radius: 50%;
+    background: var(--white);
+    color: var(--teal-deep);
+    display: grid; place-items: center;
+    font-size: 13px; font-weight: 800;
+  }
+  .success-ref {
+    font-size: 12px; color: var(--ink-mute);
+    margin-top: 8px;
+  }
+  .success-ref code {
+    font-family: ui-monospace, SFMono-Regular, monospace;
+    background: var(--line-soft);
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 11.5px;
+  }
+  .success-cta-row {
+    display: flex; gap: 10px; flex-wrap: wrap;
+    justify-content: center;
+    margin-top: 18px;
+  }
+  .success-cta {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 10px 18px;
+    border-radius: 999px;
+    font-size: 13.5px; font-weight: 700;
+    text-decoration: none;
+    border: 1px solid var(--line);
+    color: var(--ink-soft);
+    background: var(--white);
+    cursor: pointer; font-family: inherit;
+  }
+  .success-cta:hover { background: var(--bg); border-color: var(--ink-mute); }
 
   .toast {
     position: fixed; bottom: 32px; left: 50%; transform: translateX(-50%);
@@ -495,26 +707,55 @@
     z-index: 300;
     opacity: 0; pointer-events: none;
     transition: opacity .2s, transform .2s;
+    max-width: calc(100vw - 48px);
+    text-align: center;
   }
   .toast.show { opacity: 1; transform: translateX(-50%) translateY(-4px); }
+  .toast.is-error { background: var(--error); }
 
   /* ─── Mobile ─── */
   @media (max-width: 900px) {
-    .hero { padding: 48px 22px 64px; min-height: auto; }
-    .hero-grid { grid-template-columns: 1fr; gap: 40px; }
-    .hero-collage { height: 360px; max-width: 480px; margin: 0 auto; }
-    .float-card.fc1 { right: 4%; top: 0; }
-    .float-card.fc2 { left: 0; top: 80px; }
-    .float-card.fc3 { right: 8%; top: 180px; }
-    .float-card.fc4 { left: 4%; top: 260px; }
+    .hero { padding: 40px 22px 56px; }
+    .hero-grid { grid-template-columns: 1fr; gap: 32px; }
+    .hero-collage {
+      height: auto;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      max-width: 480px;
+      margin: 0 auto;
+    }
+    .float-card,
+    .float-card.fc1,
+    .float-card.fc2,
+    .float-card.fc3,
+    .float-card.fc4 {
+      position: static;
+      width: auto;
+      animation: none;
+      --rot: 0deg;
+    }
     .mini-reasons-strip { grid-template-columns: 1fr; gap: 10px; }
-    h1.hero-title { font-size: 38px; }
+    h1.hero-title { font-size: 36px; }
     .modal { padding: 32px 22px 22px; }
     .form-row, .form-row-3 { grid-template-columns: 1fr; }
+    .header-links { display: none; }
   }
   @media (max-width: 540px) {
     .hero-cta-row { flex-direction: column; align-items: stretch; }
     .cta-primary { justify-content: center; }
+    .social-proof { gap: 14px; }
+    .sp-num { font-size: 19px; }
+  }
+
+  /* ─── Reduced motion ─── */
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
   }
 </style>
 </head>
@@ -522,13 +763,17 @@
 
 <header class="header">
   <div class="header-inner">
-    <div class="logo" aria-label="אדורה">
-      <svg class="logo-svg" viewBox="0 0 200 50" aria-hidden="true">
-        <text x="100" y="38" text-anchor="middle" direction="rtl" class="logo-nikud">אֶדורֶה</text>
-        <text x="100" y="38" text-anchor="middle" direction="rtl" class="logo-word">אדור<tspan class="logo-h">ה</tspan></text>
+    <a href="index.html" class="logo" aria-label="אדורה — דף הבית">
+      <svg class="logo-svg" viewBox="0 0 130 38" aria-hidden="true">
+        <text x="65" y="29" text-anchor="middle" direction="rtl" class="logo-word">אדור<tspan class="logo-h">ה</tspan></text>
       </svg>
-      <span class="logo-tagline">האתר הגדול למשרות חינוך בישראל</span>
-    </div>
+      <span class="logo-tagline">לוח דרושים למורים</span>
+    </a>
+    <nav class="header-links" aria-label="ניווט ראשי">
+      <a href="index.html">משרות</a>
+      <a href="teachers.html">למורים</a>
+      <a href="about.html">על אדורה</a>
+    </nav>
   </div>
 </header>
 
@@ -548,38 +793,57 @@
         בישראל, <span class="underline-mark">במקום אחד</span>
       </h1>
       <p class="hero-lead">
-        אדורה מאגד מאות משרות הוראה <strong>מעשרות מקורות</strong>, במקום אחד. המאגר מבצע <strong>match אוטומטי</strong> בין משרות פנויות למורים מחפשי עבודה לפי <strong>אזור, מקצוע ושכבת גיל</strong>.
+        אדורה מאגדת מאות משרות הוראה <strong>מעשרות מקורות</strong>, במקום אחד. ממלאים טופס פעם אחת — והמערכת שולחת לכם <strong>התאמות אוטומטיות</strong> לפי <strong>אזור, מקצוע ושכבת גיל</strong>.
       </p>
       <p class="hero-sub">
-        בלי לדפדף בעשרה לוחות, בלי מתווכים, בלי עמלות. ממלאים טופס פעם אחת — וההתאמה קורית מאחורי הקלעים.
+        בלי לדפדף בעשרה לוחות, בלי מתווכים, בלי עמלות. תוך 24 שעות מקבלים מייל ראשון עם משרות מתאימות, וכל יום ראשון בבוקר — עדכון שבועי.
       </p>
       <div class="hero-cta-row">
-        <button type="button" class="cta-primary cta-teacher" id="open-teacher">
+        <button type="button" class="cta-primary cta-teacher" id="open-teacher" data-trigger="teacher">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
             <circle cx="11" cy="11" r="8"/>
             <line x1="21" y1="21" x2="16.65" y2="16.65"/>
           </svg>
-          טופס חיפוש משרה למורים
+          אני מחפש/ת משרה
         </button>
-        <button type="button" class="cta-primary cta-school" id="open-school">
+        <button type="button" class="cta-primary cta-school" id="open-school" data-trigger="school">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
             <line x1="12" y1="5" x2="12" y2="19"/>
             <line x1="5" y1="12" x2="19" y2="12"/>
           </svg>
-          טופס פרסום משרה לבתי ספר
+          אני מפרסם/ת משרה
         </button>
       </div>
-      <div class="hero-meta">
+      <p class="browse-hint">
+        רוצה לראות משרות לפני שמשאירים פרטים? <a href="index.html">לכל המשרות הפעילות ←</a>
+      </p>
+
+      <div class="social-proof" id="social-proof" aria-label="נתוני המאגר">
+        <div class="sp-item">
+          <span class="sp-num" id="sp-jobs">—</span>
+          <span class="sp-label">משרות פעילות</span>
+        </div>
+        <div class="sp-item">
+          <span class="sp-num" id="sp-teachers">—</span>
+          <span class="sp-label">מורים במאגר</span>
+        </div>
+        <div class="sp-item">
+          <span class="sp-num" id="sp-updated">היום</span>
+          <span class="sp-label">עודכן</span>
+        </div>
+      </div>
+
+      <div class="hero-meta" style="margin-top:22px">
         <span>
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
           חינם תמיד
         </span>
         <span>
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-          match אוטומטי
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+          התאמה אוטומטית
         </span>
         <span>
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
           בלי מתווכים
         </span>
       </div>
@@ -595,7 +859,7 @@
         <div class="mini-reason">
           <span class="mini-num">2</span>
           <div>
-            <strong>Match אוטומטי</strong>
+            <strong>התאמה אוטומטית</strong>
             <span>אזור · מקצוע · שכבה.</span>
           </div>
         </div>
@@ -617,7 +881,7 @@
       </div>
       <div class="float-card fc2">
         <span class="fc-tag">יסודי</span>
-        <div class="fc-title">מחנכת כיתה ג׳</div>
+        <div class="fc-title">מחנכת כיתה ג'</div>
         <div class="fc-meta"><span>פתח תקווה</span><span>ממלכתי</span></div>
       </div>
       <div class="float-card fc3">
@@ -635,8 +899,15 @@
 </section>
 
 <footer>
+  <nav class="footer-links" aria-label="ניווט פוטר">
+    <a href="index.html">משרות פעילות</a>
+    <a href="teachers.html">למורים</a>
+    <a href="about.html">על אדורה</a>
+    <a href="about.html#privacy">פרטיות</a>
+    <a href="mailto:meytal@edura.co.il">צור קשר</a>
+  </nav>
   <div class="footer-text">
-    אדורה — האתר הגדול בישראל למשרות חינוך
+    אדורה — לוח דרושים ייעודי למורים בישראל
   </div>
   <div class="footer-signature">
     <span>נבנה על ידי <strong>מיטל פלג</strong></span>
@@ -648,237 +919,450 @@
 </footer>
 
 <!-- ─── Teacher modal (job seeker) ─── -->
-<div class="modal-overlay" id="modal-teacher" role="dialog" aria-labelledby="teacher-title" aria-modal="true">
-  <div class="modal" onclick="event.stopPropagation()">
-    <button type="button" class="modal-close" id="close-teacher" aria-label="סגור">×</button>
-    <div class="modal-supra teacher">חיפוש משרה למורים · חינם</div>
-    <h2 id="teacher-title">טופס חיפוש משרה למורים</h2>
-    <p class="modal-info">מלאו פרטים בסיסיים — המאגר יבצע match אוטומטי עם משרות פנויות שתואמות לאזור, מקצוע ושכבה שלכם.</p>
+<div class="modal-overlay" id="modal-teacher" role="dialog" aria-labelledby="teacher-title" aria-modal="true" hidden>
+  <div class="modal" id="modal-teacher-inner" onclick="event.stopPropagation()">
+    <button type="button" class="modal-close" id="close-teacher" aria-label="סגור">&times;</button>
 
-    <div class="form-row">
-      <div>
-        <label for="pt-name">שם מלא *</label>
-        <input type="text" id="pt-name" placeholder="שם פרטי ומשפחה" required />
+    <form class="modal-form" id="form-teacher" novalidate>
+      <div class="modal-supra teacher">חיפוש משרה למורים · חינם</div>
+      <h2 id="teacher-title">מחפש/ת משרה? אנחנו נתאים</h2>
+      <p class="modal-info">ממלאים פרטים בסיסיים — והמערכת שולחת התאמות אוטומטיות עם משרות פנויות שתואמות לאזור, מקצוע ושכבה שלכם.</p>
+
+      <!-- honeypot -->
+      <div class="hp-field" aria-hidden="true">
+        <label for="pt-hp">אם את רואה שדה זה — אל תמלאי אותו</label>
+        <input type="text" id="pt-hp" name="hp" tabindex="-1" autocomplete="off" />
       </div>
-      <div>
-        <label for="pt-subject">מקצוע *</label>
-        <input type="text" id="pt-subject" placeholder="אנגלית, מתמטיקה..." required />
+
+      <div class="form-row">
+        <div class="field">
+          <label for="pt-name">שם מלא <span class="req" aria-hidden="true">*</span></label>
+          <input type="text" id="pt-name" name="name" placeholder="שם פרטי ומשפחה" required autocomplete="name" />
+          <span class="field-error">שם מלא חובה</span>
+        </div>
+        <div class="field">
+          <label for="pt-subject">מקצוע <span class="req" aria-hidden="true">*</span></label>
+          <input type="text" id="pt-subject" name="subject" placeholder="אנגלית, מתמטיקה..." required />
+          <span class="field-error">מקצוע חובה</span>
+        </div>
+      </div>
+
+      <div class="form-row-3">
+        <div class="field">
+          <label for="pt-region">אזור</label>
+          <select id="pt-region" name="region">
+            <option value="">בחרו</option>
+            <option value="ירושלים">ירושלים והסביבה</option>
+            <option value="מרכז">מרכז (גוש דן, פ"ת, רעננה...)</option>
+            <option value="צפון">צפון</option>
+            <option value="דרום">דרום</option>
+            <option value="שפלה">שפלה (אשדוד, רחובות, רמלה...)</option>
+            <option value="כל הארץ">פתוחים לכל הארץ</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="pt-city">עיר</label>
+          <input type="text" id="pt-city" name="city" placeholder="פתח תקווה" autocomplete="address-level2" />
+        </div>
+        <div class="field">
+          <label for="pt-level">שכבה</label>
+          <select id="pt-level" name="level">
+            <option value="">לא צוין</option>
+            <option value="גן">גן</option>
+            <option value="יסודי">יסודי</option>
+            <option value="חטיבת ביניים">חטיבת ביניים</option>
+            <option value="תיכון">תיכון</option>
+            <option value="חינוך מיוחד">חינוך מיוחד</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="field">
+          <label for="pt-scope">היקף משרה</label>
+          <select id="pt-scope" name="scope">
+            <option value="">לא צוין</option>
+            <option value="מלאה">מלאה</option>
+            <option value="חלקית">חלקית</option>
+            <option value="גמישה">גמישה</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="pt-phone">טלפון</label>
+          <input type="tel" id="pt-phone" name="phone" placeholder="050-1234567" autocomplete="tel" inputmode="tel" />
+          <span class="field-error">טלפון לא תקין</span>
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="pt-email">מייל <span class="req" aria-hidden="true">*</span></label>
+        <input type="email" id="pt-email" name="email" placeholder="name@example.com" required autocomplete="email" inputmode="email" />
+        <span class="field-error">כתובת מייל לא תקינה</span>
+      </div>
+
+      <div class="field">
+        <label for="pt-notes">הערות (אופציונלי)</label>
+        <textarea id="pt-notes" name="notes" placeholder="ניסיון רלוונטי, העדפות נוספות..."></textarea>
+      </div>
+
+      <div class="privacy-note">
+        <strong>מה קורה עם הפרטים שלך:</strong> אדורה שומרת אותם מוצפנים. רק בתי ספר עם משרה תואמת רואים את שם, מייל וטלפון. אפשר להסיר עצמך מהמאגר בכל רגע במייל לכתובת meytal@edura.co.il.
+      </div>
+
+      <label class="consent" id="pt-consent-label">
+        <input type="checkbox" id="pt-consent" name="consent" />
+        <span>אני מסכים/ה שאדורה תשמור את הפרטים ותציג לי משרות מתאימות, ושבית ספר רלוונטי יוכל לפנות אליי.</span>
+      </label>
+
+      <button type="submit" class="submit-btn teacher" id="submit-teacher">
+        <span class="spinner" aria-hidden="true"></span>
+        <span class="btn-label">שליחה</span>
+      </button>
+    </form>
+
+    <div class="modal-success" id="success-teacher">
+      <div class="success-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <polyline points="20 6 9 17 4 12"/>
+        </svg>
+      </div>
+      <h3>קיבלנו! עכשיו זה הזמן שלנו לעבוד.</h3>
+      <p style="font-size:14px;color:var(--ink-mute);line-height:1.6">המערכת תסרוק את כל המשרות המתאימות לך ותשלח לך מייל מסכם. אם יש שאלה — meytal@edura.co.il.</p>
+
+      <div class="success-timeline">
+        <div class="success-timeline-item">
+          <span class="success-timeline-icon">1</span>
+          <span><strong>תוך 24 שעות</strong>מייל ראשון עם 3-5 משרות מותאמות.</span>
+        </div>
+        <div class="success-timeline-item">
+          <span class="success-timeline-icon">2</span>
+          <span><strong>כל יום ראשון בבוקר</strong>עדכון שבועי עם משרות חדשות שנפתחו.</span>
+        </div>
+        <div class="success-timeline-item">
+          <span class="success-timeline-icon">3</span>
+          <span><strong>כשבית ספר תואם רואה אותך</strong>נשלח לך מייל לפני שהפרטים שלך נחשפים.</span>
+        </div>
+      </div>
+
+      <p class="success-ref">מספר פנייה: <code id="ref-teacher">—</code></p>
+      <div class="success-cta-row">
+        <a href="index.html" class="success-cta">לכל המשרות הפעילות ←</a>
+        <button type="button" class="success-cta" data-close-modal="modal-teacher">סגירה</button>
       </div>
     </div>
-
-    <div class="form-row-3">
-      <div>
-        <label for="pt-region">אזור</label>
-        <select id="pt-region">
-          <option value="">בחרו</option>
-          <option value="ירושלים">ירושלים</option>
-          <option value="מרכז">מרכז</option>
-          <option value="צפון">צפון</option>
-          <option value="דרום">דרום</option>
-          <option value="שפלה">שפלה</option>
-        </select>
-      </div>
-      <div>
-        <label for="pt-city">עיר</label>
-        <input type="text" id="pt-city" placeholder="ירושלים" />
-      </div>
-      <div>
-        <label for="pt-level">שכבה</label>
-        <select id="pt-level">
-          <option value="">לא צוין</option>
-          <option value="גן">גן</option>
-          <option value="יסודי">יסודי</option>
-          <option value="חטיבת ביניים">חטיבת ביניים</option>
-          <option value="תיכון">תיכון</option>
-          <option value="חינוך מיוחד">חינוך מיוחד</option>
-        </select>
-      </div>
-    </div>
-
-    <div class="form-row">
-      <div>
-        <label for="pt-scope">היקף משרה</label>
-        <select id="pt-scope">
-          <option value="">לא צוין</option>
-          <option value="מלאה">מלאה</option>
-          <option value="חלקית">חלקית</option>
-          <option value="גמישה">גמישה</option>
-        </select>
-      </div>
-      <div>
-        <label for="pt-phone">טלפון</label>
-        <input type="tel" id="pt-phone" placeholder="050-1234567" />
-      </div>
-    </div>
-
-    <div class="field">
-      <label for="pt-email">מייל *</label>
-      <input type="email" id="pt-email" placeholder="name@example.com" required />
-    </div>
-
-    <div class="field">
-      <label for="pt-notes">הערות (אופציונלי)</label>
-      <textarea id="pt-notes" placeholder="ניסיון רלוונטי, העדפות נוספות..."></textarea>
-    </div>
-
-    <label class="consent">
-      <input type="checkbox" id="pt-consent" />
-      <span>אני מסכים/ה שאדורה תשמור את הפרטים ותציג לי משרות מתאימות, ושבית ספר רלוונטי יוכל לפנות אליי.</span>
-    </label>
-
-    <button type="button" class="submit-btn teacher" id="submit-teacher">שליחה ✓</button>
   </div>
 </div>
 
 <!-- ─── School modal (job posting) ─── -->
-<div class="modal-overlay" id="modal-school" role="dialog" aria-labelledby="school-title" aria-modal="true">
-  <div class="modal" onclick="event.stopPropagation()">
-    <button type="button" class="modal-close" id="close-school" aria-label="סגור">×</button>
-    <div class="modal-supra school">פרסום משרה לבתי ספר · חינם</div>
-    <h2 id="school-title">טופס פרסום משרה לבתי ספר</h2>
-    <p class="modal-info">מלאו פרטים בסיסיים — המאגר יבצע match אוטומטי עם מורים שמחפשים משרה תואמת לאזור, מקצוע ושכבה.</p>
+<div class="modal-overlay" id="modal-school" role="dialog" aria-labelledby="school-title" aria-modal="true" hidden>
+  <div class="modal" id="modal-school-inner" onclick="event.stopPropagation()">
+    <button type="button" class="modal-close" id="close-school" aria-label="סגור">&times;</button>
 
-    <div class="form-row">
-      <div>
-        <label for="ps-school">שם בית הספר *</label>
-        <input type="text" id="ps-school" placeholder="לדוגמה: תיכון אורט אורנית" required />
-      </div>
-      <div>
-        <label for="ps-subject">מקצוע *</label>
-        <input type="text" id="ps-subject" placeholder="אנגלית, מתמטיקה..." required />
-      </div>
-    </div>
+    <form class="modal-form" id="form-school" novalidate>
+      <div class="modal-supra school">פרסום משרה לבתי ספר · חינם</div>
+      <h2 id="school-title">מפרסמים משרה — מקבלים מועמדים מתאימים</h2>
+      <p class="modal-info">ממלאים פרטי משרה — והמערכת שולחת אותה רק למורים שתואמים לאזור, מקצוע ושכבה. תוך 48 שעות אתם מקבלים את המועמדים הראשונים במייל.</p>
 
-    <div class="form-row">
-      <div>
-        <label for="ps-role">תפקיד</label>
-        <select id="ps-role">
-          <option value="מורה">מורה</option>
-          <option value="מחנך/ת">מחנך/ת</option>
-          <option value="רכז/ת">רכז/ת</option>
-          <option value="יועץ/ת">יועץ/ת</option>
-          <option value="מדריך/ה">מדריך/ה</option>
-          <option value="סייע/ת">סייע/ת</option>
-          <option value="מנהל/ת">מנהל/ת</option>
-          <option value="סגן/ית">סגן/ית מנהל</option>
+      <!-- honeypot -->
+      <div class="hp-field" aria-hidden="true">
+        <label for="ps-hp">אם את רואה שדה זה — אל תמלאי אותו</label>
+        <input type="text" id="ps-hp" name="hp" tabindex="-1" autocomplete="off" />
+      </div>
+
+      <div class="form-row">
+        <div class="field">
+          <label for="ps-school">שם בית הספר <span class="req" aria-hidden="true">*</span></label>
+          <input type="text" id="ps-school" name="school" placeholder="לדוגמה: תיכון אורט אורנית" required />
+          <span class="field-error">שם בית הספר חובה</span>
+        </div>
+        <div class="field">
+          <label for="ps-subject">מקצוע <span class="req" aria-hidden="true">*</span></label>
+          <input type="text" id="ps-subject" name="subject" placeholder="אנגלית, מתמטיקה..." required />
+          <span class="field-error">מקצוע חובה</span>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="field">
+          <label for="ps-role">תפקיד</label>
+          <select id="ps-role" name="role">
+            <option value="מורה">מורה</option>
+            <option value="מחנך/ת">מחנך/ת</option>
+            <option value="רכז/ת">רכז/ת</option>
+            <option value="יועץ/ת">יועץ/ת</option>
+            <option value="מדריך/ה">מדריך/ה</option>
+            <option value="סייע/ת">סייע/ת</option>
+            <option value="מנהל/ת">מנהל/ת</option>
+            <option value="סגן/ית">סגן/ית מנהל</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="ps-scope">היקף משרה</label>
+          <select id="ps-scope" name="scope">
+            <option value="">לא צוין</option>
+            <option value="מלאה">מלאה</option>
+            <option value="חלקית">חלקית</option>
+            <option value="מלאה/חלקית">מלאה/חלקית</option>
+            <option value="גמישה">גמישה</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-row-3">
+        <div class="field">
+          <label for="ps-region">אזור</label>
+          <select id="ps-region" name="region">
+            <option value="">בחרו</option>
+            <option value="ירושלים">ירושלים</option>
+            <option value="מרכז">מרכז</option>
+            <option value="צפון">צפון</option>
+            <option value="דרום">דרום</option>
+            <option value="שפלה">שפלה</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="ps-city">עיר</label>
+          <input type="text" id="ps-city" name="city" placeholder="ראש העין" autocomplete="address-level2" />
+        </div>
+        <div class="field">
+          <label for="ps-level">שכבה</label>
+          <select id="ps-level" name="level">
+            <option value="">לא צוין</option>
+            <option value="גן">גן</option>
+            <option value="יסודי">יסודי</option>
+            <option value="חטיבת ביניים">חטיבת ביניים</option>
+            <option value="תיכון">תיכון</option>
+            <option value="חינוך מיוחד">חינוך מיוחד</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="ps-sector">מגזר</label>
+        <select id="ps-sector" name="sector">
+          <option value="ממלכתי">ממלכתי</option>
+          <option value='ממ"ד'>ממ"ד</option>
+          <option value="חרדי">חרדי</option>
+          <option value="ערבי">ערבי</option>
         </select>
       </div>
-      <div>
-        <label for="ps-scope">היקף משרה</label>
-        <select id="ps-scope">
-          <option value="">לא צוין</option>
-          <option value="מלאה">מלאה</option>
-          <option value="חלקית">חלקית</option>
-          <option value="מלאה/חלקית">מלאה/חלקית</option>
-          <option value="גמישה">גמישה</option>
-        </select>
+
+      <div class="field">
+        <label for="ps-desc">תיאור המשרה</label>
+        <textarea id="ps-desc" name="description" placeholder='לדוגמה: דרוש/ה מורה לאנגלית לשנת תשפ"ז. ניסיון בהגשה לבגרות. אפשרות למשרה מלאה או חלקית.'></textarea>
+      </div>
+
+      <div class="form-row-3">
+        <div class="field">
+          <label for="ps-contact-name">איש קשר <span class="req" aria-hidden="true">*</span></label>
+          <input type="text" id="ps-contact-name" name="contactName" placeholder="שם המנהל/ת" required autocomplete="name" />
+          <span class="field-error">שם איש קשר חובה</span>
+        </div>
+        <div class="field">
+          <label for="ps-email">מייל <span class="req" aria-hidden="true">*</span></label>
+          <input type="email" id="ps-email" name="email" placeholder="contact@school.org.il" required autocomplete="email" inputmode="email" />
+          <span class="field-error">כתובת מייל לא תקינה</span>
+        </div>
+        <div class="field">
+          <label for="ps-phone">טלפון <span class="req" aria-hidden="true">*</span></label>
+          <input type="tel" id="ps-phone" name="phone" placeholder="03-1234567" required autocomplete="tel" inputmode="tel" />
+          <span class="field-error">טלפון לא תקין</span>
+        </div>
+      </div>
+
+      <div class="privacy-note">
+        <strong>מה קורה אחרי שליחה:</strong> תוך 48 שעות אתם מקבלים מייל ראשון עם 2-5 מועמדים מתאימים. הפרטים שלכם נשלחים רק למורים תואמים שאישרו פנייה.
+      </div>
+
+      <label class="consent" id="ps-consent-label">
+        <input type="checkbox" id="ps-consent" name="consent" />
+        <span>אני מסכים/ה שאדורה תפרסם את המשרה ותציג אותה למורים שמחפשים משרה תואמת.</span>
+      </label>
+
+      <button type="submit" class="submit-btn school" id="submit-school">
+        <span class="spinner" aria-hidden="true"></span>
+        <span class="btn-label">פרסום משרה</span>
+      </button>
+    </form>
+
+    <div class="modal-success" id="success-school">
+      <div class="success-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <polyline points="20 6 9 17 4 12"/>
+        </svg>
+      </div>
+      <h3>המשרה התקבלה. אנחנו מתחילים לחפש.</h3>
+      <p style="font-size:14px;color:var(--ink-mute);line-height:1.6">המערכת מתחילה לסרוק את מאגר המורים. שאלות? meytal@edura.co.il</p>
+
+      <div class="success-timeline">
+        <div class="success-timeline-item">
+          <span class="success-timeline-icon">1</span>
+          <span><strong>תוך שעה</strong>מייל אישור עם תקציר המשרה כפי שתופיע במאגר.</span>
+        </div>
+        <div class="success-timeline-item">
+          <span class="success-timeline-icon">2</span>
+          <span><strong>תוך 48 שעות</strong>מייל עם 2-5 מועמדים מתאימים — שם, מייל, טלפון, ניסיון.</span>
+        </div>
+        <div class="success-timeline-item">
+          <span class="success-timeline-icon">3</span>
+          <span><strong>פנייה ישירה</strong>אתם פונים למועמדים שאהבתם — בלי מתווכים, בלי עמלות.</span>
+        </div>
+      </div>
+
+      <p class="success-ref">מספר פנייה: <code id="ref-school">—</code></p>
+      <div class="success-cta-row">
+        <a href="index.html" class="success-cta">לכל המשרות הפעילות ←</a>
+        <button type="button" class="success-cta" data-close-modal="modal-school">סגירה</button>
       </div>
     </div>
-
-    <div class="form-row-3">
-      <div>
-        <label for="ps-region">אזור</label>
-        <select id="ps-region">
-          <option value="">בחרו</option>
-          <option value="ירושלים">ירושלים</option>
-          <option value="מרכז">מרכז</option>
-          <option value="צפון">צפון</option>
-          <option value="דרום">דרום</option>
-          <option value="שפלה">שפלה</option>
-        </select>
-      </div>
-      <div>
-        <label for="ps-city">עיר</label>
-        <input type="text" id="ps-city" placeholder="ראש העין" />
-      </div>
-      <div>
-        <label for="ps-level">שכבה</label>
-        <select id="ps-level">
-          <option value="">לא צוין</option>
-          <option value="גן">גן</option>
-          <option value="יסודי">יסודי</option>
-          <option value="חטיבת ביניים">חטיבת ביניים</option>
-          <option value="תיכון">תיכון</option>
-          <option value="חינוך מיוחד">חינוך מיוחד</option>
-        </select>
-      </div>
-    </div>
-
-    <div class="field">
-      <label for="ps-sector">מגזר</label>
-      <select id="ps-sector">
-        <option value="ממלכתי">ממלכתי</option>
-        <option value='ממ"ד'>ממ"ד</option>
-        <option value="חרדי">חרדי</option>
-        <option value="ערבי">ערבי</option>
-      </select>
-    </div>
-
-    <div class="field">
-      <label for="ps-desc">תיאור המשרה</label>
-      <textarea id="ps-desc" placeholder="לדוגמה: דרוש/ה מורה לאנגלית לשנת תשפ&quot;ז. ניסיון בהגשה לבגרות. אפשרות למשרה מלאה או חלקית."></textarea>
-    </div>
-
-    <div class="form-row-3">
-      <div>
-        <label for="ps-contact-name">איש קשר *</label>
-        <input type="text" id="ps-contact-name" placeholder="שם המנהל/ת" required />
-      </div>
-      <div>
-        <label for="ps-email">מייל לפנייה *</label>
-        <input type="email" id="ps-email" placeholder="contact@school.org.il" required />
-      </div>
-      <div>
-        <label for="ps-phone">טלפון *</label>
-        <input type="tel" id="ps-phone" placeholder="03-1234567" required />
-      </div>
-    </div>
-
-    <label class="consent">
-      <input type="checkbox" id="ps-consent" />
-      <span>אני מסכים/ה שאדורה תפרסם את המשרה ותציג אותה למורים שמחפשים משרה תואמת.</span>
-    </label>
-
-    <button type="button" class="submit-btn school" id="submit-school">פרסום משרה ✓</button>
   </div>
 </div>
 
-<div class="toast" id="toast"></div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
 
 <script src="copy.js"></script>
 <script>
   const SUBMISSIONS_URL = 'https://script.google.com/macros/s/AKfycbwleldcwH8c5k9OZ8EMDIKZ8veRbrtO1M7XwYFWg7HHbEV-SrZkLTElbFRiq4cHPlyarw/exec';
 
-  // ─── Populate winks marquee from EduraCopy.funnyMarquee ───
+  // ════════════════════════════════════════════════════════════════════
+  // Utilities
+  // ════════════════════════════════════════════════════════════════════
+  const $ = (id) => document.getElementById(id);
+  const PAGE_LOADED_AT = Date.now();
+  const MIN_FILL_SECONDS = 3; // bot-protection: any submit faster than this is suspicious
+  const DRAFT_KEY_PREFIX = 'edura-draft-';
+
+  // ─── Toast queue (no overlap) ────────────────────────────────────────
+  const toastQueue = [];
+  let toastBusy = false;
+  function toast(msg, opts = {}) {
+    toastQueue.push({ msg, isError: !!opts.error });
+    processToastQueue();
+  }
+  function processToastQueue() {
+    if (toastBusy || toastQueue.length === 0) return;
+    toastBusy = true;
+    const { msg, isError } = toastQueue.shift();
+    const t = $('toast');
+    t.textContent = msg;
+    t.classList.toggle('is-error', isError);
+    t.classList.add('show');
+    setTimeout(() => {
+      t.classList.remove('show');
+      setTimeout(() => {
+        toastBusy = false;
+        processToastQueue();
+      }, 250);
+    }, 3500);
+  }
+
+  // ─── Populate winks marquee (no decorative ✦) ────────────────────────
   (function () {
-    const track = document.getElementById('winks-track');
-    if (!track || !window.EduraCopy || !EduraCopy.funnyMarquee) return;
+    const track = $('winks-track');
+    if (!track || !window.EduraCopy || !EduraCopy.funnyMarquee || !EduraCopy.funnyMarquee.length) return;
     const phrases = EduraCopy.funnyMarquee;
-    // Render twice for seamless loop
     const html = phrases.concat(phrases).map(function (p) {
-      return '<span class="wink">' + p.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;') + ' ✦</span>';
+      return '<span class="wink">' + p.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;') + '</span>';
     }).join('');
     track.innerHTML = html;
   })();
 
-  const $ = (id) => document.getElementById(id);
-  const toast = (msg) => {
-    const t = $('toast');
-    t.textContent = msg;
-    t.classList.add('show');
-    setTimeout(() => t.classList.remove('show'), 3500);
-  };
+  // ─── Social proof — load real numbers from data files ────────────────
+  (async function () {
+    try {
+      const [jobsRes, teachersRes] = await Promise.all([
+        fetch('data/jobs.json', { cache: 'no-cache' }).catch(() => null),
+        fetch('data/teachers.json', { cache: 'no-cache' }).catch(() => null)
+      ]);
+      if (jobsRes && jobsRes.ok) {
+        const data = await jobsRes.json();
+        const total = data.total || (Array.isArray(data.jobs) ? data.jobs.length : 0);
+        if (total) $('sp-jobs').textContent = total.toLocaleString('he-IL');
+        if (data.updated_at) {
+          const d = new Date(data.updated_at);
+          if (!isNaN(d)) {
+            const now = new Date();
+            const diffMs = now - d;
+            const diffDays = Math.floor(diffMs / 86400000);
+            $('sp-updated').textContent =
+              diffDays === 0 ? 'היום' :
+              diffDays === 1 ? 'אתמול' :
+              diffDays < 7 ? 'השבוע' :
+              d.toLocaleDateString('he-IL', { day: 'numeric', month: 'short' });
+          }
+        }
+      }
+      if (teachersRes && teachersRes.ok) {
+        const data = await teachersRes.json();
+        const total = data.total || (Array.isArray(data.teachers) ? data.teachers.length : 0);
+        if (total) $('sp-teachers').textContent = total.toLocaleString('he-IL');
+      }
+    } catch (e) {
+      console.warn('[edura] social proof load failed', e);
+    }
+  })();
+
+  // ════════════════════════════════════════════════════════════════════
+  // Modal management — focus trap + restore + scroll lock
+  // ════════════════════════════════════════════════════════════════════
+  const FOCUSABLE = 'a[href], button:not([disabled]), input:not([disabled]):not([type=hidden]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])';
+  const openModalsStack = [];
+  let lastTrigger = null;
+
+  function getFocusable(modalEl) {
+    return Array.from(modalEl.querySelectorAll(FOCUSABLE))
+      .filter(el => el.offsetParent !== null && !el.closest('.hp-field'));
+  }
+
+  function trapFocus(e, modalEl) {
+    if (e.key !== 'Tab') return;
+    const focusable = getFocusable(modalEl);
+    if (focusable.length === 0) return;
+    const first = focusable[0];
+    const last = focusable[focusable.length - 1];
+    if (e.shiftKey && document.activeElement === first) {
+      e.preventDefault();
+      last.focus();
+    } else if (!e.shiftKey && document.activeElement === last) {
+      e.preventDefault();
+      first.focus();
+    }
+  }
 
   function openModal(id) {
-    document.getElementById(id).classList.add('open');
+    const overlay = $(id);
+    if (!overlay) return;
+    if (openModalsStack.includes(id)) return;
+    lastTrigger = document.activeElement;
+    overlay.classList.add('open');
+    overlay.removeAttribute('hidden');
+    openModalsStack.push(id);
     document.body.style.overflow = 'hidden';
-  }
-  function closeModal(id) {
-    document.getElementById(id).classList.remove('open');
-    document.body.style.overflow = '';
+    // focus first input after animation tick
+    requestAnimationFrame(() => {
+      const focusable = getFocusable(overlay);
+      const firstInput = focusable.find(el => el.tagName === 'INPUT' || el.tagName === 'SELECT' || el.tagName === 'TEXTAREA');
+      (firstInput || focusable[0])?.focus();
+    });
+    restoreDraft(id);
   }
 
-  // אם הגענו ישירות מ-deep-link (#teacher / #school) — סגירה מחזירה לדף הבית
+  function closeModal(id) {
+    const overlay = $(id);
+    if (!overlay) return;
+    overlay.classList.remove('open');
+    overlay.setAttribute('hidden', '');
+    const idx = openModalsStack.indexOf(id);
+    if (idx > -1) openModalsStack.splice(idx, 1);
+    if (openModalsStack.length === 0) {
+      document.body.style.overflow = '';
+    }
+    if (lastTrigger && typeof lastTrigger.focus === 'function') {
+      lastTrigger.focus();
+      lastTrigger = null;
+    }
+  }
+
   function isDeepLinked() {
     return /^#(teacher|school|post-job)$/i.test(location.hash || '');
   }
@@ -894,69 +1378,246 @@
   $('open-school').addEventListener('click', () => openModal('modal-school'));
   $('close-teacher').addEventListener('click', () => smartClose('modal-teacher'));
   $('close-school').addEventListener('click', () => smartClose('modal-school'));
+  document.querySelectorAll('[data-close-modal]').forEach(btn => {
+    btn.addEventListener('click', () => smartClose(btn.dataset.closeModal));
+  });
 
-  // אם הגיעו עם #teacher / #school — לפתוח אוטומטית את הטופס המתאים
+  // Auto-open from hash (single source of truth: load + hashchange)
   function autoOpenFromHash() {
-    try {
-      const h = (location.hash || '').toLowerCase();
-      console.log('[edura] autoOpenFromHash hash=', h);
-      if (h === '#teacher') openModal('modal-teacher');
-      else if (h === '#school' || h === '#post-job') openModal('modal-school');
-    } catch (e) {
-      console.error('[edura] autoOpenFromHash error', e);
-    }
+    const h = (location.hash || '').toLowerCase();
+    if (h === '#teacher') openModal('modal-teacher');
+    else if (h === '#school' || h === '#post-job') openModal('modal-school');
   }
-  // Run immediately + after DOM ready + on next tick — covers any timing edge
-  autoOpenFromHash();
-  if (document.readyState !== 'complete') {
-    window.addEventListener('load', autoOpenFromHash);
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', autoOpenFromHash);
+  } else {
+    autoOpenFromHash();
   }
-  setTimeout(autoOpenFromHash, 50);
   window.addEventListener('hashchange', autoOpenFromHash);
 
-  // Close on overlay click — אם הגענו ב-deep-link, חזרה לדף הבית
+  // Overlay click — close
   document.querySelectorAll('.modal-overlay').forEach(overlay => {
     overlay.addEventListener('click', (e) => {
       if (e.target === overlay) smartClose(overlay.id);
     });
   });
-  // Close on Escape
+
+  // Keyboard — ESC + Tab trap
   document.addEventListener('keydown', (e) => {
+    if (openModalsStack.length === 0) return;
+    const topId = openModalsStack[openModalsStack.length - 1];
+    const overlay = $(topId);
     if (e.key === 'Escape') {
-      document.querySelectorAll('.modal-overlay.open').forEach(m => smartClose(m.id));
+      e.preventDefault();
+      smartClose(topId);
+    } else if (e.key === 'Tab') {
+      trapFocus(e, overlay);
     }
   });
 
-  async function submitForm(payload, btn, defaultBtnText) {
+  // ════════════════════════════════════════════════════════════════════
+  // Drafts — persist to localStorage so refresh/close doesn't lose data
+  // ════════════════════════════════════════════════════════════════════
+  function getFormFields(formId) {
+    const form = $(formId);
+    if (!form) return [];
+    return Array.from(form.elements).filter(el =>
+      el.name && el.name !== 'hp' && (el.type !== 'submit' && el.type !== 'button')
+    );
+  }
+  function saveDraft(formId, modalId) {
+    const data = {};
+    getFormFields(formId).forEach(el => {
+      if (el.type === 'checkbox') data[el.name] = el.checked;
+      else data[el.name] = el.value;
+    });
+    try {
+      localStorage.setItem(DRAFT_KEY_PREFIX + modalId, JSON.stringify(data));
+    } catch (e) {}
+  }
+  function restoreDraft(modalId) {
+    let formId;
+    if (modalId === 'modal-teacher') formId = 'form-teacher';
+    else if (modalId === 'modal-school') formId = 'form-school';
+    else return;
+    let raw;
+    try { raw = localStorage.getItem(DRAFT_KEY_PREFIX + modalId); } catch (e) { return; }
+    if (!raw) return;
+    try {
+      const data = JSON.parse(raw);
+      getFormFields(formId).forEach(el => {
+        if (data[el.name] === undefined) return;
+        if (el.type === 'checkbox') el.checked = !!data[el.name];
+        else el.value = data[el.name];
+      });
+    } catch (e) {}
+  }
+  function clearDraft(modalId) {
+    try { localStorage.removeItem(DRAFT_KEY_PREFIX + modalId); } catch (e) {}
+  }
+
+  ['form-teacher', 'form-school'].forEach(formId => {
+    const form = $(formId);
+    if (!form) return;
+    const modalId = formId === 'form-teacher' ? 'modal-teacher' : 'modal-school';
+    let saveTimer;
+    form.addEventListener('input', () => {
+      clearTimeout(saveTimer);
+      saveTimer = setTimeout(() => saveDraft(formId, modalId), 400);
+    });
+  });
+
+  // ════════════════════════════════════════════════════════════════════
+  // Validation — per field, with aria-invalid + visible error
+  // ════════════════════════════════════════════════════════════════════
+  const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+  const PHONE_RE = /^[0-9+\-()\s]{7,20}$/;
+
+  function setFieldError(input, hasError) {
+    if (!input) return;
+    input.classList.toggle('is-error', hasError);
+    input.setAttribute('aria-invalid', hasError ? 'true' : 'false');
+    const wrap = input.closest('.field');
+    if (wrap) wrap.classList.toggle('is-error', hasError);
+  }
+  function clearAllErrors(formId) {
+    const form = $(formId);
+    if (!form) return;
+    form.querySelectorAll('.is-error').forEach(el => el.classList.remove('is-error'));
+    form.querySelectorAll('[aria-invalid="true"]').forEach(el => el.setAttribute('aria-invalid', 'false'));
+  }
+  function validateRequiredText(input) {
+    const ok = input.value.trim().length > 0;
+    setFieldError(input, !ok);
+    return ok;
+  }
+  function validateEmail(input) {
+    const v = input.value.trim();
+    const ok = !!v && EMAIL_RE.test(v);
+    setFieldError(input, !ok);
+    return ok;
+  }
+  function validatePhone(input, required) {
+    const v = input.value.trim();
+    if (!v) { setFieldError(input, !!required); return !required; }
+    const ok = PHONE_RE.test(v);
+    setFieldError(input, !ok);
+    return ok;
+  }
+  function focusFirstError(formId) {
+    const form = $(formId);
+    if (!form) return;
+    const first = form.querySelector('.is-error');
+    if (first) {
+      first.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      first.focus({ preventScroll: true });
+    }
+  }
+
+  // ─── Real-time clear on input ────────────────────────────────────────
+  document.querySelectorAll('.modal input, .modal select, .modal textarea').forEach(el => {
+    el.addEventListener('input', () => {
+      if (el.classList.contains('is-error')) setFieldError(el, false);
+    });
+    el.addEventListener('blur', () => {
+      if (el.required && el.type === 'email') validateEmail(el);
+      else if (el.required && el.type === 'tel') validatePhone(el, true);
+      else if (el.required) validateRequiredText(el);
+    });
+  });
+
+  // ════════════════════════════════════════════════════════════════════
+  // Submission
+  // ════════════════════════════════════════════════════════════════════
+  function botCheck(form) {
+    const hp = form.querySelector('input[name="hp"]');
+    if (hp && hp.value.trim() !== '') return false; // honeypot tripped
+    const elapsed = (Date.now() - PAGE_LOADED_AT) / 1000;
+    if (elapsed < MIN_FILL_SECONDS) return false; // too fast
+    return true;
+  }
+
+  async function submitForm(payload, btn, defaultLabel, form) {
     btn.disabled = true;
-    btn.textContent = 'שולח...';
+    btn.classList.add('is-loading');
+    const labelEl = btn.querySelector('.btn-label');
+    if (labelEl) labelEl.textContent = 'שולח...';
     try {
       const res = await fetch(SUBMISSIONS_URL, {
         method: 'POST',
         body: JSON.stringify(payload),
         headers: { 'Content-Type': 'text/plain;charset=utf-8' }
       });
-      const data = await res.json();
-      if (data.ok) {
-        toast('✓ נשלח בהצלחה · מספר פנייה: ' + (data.refId || '—'));
-        return true;
-      } else {
-        throw new Error(data.error || 'שליחה נכשלה');
-      }
+      let data;
+      try { data = await res.json(); } catch (e) { throw new Error('שרת לא זמין'); }
+      if (data && data.ok) return { ok: true, refId: data.refId || '—' };
+      throw new Error((data && data.error) || 'שליחה נכשלה');
     } catch (err) {
-      toast('שליחה נכשלה — נסו שוב או כתבו ל-meytal@edura.co.il');
-      return false;
+      const msg = err && err.message ? err.message : 'שליחה נכשלה';
+      toast('שליחה נכשלה: ' + msg + ' — או כתבו ל-meytal@edura.co.il', { error: true });
+      return { ok: false };
     } finally {
-      setTimeout(() => {
-        btn.disabled = false;
-        btn.textContent = defaultBtnText;
-      }, 1800);
+      btn.disabled = false;
+      btn.classList.remove('is-loading');
+      if (labelEl) labelEl.textContent = defaultLabel;
     }
   }
 
-  $('submit-teacher').addEventListener('click', async () => {
+  function showSuccess(modalId, refId) {
+    const modal = $(modalId).querySelector('.modal');
+    modal.classList.add('is-success');
+    const refSpan = $(modalId === 'modal-teacher' ? 'ref-teacher' : 'ref-school');
+    if (refSpan) refSpan.textContent = refId;
+    clearDraft(modalId);
+    // reset form for next time
+    const formId = modalId === 'modal-teacher' ? 'form-teacher' : 'form-school';
+    const form = $(formId);
+    if (form) form.reset();
+    // scroll modal to top so user sees the success card
+    modal.scrollTop = 0;
+    // re-focus to success area for screen readers
+    requestAnimationFrame(() => {
+      const successEl = $(modalId === 'modal-teacher' ? 'success-teacher' : 'success-school');
+      successEl?.focus?.();
+    });
+  }
+
+  function resetSuccessOnReopen(modalId) {
+    const modal = $(modalId).querySelector('.modal');
+    modal.classList.remove('is-success');
+  }
+  $('open-teacher').addEventListener('click', () => resetSuccessOnReopen('modal-teacher'));
+  $('open-school').addEventListener('click', () => resetSuccessOnReopen('modal-school'));
+
+  // ─── Teacher submit ──────────────────────────────────────────────────
+  $('form-teacher').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const form = e.currentTarget;
+    clearAllErrors('form-teacher');
+
+    if (!botCheck(form)) {
+      toast('שליחה נחסמה. נסו שוב או כתבו ל-meytal@edura.co.il', { error: true });
+      return;
+    }
+
+    let valid = true;
+    if (!validateRequiredText($('pt-name'))) valid = false;
+    if (!validateRequiredText($('pt-subject'))) valid = false;
+    if (!validateEmail($('pt-email'))) valid = false;
+    if (!validatePhone($('pt-phone'), false)) valid = false;
+    const consent = $('pt-consent');
+    const consentLabel = $('pt-consent-label');
+    if (!consent.checked) { consentLabel.classList.add('is-error'); valid = false; }
+    else { consentLabel.classList.remove('is-error'); }
+    if (!valid) {
+      toast('יש שדות שצריך לתקן — סימנו אותם באדום', { error: true });
+      focusFirstError('form-teacher');
+      return;
+    }
+
     const payload = {
       action: 'submit_teacher',
+      hp: $('pt-hp').value,
       name: $('pt-name').value.trim(),
       subject: $('pt-subject').value.trim(),
       region: $('pt-region').value,
@@ -967,17 +1628,40 @@
       email: $('pt-email').value.trim(),
       notes: $('pt-notes').value.trim()
     };
-    if (!payload.name || !payload.subject || !payload.email || !$('pt-consent').checked) {
-      toast('שם, מקצוע, מייל ואישור — חובה.');
-      return;
-    }
-    const ok = await submitForm(payload, $('submit-teacher'), 'שליחה ✓');
-    if (ok) setTimeout(() => closeModal('modal-teacher'), 1500);
+    const res = await submitForm(payload, $('submit-teacher'), 'שליחה', form);
+    if (res.ok) showSuccess('modal-teacher', res.refId);
   });
 
-  $('submit-school').addEventListener('click', async () => {
+  // ─── School submit ───────────────────────────────────────────────────
+  $('form-school').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const form = e.currentTarget;
+    clearAllErrors('form-school');
+
+    if (!botCheck(form)) {
+      toast('שליחה נחסמה. נסו שוב או כתבו ל-meytal@edura.co.il', { error: true });
+      return;
+    }
+
+    let valid = true;
+    if (!validateRequiredText($('ps-school'))) valid = false;
+    if (!validateRequiredText($('ps-subject'))) valid = false;
+    if (!validateRequiredText($('ps-contact-name'))) valid = false;
+    if (!validateEmail($('ps-email'))) valid = false;
+    if (!validatePhone($('ps-phone'), true)) valid = false;
+    const consent = $('ps-consent');
+    const consentLabel = $('ps-consent-label');
+    if (!consent.checked) { consentLabel.classList.add('is-error'); valid = false; }
+    else { consentLabel.classList.remove('is-error'); }
+    if (!valid) {
+      toast('יש שדות שצריך לתקן — סימנו אותם באדום', { error: true });
+      focusFirstError('form-school');
+      return;
+    }
+
     const payload = {
       action: 'submit_job',
+      hp: $('ps-hp').value,
       school: $('ps-school').value.trim(),
       subject: $('ps-subject').value.trim(),
       role: $('ps-role').value,
@@ -991,12 +1675,8 @@
       email: $('ps-email').value.trim(),
       phone: $('ps-phone').value.trim()
     };
-    if (!payload.school || !payload.subject || !payload.email || !payload.phone || !payload.contactName || !$('ps-consent').checked) {
-      toast('שם בית ספר, מקצוע, איש קשר, מייל, טלפון ואישור — חובה.');
-      return;
-    }
-    const ok = await submitForm(payload, $('submit-school'), 'פרסום משרה ✓');
-    if (ok) setTimeout(() => closeModal('modal-school'), 1500);
+    const res = await submitForm(payload, $('submit-school'), 'פרסום משרה', form);
+    if (res.ok) showSuccess('modal-school', res.refId);
   });
 </script>
 
