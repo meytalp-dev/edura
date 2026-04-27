@@ -75,7 +75,23 @@ LEVEL_NORMALIZE = {
     'תיכון': 'תיכון', 'על-יסודי': 'תיכון', 'על יסודי': 'תיכון',
     'גן': 'גן', 'גני ילדים': 'גן',
     'חינוך מיוחד': 'חינוך מיוחד', 'חנ"מ': 'חינוך מיוחד', 'חנמ': 'חינוך מיוחד',
+    # ערכים לא-תקניים → ריק (אין העדפה)
+    'כללי': '', 'גמיש': '', 'הכל': '', 'כל השכבות': '',
 }
+
+
+def normalize_level_str(s):
+    """תומך ב-multi-level: 'יסודי / חטיבה' → 'יסודי / חטיבת ביניים'.
+    'כללי' או ריק → ריק."""
+    if not s:
+        return ''
+    parts = [p.strip() for p in re.split(r'[/,]', s) if p.strip()]
+    out = []
+    for p in parts:
+        v = LEVEL_NORMALIZE.get(p, p)
+        if v and v not in out:
+            out.append(v)
+    return ' / '.join(out)
 
 
 def derive_level(text):
@@ -199,7 +215,7 @@ def transform_fb(src_path, src_id, src_name):
         notes = (t.get('notes') or '').strip()
         fb_url = (t.get('fb_url') or '').strip()
         region, city = parse_area(area)
-        canon_level = LEVEL_NORMALIZE.get(level, level) or derive_level(subject + ' ' + notes)
+        canon_level = normalize_level_str(level) or derive_level(subject + ' ' + notes)
         # id יציב על בסיס fb_url
         url_hash = hashlib.sha1((fb_url or (subject + area + notes)).encode('utf-8')).hexdigest()[:10]
         out.append({

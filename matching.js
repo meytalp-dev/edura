@@ -39,10 +39,16 @@
     ['תנ"ך', 'תנך', 'תנ"ך/תושב"ע', 'תושב"ע', 'תושבע'],
     ['מדעים', 'מדע וטכנולוגיה', 'מדע ותכנולוגיה'],
     ['מדעי המחשב', 'מחשבים', 'תקשוב'],
-    ['חינוך מיוחד', 'חנ"מ', 'חנמ'],
-    ['יועצ/ת חינוכי/ת', 'יועץ/ת', 'יועץ', 'יועצת', 'ייעוץ'],
+    ['חינוך מיוחד', 'חנ"מ', 'חנמ', 'מורת שילוב', 'מורה שילוב',
+      'הוראה מתקנת', 'הוראה משלבת', 'מדריכת הוראה משלבת',
+      'כיתת תקשורת', 'תקשורת (asd)', 'חינוך מיוחד (asd)',
+      'לקויות למידה', 'לקות למידה', 'הוראה מותאמת'],
+    ['יועצ/ת חינוכי/ת', 'יועץ/ת', 'יועץ', 'יועצת', 'ייעוץ', 'ייעוץ חינוכי'],
     ['חינוך גופני', 'חנ"ג', 'חינוך גופני בנות', 'חינוך גופני בנים'],
-    ['מחנך/ת', 'מחנך/מחנכת', 'מחנכים/ות', 'מחנכת', 'מחנך'],
+    ['מחנך/ת', 'מחנך/מחנכת', 'מחנכים/ות', 'מחנכת', 'מחנך',
+      'מחנכת כיתה', 'מחנכת א-ב', 'מחנכת א\'-ב\'', 'מחנכת א\'-ד\'', 'מחנכת א-ד',
+      'מחנכת ה-ו', 'מחנכת ה\'-ו\'', 'מורה מחנכת'],
+    ['גיל הרך', 'גיל רך', 'כיתות צעירות', 'כיתה צעירה', 'גן חובה', 'גנון'],
   ];
 
   // Generic teacher labels — don't auto-match all subjects, treat as "no specific subject"
@@ -104,7 +110,17 @@
     return 0;
   }
 
-  function subjectScore(sA, sB) {
+  // Strip parentheticals like "כיתה (א'-ד')" → "כיתה" for cleaner matching
+  function stripParens(s) {
+    return String(s || '').replace(/\([^)]*\)/g, ' ').replace(/\s+/g, ' ').trim();
+  }
+
+  // Split on '/' or ',' — teachers often write "חינוך מיוחד / מדעים"
+  function splitSubjects(s) {
+    return String(s || '').split(/[\/,]/).map(x => stripParens(x)).filter(Boolean);
+  }
+
+  function singleSubjectScore(sA, sB) {
     if (isGenericSubject(sA) || isGenericSubject(sB)) return 0;
     const cA = canonicalSubject(sA);
     const cB = canonicalSubject(sB);
@@ -112,6 +128,21 @@
     if (cA === cB) return 60;
     if (cA.includes(cB) || cB.includes(cA)) return 40;
     return 0;
+  }
+
+  // Try every (teacher-subject × job-subject) pair — best score wins
+  function subjectScore(sA, sB) {
+    const partsA = splitSubjects(sA);
+    const partsB = splitSubjects(sB);
+    if (partsA.length === 0 || partsB.length === 0) return singleSubjectScore(sA, sB);
+    let best = 0;
+    for (const a of partsA) {
+      for (const b of partsB) {
+        const s = singleSubjectScore(a, b);
+        if (s > best) best = s;
+      }
+    }
+    return best;
   }
 
   function cityBonus(cA, cB) {
@@ -128,12 +159,18 @@
   }
 
   // Level must match if both sides specify one (יסודי≠תיכון).
-  // If either side is missing — don't penalize (lots of jobs/teachers don't tag level).
+  // If either side is missing — don't penalize.
+  // Multi-level support: 'יסודי / חטיבה' compatible with either.
   function levelCompatible(lA, lB) {
-    const a = canonicalLevel(lA);
-    const b = canonicalLevel(lB);
-    if (!a || !b) return true;
-    return a === b;
+    const partsA = splitSubjects(lA).map(canonicalLevel).filter(Boolean);
+    const partsB = splitSubjects(lB).map(canonicalLevel).filter(Boolean);
+    if (partsA.length === 0 || partsB.length === 0) return true;
+    for (const a of partsA) {
+      for (const b of partsB) {
+        if (a === b) return true;
+      }
+    }
+    return false;
   }
 
   function scoreMatch(teacher, job) {
