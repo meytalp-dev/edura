@@ -763,17 +763,12 @@
 
 <header class="header">
   <div class="header-inner">
-    <a href="index.html" class="logo" aria-label="אדורה — דף הבית">
+    <div class="logo" aria-label="אדורה">
       <svg class="logo-svg" viewBox="0 0 130 38" aria-hidden="true">
         <text x="65" y="29" text-anchor="middle" direction="rtl" class="logo-word">אדור<tspan class="logo-h">ה</tspan></text>
       </svg>
       <span class="logo-tagline">לוח דרושים למורים</span>
-    </a>
-    <nav class="header-links" aria-label="ניווט ראשי">
-      <a href="index.html">משרות</a>
-      <a href="teachers.html">למורים</a>
-      <a href="about.html">על אדורה</a>
-    </nav>
+    </div>
   </div>
 </header>
 
@@ -793,7 +788,7 @@
         בישראל, <span class="underline-mark">במקום אחד</span>
       </h1>
       <p class="hero-lead">
-        אדורה מאגדת מאות משרות הוראה <strong>מעשרות מקורות</strong>, במקום אחד. ממלאים טופס פעם אחת — והמערכת שולחת לכם <strong>התאמות אוטומטיות</strong> לפי <strong>אזור, מקצוע ושכבת גיל</strong>.
+        אדורה מאגדת מאות משרות הוראה <strong>ממקורות מאומתים</strong>, במקום אחד. ממלאים טופס פעם אחת — והמערכת שולחת לכם <strong>התאמות אוטומטיות</strong> לפי <strong>אזור, מקצוע ושכבת גיל</strong>.
       </p>
       <p class="hero-sub">
         בלי לדפדף בעשרה לוחות, בלי מתווכים, בלי עמלות. תוך 24 שעות מקבלים מייל ראשון עם משרות מתאימות, וכל יום ראשון בבוקר — עדכון שבועי.
@@ -814,11 +809,7 @@
           אני מפרסם/ת משרה
         </button>
       </div>
-      <p class="browse-hint">
-        רוצה לראות משרות לפני שמשאירים פרטים? <a href="index.html">לכל המשרות הפעילות ←</a>
-      </p>
-
-      <div class="social-proof" id="social-proof" aria-label="נתוני המאגר">
+<div class="social-proof" id="social-proof" aria-label="נתוני המאגר">
         <div class="sp-item">
           <span class="sp-num" id="sp-jobs">—</span>
           <span class="sp-label">משרות פעילות</span>
@@ -853,7 +844,7 @@
           <span class="mini-num">1</span>
           <div>
             <strong>גישה למאגר הגדול</strong>
-            <span>מאות משרות מעשרות מקורות.</span>
+            <span>מאות משרות ממקורות מאומתים.</span>
           </div>
         </div>
         <div class="mini-reason">
@@ -899,13 +890,6 @@
 </section>
 
 <footer>
-  <nav class="footer-links" aria-label="ניווט פוטר">
-    <a href="index.html">משרות פעילות</a>
-    <a href="teachers.html">למורים</a>
-    <a href="about.html">על אדורה</a>
-    <a href="about.html#privacy">פרטיות</a>
-    <a href="mailto:meytal@edura.co.il">צור קשר</a>
-  </nav>
   <div class="footer-text">
     אדורה — לוח דרושים ייעודי למורים בישראל
   </div>
@@ -1046,7 +1030,6 @@
 
       <p class="success-ref">מספר פנייה: <code id="ref-teacher">—</code></p>
       <div class="success-cta-row">
-        <a href="index.html" class="success-cta">לכל המשרות הפעילות ←</a>
         <button type="button" class="success-cta" data-close-modal="modal-teacher">סגירה</button>
       </div>
     </div>
@@ -1211,7 +1194,6 @@
 
       <p class="success-ref">מספר פנייה: <code id="ref-school">—</code></p>
       <div class="success-cta-row">
-        <a href="index.html" class="success-cta">לכל המשרות הפעילות ←</a>
         <button type="button" class="success-cta" data-close-modal="modal-school">סגירה</button>
       </div>
     </div>
@@ -1363,14 +1345,10 @@
     }
   }
 
-  function isDeepLinked() {
-    return /^#(teacher|school|post-job)$/i.test(location.hash || '');
-  }
   function smartClose(modalId) {
-    if (isDeepLinked()) {
-      window.location.href = 'index.html';
-    } else {
-      closeModal(modalId);
+    closeModal(modalId);
+    if (location.hash) {
+      history.replaceState(null, '', location.pathname + location.search);
     }
   }
 
