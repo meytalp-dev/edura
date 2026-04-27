@@ -180,5 +180,117 @@
     return '<div class="empty"><h3>' + e.h + '</h3><p>' + e.p + '</p></div>';
   };
 
+  // ─── Marquee — שרשרת נעה של קריצות הבוט ───
+  // מציבה רצועה דקה לפני אלמנט יעד (ברירת מחדל: <footer>).
+  // המשפטים נבחרים אקראית מהבנקים, מסתובבים אינסוף, נעצרים ב-hover,
+  // ומכבדים prefers-reduced-motion (אז סטטי, בלי תנועה).
+  C.mountMarquee = function (opts) {
+    opts = opts || {};
+    const beforeSelector = opts.before || 'footer';
+    const target = document.querySelector(beforeSelector);
+    if (!target) return;
+    if (document.querySelector('.edura-marquee')) return; // כבר הותקן
+
+    // 8 משפטים אקראיים מ-3 בנקים מגוונים (לא רק טעינה)
+    const pool = []
+      .concat(C.loading.map(s => ({ s, k: 'loading' })))
+      .concat(C.teacherLoading.map(s => ({ s, k: 'teacher' })))
+      .concat(C.parsing.map(s => ({ s, k: 'parsing' })));
+
+    // shuffle ובחירת 8
+    const shuffled = pool.slice().sort(() => Math.random() - 0.5).slice(0, 8);
+
+    // הזרקת CSS פעם אחת
+    if (!document.getElementById('edura-marquee-style')) {
+      const style = document.createElement('style');
+      style.id = 'edura-marquee-style';
+      style.textContent = `
+        .edura-marquee {
+          background: linear-gradient(90deg, #F0FDFA 0%, #FEF3C7 50%, #FDF2F8 100%);
+          border-top: 1px solid #E2E8F0;
+          border-bottom: 1px solid #E2E8F0;
+          overflow: hidden;
+          padding: 10px 0;
+          font-family: 'Heebo', 'Assistant', sans-serif;
+          font-size: 13.5px;
+          font-weight: 500;
+          color: #475569;
+          position: relative;
+          direction: ltr;
+        }
+        .edura-marquee::before, .edura-marquee::after {
+          content: '';
+          position: absolute;
+          top: 0; bottom: 0;
+          width: 60px;
+          z-index: 2;
+          pointer-events: none;
+        }
+        .edura-marquee::before { left: 0; background: linear-gradient(90deg, #F0FDFA, transparent); }
+        .edura-marquee::after  { right: 0; background: linear-gradient(270deg, #FDF2F8, transparent); }
+        .edura-marquee-track {
+          display: inline-flex;
+          white-space: nowrap;
+          animation: edura-marquee-roll 55s linear infinite;
+          will-change: transform;
+        }
+        .edura-marquee:hover .edura-marquee-track { animation-play-state: paused; }
+        .edura-marquee-item {
+          display: inline-flex;
+          align-items: center;
+          padding: 0 18px;
+          direction: rtl;
+        }
+        .edura-marquee-dot {
+          display: inline-block;
+          width: 5px; height: 5px;
+          border-radius: 50%;
+          background: #14B8A6;
+          margin-inline-start: 18px;
+          opacity: 0.55;
+          flex-shrink: 0;
+        }
+        @keyframes edura-marquee-roll {
+          from { transform: translateX(0); }
+          to   { transform: translateX(-50%); }
+        }
+        @media (prefers-reduced-motion: reduce) {
+          .edura-marquee-track { animation: none; }
+          .edura-marquee { padding: 12px 16px; text-align: center; white-space: normal; }
+          .edura-marquee-track { display: block; white-space: normal; }
+          .edura-marquee-item:not(:first-child) { display: none; }
+          .edura-marquee-dot { display: none; }
+        }
+        @media (max-width: 600px) {
+          .edura-marquee { font-size: 12.5px; padding: 8px 0; }
+          .edura-marquee-item { padding: 0 14px; }
+        }
+      `;
+      document.head.appendChild(style);
+    }
+
+    // בנייה — duplicate items כדי שהלולאה תהיה רציפה
+    const marquee = document.createElement('div');
+    marquee.className = 'edura-marquee';
+    marquee.setAttribute('aria-hidden', 'true');
+    const track = document.createElement('div');
+    track.className = 'edura-marquee-track';
+    const items = shuffled.map(o =>
+      '<span class="edura-marquee-item">' + o.s +
+      '<span class="edura-marquee-dot"></span></span>'
+    ).join('');
+    track.innerHTML = items + items; // כפול לרצף חלק
+    marquee.appendChild(track);
+
+    target.parentNode.insertBefore(marquee, target);
+  };
+
   window.EduraCopy = C;
+
+  // mount אוטומטי אם הדף סימן data-edura-marquee על ה-body
+  document.addEventListener('DOMContentLoaded', () => {
+    if (document.body && document.body.dataset.eduraMarquee === 'on') {
+      C.mountMarquee();
+    }
+  });
 })();
