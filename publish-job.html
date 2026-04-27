@@ -506,29 +506,7 @@
   <div class="hero-grid">
     <div class="hero-text">
       <div class="winks-marquee" aria-hidden="true">
-        <div class="winks-track">
-          <span class="wink">סוף סוף לוח שלא מבקש OTP ✦</span>
-          <span class="wink">פחות גלילה, יותר הוראה ✦</span>
-          <span class="wink">מורה? מנהלת? בואו נתאם ✦</span>
-          <span class="wink">המודעה לא נעלמת כעבור שעתיים ✦</span>
-          <span class="wink">מספיק "כבר נסגר, סליחה" ✦</span>
-          <span class="wink">פחות 7 קבוצות פייסבוק ✦</span>
-          <span class="wink">לא שדכנים. די קרוב. ✦</span>
-          <span class="wink">לחפש משרה זה כמעט עבודה ✦</span>
-          <span class="wink">המאגר עובד. אתם בקפה. ✦</span>
-          <span class="wink">פחות וואטסאפים, יותר חוזים ✦</span>
-          <!-- duplicate for seamless loop -->
-          <span class="wink">סוף סוף לוח שלא מבקש OTP ✦</span>
-          <span class="wink">פחות גלילה, יותר הוראה ✦</span>
-          <span class="wink">מורה? מנהלת? בואו נתאם ✦</span>
-          <span class="wink">המודעה לא נעלמת כעבור שעתיים ✦</span>
-          <span class="wink">מספיק "כבר נסגר, סליחה" ✦</span>
-          <span class="wink">פחות 7 קבוצות פייסבוק ✦</span>
-          <span class="wink">לא שדכנים. די קרוב. ✦</span>
-          <span class="wink">לחפש משרה זה כמעט עבודה ✦</span>
-          <span class="wink">המאגר עובד. אתם בקפה. ✦</span>
-          <span class="wink">פחות וואטסאפים, יותר חוזים ✦</span>
-        </div>
+        <div class="winks-track" id="winks-track"></div>
       </div>
       <h1 class="hero-title">
         כל משרות החינוך<br>
@@ -825,8 +803,21 @@
 
 <div class="toast" id="toast"></div>
 
+<script src="copy.js"></script>
 <script>
   const SUBMISSIONS_URL = 'https://script.google.com/macros/s/AKfycbwleldcwH8c5k9OZ8EMDIKZ8veRbrtO1M7XwYFWg7HHbEV-SrZkLTElbFRiq4cHPlyarw/exec';
+
+  // ─── Populate winks marquee from EduraCopy.heroTicker ───
+  (function () {
+    const track = document.getElementById('winks-track');
+    if (!track || !window.EduraCopy || !EduraCopy.heroTicker) return;
+    const phrases = EduraCopy.heroTicker;
+    // Render twice for seamless loop
+    const html = phrases.concat(phrases).map(function (p) {
+      return '<span class="wink">' + p.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;') + ' ✦</span>';
+    }).join('');
+    track.innerHTML = html;
+  })();
 
   const $ = (id) => document.getElementById(id);
   const toast = (msg) => {
