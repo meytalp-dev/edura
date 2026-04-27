@@ -807,11 +807,11 @@
 <script>
   const SUBMISSIONS_URL = 'https://script.google.com/macros/s/AKfycbwleldcwH8c5k9OZ8EMDIKZ8veRbrtO1M7XwYFWg7HHbEV-SrZkLTElbFRiq4cHPlyarw/exec';
 
-  // ─── Populate winks marquee from EduraCopy.heroTicker ───
+  // ─── Populate winks marquee from EduraCopy.funnyMarquee ───
   (function () {
     const track = document.getElementById('winks-track');
-    if (!track || !window.EduraCopy || !EduraCopy.heroTicker) return;
-    const phrases = EduraCopy.heroTicker;
+    if (!track || !window.EduraCopy || !EduraCopy.funnyMarquee) return;
+    const phrases = EduraCopy.funnyMarquee;
     // Render twice for seamless loop
     const html = phrases.concat(phrases).map(function (p) {
       return '<span class="wink">' + p.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;') + ' ✦</span>';
