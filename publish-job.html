@@ -3,10 +3,10 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>פרסום משרה · אדורה — האתר הגדול למשרות חינוך בישראל</title>
-<meta name="description" content="פרסמו משרת הוראה אצל אדורה — האתר הגדול בישראל למשרות חינוך. מאצינג חכם למורות מתאימות לפי מקצוע, אזור ושכבת גיל. חינם, ללא הרשמה." />
-<meta property="og:title" content="פרסום משרה · אדורה" />
-<meta property="og:description" content="האתר הגדול בישראל למשרות חינוך — מאצינג חכם למורות שמחפשות בדיוק את המשרה שלכם. חינם." />
+<title>מצאו את המשרה הבאה שלכם בחינוך · אדורה</title>
+<meta name="description" content="אדורה — האתר הגדול בישראל למשרות חינוך. מלאו פרופיל קצר וקבלו התאמות חכמות למשרות מתאימות לפי מקצוע, אזור ושכבת גיל. חינם, ללא הרשמה." />
+<meta property="og:title" content="המשרה הבאה שלכם בחינוך · אדורה" />
+<meta property="og:description" content="האתר הגדול בישראל למשרות חינוך — מאצינג חכם בין הפרופיל שלכם למשרות שמתאימות לכם בדיוק. חינם." />
 <meta property="og:url" content="https://edura.co.il/publish-job.html" />
 <meta property="og:type" content="website" />
 <meta property="og:site_name" content="אדורה" />
@@ -24,9 +24,9 @@
     --teal-deep: #0D9488;
     --teal-pale: #F0FDFA;
     --cream: #F8FAFC;
-    --orange: #D97706;
-    --orange-soft: #FEF3C7;
-    --orange-pale: #FFFBEB;
+    --pink-soft: #FCE7F3;
+    --pink-deep: #9D174D;
+    --pink-pale: #FDF2F8;
     --ink: #0B2A4A;
     --ink-soft: #1E3A5F;
     --ink-mute: #475569;
@@ -209,8 +209,8 @@
     margin-bottom: 16px;
   }
   .reason-icon svg { width: 24px; height: 24px; }
-  .reason-card.highlight .reason-icon { background: var(--orange-soft); color: var(--orange); }
-  .reason-card.highlight { border-color: var(--orange-soft); background: var(--orange-pale); }
+  .reason-card.highlight .reason-icon { background: var(--pink-soft); color: var(--pink-deep); }
+  .reason-card.highlight { border-color: var(--pink-soft); background: var(--pink-pale); }
   .reason-card h3 {
     font-size: 18px; font-weight: 700;
     color: var(--ink);
@@ -282,6 +282,15 @@
     margin-bottom: 28px;
     line-height: 1.6;
   }
+  .secondary-link {
+    display: inline-block;
+    margin-top: 18px;
+    color: var(--teal-deep);
+    font-size: 14px; font-weight: 600;
+    border-bottom: 1px solid transparent;
+    transition: border-color .15s;
+  }
+  .secondary-link:hover { border-bottom-color: var(--teal-deep); }
   .reassure-row {
     display: flex; flex-wrap: wrap;
     gap: 18px; justify-content: center;
@@ -344,40 +353,41 @@
 
 <section class="hero">
   <div class="hero-inner">
-    <span class="eyebrow">פרסום משרה · חינם</span>
-    <h1>מחפשים מורה? <span class="highlight">פרסמו אצלנו</span></h1>
+    <span class="eyebrow">מורים מחפשים משרה?</span>
+    <h1>המשרה הבאה שלכם <span class="highlight">מחכה אצלנו</span></h1>
     <p class="lead">
-      אדורה הוא האתר הגדול בישראל למשרות חינוך. במקום שהמודעה שלכם תיעלם בפיד תוך שעתיים — הציגו אותה למאגר המורים הפעיל ביותר בארץ, עם מאצינג חכם שמגיע רק למורות שמתאימות לתפקיד.
+      אדורה הוא האתר הגדול בישראל למשרות חינוך — אלפי משרות מעודכנות מכל הזרמים והמגזרים, במקום אחד. במקום לעבור בין עשר קבוצות פייסבוק וחמישה אתרים — מלאו פרופיל קצר וקבלו רק את המשרות שמתאימות לכם בדיוק.
     </p>
-    <a href="index.html#post-job" class="cta-primary" id="cta-top">
+    <a href="cv-builder.html" class="cta-primary" id="cta-top">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-        <line x1="12" y1="5" x2="12" y2="19"/>
-        <line x1="5" y1="12" x2="19" y2="12"/>
+        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+        <polyline points="14 2 14 8 20 8"/>
+        <line x1="16" y1="13" x2="8" y2="13"/>
+        <line x1="16" y1="17" x2="8" y2="17"/>
       </svg>
-      פרסמו משרה — 60 שניות
+      מילוי פרופיל וקבלת התאמות
     </a>
-    <span class="cta-meta"><strong>חינם, ללא הרשמה.</strong> פרסום מיידי. הפניות מגיעות ישירות אליכם.</span>
+    <span class="cta-meta"><strong>חינם, ללא הרשמה.</strong> מילוי בכמה דקות. ההתאמות מגיעות ישירות אליכם.</span>
   </div>
 </section>
 
 <section class="reasons">
   <div class="section-header">
     <div class="section-eyebrow">למה אצלנו</div>
-    <h2>שלוש סיבות לפרסם באדורה</h2>
+    <h2>שלוש סיבות להתחיל באדורה</h2>
   </div>
   <div class="reasons-grid">
 
     <div class="reason-card highlight">
       <div class="reason-icon">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-          <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
-          <circle cx="9" cy="7" r="4"/>
-          <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
-          <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+          <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
+          <polyline points="3.27 6.96 12 12.01 20.73 6.96"/>
+          <line x1="12" y1="22.08" x2="12" y2="12"/>
         </svg>
       </div>
-      <h3>הגעה למאגר המורים הגדול בישראל</h3>
-      <p>אדורה הוא האתר הגדול למשרות חינוך — אליו מורות ומורים נכנסים מדי יום. המשרה שלכם מתחילה את היום בפניהם.</p>
+      <h3>מאגר המשרות הגדול בישראל</h3>
+      <p>כל משרות ההוראה בארץ במקום אחד — ממלכתי, ממ״ד, חרדי, ערבי. מגן ילדים ועד תיכון. עדכון יומי ממקורות פתוחים, פייסבוק, וקבוצות סגורות שאספנו.</p>
     </div>
 
     <div class="reason-card">
@@ -389,8 +399,8 @@
           <line x1="8" y1="11" x2="14" y2="11"/>
         </svg>
       </div>
-      <h3>מאצינג חכם — לא רק לוח דרושים</h3>
-      <p>האתר ממליץ על המשרה רק למורות שעונות על הקריטריונים שלכם: מקצוע, שכבת גיל, אזור, מגזר. בלי הצפה — רק פניות מתאימות.</p>
+      <h3>מאצינג חכם — לא דפדוף בלוח</h3>
+      <p>המערכת קוראת את הפרופיל שלכם — מקצוע, שכבה, אזור, היקף — ומחזירה רק את המשרות שמתאימות. בלי הצפה, בלי לחפור בכל הרשימה.</p>
     </div>
 
     <div class="reason-card">
@@ -401,7 +411,7 @@
         </svg>
       </div>
       <h3>חינם · ללא הרשמה · ללא הגבלה</h3>
-      <p>פרסמו כמה משרות שאתם רוצים, מתי שאתם רוצים. הפניות מגיעות ישר למייל ולטלפון שלכם. אפשר להסיר משרה בכל רגע.</p>
+      <p>בלי חשבון, בלי סיסמאות, בלי תשלום. ממלאים פרופיל פעם אחת ומקבלים התאמות. כשמוצאים משרה — פונים ישירות לבית הספר.</p>
     </div>
 
   </div>
@@ -410,28 +420,28 @@
 <section class="how">
   <div class="section-header">
     <div class="section-eyebrow">איך זה עובד</div>
-    <h2>שלושה צעדים, דקה בסך הכל</h2>
+    <h2>שלושה צעדים, וההתאמות אצלכם</h2>
   </div>
   <div class="steps">
     <div class="step">
       <div class="step-num">1</div>
       <div class="step-body">
-        <h4>ממלאים טופס קצר</h4>
-        <p>שם בית הספר, מקצוע, אזור, היקף משרה ופרטי קשר. בלי הקמת חשבון, בלי סיסמאות.</p>
+        <h4>ממלאים פרופיל קצר</h4>
+        <p>מקצועות, שכבות גיל, אזורים מועדפים, היקף משרה. בלי קורות חיים, בלי תעודות — רק מה שצריך כדי למצוא לכם התאמה.</p>
       </div>
     </div>
     <div class="step">
       <div class="step-num">2</div>
       <div class="step-body">
-        <h4>המשרה עולה לאתר</h4>
-        <p>תוך שעות בודדות המשרה מופיעה ללוח, ומגיעה למורות שהקריטריונים שלהן תואמים — לא לכל הרשימה.</p>
+        <h4>המערכת מחזירה התאמות</h4>
+        <p>מתוך מאגר המשרות הגדול בישראל, אדורה מציגה לכם רק את המשרות שמתאימות לפרופיל שלכם — מסודרות לפי רלוונטיות.</p>
       </div>
     </div>
     <div class="step">
       <div class="step-num">3</div>
       <div class="step-body">
-        <h4>הפניות מגיעות אליכם ישירות</h4>
-        <p>מורות מתעניינות פונות ישירות למייל או לטלפון שציינתם. אדורה לא מתערבת ולא לוקחת עמלה.</p>
+        <h4>פונים ישירות לבית הספר</h4>
+        <p>כל משרה כוללת פרטי קשר ישירים. שולחים מייל, מתקשרים, מציגים מועמדות — בלי מתווכים ובלי עמלות.</p>
       </div>
     </div>
   </div>
@@ -439,15 +449,18 @@
 
 <section class="closing">
   <div class="closing-inner">
-    <h2>מוכנים לפרסם?</h2>
-    <p>הטופס פתוח, מילוי מהיר, פרסום בו ביום. בלי תשלום, בלי טפסי הרשמה, בלי התחייבות.</p>
-    <a href="index.html#post-job" class="cta-primary" id="cta-bottom">
+    <h2>מוכנים למצוא?</h2>
+    <p>הפרופיל קצר, ההתאמות חכמות, וכל המשרות במקום אחד. אין סיבה להמשיך לחפש בעשרה אתרים שונים.</p>
+    <a href="cv-builder.html" class="cta-primary" id="cta-bottom">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-        <line x1="12" y1="5" x2="12" y2="19"/>
-        <line x1="5" y1="12" x2="19" y2="12"/>
+        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+        <polyline points="14 2 14 8 20 8"/>
+        <line x1="16" y1="13" x2="8" y2="13"/>
+        <line x1="16" y1="17" x2="8" y2="17"/>
       </svg>
-      לפתיחת טופס פרסום משרה
+      התחילו את הפרופיל
     </a>
+    <a href="teachers.html" class="secondary-link">או — דפדוף חופשי בכל המשרות ←</a>
     <div class="reassure-row">
       <span>
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
@@ -463,7 +476,7 @@
       </span>
       <span>
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-        הסרה בכל רגע
+        פנייה ישירה
       </span>
     </div>
   </div>
@@ -474,17 +487,6 @@
     אדורה — האתר הגדול בישראל למשרות חינוך · <a href="index.html">edura.co.il</a>
   </div>
 </footer>
-
-<script>
-  // קישור עומק — פותח את המודאל ישירות אחרי המעבר לעמוד הבית
-  document.querySelectorAll('a[href="index.html#post-job"]').forEach(function (link) {
-    link.addEventListener('click', function (e) {
-      e.preventDefault();
-      sessionStorage.setItem('edura:open-post-job', '1');
-      window.location.href = 'index.html';
-    });
-  });
-</script>
 
 <script src="analytics.js"></script>
 
