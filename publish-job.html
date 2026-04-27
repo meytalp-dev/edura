@@ -128,18 +128,19 @@
     flex: 1; min-width: 0;
     position: relative;
     direction: ltr;
-    -webkit-mask-image: linear-gradient(to left, transparent, black 6%, black 94%, transparent);
-            mask-image: linear-gradient(to left, transparent, black 6%, black 94%, transparent);
+    -webkit-mask-image: linear-gradient(to right, transparent, black 6%, black 94%, transparent);
+            mask-image: linear-gradient(to right, transparent, black 6%, black 94%, transparent);
   }
   .winks-track {
-    display: inline-flex;
+    display: flex;
     gap: 28px;
     width: max-content;
     animation: winksScroll 45s linear infinite;
     white-space: nowrap;
-    direction: rtl;
+    direction: ltr;
     will-change: transform;
   }
+  .wink { unicode-bidi: plaintext; }
   .wink {
     font-family: 'Playpen Sans Hebrew', cursive;
     font-size: 14px;
@@ -153,8 +154,8 @@
   .wink:nth-child(3n+1) { transform: rotate(0.5deg); }
   .wink:nth-child(3n+2) { color: var(--lavender); transform: rotate(-0.5deg); }
   @keyframes winksScroll {
-    from { transform: translateX(-50%); }
-    to { transform: translateX(0); }
+    from { transform: translateX(0); }
+    to { transform: translateX(-50%); }
   }
   @media (prefers-reduced-motion: reduce) {
     .winks-track { animation: none; }
