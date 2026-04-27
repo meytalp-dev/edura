@@ -269,11 +269,26 @@ function readApproved_(ss, sheetName, headers) {
     for (let i = 0; i < headers.length; i++) {
       let v = row[i];
       if (v instanceof Date) v = v.toISOString();
+      if (headers[i] === 'phone') v = formatPhone_(v);
       obj[headers[i]] = v;
     }
     out.push(obj);
   });
   return out;
+}
+
+// נרמול טלפון — Sheets מורידה 0 מתחילי מספר. מחזיר תמיד מחרוזת עם 0.
+function formatPhone_(p) {
+  if (p === null || p === undefined || p === '') return '';
+  let s = String(p).replace(/[^\d]/g, '');
+  if (s.length === 9 && !s.startsWith('0')) s = '0' + s;
+  return s;
+}
+
+// בעת appendRow — קידומת ' מאלצת אחסון כטקסט (לא נראית בתא ולא בקריאה).
+function phoneForStorage_(p) {
+  const s = formatPhone_(p);
+  return s ? "'" + s : '';
 }
 
 // ════════════════════════════════════════════════════════════════════
@@ -282,7 +297,7 @@ function readApproved_(ss, sheetName, headers) {
 function handleApplication_(b) {
   const name = String(b.name || '').trim();
   const email = String(b.email || '').trim();
-  const phone = String(b.phone || '').trim();
+  const phone = formatPhone_(b.phone);
   const message = String(b.message || '').trim();
   const jobId = String(b.jobId || '').trim();
   const jobTitle = String(b.jobTitle || '').trim();
@@ -316,7 +331,7 @@ function handleApplication_(b) {
   // שמירה ל-Sheet
   const sh = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(SHEET_APPLICATIONS);
   sh.appendRow([new Date(), refId, jobId, jobTitle, school, schoolEmail,
-                name, email, phone, message, cvId, cvUrl, cvFilename, 'sent']);
+                name, email, phoneForStorage_(phone), message, cvId, cvUrl, cvFilename, 'sent']);
 
   // שליחת מייל לבית הספר (אם יש מייל) או למיטל
   const targetEmail = schoolEmail || ADMIN_EMAIL;
@@ -400,7 +415,7 @@ function handlePostJob_(b) {
   const description = String(b.description || '').trim();
   const contactName = String(b.contactName || '').trim();
   const email = String(b.email || '').trim();
-  const phone = String(b.phone || '').trim();
+  const phone = formatPhone_(b.phone);
 
   if (!school || !subject || !contactName || !email || !phone) {
     return { ok: false, error: 'שם בית ספר, מקצוע, איש קשר, מייל וטלפון — חובה' };
@@ -410,7 +425,7 @@ function handlePostJob_(b) {
   const refId = generateRefId_('JOB');
   const sh = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(SHEET_POSTED_JOBS);
   sh.appendRow([new Date(), refId, school, subject, role, region, city, level,
-                sector, scope, description, contactName, email, phone, 'pending']);
+                sector, scope, description, contactName, email, phoneForStorage_(phone), 'pending']);
 
   const approveUrl = approveLink_('job', refId, 'approve');
   const rejectUrl = approveLink_('job', refId, 'reject');
@@ -469,7 +484,7 @@ function handlePostTeacher_(b) {
   const scope = String(b.scope || '').trim();
   const notes = String(b.notes || '').trim();
   const email = String(b.email || '').trim();
-  const phone = String(b.phone || '').trim();
+  const phone = formatPhone_(b.phone);
 
   if (!name || !subject || !email) {
     return { ok: false, error: 'שם, מקצוע ומייל הם חובה' };
@@ -479,7 +494,7 @@ function handlePostTeacher_(b) {
   const refId = generateRefId_('TCH');
   const sh = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(SHEET_POSTED_TEACHERS);
   sh.appendRow([new Date(), refId, name, subject, level, region, city,
-                scope, notes, email, phone, 'pending']);
+                scope, notes, email, phoneForStorage_(phone), 'pending']);
 
   const approveUrl = approveLink_('teacher', refId, 'approve');
   const rejectUrl = approveLink_('teacher', refId, 'reject');
@@ -604,7 +619,7 @@ function handlePrincipal_(b) {
   const email = String(b.email || '').trim();
   const name = String(b.name || '').trim();
   const region = String(b.region || '').trim();
-  const phone = String(b.phone || '').trim();
+  const phone = formatPhone_(b.phone);
 
   if (!email || !isValidEmail_(email)) return { ok: false, error: 'מייל לא תקין' };
 
@@ -614,13 +629,13 @@ function handlePrincipal_(b) {
     const data = sh.getRange(2, 1, last - 1, PRINCIPAL_ALERTS_HEADERS.length).getValues();
     for (let i = 0; i < data.length; i++) {
       if (String(data[i][1]).toLowerCase() === email.toLowerCase()) {
-        sh.getRange(i + 2, 3, 1, 4).setValues([[name, region, phone, true]]);
+        sh.getRange(i + 2, 3, 1, 4).setValues([[name, region, phoneForStorage_(phone), true]]);
         log_('principal-updated', email);
         return { ok: true, updated: true };
       }
     }
   }
-  sh.appendRow([new Date(), email, name, region, phone, true, '']);
+  sh.appendRow([new Date(), email, name, region, phoneForStorage_(phone), true, '']);
 
   try {
     MailApp.sendEmail(email, 'נרשמת להתראות מכרזי ניהול ✓',
@@ -734,6 +749,40 @@ function buildAlertsEmail_(sub, jobs) {
     items +
     '<p style="font-size:12px;color:#94A3B8;margin-top:24px;">להסרה: השיבי "הסר" למייל הזה. · <a href="https://edura.co.il" style="color:#0F9285;">edura.co.il</a></p>' +
   '</div>';
+}
+
+// ════════════════════════════════════════════════════════════════════
+// fixPhoneNumbers — תיקון רטרואקטיבי לרשומות שאוחסן בהן טלפון כמספר
+// הריצי פעם אחת אחרי deploy של הגרסה הזו
+// ════════════════════════════════════════════════════════════════════
+function fixPhoneNumbers() {
+  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  const targets = [
+    { name: SHEET_APPLICATIONS,     headers: APPLICATIONS_HEADERS },
+    { name: SHEET_POSTED_JOBS,      headers: POSTED_JOBS_HEADERS },
+    { name: SHEET_POSTED_TEACHERS,  headers: POSTED_TEACHERS_HEADERS },
+    { name: SHEET_PRINCIPAL_ALERTS, headers: PRINCIPAL_ALERTS_HEADERS }
+  ];
+  let fixed = 0;
+  targets.forEach(function (t) {
+    const sh = ss.getSheetByName(t.name);
+    if (!sh) return;
+    const last = sh.getLastRow();
+    if (last < 2) return;
+    const phoneCol = t.headers.indexOf('phone') + 1;
+    if (phoneCol === 0) return;
+    sh.getRange(2, phoneCol, last - 1, 1).setNumberFormat('@');
+    const range = sh.getRange(2, phoneCol, last - 1, 1);
+    const values = range.getValues();
+    const updated = values.map(function (row) {
+      const fixed = formatPhone_(row[0]);
+      return [fixed ? "'" + fixed : ''];
+    });
+    range.setValues(updated);
+    fixed += values.length;
+  });
+  log_('fix-phones', 'Normalized phone numbers in ' + fixed + ' rows');
+  try { SpreadsheetApp.getUi().alert('✓ תוקנו ' + fixed + ' שורות. כל הטלפונים מאוחסנים עכשיו כטקסט עם 0 בהתחלה.'); } catch (e) {}
 }
 
 // ════════════════════════════════════════════════════════════════════
