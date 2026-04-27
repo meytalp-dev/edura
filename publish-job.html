@@ -856,10 +856,22 @@
     document.body.style.overflow = '';
   }
 
+  // אם הגענו ישירות מ-deep-link (#teacher / #school) — סגירה מחזירה לדף הבית
+  function isDeepLinked() {
+    return /^#(teacher|school|post-job)$/i.test(location.hash || '');
+  }
+  function smartClose(modalId) {
+    if (isDeepLinked()) {
+      window.location.href = 'index.html';
+    } else {
+      closeModal(modalId);
+    }
+  }
+
   $('open-teacher').addEventListener('click', () => openModal('modal-teacher'));
   $('open-school').addEventListener('click', () => openModal('modal-school'));
-  $('close-teacher').addEventListener('click', () => closeModal('modal-teacher'));
-  $('close-school').addEventListener('click', () => closeModal('modal-school'));
+  $('close-teacher').addEventListener('click', () => smartClose('modal-teacher'));
+  $('close-school').addEventListener('click', () => smartClose('modal-school'));
 
   // אם הגיעו עם #teacher / #school — לפתוח אוטומטית את הטופס המתאים
   function autoOpenFromHash() {
@@ -880,16 +892,16 @@
   setTimeout(autoOpenFromHash, 50);
   window.addEventListener('hashchange', autoOpenFromHash);
 
-  // Close on overlay click
+  // Close on overlay click — אם הגענו ב-deep-link, חזרה לדף הבית
   document.querySelectorAll('.modal-overlay').forEach(overlay => {
     overlay.addEventListener('click', (e) => {
-      if (e.target === overlay) closeModal(overlay.id);
+      if (e.target === overlay) smartClose(overlay.id);
     });
   });
   // Close on Escape
   document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape') {
-      document.querySelectorAll('.modal-overlay.open').forEach(m => closeModal(m.id));
+      document.querySelectorAll('.modal-overlay.open').forEach(m => smartClose(m.id));
     }
   });
 
