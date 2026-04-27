@@ -109,13 +109,26 @@
 
   .hero-text { position: relative; z-index: 1; }
 
-  .winks-marquee {
+  .winks-wrap {
+    display: flex; align-items: center; gap: 10px;
     margin-bottom: 22px;
-    overflow: hidden;
     max-width: 600px;
+  }
+  .winks-prefix {
+    font-family: 'Playpen Sans Hebrew', cursive;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--ink);
+    flex-shrink: 0;
+    white-space: nowrap;
+    transform: rotate(-1deg);
+  }
+  .winks-marquee {
+    overflow: hidden;
+    flex: 1; min-width: 0;
     position: relative;
-    -webkit-mask-image: linear-gradient(to left, transparent, black 12%, black 88%, transparent);
-            mask-image: linear-gradient(to left, transparent, black 12%, black 88%, transparent);
+    -webkit-mask-image: linear-gradient(to left, transparent, black 8%, black 92%, transparent);
+            mask-image: linear-gradient(to left, transparent, black 8%, black 92%, transparent);
   }
   .winks-track {
     display: flex;
@@ -505,8 +518,11 @@
   <div class="hero-blob-2"></div>
   <div class="hero-grid">
     <div class="hero-text">
-      <div class="winks-marquee" aria-hidden="true">
-        <div class="winks-track" id="winks-track"></div>
+      <div class="winks-wrap">
+        <span class="winks-prefix">מאחלים לכם:</span>
+        <div class="winks-marquee" aria-hidden="true">
+          <div class="winks-track" id="winks-track"></div>
+        </div>
       </div>
       <h1 class="hero-title">
         כל משרות החינוך<br>
