@@ -861,6 +861,15 @@
   $('close-teacher').addEventListener('click', () => closeModal('modal-teacher'));
   $('close-school').addEventListener('click', () => closeModal('modal-school'));
 
+  // אם הגיעו עם #teacher / #school — לפתוח אוטומטית את הטופס המתאים
+  function autoOpenFromHash() {
+    const h = (location.hash || '').toLowerCase();
+    if (h === '#teacher') openModal('modal-teacher');
+    else if (h === '#school' || h === '#post-job') openModal('modal-school');
+  }
+  autoOpenFromHash();
+  window.addEventListener('hashchange', autoOpenFromHash);
+
   // Close on overlay click
   document.querySelectorAll('.modal-overlay').forEach(overlay => {
     overlay.addEventListener('click', (e) => {
