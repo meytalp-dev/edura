@@ -90,7 +90,7 @@
     --shadow-lg: 0 24px 48px rgba(11,42,74,.10);
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
-  html { scroll-behavior: smooth; }
+  html { scroll-behavior: smooth; overflow-x: hidden; }
   :where(button, a, input, select, textarea, summary, [tabindex]):focus-visible {
     outline: 3px solid var(--teal-deep);
     outline-offset: 2px;
@@ -780,6 +780,22 @@
 
   /* ─── Mobile (≤640px) — fix hero CTAs, header, float cards ─── */
   @media (max-width: 640px) {
+    /* Tame the background blobs that smudge text on small screens */
+    .hero { isolation: isolate; }
+    .hero-blob-1 {
+      width: 220px; height: 220px;
+      top: -60px; left: -90px;
+      filter: blur(48px);
+      opacity: .35;
+    }
+    .hero-blob-2 {
+      width: 200px; height: 200px;
+      bottom: auto; top: 120px;
+      right: -70px;
+      filter: blur(48px);
+      opacity: .28;
+    }
+
     .header { padding: 10px 0; }
     .header-inner { padding: 0 14px; gap: 8px; }
     .logo-svg { height: 26px; }
@@ -834,6 +850,19 @@
       gap: 10px;
       max-width: 100%;
       margin-top: 8px;
+    }
+    /* Hard reset on float cards — no leftover absolute positioning, no rotation, no float anim */
+    .float-card,
+    .float-card.fc1,
+    .float-card.fc2,
+    .float-card.fc3,
+    .float-card.fc4 {
+      position: static !important;
+      top: auto !important; left: auto !important; right: auto !important; bottom: auto !important;
+      width: auto !important;
+      transform: none !important;
+      animation: none !important;
+      --rot: 0deg;
     }
     .float-card {
       padding: 12px 14px;
@@ -1045,6 +1074,13 @@
     <a href="mailto:meytal@edura.co.il">meytal@edura.co.il</a>
     <span class="sep">·</span>
     <a href="https://www.linkedin.com/in/meytal-peleg-839265378" target="_blank" rel="noopener">LinkedIn</a>
+  </div>
+  <div class="footer-signature">
+    <a href="about.html">על אדורה</a>
+    <span class="sep">·</span>
+    <a href="privacy.html">פרטיות וקוקיס</a>
+    <span class="sep">·</span>
+    <a href="accessibility.html">נגישות</a>
   </div>
 </footer>
 
