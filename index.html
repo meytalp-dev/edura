@@ -49,9 +49,12 @@
   @media (prefers-reduced-motion: reduce) {
     *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; }
   }
-  /* iOS Safari — מונע auto-zoom בלחיצה על שדה במובייל */
+  /* iOS Safari — מונע auto-zoom בלחיצה על שדה במובייל + tap targets ≥44px */
   @media (max-width: 768px) {
-    .filter-input, .filter-select, .modal input, .modal textarea, .modal select { font-size: 16px; }
+    input, select, textarea { font-size: 16px !important; }
+    .btn-apply, .btn-source { min-height: 44px; padding: 12px 16px; font-size: 14px; }
+    .btn-save { width: 44px; height: 44px; }
+    .chip { min-height: 44px; }
   }
   body {
     font-family: 'Heebo', 'Assistant', sans-serif;
@@ -284,11 +287,57 @@
   .fab-cta-principal { background: #FEF3C7; color: #92400E; border-color: #FDE68A; }
   .fab-cta-principal:hover { background: #FDE68A; }
   @media (max-width: 900px) {
-    .fab-cta-stack { left: 10px; top: auto; bottom: 16px; transform: none; flex-direction: row; gap: 8px; }
-    .fab-cta { padding: 10px 14px; border-radius: 999px; }
+    .fab-cta-stack {
+      position: static;
+      inset: auto;
+      transform: none;
+      flex-direction: row;
+      gap: 8px;
+      justify-content: center;
+      padding: 12px 60px 0;
+      z-index: auto;
+    }
+    .fab-cta {
+      padding: 10px 14px;
+      border-radius: 999px;
+      flex: 1 1 0;
+      max-width: 220px;
+      justify-content: center;
+    }
     .fab-cta svg { width: 18px; height: 18px; }
+    .fab-cta-text { flex-direction: row; align-items: baseline; gap: 4px; }
     .fab-cta-text strong { font-size: 13px; }
     .fab-cta-text span { display: none; }
+
+    /* Move chat bot + WhatsApp widgets up — out of the way of bottom content */
+    .ew-fab {
+      bottom: auto !important;
+      top: 64px !important;
+      inset-inline-end: 10px !important;
+      inset-inline-start: auto !important;
+      left: auto !important;
+      right: auto !important;
+      width: 42px !important;
+      height: 42px !important;
+    }
+    .ew-fab svg { width: 20px !important; height: 20px !important; }
+    .ew-fab .ew-fab-label { display: none !important; }
+
+    .efb-fab {
+      bottom: auto !important;
+      top: 64px !important;
+      inset-inline-start: 10px !important;
+      inset-inline-end: auto !important;
+      left: auto !important;
+      right: auto !important;
+      width: 42px !important;
+      height: 42px !important;
+      padding: 0 !important;
+      border-radius: 50% !important;
+      justify-content: center !important;
+    }
+    .efb-fab .efb-fab-label { display: none !important; }
+    .efb-fab svg { width: 22px !important; height: 22px !important; }
   }
   .modal-supra-publish { font-size: 13px; color: var(--orange); font-weight: 700; margin-bottom: 8px; letter-spacing: 0.5px; text-transform: uppercase; }
   .modal-info-publish {
@@ -1161,13 +1210,13 @@
 
 <!-- Floating CTA stack (left side) -->
 <div class="fab-cta-stack" aria-label="כניסה מהירה">
-  <a href="publish-job.html#teacher" class="fab-cta fab-cta-teacher" aria-label="מורה? פרסמי פרופיל ונמצא לך התאמה מושלמת">
+  <a href="publish-job.html#teacher" class="fab-cta fab-cta-teacher" aria-label="מורים — לפרסם פרופיל ונמצא לכם התאמה">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="9" y1="13" x2="15" y2="13"/><line x1="9" y1="17" x2="13" y2="17"/></svg>
-    <span class="fab-cta-text"><strong>מורה?</strong><span>מלאי ונמצא לך התאמה</span></span>
+    <span class="fab-cta-text"><strong>מורים?</strong><span>מלאו ונמצא לכם התאמה</span></span>
   </a>
-  <button type="button" class="fab-cta fab-cta-principal" onclick="openPostJobModal()" aria-label="מנהל? נמצא לך שידוך">
+  <button type="button" class="fab-cta fab-cta-principal" onclick="openPostJobModal()" aria-label="מנהלים — נמצא לכם מורים מתאימים">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>
-    <span class="fab-cta-text"><strong>מנהל?</strong><span>נמצא לך שידוך</span></span>
+    <span class="fab-cta-text"><strong>מנהלים?</strong><span>נמצא לכם מורים מתאימים</span></span>
   </button>
 </div>
 
@@ -1429,6 +1478,7 @@
       <input type="email" class="gate-input" id="gate-email" placeholder="המייל שלך" autocomplete="email" />
     </div>
     <button class="gate-submit" id="gate-submit" onclick="submitGate()">כניסה ←</button>
+    <button type="button" class="gate-skip" onclick="skipGate()">בלי הרשמה — להצצה בלבד</button>
     <div class="gate-footer-note">לא משתפים את הפרטים שלכם. רק שולחים לכם משרות מתאימות, אם תרצו.</div>
   </div>
 </div>
@@ -1607,14 +1657,14 @@ function normalizeSubmittedTeacher_(r) {
 async function loadJobs() {
   try {
     const teacherFetches = [TEACHERS_URL, ...TEACHERS_URLS_EXTRA].map(u =>
-      fetch(u, { cache: 'no-store' }).then(r => r.ok ? r.json() : null).catch(() => null)
+      fetch(u).then(r => r.ok ? r.json() : null).catch(() => null)
     );
     const approvedFetch = SUBMISSIONS_URL
-      ? fetch(SUBMISSIONS_URL + '?action=approved', { cache: 'no-store' })
+      ? fetch(SUBMISSIONS_URL + '?action=approved')
           .then(r => r.ok ? r.json() : null).catch(() => null)
       : Promise.resolve(null);
     const [resJ, approvedData, ...teachersResults] = await Promise.all([
-      fetch(JOBS_URL, { cache: 'no-store' }),
+      fetch(JOBS_URL),
       approvedFetch,
       ...teacherFetches
     ]);
@@ -1947,7 +1997,7 @@ function render() {
     const heart = '<svg width="16" height="16" viewBox="0 0 24 24" fill="' + (isSaved ? 'currentColor' : 'none') + '" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.29 1.51 4.04 3 5.5l7 7Z"/></svg>';
     return (
       '<article class="job-card">' +
-        '<button class="btn-save' + (isSaved ? ' saved' : '') + '" onclick=\'toggleSaveJob(' + j.jobsIndex + ', this)\' aria-label="שמרי משרה" title="שמרי משרה">' + heart + '</button>' +
+        '<button class="btn-save' + (isSaved ? ' saved' : '') + '" onclick=\'toggleSaveJob(' + j.jobsIndex + ', this)\' aria-label="שמירת משרה" title="שמירת משרה">' + heart + '</button>' +
         '<h3 class="job-title">' + esc(j.title) + '</h3>' +
         schoolLine +
         '<div class="job-tags">' + tags.join('') + '</div>' +
@@ -2067,6 +2117,15 @@ function openFiltersDrawer() {
   drawer.classList.add('open'); overlay.classList.add('open');
   drawer.setAttribute('aria-hidden', 'false');
   document.body.style.overflow = 'hidden';
+  // Auto-open the 3 most-used filter accordions on first open — far less tapping
+  ['region', 'subject', 'level'].forEach(name => {
+    const row = drawer.querySelector('.chip-row[data-filter="' + name + '"]');
+    if (row && !row.classList.contains('open')) {
+      row.classList.add('open');
+      const btn = row.querySelector('.chip-row-label');
+      if (btn) btn.setAttribute('aria-expanded', 'true');
+    }
+  });
 }
 function closeFiltersDrawer() {
   const drawer = $('filters-drawer'), overlay = $('filters-overlay');
@@ -2168,7 +2227,7 @@ function submitGate() {
   const acc = { email, name, joinedAt: Date.now() };
   saveAccount(acc);
   hideGate();
-  showToast(((window.EduraCopy && EduraCopy.pickToast('welcome')) || 'ברוכ/ה הבא/ה ✓') + (name ? ' · ' + name : ''));
+  showToast(((window.EduraCopy && EduraCopy.pickToast('welcome')) || 'ברוכים הבאים ✓') + (name ? ' · ' + name : ''));
   trk('signup', 'email_only');
   // אופציונלי: שלח ל-Apps Script אם SUBMISSIONS_URL מוגדר
   if (SUBMISSIONS_URL) {
@@ -2191,8 +2250,25 @@ window.skipGate = skipGate;
 function maybeShowGate() {
   if (getAccount()) return;
   if (sessionStorage.getItem('edura.gate.skipped') === '1') return;
-  // מציגים אחרי הצצה קצרה כדי לא להיות אגרסיביים
-  setTimeout(showGate, 800);
+  // מנהל שמגיע ישירות לפרסום משרה — בלי גייט
+  const hash = (location.hash || '');
+  if (hash === '#post-job' || hash === '#school' || hash === '#teacher') return;
+  // מציגים רק אחרי שמשתמש קלט שיש פיד — או אחרי גלילה, או אחרי 8 שניות
+  let shown = false;
+  const trigger = () => { if (shown) return; shown = true; showGate(); cleanup(); };
+  const cleanup = () => {
+    window.removeEventListener('scroll', onScroll, { passive: true });
+    document.removeEventListener('click', onClick, true);
+  };
+  const onScroll = () => { if (window.scrollY > 400) trigger(); };
+  const onClick = (e) => {
+    // לחיצה על כרטיס/כפתור שמירה/חיפוש = רגע טבעי לבקש הרשמה
+    const t = e.target.closest('.job-card, .btn-save, .search-go, .filters-toggle');
+    if (t) trigger();
+  };
+  window.addEventListener('scroll', onScroll, { passive: true });
+  document.addEventListener('click', onClick, true);
+  setTimeout(trigger, 8000); // safety net
 }
 
 // אפשר Enter לשליחה
@@ -2351,8 +2427,8 @@ window.submitPostJob = submitPostJob;
         <div class="publish-card-icon">
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="9" y1="15" x2="15" y2="15"/><line x1="9" y1="11" x2="15" y2="11"/></svg>
         </div>
-        <div class="publish-card-headline">מורה? הגעת למקום הנכון.</div>
-        <div class="publish-card-action">פרסמי חיפוש משרה</div>
+        <div class="publish-card-headline">מורה? הגעתם למקום הנכון.</div>
+        <div class="publish-card-action">פרסום חיפוש משרה</div>
         <span class="publish-card-arrow">פתחו טופס פרסום ←</span>
       </button>
       <button type="button" class="publish-card principal" onclick="closePublishChooser();openPostJobModal();">
@@ -2418,7 +2494,7 @@ window.submitPostJob = submitPostJob;
       <div>
         <label for="pj-region">אזור</label>
         <select id="pj-region">
-          <option value="">בחרי</option>
+          <option value="">בחרו</option>
           <option value="ירושלים">ירושלים</option>
           <option value="מרכז">מרכז</option>
           <option value="צפון">צפון</option>
@@ -2506,7 +2582,7 @@ window.submitPostJob = submitPostJob;
       <div>
         <label for="pt-region">אזור</label>
         <select id="pt-region">
-          <option value="">בחרי</option>
+          <option value="">בחרו</option>
           <option value="ירושלים">ירושלים</option>
           <option value="מרכז">מרכז</option>
           <option value="שפלה">שפלה</option>
@@ -2564,7 +2640,7 @@ window.submitPostJob = submitPostJob;
       <button class="btn-submit" id="pt-submit" onclick="submitPostTeacher()">שלח לאישור ✓</button>
     </div>
 
-    <p style="font-size:12px;color:#94A3B8;margin-top:14px;text-align:center;">
+    <p style="font-size:13px;color:#475569;margin-top:14px;text-align:center;">
       רוצים בנוסף קו"ח מעוצבים? <a href="cv-builder.html" style="color:#0F9285;font-weight:600;">פתחו את בונה קו"ח החכמים ←</a>
     </p>
   </div>
@@ -2623,10 +2699,10 @@ async function submitPostTeacher() {
       }
     } catch (err) {
       trk('post_teacher_fail', String(err).slice(0, 80));
-      showToast('שליחה נכשלה — נסי שוב או כתבי ל-meytal@edura.co.il');
+      showToast('שליחה נכשלה — נסו שוב או כתבו ל-meytal@edura.co.il');
     }
   } else {
-    showToast('המערכת לא זמינה כרגע — כתבי ל-meytal@edura.co.il');
+    showToast('המערכת לא זמינה כרגע — כתבו ל-meytal@edura.co.il');
   }
 
   setTimeout(() => {
