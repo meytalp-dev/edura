@@ -235,6 +235,10 @@
     line-height: 1.2;
     letter-spacing: -0.5px;
     margin-bottom: 22px;
+    /* Force own compositing layer so backdrop blur from sticky header
+       doesn't smear the title on iOS Safari */
+    transform: translateZ(0);
+    -webkit-transform: translateZ(0);
   }
   h1.hero-title .underline-mark {
     position: relative; display: inline-block; color: var(--teal-deep);
@@ -802,23 +806,24 @@
 
   /* ─── Mobile (≤640px) — fix hero CTAs, header, float cards ─── */
   @media (max-width: 640px) {
-    /* Tame the background blobs that smudge text on small screens */
-    .hero { isolation: isolate; }
-    .hero-blob-1 {
-      width: 220px; height: 220px;
-      top: -60px; left: -90px;
-      filter: blur(48px);
-      opacity: .35;
-    }
-    .hero-blob-2 {
-      width: 200px; height: 200px;
-      bottom: auto; top: 120px;
-      right: -70px;
-      filter: blur(48px);
-      opacity: .28;
+    /* iOS Safari: filter:blur + backdrop-filter compositing layers smear text.
+       Hide blurred blobs entirely on mobile and make header opaque. */
+    .hero-blob-1, .hero-blob-2 { display: none !important; }
+    .hero { isolation: isolate; background: var(--bg); }
+    .hero::before {
+      content: '';
+      position: absolute; inset: 0; z-index: 0; pointer-events: none;
+      background:
+        radial-gradient(ellipse 60% 40% at 10% 10%, rgba(94,200,200,.10) 0%, transparent 70%),
+        radial-gradient(ellipse 50% 35% at 90% 30%, rgba(255,165,90,.08) 0%, transparent 70%);
     }
 
-    .header { padding: 10px 0; }
+    .header {
+      padding: 10px 0;
+      background: var(--bg) !important;
+      backdrop-filter: none !important;
+      -webkit-backdrop-filter: none !important;
+    }
     .header-inner { padding: 0 14px; gap: 8px; justify-content: center; }
     .logo-svg { height: 26px; }
     .logo-word { font-size: 28px; }
@@ -835,8 +840,16 @@
     .hero-sub { font-size: 14px; margin-bottom: 22px; }
 
     .winks-wrap { margin-bottom: 18px; }
-    .winks-prefix { font-size: 13px; }
-    .wink { font-size: 13px; }
+    .winks-prefix { font-size: 13px; transform: none; }
+    .wink { font-size: 13px; transform: none !important; }
+    /* Pause continuous marquee on mobile — animated transform smears text on iOS */
+    .winks-track { animation: none !important; transform: none !important; }
+    .winks-marquee {
+      -webkit-mask-image: none;
+              mask-image: none;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+    }
 
     /* CTAs — full-width stacked, no smudge, no truncation */
     .hero-cta-row {
