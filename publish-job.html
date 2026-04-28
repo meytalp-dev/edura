@@ -290,16 +290,16 @@
     background: var(--ink-soft);
     box-shadow: 0 16px 32px rgba(11,42,74,.28);
   }
-  .cta-whatsapp {
-    background: #25D366; color: var(--white);
-    text-decoration: none;
-    box-shadow: 0 8px 20px rgba(37,211,102,.30);
+  .cta-teacher {
+    background: var(--white); color: var(--orange-deep);
+    border: 1.5px solid var(--orange);
+    box-shadow: 0 6px 18px rgba(217,119,6,.12);
   }
-  .cta-whatsapp:hover {
-    background: #1FB855;
-    box-shadow: 0 14px 28px rgba(37,211,102,.40);
+  .cta-teacher:hover {
+    background: var(--orange-pale);
+    border-color: var(--orange-deep);
+    box-shadow: 0 12px 24px rgba(217,119,6,.18);
   }
-  .cta-whatsapp svg { fill: currentColor; }
 
   /* ─── Footer social icons ─── */
   .footer-social {
@@ -999,14 +999,15 @@
             <line x1="12" y1="5" x2="12" y2="19"/>
             <line x1="5" y1="12" x2="19" y2="12"/>
           </svg>
-          לפרסום משרה
+          אני מפרסם/ת משרה
         </button>
-        <a href="https://api.whatsapp.com/send?phone=972536256653&text=%D7%94%D7%99%D7%99%20%D7%9E%D7%99%D7%98%D7%9C%2C%20%D7%99%D7%A9%20%D7%9C%D7%99%20%D7%A9%D7%90%D7%9C%D7%94%20%D7%A2%D7%9C%20%D7%A4%D7%A8%D7%A1%D7%95%D7%9D%20%D7%9E%D7%A9%D7%A8%D7%94%20%D7%91%D7%90%D7%93%D7%95%D7%A8%D7%94" target="_blank" rel="noopener" class="cta-primary cta-whatsapp">
-          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-            <path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 2.1.55 4.15 1.6 5.96L2 22l4.25-1.71c1.74.95 3.71 1.45 5.79 1.45 5.46 0 9.91-4.45 9.91-9.91S17.5 2 12.04 2zm5.43 12.38c-.3-.15-1.77-.87-2.04-.97-.27-.1-.47-.15-.67.15-.2.3-.77.97-.94 1.17-.17.2-.35.22-.65.07-.3-.15-1.26-.46-2.4-1.48-.89-.79-1.49-1.77-1.66-2.07-.17-.3-.02-.46.13-.61.13-.13.3-.35.45-.52.15-.17.2-.3.3-.5.1-.2.05-.37-.02-.52-.07-.15-.67-1.62-.92-2.22-.24-.58-.49-.5-.67-.51l-.57-.01c-.2 0-.52.07-.79.37-.27.3-1.04 1.02-1.04 2.49s1.07 2.89 1.22 3.09c.15.2 2.1 3.21 5.09 4.5.71.31 1.27.49 1.7.63.71.23 1.36.19 1.87.12.57-.09 1.77-.72 2.02-1.42.25-.7.25-1.29.17-1.42-.07-.12-.27-.2-.57-.35z"/>
+        <button type="button" class="cta-primary cta-teacher" id="open-teacher" data-trigger="teacher">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <circle cx="11" cy="11" r="8"/>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"/>
           </svg>
-          שאלה? בוואטסאפ
-        </a>
+          אני מחפש/ת משרה
+        </button>
       </div>
       <p class="asterisk-note">הקישור למאגר נשלח אחרי שמפרסמים משרה.</p>
 <div class="social-proof" id="social-proof" aria-label="נתוני המאגר">
@@ -1096,6 +1097,125 @@
     <span>נבנה על ידי <strong>מיטל פלג</strong></span>
   </div>
 </footer>
+
+<!-- ─── Teacher modal (looking for a job) ─── -->
+<div class="modal-overlay" id="modal-teacher" role="dialog" aria-labelledby="teacher-title" aria-modal="true" hidden>
+  <div class="modal" id="modal-teacher-inner" onclick="event.stopPropagation()">
+    <button type="button" class="modal-close" id="close-teacher" aria-label="סגור">&times;</button>
+
+    <form class="modal-form" id="form-teacher" novalidate>
+      <div class="modal-supra teacher">חיפוש משרה למורים · חינם</div>
+      <h2 id="teacher-title">מחפש/ת משרה? אנחנו נתאים</h2>
+      <p class="modal-info">ממלאים פרטים בסיסיים — והפרופיל שלכם נכנס למאגר. בתי ספר עם משרות מתאימות יוכלו לפנות אליכם, ואתם תקבלו גישה לכל מאגר המשרות.</p>
+
+      <!-- honeypot -->
+      <div class="hp-field" aria-hidden="true">
+        <label for="pt-hp">אם אתם רואים שדה זה — אל תמלאו אותו</label>
+        <input type="text" id="pt-hp" name="hp" tabindex="-1" autocomplete="off" />
+      </div>
+
+      <div class="form-row">
+        <div class="field">
+          <label for="pt-name">שם מלא <span class="req" aria-hidden="true">*</span></label>
+          <input type="text" id="pt-name" name="name" placeholder="שם פרטי ומשפחה" required autocomplete="name" />
+          <span class="field-error">שם מלא חובה</span>
+        </div>
+        <div class="field">
+          <label for="pt-subject">מקצוע <span class="req" aria-hidden="true">*</span></label>
+          <input type="text" id="pt-subject" name="subject" placeholder="אנגלית, מתמטיקה..." required />
+          <span class="field-error">מקצוע חובה</span>
+        </div>
+      </div>
+
+      <div class="form-row-3">
+        <div class="field">
+          <label for="pt-region">אזור</label>
+          <select id="pt-region" name="region">
+            <option value="">בחרו</option>
+            <option value="ירושלים">ירושלים והסביבה</option>
+            <option value="מרכז">מרכז (גוש דן, פ"ת, רעננה...)</option>
+            <option value="צפון">צפון</option>
+            <option value="דרום">דרום</option>
+            <option value="שפלה">שפלה (אשדוד, רחובות, רמלה...)</option>
+            <option value="כל הארץ">פתוחים לכל הארץ</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="pt-city">עיר</label>
+          <input type="text" id="pt-city" name="city" placeholder="פתח תקווה" autocomplete="address-level2" />
+        </div>
+        <div class="field">
+          <label for="pt-level">שכבה</label>
+          <select id="pt-level" name="level">
+            <option value="">לא צוין</option>
+            <option value="גן">גן</option>
+            <option value="יסודי">יסודי</option>
+            <option value="חטיבת ביניים">חטיבת ביניים</option>
+            <option value="תיכון">תיכון</option>
+            <option value="חינוך מיוחד">חינוך מיוחד</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="field">
+          <label for="pt-scope">היקף משרה</label>
+          <select id="pt-scope" name="scope">
+            <option value="">לא צוין</option>
+            <option value="מלאה">מלאה</option>
+            <option value="חלקית">חלקית</option>
+            <option value="גמישה">גמישה</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="pt-phone">טלפון</label>
+          <input type="tel" id="pt-phone" name="phone" placeholder="050-1234567" autocomplete="tel" inputmode="tel" />
+          <span class="field-error">טלפון לא תקין</span>
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="pt-email">מייל <span class="req" aria-hidden="true">*</span></label>
+        <input type="email" id="pt-email" name="email" placeholder="name@example.com" required autocomplete="email" inputmode="email" />
+        <span class="field-error">כתובת מייל לא תקינה</span>
+      </div>
+
+      <div class="field">
+        <label for="pt-notes">הערות (אופציונלי)</label>
+        <textarea id="pt-notes" name="notes" placeholder="ניסיון רלוונטי, העדפות נוספות..."></textarea>
+      </div>
+
+      <div class="privacy-note">
+        <strong>מה קורה עם הפרטים שלך:</strong> אדורה שומרת אותם מוצפנים. רק בתי ספר עם משרה תואמת רואים את שם, מייל וטלפון. אפשר להסיר עצמך מהמאגר בכל רגע במייל לכתובת meytal@edura.co.il.
+      </div>
+
+      <label class="consent" id="pt-consent-label">
+        <input type="checkbox" id="pt-consent" name="consent" />
+        <span>אני מסכים/ה שאדורה תשמור את הפרטים ותציג לי משרות מתאימות, ושבית ספר רלוונטי יוכל לפנות אליי.</span>
+      </label>
+
+      <button type="submit" class="submit-btn teacher" id="submit-teacher">
+        <span class="spinner" aria-hidden="true"></span>
+        <span class="btn-label">שליחה</span>
+      </button>
+    </form>
+
+    <div class="modal-success" id="success-teacher">
+      <div class="success-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <polyline points="20 6 9 17 4 12"/>
+        </svg>
+      </div>
+      <h3>קיבלנו! הפרופיל שלך במאגר.</h3>
+      <p style="font-size:14px;color:var(--ink-mute);line-height:1.6">בתי ספר עם משרה תואמת יוכלו לפנות אליך ישירות. אם יש שאלה — meytal@edura.co.il.</p>
+
+      <p class="success-ref">מספר פנייה: <code id="ref-teacher">—</code></p>
+      <div class="success-cta-row">
+        <button type="button" class="success-cta" data-close-modal="modal-teacher">סגירה</button>
+      </div>
+    </div>
+  </div>
+</div>
 
 <!-- ─── School modal (job posting) ─── -->
 <div class="modal-overlay" id="modal-school" role="dialog" aria-labelledby="school-title" aria-modal="true" hidden>
