@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>מדיניות פרטיות וקוקיס · אדורה</title>
+<meta name="description" content="מדיניות הפרטיות, השימוש במידע והקוקיס באתר אדורה — לוח דרושים למורים. שקיפות מלאה: לא מוכרים נתונים, לא שולחים ספאם." />
+<meta property="og:title" content="מדיניות פרטיות וקוקיס · אדורה" />
+<meta property="og:description" content="שקיפות מלאה לגבי המידע שאדורה אוספת, איך הוא נשמר, ואיך אפשר להסיר אותו." />
+<meta property="og:type" content="website" />
+<meta property="og:locale" content="he_IL" />
+<meta property="og:url" content="https://edura.co.il/privacy.html" />
+<meta property="og:site_name" content="אדורה" />
+<link rel="canonical" href="https://edura.co.il/privacy.html" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;800;900&family=Assistant:wght@300;400;500;600;700;800&family=Playpen+Sans+Hebrew:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --green-deep: #0B2A4A;
+    --green-soft: #1E3A5F;
+    --green-pale: #CCFBF1;
+    --teal: #14B8A6;
+    --teal-deep: #0D9488;
+    --cream: #F8FAFC;
+    --cream-deep: #EEF2F6;
+    --orange: #D97706;
+    --orange-soft: #FEF3C7;
+    --ink: #0B2A4A;
+    --ink-soft: #1E3A5F;
+    --ink-mute: #475569;
+    --line: #E2E8F0;
+    --bg: #F8FAFC;
+    --white: #FFFFFF;
+    --shadow-sm: 0 1px 2px rgba(11,42,74,.04), 0 1px 3px rgba(11,42,74,.06);
+    --shadow-md: 0 4px 12px rgba(11,42,74,.08), 0 2px 4px rgba(11,42,74,.04);
+    --radius: 12px;
+    --radius-lg: 16px;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: rgba(20,184,166,.18); }
+  html { scroll-behavior: smooth; }
+  :where(button, a):focus-visible { outline: 3px solid var(--teal-deep); outline-offset: 2px; border-radius: 6px; }
+  body {
+    font-family: 'Heebo', 'Assistant', sans-serif;
+    background: var(--bg); color: var(--ink); line-height: 1.7;
+    -webkit-font-smoothing: antialiased;
+  }
+  a { color: inherit; text-decoration: none; }
+
+  .header { background: var(--white); border-bottom: 1px solid var(--line); position: sticky; top: 0; z-index: 50; }
+  .header-inner { max-width: 1200px; margin: 0 auto; padding: 16px 24px; display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+  .logo { display: inline-flex; flex-direction: column; align-items: flex-end; gap: 1px; transition: transform .15s; }
+  .logo-tagline { font-family: 'Playpen Sans Hebrew', cursive; font-size: 12px; color: var(--teal-deep); font-weight: 500; letter-spacing: 0.1px; line-height: 1.1; white-space: nowrap; transform: rotate(-1deg); transform-origin: right center; }
+  .logo:hover { transform: translateY(-1px); }
+  .logo-svg { height: 32px; width: auto; display: block; }
+  .logo-nikud { font-family: 'Heebo', sans-serif; font-weight: 900; font-size: 36px; letter-spacing: -1.5px; fill: var(--teal); }
+  .logo-word { font-family: 'Heebo', sans-serif; font-weight: 900; font-size: 36px; letter-spacing: -1.5px; fill: var(--ink); }
+  .logo-h { fill: var(--teal); }
+  .header-cta { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; justify-content: flex-end; }
+  .btn-text {
+    color: var(--ink-soft); font-weight: 500; font-size: 15px;
+    padding: 10px 14px; border-radius: 8px; transition: background .15s; min-height: 44px;
+    display: inline-flex; align-items: center;
+  }
+  .btn-text:hover { background: var(--cream); }
+  .btn-primary {
+    background: var(--green-deep); color: var(--white);
+    padding: 10px 20px; border-radius: 999px; font-weight: 600; font-size: 15px;
+    transition: background .15s;
+  }
+  .btn-primary:hover { background: var(--green-soft); }
+  .menu-toggle {
+    display: none;
+    width: 44px; height: 44px; border-radius: 12px;
+    background: var(--cream); color: var(--ink);
+    align-items: center; justify-content: center;
+    border: 1px solid var(--line); cursor: pointer;
+  }
+  .menu-toggle svg { width: 22px; height: 22px; }
+  @media (max-width: 900px) {
+    .header-inner { position: relative; flex-wrap: nowrap; padding: 12px 16px; gap: 10px; }
+    .menu-toggle { display: inline-flex; }
+    .header-cta {
+      display: none !important;
+      position: absolute; top: calc(100% + 6px); inset-inline-end: 12px;
+      background: var(--white); border: 1px solid var(--line);
+      border-radius: 14px; box-shadow: 0 12px 32px rgba(11,42,74,.16);
+      padding: 12px; flex-direction: column !important; align-items: stretch !important;
+      width: min(280px, calc(100vw - 24px)); gap: 6px !important; z-index: 100;
+    }
+    .header-cta.open { display: flex !important; }
+    .header-cta a { width: 100%; justify-content: flex-start !important; font-size: 14px !important; }
+    .logo-svg { height: 28px; }
+    .logo-tagline { font-size: 11px; }
+  }
+
+  .hero {
+    background: linear-gradient(180deg, var(--cream) 0%, var(--bg) 100%);
+    padding: 56px 24px 36px; text-align: center;
+  }
+  .hero-badge {
+    display: inline-block; background: var(--green-pale); color: var(--green-deep);
+    font-size: 13px; font-weight: 600; padding: 6px 14px; border-radius: 999px;
+    margin-bottom: 16px; letter-spacing: 0.3px;
+  }
+  .hero h1 {
+    font-size: clamp(28px, 4vw, 40px); font-weight: 800;
+    color: var(--ink); line-height: 1.2; letter-spacing: -1px;
+    max-width: 720px; margin: 0 auto 12px;
+  }
+  .hero-sub {
+    font-size: clamp(15px, 1.6vw, 17px); color: var(--ink-soft);
+    max-width: 640px; margin: 0 auto;
+  }
+
+  .wrap { max-width: 820px; margin: 0 auto; padding: 48px 24px 80px; }
+
+  .section { margin-bottom: 40px; }
+  .section h2 {
+    font-size: clamp(20px, 2.5vw, 24px); font-weight: 800;
+    color: var(--ink); margin-bottom: 14px; letter-spacing: -0.5px;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .section h2 .num {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 30px; height: 30px; border-radius: 8px;
+    background: var(--green-pale); color: var(--green-deep);
+    font-size: 14px; font-weight: 800;
+  }
+  .section h3 { font-size: 17px; font-weight: 700; color: var(--ink); margin: 18px 0 8px; }
+  .section p { font-size: 16px; color: var(--ink-soft); margin-bottom: 12px; }
+  .section p strong { color: var(--ink); }
+  .section ul { padding-inline-start: 22px; margin-bottom: 12px; }
+  .section ul li { font-size: 16px; color: var(--ink-soft); margin-bottom: 8px; }
+  .section ul li::marker { color: var(--teal); }
+  code { background: var(--cream-deep); color: var(--green-deep); padding: 2px 7px; border-radius: 6px; font-family: 'Courier New', monospace; font-size: 14px; }
+
+  .card {
+    background: var(--white); border: 1px solid var(--line); border-radius: var(--radius-lg);
+    padding: 22px 26px; box-shadow: var(--shadow-sm); margin-bottom: 12px;
+  }
+  .card .label { font-size: 13px; color: var(--teal-deep); font-weight: 700; margin-bottom: 6px; letter-spacing: 0.3px; text-transform: uppercase; }
+  .card .name { font-size: 16px; font-weight: 700; color: var(--ink); margin-bottom: 6px; }
+  .card .body { font-size: 14px; color: var(--ink-soft); line-height: 1.6; }
+
+  .promise {
+    background: var(--white); border: 1px solid var(--line);
+    border-radius: var(--radius); padding: 16px 18px;
+    margin-bottom: 10px;
+  }
+  .promise.do { border-right: 3px solid var(--teal); }
+  .promise.dont { border-right: 3px solid #DC2626; }
+  .promise-icon { display: inline-flex; align-items: center; gap: 8px; font-weight: 700; font-size: 14px; margin-bottom: 4px; }
+  .promise.do .promise-icon { color: var(--teal-deep); }
+  .promise.dont .promise-icon { color: #DC2626; }
+  .promise p { font-size: 14px; color: var(--ink-soft); margin: 0; }
+
+  .updated {
+    font-size: 13px; color: var(--ink-mute);
+    margin-top: 32px; padding-top: 20px; border-top: 1px solid var(--line); text-align: center;
+  }
+
+  .footer { background: var(--ink); color: var(--cream); padding: 40px 24px; text-align: center; font-size: 13px; }
+  .footer p { opacity: .7; margin-bottom: 8px; }
+  .footer a { color: var(--teal); text-decoration: underline; }
+  .footer-logo-svg { height: 44px; width: auto; display: block; margin: 0 auto 12px; }
+  .footer-logo-nikud { font-family: 'Heebo', sans-serif; font-weight: 900; font-size: 80px; letter-spacing: -2px; fill: var(--teal); }
+  .footer-logo-word { font-family: 'Heebo', sans-serif; font-weight: 900; font-size: 80px; letter-spacing: -2px; fill: var(--white); }
+  .footer-logo-h { fill: var(--teal); }
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="header-inner">
+    <a href="index.html" class="logo" aria-label="אדורה — לדף הבית">
+      <svg class="logo-svg" viewBox="0 0 200 50" aria-hidden="true">
+        <text x="100" y="38" text-anchor="middle" direction="rtl" class="logo-nikud">אֶדורֶה</text>
+        <text x="100" y="38" text-anchor="middle" direction="rtl" class="logo-word">אדור<tspan class="logo-h">ה</tspan></text>
+      </svg><span class="logo-tagline">האתר הגדול למשרות חינוך בישראל</span>
+    </a>
+    <button type="button" class="menu-toggle" onclick="document.querySelector('.header-cta').classList.toggle('open')" aria-label="פתח תפריט">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <line x1="3" y1="6" x2="21" y2="6"/>
+        <line x1="3" y1="12" x2="21" y2="12"/>
+        <line x1="3" y1="18" x2="21" y2="18"/>
+      </svg>
+    </button>
+    <nav class="header-cta">
+      <a href="index.html" class="btn-text">משרות</a>
+      <a href="teachers.html" class="btn-text">מורים</a>
+      <a href="saved.html" class="btn-text">המשרות שלי</a>
+      <a href="about.html" class="btn-text">על אדורה</a>
+      <a href="chat.html" class="btn-primary">בוט חיפוש</a>
+    </nav>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="hero-badge">פרטיות · שקיפות מלאה</div>
+  <h1>מדיניות פרטיות וקוקיס</h1>
+  <p class="hero-sub">איזה מידע אדורה אוספת, למה היא צריכה אותו, מה היא לא עושה איתו, ואיך אפשר להסיר אותו בכל רגע.</p>
+</section>
+
+<main class="wrap">
+
+  <div class="section">
+    <h2><span class="num">1</span>בקצרה — מה שחשוב לדעת</h2>
+    <div class="promise do">
+      <div class="promise-icon">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+        אנחנו לא משתמשים בקוקיס למעקב פרסומי
+      </div>
+      <p>אדורה לא מטמיעה Google Analytics, פיקסל פייסבוק, או כל מערכת מעקב פרסומית. אין באתר קוקיס של צד שלישי לצרכי פרסום.</p>
+    </div>
+    <div class="promise do">
+      <div class="promise-icon">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+        לא מוכרים את הפרטים שלכם
+      </div>
+      <p>לא מוכרים את המייל שלכם, לא משתפים עם צד שלישי, לא בונים מאגר לשיווק. נקודה.</p>
+    </div>
+    <div class="promise dont">
+      <div class="promise-icon">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/></svg>
+        לא שולחים ספאם
+      </div>
+      <p>אם נרשמתם להתראות — תקבלו רק אותן. בלי הצעות, בלי דיוורים מסחריים, בלי "מוצרים נלווים".</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2><span class="num">2</span>בעל האתר ואחראי המידע</h2>
+    <div class="card">
+      <div class="label">בעל האתר</div>
+      <div class="name">מיטל פלג</div>
+      <div class="body">
+        edura.co.il<br/>
+        מייל לפניות בנושאי פרטיות: <a href="mailto:meytal@edura.co.il" style="color: var(--teal-deep); font-weight: 700;">meytal@edura.co.il</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2><span class="num">3</span>איזה מידע אנחנו אוספים</h2>
+
+    <h3>א. מידע שאתם משאירים בטופס</h3>
+    <p>בעת הרשמה כמורה (publish-job) או פרסום משרה כמנהל — אתם בוחרים להזין מידע, למשל:</p>
+    <ul>
+      <li>שם, מייל וטלפון</li>
+      <li>אזור גאוגרפי, מקצועות, שכבת גיל ותעודות הוראה (במורים)</li>
+      <li>פרטי משרה: כותרת, תיאור, היקף, מייל ליצירת קשר (במנהלים)</li>
+    </ul>
+    <p><strong>למה אנחנו צריכים את זה:</strong> כדי לחבר בין מורים מתאימים למשרות, ולהעביר את הפניות בין הצדדים. בלי המידע הזה אי אפשר להפעיל את הלוח.</p>
+
+    <h3>ב. מידע סטטיסטי שנאסף אוטומטית</h3>
+    <p>בכל ביקור אנחנו אוספים, ללא זיהוי אישי, נתונים סטטיסטיים בסיסיים:</p>
+    <ul>
+      <li>איזו עמוד נצפה (לדוגמה <code>index</code>, <code>teachers</code>)</li>
+      <li>סוג המכשיר (mobile / desktop)</li>
+      <li>מזהה שיחה אקראי (session) שנוצר ב-<code>sessionStorage</code> בדפדפן ונמחק כשסוגרים אותו</li>
+      <li>משך השהות בעמוד</li>
+      <li>אירועים פנימיים (לדוגמה: לחיצה על "שמור משרה", פתיחת סינון)</li>
+    </ul>
+    <p><strong>למה אנחנו צריכים את זה:</strong> כדי להבין אילו פיצ'רים עובדים, אילו מסכים עמוסים מדי, ואיפה משתמשים מתבלבלים. הנתונים נשמרים בגיליון Google פרטי.</p>
+
+    <h3>ג. מידע שנשמר אצלכם בדפדפן בלבד</h3>
+    <p>כדי שתוכלו לשמור משרות לעצמכם בלי הרשמה, אדורה משתמשת ב-<code>localStorage</code> בדפדפן שלכם. המידע <strong>לא נשלח אלינו</strong> — הוא נשמר רק במכשיר שלכם, ואפשר למחוק אותו בכל רגע דרך הגדרות הדפדפן.</p>
+  </div>
+
+  <div class="section">
+    <h2><span class="num">4</span>קוקיס ואחסון מקומי — פירוט מלא</h2>
+    <p>אדורה לא משתמשת בקוקיס מסורתיים (HTTP cookies). במקום זה היא משתמשת באחסון מקומי של הדפדפן (<code>localStorage</code> ו-<code>sessionStorage</code>), שאינו נשלח אוטומטית לשרת ואינו ניתן לקריאה על ידי אתרים אחרים.</p>
+
+    <div class="card">
+      <div class="label">SessionStorage · חיוני</div>
+      <div class="name">edura_session</div>
+      <div class="body">
+        <strong>תכלית:</strong> מזהה אקראי שמסייע לקבץ אירועים סטטיסטיים שמגיעים מאותו ביקור.<br/>
+        <strong>תוקף:</strong> עד סגירת חלון הדפדפן.<br/>
+        <strong>נשלח לשרת?</strong> רק כפרמטר באירועי אנליטיקס פנימיים, לא כקוקי.
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="label">LocalStorage · נוחות</div>
+      <div class="name">edura_saved_jobs (ושמות דומים)</div>
+      <div class="body">
+        <strong>תכלית:</strong> שמירת רשימת המשרות שסימנתם, סינונים אחרונים, ופרטי טופס שמילאתם — כדי שלא תאבדו אותם בריענון.<br/>
+        <strong>תוקף:</strong> עד שתמחקו אותם דרך הדפדפן.<br/>
+        <strong>נשלח לשרת?</strong> לא. הכל נשאר אצלכם.
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="label">צד שלישי — Google Fonts</div>
+      <div class="name">fonts.googleapis.com / fonts.gstatic.com</div>
+      <div class="body">
+        <strong>תכלית:</strong> טעינת פונטים עבריים (Heebo, Assistant, Playpen Sans Hebrew).<br/>
+        <strong>נתונים שעוברים:</strong> כתובת ה-IP שלכם וסוג הדפדפן, כחלק טכני של הבקשה. גוגל לא מציבה קוקיס דרך הפונטים.
+      </div>
+    </div>
+
+    <p style="margin-top: 14px;">
+      אפשר למחוק את כל האחסון המקומי בכל רגע — הגדרות הדפדפן ← פרטיות ← נקה נתוני אתר.
+    </p>
+  </div>
+
+  <div class="section">
+    <h2><span class="num">5</span>למי המידע מועבר</h2>
+    <ul>
+      <li><strong>מנהלי בתי ספר</strong> — אם פנייתם למשרה, פרטי הפנייה (שם, מייל, טלפון, מסר) מגיעים ישירות למייל בית הספר. אנחנו לא שומרים אותם אצלנו לצרכי שיווק.</li>
+      <li><strong>Google (Apps Script + Sheets)</strong> — נתונים שאתם מזינים בטפסים נשמרים בגיליון Google פרטי שמייטל פלג היא הבעלים שלו. גוגל היא ספק עיבוד הנתונים שלנו (Data Processor).</li>
+      <li><strong>אנחנו לא מעבירים מידע לשום צד שלישי אחר</strong> — לא לחברות פרסום, לא לחברות השמה, לא לפלטפורמות ניתוח חיצוניות.</li>
+    </ul>
+  </div>
+
+  <div class="section">
+    <h2><span class="num">6</span>כמה זמן שומרים את המידע</h2>
+    <ul>
+      <li><strong>פרופיל מורה</strong> — נשמר במאגר עד שתבקשו להסיר אותו, או עד שלא ניצלתם אותו 12 חודשים ברציפות (אז נמחק אוטומטית).</li>
+      <li><strong>משרה שפורסמה</strong> — נשמרת עד 90 יום מתאריך הפרסום (אלא אם המנהל ביקש להאריך).</li>
+      <li><strong>נתוני סטטיסטיקה אנונימיים</strong> — נשמרים עד 24 חודשים לצרכי השוואת מגמות.</li>
+    </ul>
+  </div>
+
+  <div class="section">
+    <h2><span class="num">7</span>הזכויות שלכם</h2>
+    <p>בהתאם לחוק הגנת הפרטיות, התשמ"א-1981, מגיעות לכם הזכויות הבאות:</p>
+    <ul>
+      <li><strong>זכות עיון</strong> — לבקש לדעת איזה מידע נשמר עליכם.</li>
+      <li><strong>זכות תיקון</strong> — לבקש לעדכן או לתקן מידע שגוי.</li>
+      <li><strong>זכות מחיקה</strong> — לבקש להסיר את כל הפרטים שלכם מהמאגר.</li>
+      <li><strong>זכות התנגדות לדיוור</strong> — לבקש להפסיק לקבל מאיתנו מיילים. גם בלי בקשה כזאת — אנחנו לא שולחים דיוורים מסחריים.</li>
+    </ul>
+    <p>פנייה במייל אחד ל-<a href="mailto:meytal@edura.co.il" style="color: var(--teal-deep); font-weight: 700;">meytal@edura.co.il</a> — ונפעל בתוך 24 שעות.</p>
+  </div>
+
+  <div class="section">
+    <h2><span class="num">8</span>אבטחת מידע</h2>
+    <p>אנחנו מטמיעים אמצעים סבירים להגנה על המידע: תעבורה מוצפנת ב-HTTPS, גישה מוגבלת לגיליונות ה-Google, וסיסמאות חזקות לחשבון השירות. עם זאת, אין מערכת אינטרנטית שהיא 100% מוגנת — ואנחנו ממליצים שלא תזינו מידע רגיש שלא נחוץ לצורך הפנייה למשרה.</p>
+  </div>
+
+  <div class="section">
+    <h2><span class="num">9</span>שינויים במדיניות</h2>
+    <p>אם נעדכן את מדיניות הפרטיות, נציין כאן את התאריך החדש. שינויים מהותיים יסומנו בבירור בעמוד הבית במשך 14 יום לפחות.</p>
+  </div>
+
+  <div class="updated">
+    מדיניות פרטיות וקוקיס · אדורה · עדכון אחרון: אפריל 2026
+  </div>
+
+</main>
+
+<footer class="footer">
+  <svg class="footer-logo-svg" viewBox="0 0 360 100" aria-label="אדורה">
+    <text x="180" y="76" text-anchor="middle" direction="rtl" class="footer-logo-nikud">אֶדורֶה</text>
+    <text x="180" y="76" text-anchor="middle" direction="rtl" class="footer-logo-word">אדור<tspan class="footer-logo-h">ה</tspan></text>
+  </svg>
+  <p>כל משרות ההוראה במקום אחד · 3 מקורות מאומתים · ללא הרשמה</p>
+  <p><a href="about.html">על אדורה</a> · <a href="privacy.html">פרטיות וקוקיס</a> · <a href="accessibility.html">נגישות</a> · <a href="mailto:meytal@edura.co.il">צור קשר</a></p>
+  <p>© 2026 אדורה · edura.co.il</p>
+</footer>
+
+<script src="analytics.js"></script>
+</body>
+</html>
