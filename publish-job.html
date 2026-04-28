@@ -751,8 +751,8 @@
     input, select, textarea { font-size: 16px !important; }
   }
   @media (max-width: 900px) {
-    .hero { padding: 40px 22px 56px; }
-    .hero-grid { grid-template-columns: 1fr; gap: 32px; }
+    .hero { padding: 36px 18px 52px; }
+    .hero-grid { grid-template-columns: 1fr; gap: 28px; }
     .hero-collage {
       height: auto;
       display: grid;
@@ -772,16 +772,117 @@
       --rot: 0deg;
     }
     .mini-reasons-strip { grid-template-columns: 1fr; gap: 10px; }
-    h1.hero-title { font-size: 36px; }
+    h1.hero-title { font-size: 34px; }
     .modal { padding: 32px 22px 22px; }
     .form-row, .form-row-3 { grid-template-columns: 1fr; }
     .header-links { display: none; }
   }
-  @media (max-width: 540px) {
-    .hero-cta-row { flex-direction: column; align-items: stretch; }
-    .cta-primary { justify-content: center; }
-    .social-proof { gap: 14px; }
-    .sp-num { font-size: 19px; }
+
+  /* ─── Mobile (≤640px) — fix hero CTAs, header, float cards ─── */
+  @media (max-width: 640px) {
+    .header { padding: 10px 0; }
+    .header-inner { padding: 0 14px; gap: 8px; }
+    .logo-svg { height: 26px; }
+    .logo-word { font-size: 28px; }
+    .logo-tagline { display: none; }
+    .header-cta {
+      gap: 10px !important;
+      font-size: 12.5px !important;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+    .header-cta a { white-space: nowrap; }
+
+    .hero { padding: 28px 16px 44px; }
+    h1.hero-title {
+      font-size: 28px;
+      line-height: 1.22;
+      letter-spacing: -0.3px;
+      margin-bottom: 16px;
+    }
+    .hero-lead { font-size: 15.5px; margin-bottom: 12px; }
+    .hero-sub { font-size: 14px; margin-bottom: 22px; }
+
+    .winks-wrap { margin-bottom: 18px; }
+    .winks-prefix { font-size: 13px; }
+    .wink { font-size: 13px; }
+
+    /* CTAs — full-width stacked, no smudge, no truncation */
+    .hero-cta-row {
+      flex-direction: column;
+      align-items: stretch;
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+    .cta-primary {
+      width: 100%;
+      justify-content: center;
+      padding: 14px 18px;
+      font-size: 15px;
+      white-space: normal;
+      text-align: center;
+      line-height: 1.3;
+      min-height: 52px;
+    }
+    .cta-primary svg { width: 16px; height: 16px; flex-shrink: 0; }
+
+    .asterisk-note { font-size: 11px; margin-bottom: 14px; }
+
+    /* Job cards — compact 2-col grid, no rotation, no float animation */
+    .hero-collage {
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      max-width: 100%;
+      margin-top: 8px;
+    }
+    .float-card {
+      padding: 12px 14px;
+      border-radius: 14px;
+    }
+    .float-card .fc-tag { font-size: 10.5px; padding: 2px 8px; margin-bottom: 6px; }
+    .float-card .fc-title { font-size: 13.5px; margin-bottom: 4px; }
+    .float-card .fc-meta { font-size: 11px; gap: 6px; }
+
+    .social-proof {
+      gap: 10px;
+      padding: 12px 14px;
+      justify-content: space-between;
+    }
+    .sp-item { flex: 1; min-width: 0; }
+    .sp-num { font-size: 18px; }
+    .sp-label { font-size: 10.5px; }
+
+    .hero-meta {
+      gap: 10px 14px;
+      font-size: 12.5px;
+    }
+
+    .mini-reasons-strip { margin-top: 22px; padding-top: 18px; }
+
+    /* Modal — tighter on small screens */
+    .modal-overlay { padding: 12px; align-items: flex-start; }
+    .modal {
+      padding: 28px 18px 20px;
+      border-radius: 18px;
+      margin-top: 8px;
+    }
+    .modal h2 { font-size: 22px; }
+    .modal-info { font-size: 13px; margin-bottom: 18px; }
+    .modal-close { top: 10px; left: 10px; width: 40px; height: 40px; }
+
+    /* Floating "back to jobs" — smaller, doesn't cover content */
+    .fab-cta-stack { inset-inline-end: 12px !important; bottom: 12px !important; }
+    .fab-cta {
+      padding: 8px 14px !important;
+      font-size: 12px !important;
+      min-height: 38px !important;
+    }
+  }
+
+  @media (max-width: 380px) {
+    h1.hero-title { font-size: 25px; }
+    .cta-primary { font-size: 14px; padding: 13px 14px; }
+    .header-cta { font-size: 12px !important; gap: 8px !important; }
   }
 
   /* ─── Reduced motion ─── */
@@ -799,14 +900,26 @@
 
 <header class="header">
   <div class="header-inner">
-    <div class="logo" aria-label="אדורה">
+    <a href="index.html" class="logo" aria-label="אדורה — לדף הבית" style="text-decoration:none;color:inherit;display:flex;align-items:center;gap:10px;">
       <svg class="logo-svg" viewBox="0 0 130 38" aria-hidden="true">
         <text x="65" y="29" text-anchor="middle" direction="rtl" class="logo-word">אדור<tspan class="logo-h">ה</tspan></text>
       </svg>
       <span class="logo-tagline">לוח דרושים למורים</span>
-    </div>
+    </a>
+    <nav class="header-cta" aria-label="ניווט ראשי" style="display:flex;gap:18px;align-items:center;font-size:14px;">
+      <a href="index.html" style="color:var(--ink-soft);text-decoration:none;">משרות</a>
+      <a href="teachers.html" style="color:var(--ink-soft);text-decoration:none;">מורים</a>
+      <a href="chat.html" style="color:var(--ink-soft);text-decoration:none;">בוט חיפוש</a>
+      <a href="saved.html" style="color:var(--ink-soft);text-decoration:none;">שמורים</a>
+      <a href="about.html" style="color:var(--ink-soft);text-decoration:none;">על אדורה</a>
+    </nav>
   </div>
 </header>
+
+<!-- Floating CTA stack -->
+<div class="fab-cta-stack" aria-label="כניסה מהירה" style="position:fixed;inset-inline-end:18px;bottom:18px;display:flex;flex-direction:column;gap:10px;z-index:50;">
+  <a href="index.html" class="fab-cta" style="display:inline-flex;align-items:center;gap:8px;background:var(--white);border:1px solid var(--line);border-radius:999px;padding:10px 16px;text-decoration:none;color:var(--ink);box-shadow:0 4px 14px rgba(11,42,74,.10);font-size:13px;min-height:44px;">חזרה ללוח המשרות</a>
+</div>
 
 <section class="hero">
   <div class="hero-blob-1"></div>
@@ -951,7 +1064,7 @@
 
       <!-- honeypot -->
       <div class="hp-field" aria-hidden="true">
-        <label for="pt-hp">אם את רואה שדה זה — אל תמלאי אותו</label>
+        <label for="pt-hp">אם אתם רואים שדה זה — אל תמלאו אותו</label>
         <input type="text" id="pt-hp" name="hp" tabindex="-1" autocomplete="off" />
       </div>
 
@@ -1090,7 +1203,7 @@
 
       <!-- honeypot -->
       <div class="hp-field" aria-hidden="true">
-        <label for="ps-hp">אם את רואה שדה זה — אל תמלאי אותו</label>
+        <label for="ps-hp">אם אתם רואים שדה זה — אל תמלאו אותו</label>
         <input type="text" id="ps-hp" name="hp" tabindex="-1" autocomplete="off" />
       </div>
 
