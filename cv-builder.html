@@ -60,6 +60,10 @@
   .menu-toggle:hover { background: var(--green-pale); }
   .menu-toggle:active { transform: scale(.95); }
   .menu-toggle svg { width: 22px; height: 22px; }
+  @media (max-width: 768px) {
+    input, select, textarea { font-size: 16px !important; }
+    .fab-cta-stack { display: none !important; }
+  }
   @media (max-width: 900px) {
     .header-inner { position: relative; flex-wrap: nowrap; padding: 12px 16px; gap: 10px; }
     .menu-toggle { display: inline-flex; }
@@ -245,13 +249,13 @@
 
 <!-- === FAB-CTA-STACK === -->
 <div class="fab-cta-stack" aria-label="כניסה מהירה">
-  <a href="publish-job.html#teacher" class="fab-cta fab-cta-teacher" aria-label="מורה? פרסמי פרופיל ונמצא לך התאמה מושלמת">
+  <a href="publish-job.html#teacher" class="fab-cta fab-cta-teacher" aria-label="מורים — לפרסם פרופיל ונמצא לכם התאמה">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="9" y1="13" x2="15" y2="13"/><line x1="9" y1="17" x2="13" y2="17"/></svg>
-    <span class="fab-cta-text"><strong>מורה?</strong><span>מלאי ונמצא לך התאמה</span></span>
+    <span class="fab-cta-text"><strong>מורים?</strong><span>מלאו ונמצא לכם התאמה</span></span>
   </a>
-  <a href="index.html#post-job" class="fab-cta fab-cta-principal" aria-label="מנהל? נמצא לך שידוך">
+  <a href="index.html#post-job" class="fab-cta fab-cta-principal" aria-label="מנהלים — נמצא לכם מורים מתאימים">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>
-    <span class="fab-cta-text"><strong>מנהל?</strong><span>נמצא לך שידוך</span></span>
+    <span class="fab-cta-text"><strong>מנהלים?</strong><span>נמצא לכם מורים מתאימים</span></span>
   </a>
 </div>
 <!-- === /FAB-CTA-STACK === -->
@@ -263,7 +267,7 @@
     <h2>הפרטים שלך</h2>
     <p class="pane-sub">ממלאים בצד אחד, רואים את התוצאה בצד השני. הכל נשמר אוטומטית בדפדפן.</p>
 
-    <div class="hint">💡 קו"ח להוראה צריכים להיות עד עמוד אחד. תתמקדו בשלושה פרטים: ניסיון רלוונטי, התמחות מקצועית, וערך ייחודי.</div>
+    <div class="hint">טיפ: קו"ח להוראה צריכים להיות עד עמוד אחד. תתמקדו בשלושה פרטים: ניסיון רלוונטי, התמחות מקצועית, וערך ייחודי.</div>
 
     <div class="section-title">פרטים אישיים</div>
     <div class="field-group">
@@ -318,6 +322,8 @@
 <!-- Print container — appears only on print -->
 <div class="print-only" id="print-container"></div>
 
+<script src="analytics.js"></script>
+<script src="feedback-widget.js" defer></script>
 <script>
 const STORAGE_KEY = 'edura.cv.v1';
 const $ = id => document.getElementById(id);
@@ -422,10 +428,10 @@ function render() {
 function renderCv() {
   const s = state;
   const contact = [];
-  if (s.email) contact.push(`<span>✉️ ${esc(s.email)}</span>`);
-  if (s.phone) contact.push(`<span>📱 ${esc(s.phone)}</span>`);
-  if (s.city) contact.push(`<span>📍 ${esc(s.city)}</span>`);
-  if (s.license) contact.push(`<span>🎓 ${esc(s.license)}</span>`);
+  if (s.email) contact.push(`<span>${esc(s.email)}</span>`);
+  if (s.phone) contact.push(`<span>${esc(s.phone)}</span>`);
+  if (s.city) contact.push(`<span>${esc(s.city)}</span>`);
+  if (s.license) contact.push(`<span>${esc(s.license)}</span>`);
 
   const expHtml = s.experience.filter(r => r.role || r.org).map(r => `
     <div class="cv-row">

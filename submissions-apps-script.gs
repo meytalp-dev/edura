@@ -697,10 +697,11 @@ function sendDailyAlerts() {
     return;
   }
 
-  // רק משרות מ-24 שעות אחרונות
+  // רק משרות מ-24 שעות אחרונות (תאריך מ-date_iso/firstSeen/date)
   const cutoff = Date.now() - 24 * 60 * 60 * 1000;
   const fresh = jobs.filter(function (j) {
-    const t = new Date(j.firstSeen).getTime();
+    const raw = j.date_iso || j.firstSeen || j.date || '';
+    const t = new Date(raw).getTime();
     return !isNaN(t) && t >= cutoff;
   });
 
@@ -728,12 +729,12 @@ function filterJobsForSub_(jobs, sub) {
   return jobs.filter(function (j) {
     if (sub.region && String(j.region || '').indexOf(sub.region) === -1) return false;
     if (sub.level) {
-      const levels = (j.levels || []).join(' ');
-      if (levels.indexOf(sub.level) === -1) return false;
+      const lv = String(j.level || '') + ' ' + (Array.isArray(j.levels) ? j.levels.join(' ') : '');
+      if (lv.indexOf(sub.level) === -1) return false;
     }
     if (sub.subject) {
-      const subjects = (j.subjects || []).join(' ');
-      if (subjects.indexOf(sub.subject) === -1) return false;
+      const sj = String(j.subject || '') + ' ' + (Array.isArray(j.subjects) ? j.subjects.join(' ') : '');
+      if (sj.indexOf(sub.subject) === -1) return false;
     }
     if (sub.role && String(j.role || '').indexOf(sub.role) === -1) return false;
     return true;
@@ -745,7 +746,7 @@ function buildAlertsEmail_(sub, jobs) {
     return '<div style="background:#FFFFFF;border:1px solid #E2E8F0;border-radius:10px;padding:16px 18px;margin-bottom:10px;">' +
       '<div style="font-size:11px;color:#0F9285;font-weight:700;text-transform:uppercase;letter-spacing:0.4px;">' + escHtml_(j.sourceName || '') + '</div>' +
       '<div style="font-size:15px;font-weight:700;color:#0B2A4A;margin:4px 0 8px;line-height:1.3;">' + escHtml_(j.title || '') + '</div>' +
-      (j.region ? '<div style="font-size:13px;color:#475569;">' + escHtml_(j.region) + (j.subjects && j.subjects.length ? ' · ' + escHtml_(j.subjects.join(', ')) : '') + '</div>' : '') +
+      (j.region ? '<div style="font-size:13px;color:#475569;">' + escHtml_(j.region) + (j.subject ? ' · ' + escHtml_(j.subject) : (j.subjects && j.subjects.length ? ' · ' + escHtml_(j.subjects.join(', ')) : '')) + '</div>' : '') +
       '<a href="' + escHtml_(j.url) + '" style="display:inline-block;margin-top:10px;background:#0B2A4A;color:#FFF;text-decoration:none;padding:8px 16px;border-radius:999px;font-weight:600;font-size:13px;">פרטים מלאים ←</a>' +
     '</div>';
   }).join('');
@@ -754,7 +755,7 @@ function buildAlertsEmail_(sub, jobs) {
     '<h2 style="font-size:20px;color:#0B2A4A;margin:0 0 6px;">בוקר טוב' + (sub.name ? ' ' + escHtml_(sub.name) : '') + '</h2>' +
     '<p style="color:#475569;margin:0 0 18px;">' + jobs.length + ' משרות חדשות שמתאימות לקריטריונים שלך:</p>' +
     items +
-    '<p style="font-size:12px;color:#94A3B8;margin-top:24px;">להסרה: השיבי "הסר" למייל הזה. · <a href="https://edura.co.il" style="color:#0F9285;">edura.co.il</a></p>' +
+    '<p style="font-size:12px;color:#475569;margin-top:24px;">להסרה: השיבו "הסר" למייל הזה. · <a href="https://edura.co.il" style="color:#0F9285;">edura.co.il</a></p>' +
   '</div>';
 }
 

@@ -246,9 +246,9 @@
 
 <!-- === FAB-CTA-STACK === -->
 <div class="fab-cta-stack" aria-label="כניסה מהירה">
-  <a href="publish-job.html#teacher" class="fab-cta fab-cta-teacher" aria-label="מורה? פרסמי פרופיל ונמצא לך התאמה מושלמת">
+  <a href="publish-job.html#teacher" class="fab-cta fab-cta-teacher" aria-label="מורים — לפרסם פרופיל ונמצא לכם התאמה">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="9" y1="13" x2="15" y2="13"/><line x1="9" y1="17" x2="13" y2="17"/></svg>
-    <span class="fab-cta-text"><strong>מורה?</strong><span>מלאי ונמצא לך התאמה</span></span>
+    <span class="fab-cta-text"><strong>מורים?</strong><span>מלאו ונמצא לכם התאמה</span></span>
   </a>
   <a href="index.html#post-job" class="fab-cta fab-cta-principal" aria-label="מנהל? נמצא לך שידוך">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>
@@ -318,6 +318,8 @@
   </div>
 </div>
 
+<script src="analytics.js"></script>
+<script src="feedback-widget.js" defer></script>
 <script>
 const $ = id => document.getElementById(id);
 function esc(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
@@ -353,14 +355,14 @@ let selectedRegion = '';
 
 async function load() {
   try {
-    const res = await fetch('data/jobs.json', { cache: 'no-store' });
+    const res = await fetch('data/jobs.json');
     const data = await res.json();
     allJobs = data.jobs || [];
     normalizeAllJobs();
     if (data.updated_at) $('last-update').textContent = 'עדכון אחרון: ' + data.updated_at;
     render();
   } catch (e) {
-    $('stats-panel').innerHTML = '<div class="empty-state">בעיה בטעינת הנתונים. נסי שוב.</div>';
+    $('stats-panel').innerHTML = '<div class="empty-state">בעיה בטעינת הנתונים. נסו שוב.</div>';
   }
 }
 
@@ -432,10 +434,15 @@ function render() {
     panel.appendChild(top);
   }
 
-  // Region shapes — highlight selected
+  // Region shapes — highlight selected (with keyboard accessibility)
   document.querySelectorAll('.region-shape').forEach(s => {
     s.classList.toggle('active', s.dataset.region === selectedRegion);
-    s.onclick = () => { selectedRegion = (selectedRegion === s.dataset.region ? '' : s.dataset.region); render(); };
+    s.setAttribute('tabindex', '0');
+    s.setAttribute('role', 'button');
+    s.setAttribute('aria-label', 'אזור ' + s.dataset.region + ' — לחיצה לסינון');
+    const trigger = () => { selectedRegion = (selectedRegion === s.dataset.region ? '' : s.dataset.region); render(); };
+    s.onclick = trigger;
+    s.onkeydown = (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); trigger(); } };
   });
 
   // Hot points (cities with 3+ jobs)
@@ -457,7 +464,12 @@ function render() {
         <text class="city-label" x="${x}" y="${y+r+10}">${esc(c)}</text>
       `;
       g.style.cursor = 'pointer';
-      g.onclick = () => { window.location.href = 'index.html#city=' + encodeURIComponent(c); };
+      g.setAttribute('tabindex', '0');
+      g.setAttribute('role', 'link');
+      g.setAttribute('aria-label', c + ' — ' + byCity[c] + ' משרות');
+      const goCity = () => { window.location.href = 'index.html#city=' + encodeURIComponent(c); };
+      g.onclick = goCity;
+      g.onkeydown = (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); goCity(); } };
       hot.appendChild(g);
     });
 }

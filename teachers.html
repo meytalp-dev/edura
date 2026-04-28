@@ -598,6 +598,7 @@
   /* Footer */
   .footer { background: var(--ink); color: var(--cream); padding: 40px 24px; text-align: center; font-size: 13px; }
   .footer p { opacity: .7; margin-bottom: 8px; }
+  .footer a { color: var(--teal); text-decoration: underline; }
   .footer-logo-svg { height: 44px; width: auto; display: block; margin: 0 auto 12px; }
   .footer-logo-nikud { font-family: 'Heebo', sans-serif; font-weight: 900; font-size: 80px; letter-spacing: -2px; fill: var(--teal); }
   .footer-logo-word { font-family: 'Heebo', sans-serif; font-weight: 900; font-size: 80px; letter-spacing: -2px; fill: var(--white); }
@@ -669,9 +670,9 @@
 
 <!-- === FAB-CTA-STACK === -->
 <div class="fab-cta-stack" aria-label="כניסה מהירה">
-  <a href="publish-job.html#teacher" class="fab-cta fab-cta-teacher" aria-label="מורה? פרסמי פרופיל ונמצא לך התאמה מושלמת">
+  <a href="publish-job.html#teacher" class="fab-cta fab-cta-teacher" aria-label="מורים — לפרסם פרופיל ונמצא לכם התאמה">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="9" y1="13" x2="15" y2="13"/><line x1="9" y1="17" x2="13" y2="17"/></svg>
-    <span class="fab-cta-text"><strong>מורה?</strong><span>מלאי ונמצא לך התאמה</span></span>
+    <span class="fab-cta-text"><strong>מורים?</strong><span>מלאו ונמצא לכם התאמה</span></span>
   </a>
   <a href="index.html#post-job" class="fab-cta fab-cta-principal" aria-label="מנהל? נמצא לך שידוך">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>
@@ -828,7 +829,7 @@
     <div class="modal-supra">פנייה דרך אדורה</div>
     <h2 id="contact-modal-title">בקשת קשר עם המורה</h2>
     <div class="contact-modal-info">
-      <strong>פרטיות מלאה למורה.</strong> אנחנו לא חושפים את פרטי המורה. הבקשה שלך תישלח אליו/ה דרכנו, ורק אם המורה מאשר/ת — נחבר ביניכם. הבקשה נשמרת אצלנו לתיעוד.
+      <strong>פרטיות מלאה למורה.</strong> אנחנו לא חושפים את פרטי המורה. הבקשה שלכם תישלח אליו/ה דרכנו, ורק אם המורה מאשר/ת — נחבר ביניכם. הבקשה נשמרת אצלנו לתיעוד.
     </div>
     <div id="contact-teacher-summary" style="background:var(--cream);padding:10px 14px;border-radius:8px;font-size:13px;color:var(--ink-soft);margin-bottom:14px;"></div>
 
@@ -869,6 +870,7 @@
     <text x="180" y="76" text-anchor="middle" direction="rtl" class="footer-logo-word">אדור<tspan class="footer-logo-h">ה</tspan></text>
   </svg>
   <p>כל משרות ההוראה במקום אחד · 3 מקורות מאומתים · ללא הרשמה</p>
+  <p><a href="about.html">על אדורה</a> · <a href="privacy.html">פרטיות וקוקיס</a> · <a href="accessibility.html">נגישות</a> · <a href="mailto:meytal@edura.co.il">צור קשר</a></p>
   <p>© 2026 אדורה · edura.co.il</p>
 </footer>
 
@@ -1024,14 +1026,14 @@ function normalizeSubmittedJob_(r) {
 async function loadTeachers() {
   try {
     const approvedFetch = (typeof SUBMISSIONS_URL !== 'undefined' && SUBMISSIONS_URL)
-      ? fetch(SUBMISSIONS_URL + '?action=approved', { cache: 'no-store' })
+      ? fetch(SUBMISSIONS_URL + '?action=approved')
           .then(r => r.ok ? r.json() : null).catch(() => null)
       : Promise.resolve(null);
     const [resA, resB, resB2, resJ, approvedData] = await Promise.all([
-      fetch(TEACHERS_URL, { cache: 'no-store' }),
-      fetch(FB_TEACHERS_URL, { cache: 'no-store' }).catch(() => null),
-      fetch(FB_TEACHERS_2_URL, { cache: 'no-store' }).catch(() => null),
-      fetch(JOBS_URL, { cache: 'no-store' }).catch(() => null),
+      fetch(TEACHERS_URL),
+      fetch(FB_TEACHERS_URL).catch(() => null),
+      fetch(FB_TEACHERS_2_URL).catch(() => null),
+      fetch(JOBS_URL).catch(() => null),
       approvedFetch
     ]);
     const dataA = await resA.json();
@@ -1573,7 +1575,7 @@ document.addEventListener('keydown', (e) => {
     <div class="modal-supra">פרסום עצמי במאגר אדורה</div>
     <h2>אני מורה — מחפש/ת עבודה</h2>
     <div class="modal-info">
-      <strong>פרטיך יוצגו במאגר המורים</strong> — מנהלי בתי ספר שמחפשים מורים יראו את התיאור ויפנו אלייך ישירות במייל או בטלפון. הפרסום חינם, ללא מתווכים. אפשר להסיר בכל רגע — שלחי לנו מייל.
+      <strong>פרטיכם יוצגו במאגר המורים</strong> — מנהלי בתי ספר שמחפשים מורים יראו את התיאור ויפנו אליכם ישירות במייל או בטלפון. הפרסום חינם, ללא מתווכים. אפשר להסיר בכל רגע — שלחו לנו מייל.
     </div>
 
     <div class="form-row">
@@ -1591,7 +1593,7 @@ document.addEventListener('keydown', (e) => {
       <div>
         <label for="p-region">אזור</label>
         <select id="p-region">
-          <option value="">בחרי</option>
+          <option value="">בחרו</option>
           <option value="ירושלים">ירושלים</option>
           <option value="מרכז">מרכז</option>
           <option value="צפון">צפון</option>

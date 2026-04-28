@@ -316,6 +316,10 @@
   }
   .ec-send-btn:hover { background: var(--green-soft); }
 
+  @media (max-width: 768px) {
+    input, select, textarea { font-size: 16px !important; }
+    .fab-cta-stack { display: none !important; }
+  }
   @media (max-width: 600px) {
     .chat-intro h1 { font-size: 22px; }
     .ec-msg { max-width: 92%; }
@@ -338,6 +342,7 @@
     font-size: 13px; color: var(--ink-mute);
   }
   .ec-footer-credit strong { color: var(--ink-soft); font-weight: 700; }
+  .ec-footer-credit a { color: var(--teal-deep); text-decoration: underline; }
   .ec-footer-social {
     display: flex; gap: 10px;
   }
@@ -424,13 +429,13 @@
 
 <!-- === FAB-CTA-STACK === -->
 <div class="fab-cta-stack" aria-label="כניסה מהירה">
-  <a href="publish-job.html#teacher" class="fab-cta fab-cta-teacher" aria-label="מורה? פרסמי פרופיל ונמצא לך התאמה מושלמת">
+  <a href="publish-job.html#teacher" class="fab-cta fab-cta-teacher" aria-label="מורים — לפרסם פרופיל ונמצא לכם התאמה">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="9" y1="13" x2="15" y2="13"/><line x1="9" y1="17" x2="13" y2="17"/></svg>
-    <span class="fab-cta-text"><strong>מורה?</strong><span>מלאי ונמצא לך התאמה</span></span>
+    <span class="fab-cta-text"><strong>מורים?</strong><span>מלאו ונמצא לכם התאמה</span></span>
   </a>
-  <a href="index.html#post-job" class="fab-cta fab-cta-principal" aria-label="מנהל? נמצא לך שידוך">
+  <a href="index.html#post-job" class="fab-cta fab-cta-principal" aria-label="מנהלים — נמצא לכם מורים מתאימים">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>
-    <span class="fab-cta-text"><strong>מנהל?</strong><span>נמצא לך שידוך</span></span>
+    <span class="fab-cta-text"><strong>מנהלים?</strong><span>נמצא לכם מורים מתאימים</span></span>
   </a>
 </div>
 <!-- === /FAB-CTA-STACK === -->
@@ -438,7 +443,7 @@
 
 <main>
   <div class="chat-intro">
-    <h1>בואו נמצא לך משרה</h1>
+    <h1>בואו נמצא לכם משרה</h1>
     <p>שיחה קצרה. תשובות מותאמות. פנייה ישירה לבית הספר.</p>
   </div>
   <div id="ec-root"></div>
@@ -448,6 +453,9 @@
   <div class="ec-footer-inner">
     <p class="ec-footer-credit">
       עוצב ופותח על ידי <strong>מיטל פלג</strong> · &copy; 2026 אדורה · כל הזכויות שמורות
+    </p>
+    <p class="ec-footer-credit">
+      <a href="about.html">על אדורה</a> · <a href="privacy.html">פרטיות וקוקיס</a> · <a href="accessibility.html">נגישות</a>
     </p>
     <div class="ec-footer-social" aria-label="רשתות חברתיות">
       <a href="https://www.linkedin.com/in/meytal-peleg-839265378" target="_blank" rel="noopener" aria-label="LinkedIn">

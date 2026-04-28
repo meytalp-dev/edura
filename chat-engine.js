@@ -353,7 +353,7 @@ window.EDURA_API_URL = 'https://script.google.com/macros/s/AKfycbxFqT828xAhAAhe9
         return;
       }
       if (matches.length <= 3) {
-        this.botMsg('מציין שלחלק מהמשרות חסרים פרטים מלאים — אם משהו לא רלוונטי, פתחי וקראי במקור.');
+        this.botMsg('מציין שלחלק מהמשרות חסרים פרטים מלאים — אם משהו לא רלוונטי, פתחו וקראו במקור.');
       }
       this.showNextBatch(matches);
     }
