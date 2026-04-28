@@ -853,20 +853,31 @@
 
     /* CTAs — full-width stacked, no smudge, no truncation */
     .hero-cta-row {
-      flex-direction: column;
-      align-items: stretch;
+      display: flex !important;
+      flex-direction: column !important;
+      align-items: stretch !important;
+      flex-wrap: nowrap !important;
       gap: 10px;
       margin-bottom: 14px;
+      width: 100% !important;
+      max-width: 100% !important;
     }
     .cta-primary {
-      width: 100%;
+      display: flex !important;
+      width: 100% !important;
+      max-width: 100% !important;
+      box-sizing: border-box !important;
       justify-content: center;
-      padding: 14px 18px;
-      font-size: 15px;
-      white-space: normal;
+      align-items: center;
+      gap: 8px;
+      padding: 13px 14px !important;
+      font-size: 14.5px !important;
+      white-space: normal !important;
+      word-break: break-word;
       text-align: center;
       line-height: 1.3;
-      min-height: 52px;
+      min-height: 50px;
+      min-width: 0 !important;
     }
     .cta-primary svg { width: 16px; height: 16px; flex-shrink: 0; }
 
