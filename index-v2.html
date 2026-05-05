@@ -1060,7 +1060,7 @@ const GENERIC_PHOTOS = [
 function jobSubjectKey(job) {
   const s = (job.subject || '') + ' ' + (job.title || '') + ' ' + (job.role || '');
   for (const cat of SUBJECT_CATS) {
-    if (cat.match && cat.match.some(m => s.includes(m))) return cat.key;
+    if (cat.match && Array.isArray(cat.match) && cat.match.some(m => s.includes(m))) return cat.key;
   }
   return '';
 }
