@@ -116,7 +116,7 @@
     display: flex; align-items: flex-start; justify-content: space-between;
     gap: 10px; margin-bottom: 8px;
   }
-  .card-title { font-size: 14px; font-weight: 600; line-height: 1.35; color: var(--ink-soft); flex: 1; min-width: 0; }
+  .card-title { font-size: 16px; font-weight: 700; line-height: 1.35; color: var(--ink); flex: 1; min-width: 0; }
   .card-actions { display: flex; gap: 6px; flex-shrink: 0; }
   .act {
     width: 32px; height: 32px; border-radius: 8px; cursor: pointer;
@@ -331,14 +331,27 @@ function render() {
   btn.disabled = approved === 0;
 }
 
+// Build a clean teaching title from subject/role
+// "מתמטיקה" → "מורה למתמטיקה"
+// "מורה כולל/ת" → "מורה כולל/ת" (already a role)
+// "מחנכת כיתה (א'-ד')" → "מחנכת כיתה"
+function buildJobTitle(j) {
+  const subj = (j.subject || '').trim().replace(/\s*\([^)]*\)\s*/g, ' ').replace(/\s+/g, ' ').trim();
+  if (!subj) return j.role ? esc(j.role) : 'משרת הוראה';
+  // Already a role/function noun — use as is
+  if (/^(מורה|מחנך|מחנכת|רכז|רכזת|יועץ|יועצת|מתמחה|סייע|סייעת|מדריך|מדריכה|תרפיסט|מטפל)/.test(subj)) return esc(subj);
+  // Multi-subject (split by /) — "מתמטיקה / מדעים" → "מורה למתמטיקה / מדעים"
+  return 'מורה ל' + esc(subj);
+}
+
 function renderCard(j) {
   const decision = STATE.decisions[j.id];
   const cls = decision === 'approved' ? 'approved' : decision === 'rejected' ? 'rejected' : '';
   const tags = [];
-  if (j.subject) tags.push(`<span class="tag subject">${esc(j.subject)}</span>`);
   if (j.level) tags.push(`<span class="tag">${esc(j.level)}</span>`);
   if (j.region) tags.push(`<span class="tag region">${esc(j.region)}</span>`);
   if (j.scope) tags.push(`<span class="tag">${esc(j.scope)}</span>`);
+  if (j.sector) tags.push(`<span class="tag">${esc(j.sector)}</span>`);
   tags.push(`<span class="tag source-${j.source}">${esc(j.source_name || j.source)}</span>`);
 
   const contact = [];
@@ -357,7 +370,7 @@ function renderCard(j) {
     <article class="card ${cls}">
       ${cityLine}
       <div class="card-head">
-        <h3 class="card-title">${esc(j.title || '(ללא כותרת)')}</h3>
+        <h3 class="card-title">${buildJobTitle(j)}</h3>
         <div class="card-actions">
           <button class="act approve ${decision==='approved'?'on':''}" onclick="decide('${esc(j.id)}','approved')" title="אשר">${ICON_CHECK}</button>
           <button class="act reject ${decision==='rejected'?'on':''}" onclick="decide('${esc(j.id)}','rejected')" title="דחה">${ICON_X}</button>
@@ -365,7 +378,7 @@ function renderCard(j) {
       </div>
       ${schoolLine}
       <div class="tags">${tags.join('')}</div>
-      ${snippet ? `<p class="card-snippet">${esc(snippet.slice(0,260))}${snippet.length>260?'…':''}</p>` : ''}
+      ${snippet ? `<p class="card-snippet">${esc(snippet.slice(0,400))}${snippet.length>400?'…':''}</p>` : ''}
       ${contact.length ? `<div class="card-contact">${contact.join('')}</div>` : ''}
     </article>
   `;
