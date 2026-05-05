@@ -101,11 +101,22 @@
   .card.approved { border-color: var(--green); box-shadow: 0 0 0 2px var(--green-soft), var(--shadow-sm); }
   .card.rejected { border-color: var(--red); opacity: .55; box-shadow: 0 0 0 2px var(--red-soft), var(--shadow-sm); }
 
+  .card-city {
+    font-family: 'Heebo', sans-serif;
+    font-size: 18px; font-weight: 900;
+    color: var(--teal-deep);
+    line-height: 1.1; letter-spacing: -.3px;
+    margin-bottom: 6px;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .card-city.no-city { color: var(--ink-mute); font-weight: 600; font-size: 14px; }
+  .card-city svg { width: 14px; height: 14px; flex-shrink: 0; }
+
   .card-head {
     display: flex; align-items: flex-start; justify-content: space-between;
     gap: 10px; margin-bottom: 8px;
   }
-  .card-title { font-size: 15.5px; font-weight: 700; line-height: 1.35; flex: 1; min-width: 0; }
+  .card-title { font-size: 14px; font-weight: 600; line-height: 1.35; color: var(--ink-soft); flex: 1; min-width: 0; }
   .card-actions { display: flex; gap: 6px; flex-shrink: 0; }
   .act {
     width: 32px; height: 32px; border-radius: 8px; cursor: pointer;
@@ -335,11 +346,16 @@ function renderCard(j) {
   if (j.phone) contact.push(`<a href="tel:${esc(j.phone)}">${ICON_PHONE}${esc(j.phone)}</a>`);
   if (j.url) contact.push(`<a href="${esc(j.url)}" target="_blank" rel="noopener">המקור ↗</a>`);
 
-  const schoolLine = j.school || j.city ? `<div class="card-school">${j.school?`<b>${esc(j.school)}</b>`:''}${j.school&&j.city?' · ':''}${j.city?esc(j.city):''}</div>` : '';
+  const schoolLine = j.school ? `<div class="card-school"><b>${esc(j.school)}</b></div>` : '';
   const snippet = j.snippet || j.description || '';
+  const cityIcon = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>';
+  const cityLine = j.city
+    ? `<div class="card-city">${cityIcon}${esc(j.city)}</div>`
+    : `<div class="card-city no-city">${cityIcon}עיר לא צוינה</div>`;
 
   return `
     <article class="card ${cls}">
+      ${cityLine}
       <div class="card-head">
         <h3 class="card-title">${esc(j.title || '(ללא כותרת)')}</h3>
         <div class="card-actions">
