@@ -2341,17 +2341,27 @@
       askNext(380);
     };
 
+    const isSchoolFlow = action === 'submit_job';
     const askNext = (delay = 600) => {
       updateProgress();
       if (stepIdx >= flow.length) return finish();
       const step = flow[stepIdx];
       setTimeout(() => {
-        showTyping();
-        setTimeout(() => {
-          hideTyping();
-          botSay(step.q);
-          renderInput(step);
-        }, 2650 + Math.random() * 250);
+        if (isSchoolFlow) {
+          // School flow: quick transition, no funny phrase between questions
+          setTimeout(() => {
+            botSay(step.q);
+            renderInput(step);
+          }, 280);
+        } else {
+          // Teacher flow: funny phrase between questions
+          showTyping();
+          setTimeout(() => {
+            hideTyping();
+            botSay(step.q);
+            renderInput(step);
+          }, 2650 + Math.random() * 250);
+        }
       }, delay);
     };
 
