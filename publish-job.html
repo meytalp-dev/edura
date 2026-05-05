@@ -2090,15 +2090,16 @@
   const REGION_OPTS = ['ירושלים והסביבה','מרכז (גוש דן)','שפלה','צפון','דרום','כל הארץ'];
   const LEVEL_OPTS  = ['גן','יסודי','חטיבת ביניים','תיכון','חינוך מיוחד'];
   const SUBJECT_HINTS = ['מתמטיקה','אנגלית','עברית','תנ״ך','היסטוריה','אזרחות','ספרות','מדעים','פיזיקה','כימיה','ביולוגיה','מחשבים','חינוך גופני','אומנות','מוזיקה'];
+  const CITY_OPTS = ['ירושלים','תל אביב','חיפה','ראשון לציון','פתח תקווה','אשדוד','נתניה','באר שבע','חולון','רמת גן','רחובות','אשקלון','בת ים','הרצליה','כפר סבא','רעננה','מודיעין'];
 
   const TEACHER_FLOW = [
-    { id: 'name',    type: 'text',  q: 'איך קוראים לך?', placeholder: 'שם פרטי ומשפחה', required: true, autocomplete: 'name', errorMsg: 'אפשר לכתוב שם מלא?' },
+    { id: 'city',    type: 'chips-or-text', q: 'באיזו עיר את/ה מחפש/ת משרה?', options: CITY_OPTS, placeholder: 'או הקלידו עיר אחרת', autocomplete: 'address-level2', skip: true, skipLabel: 'גמיש/ה לכל הארץ' },
     { id: 'subject', type: 'chips-or-text', q: 'איזה מקצוע את/ה מלמד/ת?', options: SUBJECT_HINTS, placeholder: 'או הקלידו מקצוע אחר', required: true },
     { id: 'level',   type: 'chips', q: 'איזו שכבת גיל?', options: LEVEL_OPTS, skip: true, skipLabel: 'דלגו' },
-    { id: 'region',  type: 'chips', q: 'באיזה אזור?', options: REGION_OPTS, skip: true },
-    { id: 'city',    type: 'text',  q: 'יש עיר ספציפית שתעדיפו?', placeholder: 'למשל פתח תקווה', skip: true, autocomplete: 'address-level2' },
+    { id: 'region',  type: 'chips', q: 'איזה אזור גם נחשב לכם רלוונטי?', options: REGION_OPTS, skip: true, skipLabel: 'רק העיר שציינתי' },
     { id: 'scope',   type: 'chips', q: 'איזה היקף משרה מתאים?', options: ['מלאה','חלקית','גמישה'], skip: true },
-    { id: 'email',   type: 'email', q: 'מצוין! לאן לשלוח לך התראות על משרות?', placeholder: 'name@example.com', required: true, autocomplete: 'email', errorMsg: 'נראה שיש טעות במייל. לנסות שוב?' },
+    { id: 'name',    type: 'text',  q: 'מצוין! איך קוראים לך?', placeholder: 'שם פרטי ומשפחה', required: true, autocomplete: 'name', errorMsg: 'אפשר לכתוב שם מלא?' },
+    { id: 'email',   type: 'email', q: 'לאן לשלוח לך התראות על משרות?', placeholder: 'name@example.com', required: true, autocomplete: 'email', errorMsg: 'נראה שיש טעות במייל. לנסות שוב?' },
     { id: 'phone',   type: 'tel',   q: 'מספר טלפון? (אופציונלי — בתי הספר יוכלו להתקשר ישירות)', placeholder: '050-1234567', skip: true, autocomplete: 'tel', errorMsg: 'מספר לא תקין. אפשר רק ספרות.' },
     { id: 'notes',   type: 'textarea', q: 'משהו נוסף שכדאי לבית הספר לדעת? (ניסיון, העדפות...)', placeholder: 'אופציונלי', skip: true, skipLabel: 'דלגו, אין לי מה להוסיף' },
     { id: 'consent', type: 'consent',
@@ -2111,13 +2112,13 @@
   const SECTOR_OPTS = ['ממלכתי','ממ"ד','חרדי','ערבי'];
 
   const SCHOOL_FLOW = [
+    { id: 'city',     type: 'chips-or-text', q: 'באיזו עיר נמצא בית הספר?', options: CITY_OPTS, placeholder: 'או הקלידו עיר אחרת', required: true, autocomplete: 'address-level2', errorMsg: 'איזו עיר?' },
     { id: 'school',   type: 'text',  q: 'מה שם בית הספר?', placeholder: 'תיכון אורט אורנית', required: true, errorMsg: 'איך קוראים לבית הספר?' },
     { id: 'subject',  type: 'chips-or-text', q: 'איזה מקצוע מחפשים?', options: SUBJECT_HINTS, placeholder: 'או הקלידו מקצוע אחר', required: true },
     { id: 'role',     type: 'chips', q: 'איזה תפקיד?', options: ROLE_OPTS, skip: true, skipLabel: 'דלגו (ברירת מחדל: מורה)' },
     { id: 'scope',    type: 'chips', q: 'היקף המשרה?', options: SCOPE_OPTS, skip: true },
     { id: 'level',    type: 'chips', q: 'איזו שכבה?', options: LEVEL_OPTS, skip: true },
     { id: 'region',   type: 'chips', q: 'באיזה אזור?', options: REGION_OPTS, skip: true },
-    { id: 'city',     type: 'text',  q: 'באיזו עיר נמצא בית הספר?', placeholder: 'ראש העין', skip: true, autocomplete: 'address-level2' },
     { id: 'sector',   type: 'chips', q: 'מגזר?', options: SECTOR_OPTS, skip: true, skipLabel: 'דלגו (ברירת מחדל: ממלכתי)' },
     { id: 'description', type: 'textarea', q: 'תיאור קצר של המשרה? (תפקיד, תכניות, ניסיון נדרש...)', placeholder: 'אופציונלי — אבל עוזר למצוא מורים מתאימים', skip: true },
     { id: 'contactName', type: 'text', q: 'מי איש הקשר אצלכם?', placeholder: 'שם המנהל/ת או הרכז/ת', required: true, autocomplete: 'name' },
