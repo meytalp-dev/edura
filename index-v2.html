@@ -412,6 +412,163 @@
   .no-results h3 { font-size: 20px; color: var(--ink); margin: 0 0 8px; }
   .no-results p { margin: 0; font-size: 14px; }
 
+  /* ───── JOB DETAIL MODAL ───── */
+  .modal-overlay {
+    position: fixed; inset: 0;
+    background: rgba(14,27,44,.55);
+    backdrop-filter: blur(4px);
+    z-index: 500;
+    display: none;
+    align-items: flex-start; justify-content: center;
+    overflow-y: auto;
+    padding: 40px 20px;
+    animation: fadeIn .2s;
+  }
+  .modal-overlay.open { display: flex; }
+  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+  .modal {
+    background: var(--bg);
+    border-radius: var(--r-lg);
+    max-width: 640px; width: 100%;
+    overflow: hidden;
+    box-shadow: 0 24px 60px rgba(14,27,44,.3);
+    animation: slideUp .25s cubic-bezier(.2,.8,.3,1);
+    margin-top: auto; margin-bottom: auto;
+  }
+  @keyframes slideUp { from { transform: translateY(24px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+  .modal-hero {
+    height: 200px;
+    background-size: cover; background-position: center;
+    position: relative;
+  }
+  .modal-hero-overlay {
+    position: absolute; inset: 0;
+    background: linear-gradient(180deg, rgba(0,0,0,.05) 0%, rgba(0,0,0,.55) 100%);
+  }
+  .modal-close {
+    position: absolute; top: 14px; left: 14px;
+    width: 36px; height: 36px; border-radius: 50%;
+    background: rgba(255,255,255,.95);
+    display: flex; align-items: center; justify-content: center;
+    z-index: 2; backdrop-filter: blur(6px);
+    color: var(--ink);
+    box-shadow: var(--shadow-sm);
+    transition: transform .15s;
+    font-size: 18px; line-height: 1;
+  }
+  .modal-close:hover { transform: scale(1.08); }
+  .modal-hero-info {
+    position: absolute; bottom: 16px; right: 20px; left: 20px;
+    color: #fff; z-index: 2;
+  }
+  .modal-hero-city {
+    font-size: 32px; font-weight: 900; letter-spacing: -0.8px;
+    line-height: 1.1; text-shadow: 0 2px 8px rgba(0,0,0,.4);
+  }
+  .modal-hero-region {
+    font-size: 12px; font-weight: 700; opacity: .95; margin-top: 4px;
+    text-transform: uppercase; letter-spacing: 0.7px;
+    text-shadow: 0 1px 4px rgba(0,0,0,.5);
+  }
+  .modal-body { padding: 24px 28px; }
+  .modal-title {
+    font-size: 22px; font-weight: 800; color: var(--ink);
+    line-height: 1.3; letter-spacing: -0.4px; margin: 0 0 6px;
+  }
+  .modal-school {
+    font-size: 15px; color: var(--ink-soft); font-weight: 500;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .modal-school svg { width: 14px; height: 14px; opacity: .7; }
+  .modal-tags {
+    display: flex; flex-wrap: wrap; gap: 6px;
+    margin: 16px 0 18px;
+  }
+  .modal-tag {
+    font-size: 12px; font-weight: 700;
+    padding: 5px 12px; border-radius: 999px;
+    background: var(--pink-soft); color: var(--pink-deeper);
+  }
+  .modal-tag.scope { background: var(--cream); color: #92400E; }
+  .modal-tag.level { background: var(--teal-pale); color: var(--teal-deep); }
+  .modal-tag.sector { background: var(--bg-2); color: var(--ink-soft); }
+  .modal-section { margin-top: 20px; }
+  .modal-section-label {
+    font-size: 11px; font-weight: 800; color: var(--ink-mute);
+    text-transform: uppercase; letter-spacing: 0.7px; margin-bottom: 8px;
+  }
+  .modal-description {
+    font-size: 14px; line-height: 1.6; color: var(--ink-soft);
+    background: var(--bg-2); padding: 14px 16px; border-radius: var(--r);
+    white-space: pre-wrap;
+  }
+  .modal-meta-grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 10px;
+    font-size: 13px;
+  }
+  .modal-meta-item {
+    display: flex; flex-direction: column; gap: 2px;
+    padding: 10px 12px;
+    background: var(--bg-2); border-radius: var(--r);
+  }
+  .modal-meta-item-label { font-size: 11px; color: var(--ink-mute); font-weight: 700; }
+  .modal-meta-item-value { color: var(--ink); font-weight: 600; }
+
+  /* Contact CTAs */
+  .modal-contact {
+    display: flex; flex-direction: column; gap: 10px;
+    background: linear-gradient(135deg, var(--pink-soft) 0%, var(--cream) 100%);
+    padding: 18px; border-radius: var(--r-md);
+    margin-top: 22px;
+  }
+  .modal-contact-title {
+    font-size: 14px; font-weight: 800; color: var(--ink);
+    margin-bottom: 4px;
+  }
+  .modal-contact-name {
+    font-size: 13px; color: var(--ink-soft);
+    margin-bottom: 8px;
+  }
+  .modal-contact-actions {
+    display: flex; flex-wrap: wrap; gap: 8px;
+  }
+  .contact-btn {
+    flex: 1; min-width: 130px;
+    display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+    padding: 12px 16px; border-radius: 999px;
+    font-size: 14px; font-weight: 700;
+    transition: transform .15s, box-shadow .15s, background .15s;
+  }
+  .contact-btn svg { width: 16px; height: 16px; flex-shrink: 0; }
+  .contact-btn:hover { transform: translateY(-1px); box-shadow: 0 6px 14px rgba(14,27,44,.12); }
+  .contact-btn.wa { background: #25D366; color: #fff; }
+  .contact-btn.wa:hover { background: #1ebc59; }
+  .contact-btn.phone { background: var(--ink); color: #fff; }
+  .contact-btn.phone:hover { background: var(--pink-deep); }
+  .contact-btn.email { background: var(--bg); color: var(--ink); border: 1.5px solid var(--line); }
+  .contact-btn.email:hover { border-color: var(--ink); background: var(--bg-2); }
+
+  .modal-source {
+    font-size: 12px; color: var(--ink-mute);
+    margin-top: 16px; padding-top: 14px; border-top: 1px solid var(--line-soft);
+    display: flex; justify-content: space-between; align-items: center;
+    flex-wrap: wrap; gap: 8px;
+  }
+  .modal-source-link {
+    color: var(--ink-soft); font-weight: 600;
+    text-decoration: underline; text-underline-offset: 3px;
+  }
+  .modal-source-link:hover { color: var(--ink); }
+
+  @media (max-width: 560px) {
+    .modal { border-radius: var(--r-md); }
+    .modal-hero { height: 160px; }
+    .modal-hero-city { font-size: 26px; }
+    .modal-body { padding: 20px; }
+    .modal-meta-grid { grid-template-columns: 1fr; }
+    .contact-btn { min-width: 0; }
+  }
+
   /* Note */
   .v2-note {
     max-width: 1320px; margin: 60px auto 24px;
@@ -554,9 +711,14 @@
 
 </main>
 
+<!-- Job detail modal -->
+<div class="modal-overlay" id="job-modal" onclick="if(event.target===this)closeJobModal()" role="dialog" aria-labelledby="modal-title">
+  <div class="modal" id="modal-content"></div>
+</div>
+
 <div class="v2-note">
-  <strong>גרסה v4 — תמונות לפי מקצוע + ורוד מותג כאקסנט</strong><br>
-  522 משרות אמיתיות · 19 תמונות מקצוע + 12 תמונות אזור (fallback) · ורוד מהדף מורים בלוגו, search, level chips, save heart
+  <strong>גרסה v5 — תמונות מקצוע מאוצרות + מודאל פרטי משרה</strong><br>
+  33 תמונות אסתטיות (3 לכל מקצוע) · קליק על כרטיס פותח מודאל עם פרטים מלאים + WhatsApp/טלפון/מייל — לא מפנה יותר ללוח חיצוני
   <div class="compare">
     <a href="index.html">← לגרסה הנוכחית</a>
     <a href="teachers.html">דף מורים →</a>
@@ -565,64 +727,75 @@
 
 <script>
 // ──────────────────────────────────────────────────
-// REAL Unsplash photos — by SUBJECT (primary) + REGION (fallback)
-// All URLs verified HTTP 200 via agent
+// CURATED Unsplash photos — by SUBJECT (3 per subject for diversity)
+// All 33 URLs verified HTTP 200, hand-picked for warmth/aesthetics
 // ──────────────────────────────────────────────────
 const SUBJECT_PHOTOS = {
   'מתמטיקה': [
     'https://images.unsplash.com/photo-1635070041078-e363dbe005cb?w=600&h=400&fit=crop&q=80&auto=format',
-    'https://images.unsplash.com/photo-1509228468518-180dd4864904?w=600&h=400&fit=crop&q=80&auto=format'
+    'https://images.unsplash.com/photo-1596495577886-d920f1fb7238?w=600&h=400&fit=crop&q=80&auto=format',
+    'https://images.unsplash.com/photo-1453733190371-0a9bedd82893?w=600&h=400&fit=crop&q=80&auto=format'
   ],
   'אנגלית': [
-    'https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?w=600&h=400&fit=crop&q=80&auto=format',
-    'https://images.unsplash.com/photo-1490633874781-1c63cc424610?w=600&h=400&fit=crop&q=80&auto=format'
+    'https://images.unsplash.com/photo-1481627834876-b7833e8f5570?w=600&h=400&fit=crop&q=80&auto=format',
+    'https://images.unsplash.com/photo-1519682337058-a94d519337bc?w=600&h=400&fit=crop&q=80&auto=format',
+    'https://images.unsplash.com/photo-1495446815901-a7297e633e8d?w=600&h=400&fit=crop&q=80&auto=format'
   ],
   'עברית': [
-    'https://images.unsplash.com/photo-1544383835-bda2bc66a55d?w=600&h=400&fit=crop&q=80&auto=format'
+    'https://images.unsplash.com/photo-1654124803041-79f3cc14a9db?w=600&h=400&fit=crop&q=80&auto=format',
+    'https://images.unsplash.com/photo-1612375411759-b35b2f080448?w=600&h=400&fit=crop&q=80&auto=format',
+    'https://images.unsplash.com/photo-1546187179-26df4c5497a7?w=600&h=400&fit=crop&q=80&auto=format'
   ],
   'מדעים': [
-    'https://images.unsplash.com/photo-1582408921715-18e7806365c1?w=600&h=400&fit=crop&q=80&auto=format',
-    'https://images.unsplash.com/photo-1532094349884-543bc11b234d?w=600&h=400&fit=crop&q=80&auto=format'
+    'https://images.unsplash.com/photo-1535127022272-dbe7ee35cf33?w=600&h=400&fit=crop&q=80&auto=format',
+    'https://images.unsplash.com/photo-1575468130797-aa950b68aeec?w=600&h=400&fit=crop&q=80&auto=format',
+    'https://images.unsplash.com/photo-1611074182055-4ac85bad8bb6?w=600&h=400&fit=crop&q=80&auto=format'
   ],
   'חינוך מיוחד': [
-    'https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?w=600&h=400&fit=crop&q=80&auto=format',
-    'https://images.unsplash.com/photo-1469571486292-0ba58a3f068b?w=600&h=400&fit=crop&q=80&auto=format'
+    'https://images.unsplash.com/photo-1517157837591-17b69085bfdc?w=600&h=400&fit=crop&q=80&auto=format',
+    'https://images.unsplash.com/photo-1604937455095-ef2fe3d46fcd?w=600&h=400&fit=crop&q=80&auto=format',
+    'https://images.unsplash.com/photo-1583337346971-4ed7c964fb7f?w=600&h=400&fit=crop&q=80&auto=format'
   ],
   'היסטוריה': [
-    'https://images.unsplash.com/photo-1457369804613-52c61a468e7d?w=600&h=400&fit=crop&q=80&auto=format',
-    'https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?w=600&h=400&fit=crop&q=80&auto=format'
+    'https://images.unsplash.com/photo-1524661135-423995f22d0b?w=600&h=400&fit=crop&q=80&auto=format',
+    'https://images.unsplash.com/photo-1773064525085-304ec4787e5a?w=600&h=400&fit=crop&q=80&auto=format',
+    'https://images.unsplash.com/photo-1771797628441-20bc5804f48d?w=600&h=400&fit=crop&q=80&auto=format'
   ],
   'מחנכת': [
-    'https://images.unsplash.com/photo-1580582932707-520aed937b7b?w=600&h=400&fit=crop&q=80&auto=format'
+    'https://images.unsplash.com/photo-1635424239131-32dc44986b56?w=600&h=400&fit=crop&q=80&auto=format',
+    'https://images.unsplash.com/photo-1593588332695-cd49488a8ec8?w=600&h=400&fit=crop&q=80&auto=format',
+    'https://images.unsplash.com/photo-1607823477495-682ec53827b9?w=600&h=400&fit=crop&q=80&auto=format'
   ],
   'יועץ': [
-    'https://images.unsplash.com/photo-1497486751825-1233686d5d80?w=600&h=400&fit=crop&q=80&auto=format',
-    'https://images.unsplash.com/photo-1607706189992-eae578626c86?w=600&h=400&fit=crop&q=80&auto=format'
+    'https://images.unsplash.com/photo-1572434936253-c3035a5ecb94?w=600&h=400&fit=crop&q=80&auto=format',
+    'https://images.unsplash.com/photo-1572105263216-49370cd45980?w=600&h=400&fit=crop&q=80&auto=format',
+    'https://images.unsplash.com/photo-1624060597916-e40cbe9dd526?w=600&h=400&fit=crop&q=80&auto=format'
   ],
   'ספורט': [
-    'https://images.unsplash.com/photo-1546519638-68e109498ffc?w=600&h=400&fit=crop&q=80&auto=format',
-    'https://images.unsplash.com/photo-1518998053901-5348d3961a04?w=600&h=400&fit=crop&q=80&auto=format'
+    'https://images.unsplash.com/photo-1768380075222-c0ed728baae2?w=600&h=400&fit=crop&q=80&auto=format',
+    'https://images.unsplash.com/photo-1761386392976-cdb487cd4724?w=600&h=400&fit=crop&q=80&auto=format',
+    'https://images.unsplash.com/photo-1501743750638-8045fb3c1cc7?w=600&h=400&fit=crop&q=80&auto=format'
   ],
   'אומנות': [
-    'https://images.unsplash.com/photo-1513364776144-60967b0f800f?w=600&h=400&fit=crop&q=80&auto=format',
-    'https://images.unsplash.com/photo-1502691876148-a84978e59af8?w=600&h=400&fit=crop&q=80&auto=format'
+    'https://images.unsplash.com/photo-1549185984-cb519424aa49?w=600&h=400&fit=crop&q=80&auto=format',
+    'https://images.unsplash.com/photo-1645179138514-427655060345?w=600&h=400&fit=crop&q=80&auto=format',
+    'https://images.unsplash.com/photo-1583162557635-53d9931332c5?w=600&h=400&fit=crop&q=80&auto=format'
   ],
   'תורה': [
-    'https://images.unsplash.com/photo-1591373032221-2d1c0a9c9a32?w=600&h=400&fit=crop&q=80&auto=format'
+    'https://images.unsplash.com/photo-1608044838338-dd458d127926?w=600&h=400&fit=crop&q=80&auto=format',
+    'https://images.unsplash.com/photo-1606889867076-6859e790209c?w=600&h=400&fit=crop&q=80&auto=format',
+    'https://images.unsplash.com/photo-1661919858163-6d56dc4bec97?w=600&h=400&fit=crop&q=80&auto=format'
   ]
 };
 
-// Region fallback (when subject doesn't match any category)
-const REGION_PHOTOS_FALLBACK = {
-  'ירושלים': ['https://images.unsplash.com/photo-1556861321-b7a1e5b1c291?w=600&h=400&fit=crop&q=80&auto=format', 'https://images.unsplash.com/photo-1587297069400-6cc5da81658a?w=600&h=400&fit=crop&q=80&auto=format'],
-  'ת"א':     ['https://images.unsplash.com/photo-1500990702037-7620ccb6a60a?w=600&h=400&fit=crop&q=80&auto=format', 'https://images.unsplash.com/photo-1544971587-b842c27f8e14?w=600&h=400&fit=crop&q=80&auto=format'],
-  'מרכז':    ['https://images.unsplash.com/photo-1561369669-a6531d6eb336?w=600&h=400&fit=crop&q=80&auto=format', 'https://images.unsplash.com/photo-1607277332070-e39d58864cd3?w=600&h=400&fit=crop&q=80&auto=format'],
-  'צפון':    ['https://images.unsplash.com/photo-1613412984420-1300edb8219f?w=600&h=400&fit=crop&q=80&auto=format'],
-  'דרום':    ['https://images.unsplash.com/photo-1633088926847-435cdb7e76da?w=600&h=400&fit=crop&q=80&auto=format'],
-  'שפלה':    ['https://images.unsplash.com/photo-1437252611977-07f74518abd7?w=600&h=400&fit=crop&q=80&auto=format'],
-  'חיפה':    ['https://images.unsplash.com/photo-1613412984420-1300edb8219f?w=600&h=400&fit=crop&q=80&auto=format'],
-  'default': ['https://images.unsplash.com/photo-1561369669-a6531d6eb336?w=600&h=400&fit=crop&q=80&auto=format']
-};
+// Generic warm "school/teaching" pool — used when subject doesn't match
+// (replaces region-landscape fallback that felt off-topic)
+const GENERIC_PHOTOS = [
+  'https://images.unsplash.com/photo-1497633762265-9d179a990aa6?w=600&h=400&fit=crop&q=80&auto=format', // open books warm light
+  'https://images.unsplash.com/photo-1481627834876-b7833e8f5570?w=600&h=400&fit=crop&q=80&auto=format', // cozy library
+  'https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?w=600&h=400&fit=crop&q=80&auto=format', // pages spread
+  'https://images.unsplash.com/photo-1606761568499-6d2451b23c66?w=600&h=400&fit=crop&q=80&auto=format'  // pencils flatlay
+];
 
 // Map a job to the best subject category key (returns '' if no match)
 function jobSubjectKey(job) {
@@ -636,9 +809,7 @@ function jobSubjectKey(job) {
 function pickPhoto(job) {
   const subjKey = jobSubjectKey(job);
   let pool = SUBJECT_PHOTOS[subjKey];
-  if (!pool || !pool.length) {
-    pool = REGION_PHOTOS_FALLBACK[job.region] || REGION_PHOTOS_FALLBACK['default'];
-  }
+  if (!pool || !pool.length) pool = GENERIC_PHOTOS;
   // hash by city+title for stable but varied photo per job
   let h = 0;
   const s = (job.city || '') + (job.title || job.id || '');
@@ -856,7 +1027,7 @@ function renderJobCard(job, badge) {
     : '';
 
   return (
-    '<article class="job-card" onclick="window.open(\'' + escapeHtml(job.url || '#') + '\',\'_blank\')">' +
+    '<article class="job-card" onclick="openJobModal(\'' + escapeHtml(job.id) + '\')">' +
       '<div class="job-hero" style="background-image:url(\'' + photo + '\')">' +
         '<div class="job-hero-overlay"></div>' +
         badgeHtml +
@@ -980,6 +1151,119 @@ document.getElementById('city-go').addEventListener('click', () => {
   citySuggest.classList.remove('open');
   renderAll();
 });
+
+// ──────────────────────────────────────────────────
+// Job detail modal
+// ──────────────────────────────────────────────────
+function buildWaLink(phone, jobTitle) {
+  if (!phone) return '';
+  let p = String(phone).replace(/\D/g, '');
+  if (!p) return '';
+  if (p.startsWith('0')) p = '972' + p.slice(1);
+  const msg = 'שלום, ראיתי את המודעה דרך אדורה: ' + (jobTitle || '');
+  return 'https://api.whatsapp.com/send?phone=' + p + '&text=' + encodeURIComponent(msg);
+}
+
+function openJobModal(jobId) {
+  const job = JOBS.find(j => String(j.id) === String(jobId));
+  if (!job) return;
+
+  const photo = pickPhoto(job);
+  const city = job.city || job.school || 'לא צוינה עיר';
+  const title = job.title || (job.role ? job.role + (job.subject ? ' ל' + job.subject : '') : 'משרה');
+  const desc = job.description || job.snippet || '';
+
+  const tags = [];
+  if (job.subject) tags.push('<span class="modal-tag">' + escapeHtml(job.subject) + '</span>');
+  if (job.scope) tags.push('<span class="modal-tag scope">' + escapeHtml(job.scope) + '</span>');
+  if (job.level) tags.push('<span class="modal-tag level">' + escapeHtml(job.level) + '</span>');
+  if (job.sector) tags.push('<span class="modal-tag sector">' + escapeHtml(job.sector) + '</span>');
+
+  const meta = [];
+  if (job.role) meta.push(['תפקיד', job.role]);
+  if (job.sub_area) meta.push(['תחום', job.sub_area]);
+  if (job.region) meta.push(['אזור', job.region]);
+  if (job.date) meta.push(['פורסם', job.date]);
+
+  const wa = buildWaLink(job.phone, title);
+  const contactActions = [];
+  if (wa) contactActions.push(
+    '<a class="contact-btn wa" href="' + escapeHtml(wa) + '" target="_blank" rel="noopener">' +
+      '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 2.1.55 4.15 1.6 5.96L2 22l4.25-1.71c1.74.95 3.71 1.45 5.79 1.45 5.46 0 9.91-4.45 9.91-9.91S17.5 2 12.04 2zM17.47 14.38c-.3-.15-1.77-.87-2.04-.97-.27-.1-.47-.15-.67.15-.2.3-.77.97-.94 1.17-.17.2-.35.22-.65.07-.3-.15-1.26-.46-2.4-1.48-.89-.79-1.49-1.77-1.66-2.07-.17-.3-.02-.46.13-.61.13-.13.3-.35.45-.52.15-.17.2-.3.3-.5.1-.2.05-.37-.02-.52-.07-.15-.67-1.62-.92-2.22-.24-.58-.49-.5-.67-.51l-.57-.01c-.2 0-.52.07-.79.37-.27.3-1.04 1.02-1.04 2.49s1.07 2.89 1.22 3.09c.15.2 2.1 3.21 5.09 4.5.71.31 1.27.49 1.7.63.71.23 1.36.19 1.87.12.57-.09 1.77-.72 2.02-1.42.25-.7.25-1.29.17-1.42-.07-.12-.27-.2-.57-.35z"/></svg>' +
+      'WhatsApp' +
+    '</a>'
+  );
+  if (job.phone) contactActions.push(
+    '<a class="contact-btn phone" href="tel:' + escapeHtml(job.phone) + '">' +
+      '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>' +
+      escapeHtml(job.phone) +
+    '</a>'
+  );
+  if (job.email) contactActions.push(
+    '<a class="contact-btn email" href="mailto:' + escapeHtml(job.email) + '?subject=' + encodeURIComponent('פנייה למשרה: ' + title) + '">' +
+      '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>' +
+      'מייל' +
+    '</a>'
+  );
+
+  const contactBlock = contactActions.length ? (
+    '<div class="modal-contact">' +
+      '<div class="modal-contact-title">יצירת קשר</div>' +
+      (job.contact_name ? '<div class="modal-contact-name">איש/אשת קשר: ' + escapeHtml(job.contact_name) + '</div>' : '') +
+      '<div class="modal-contact-actions">' + contactActions.join('') + '</div>' +
+    '</div>'
+  ) : (
+    '<div class="modal-contact">' +
+      '<div class="modal-contact-title">פרטי יצירת קשר לא זמינים</div>' +
+      '<div class="modal-contact-name">לפנייה בנושא המשרה — ראו את המודעה המקורית בהמשך</div>' +
+    '</div>'
+  );
+
+  const html =
+    '<div class="modal-hero" style="background-image:url(\'' + photo + '\')">' +
+      '<div class="modal-hero-overlay"></div>' +
+      '<button class="modal-close" onclick="closeJobModal()" aria-label="סגור">×</button>' +
+      '<div class="modal-hero-info">' +
+        '<div class="modal-hero-city">' + escapeHtml(city) + '</div>' +
+        '<div class="modal-hero-region">' + escapeHtml(job.region || '') + '</div>' +
+      '</div>' +
+    '</div>' +
+    '<div class="modal-body">' +
+      '<h2 class="modal-title" id="modal-title">' + escapeHtml(title) + '</h2>' +
+      (job.school ? '<div class="modal-school"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 9 12 5 2 9l10 4 10-4z"/><path d="M6 11v5c0 2 3 3 6 3s6-1 6-3v-5"/></svg>' + escapeHtml(job.school) + '</div>' : '') +
+      (tags.length ? '<div class="modal-tags">' + tags.join('') + '</div>' : '') +
+      (desc ? (
+        '<div class="modal-section">' +
+          '<div class="modal-section-label">תיאור המשרה</div>' +
+          '<div class="modal-description">' + escapeHtml(desc) + '</div>' +
+        '</div>'
+      ) : '') +
+      (meta.length ? (
+        '<div class="modal-section">' +
+          '<div class="modal-section-label">פרטים נוספים</div>' +
+          '<div class="modal-meta-grid">' +
+            meta.map(([k,v]) => '<div class="modal-meta-item"><span class="modal-meta-item-label">' + escapeHtml(k) + '</span><span class="modal-meta-item-value">' + escapeHtml(v) + '</span></div>').join('') +
+          '</div>' +
+        '</div>'
+      ) : '') +
+      contactBlock +
+      '<div class="modal-source">' +
+        '<span>נסרק מ' + escapeHtml(job.source_name || job.source || 'מקור חיצוני') + '</span>' +
+        (job.url ? '<a class="modal-source-link" href="' + escapeHtml(job.url) + '" target="_blank" rel="noopener">המודעה המקורית ↗</a>' : '') +
+      '</div>' +
+    '</div>';
+
+  document.getElementById('modal-content').innerHTML = html;
+  document.getElementById('job-modal').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function closeJobModal() {
+  document.getElementById('job-modal').classList.remove('open');
+  document.body.style.overflow = '';
+}
+window.openJobModal = openJobModal;
+window.closeJobModal = closeJobModal;
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeJobModal(); });
 
 // Row arrows
 document.querySelectorAll('.row-arrow').forEach(btn => {
