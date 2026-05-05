@@ -2017,7 +2017,7 @@
   });
 
   // ─── School submit ───────────────────────────────────────────────────
-  $('form-school').addEventListener('submit', async (e) => {
+  $('form-school')?.addEventListener('submit', async (e) => {
     e.preventDefault();
     const form = e.currentTarget;
     clearAllErrors('form-school');
