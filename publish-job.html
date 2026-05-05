@@ -2361,34 +2361,50 @@
     };
   }
 
-  // Init bots — start on ANY modal open (click, hash, programmatic)
+  // Init bots — direct click listeners + hash support
   let teacherBot, schoolBot;
-  function watchAndStart(overlayId, innerId, getFlow, getAction, botRef) {
-    const overlay = $(overlayId);
-    if (!overlay) return;
-    const launch = () => {
-      try {
-        const bot = botRef();
-        document.getElementById(innerId).classList.remove('is-success');
-        bot.start();
-      } catch (err) {
-        console.error('chatbot init error:', err);
+  function startChatFor(modalId) {
+    try {
+      const innerId = modalId === 'modal-school' ? 'modal-school-inner' : 'modal-teacher-inner';
+      let bot;
+      if (modalId === 'modal-school') {
+        if (!schoolBot) schoolBot = ChatBot(modalId, SCHOOL_FLOW, 'submit_job');
+        bot = schoolBot;
+      } else {
+        if (!teacherBot) teacherBot = ChatBot(modalId, TEACHER_FLOW, 'submit_teacher');
+        bot = teacherBot;
       }
-    };
-    if (overlay.classList.contains('open')) launch();
-    const obs = new MutationObserver(() => {
-      if (overlay.classList.contains('open')) launch();
-    });
-    obs.observe(overlay, { attributes: true, attributeFilter: ['class'] });
+      const inner = document.getElementById(innerId);
+      if (inner) inner.classList.remove('is-success');
+      bot.start();
+      console.log('[chatbot] started:', modalId);
+    } catch (err) {
+      console.error('[chatbot] failed to start:', modalId, err);
+    }
   }
-  watchAndStart('modal-teacher', 'modal-teacher-inner', null, null, () => {
-    if (!teacherBot) teacherBot = ChatBot('modal-teacher', TEACHER_FLOW, 'submit_teacher');
-    return teacherBot;
+
+  $('open-school')?.addEventListener('click', () => {
+    setTimeout(() => startChatFor('modal-school'), 30);
   });
-  watchAndStart('modal-school', 'modal-school-inner', null, null, () => {
-    if (!schoolBot) schoolBot = ChatBot('modal-school', SCHOOL_FLOW, 'submit_job');
-    return schoolBot;
+  $('open-teacher')?.addEventListener('click', () => {
+    setTimeout(() => startChatFor('modal-teacher'), 30);
   });
+
+  // Hash-based opens (e.g., #school, #post-job, #teacher)
+  function checkHashAndStart() {
+    const h = location.hash;
+    if (h === '#school' || h === '#post-job') {
+      setTimeout(() => startChatFor('modal-school'), 100);
+    } else if (h === '#teacher') {
+      setTimeout(() => startChatFor('modal-teacher'), 100);
+    }
+  }
+  window.addEventListener('hashchange', checkHashAndStart);
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', checkHashAndStart);
+  } else {
+    setTimeout(checkHashAndStart, 50);
+  }
 </script>
 
 </body>
