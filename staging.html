@@ -331,16 +331,120 @@ function render() {
   btn.disabled = approved === 0;
 }
 
-// Build a clean teaching title from subject/role
+// Known cities & regional councils — used to infer city from school name / description
+const KNOWN_CITIES = [
+  // Major cities
+  'ירושלים','תל אביב','רמת גן','גבעתיים','הרצליה','רעננה','כפר סבא','פתח תקווה','בני ברק',
+  'ראשון לציון','חולון','בת ים','רחובות','נתניה','אשדוד','אשקלון','באר שבע','דימונה','אילת',
+  'חיפה','נצרת','עכו','טבריה','צפת','כרמיאל','קריית שמונה','כרמיאל','נהריה','עפולה','בית שאן',
+  // Mid-sized
+  'מודיעין','בית שמש','לוד','רמלה','קריית גת','ערד','שדרות','אופקים','קריית מלאכי','יבנה',
+  'גן יבנה','אור יהודה','קריית אונו','גני תקווה','כוכב יאיר','קדימה','צורן','אבן יהודה',
+  'זכרון יעקב','חדרה','כפר יונה','קריית ביאליק','קריית מוצקין','קריית ים','קריית חיים',
+  'ביתר עילית','מודיעין עילית','אלעד','עמנואל','אריאל','קריית ארבע',
+  // Settlements & towns
+  'אפרת','גבע בנימין','אדם','עפרה','הר אדר','מעלה אדומים','גוש עציון','קריית ספר','בית אל',
+  // Regional councils (מועצה אזורית)
+  'מטה בנימין','גוש עציון','חבל מודיעין','דרום השרון','שרון','עמק חפר','עמק יזרעאל','מגידו',
+  'גליל עליון','גליל תחתון','גלבוע','בקעת בית שאן','בקעת הירדן','מטה יהודה','שפיר','שדות נגב',
+  'בני שמעון','אשכול','מעלה יוסף','מטה אשר','משגב','מבואות החרמון','גולן','חוף הכרמל',
+  'יואב','לכיש','שומרון','בנימין','דרום הר חברון','הר חברון',
+  // Major neighborhoods/areas
+  'גוש דן','גוש עציון'
+];
+
+function inferCityFromText(text) {
+  if (!text) return null;
+  // Sort longer first so "מטה בנימין" wins over "בנימין"
+  const sorted = [...KNOWN_CITIES].sort((a,b) => b.length - a.length);
+  for (const c of sorted) {
+    if (text.includes(c)) return c;
+  }
+  return null;
+}
+
+// Known teaching subjects — used to infer real subject when the source data is generic
+const KNOWN_SUBJECTS = [
+  'מתמטיקה','חשבון','אנגלית','עברית','ספרות','לשון','תנ"ך','תושב"ע','היסטוריה','אזרחות',
+  'גיאוגרפיה','גאוגרפיה','פיזיקה','פיסיקה','כימיה','ביולוגיה','מדעי המחשב','מחשבים','תקשוב',
+  'מדעים','מדע וטכנולוגיה','חינוך גופני','אומנות','אמנות','מוסיקה','מוזיקה',
+  'ערבית','צרפתית','ספרדית','רוסית','תקשורת','רובוטיקה','תיאטרון','יזמות',
+  'תיירות','חקלאות','חינוך מיוחד','גיל הרך','כיתות צעירות',
+  'מסחר ודיגיטל','מסחר','דיגיטל','אופנה','עיצוב','בריאות','סיעוד','רפואה',
+  'הנדסה','אלקטרוניקה','בקרה','מכונאות','חשמל','בנייה','אדריכלות',
+  'פסיכולוגיה','סוציולוגיה','כלכלה','חשבונאות','ניהול','משאבי אנוש',
+  'תזונה','תרפיה','קולנוע','צילום','אנימציה'
+];
+
+// Subjects that are too generic to use as the headline
+function isGenericSubject(s) {
+  const norm = (s || '').trim().toLowerCase();
+  if (!norm) return true;
+  return /^(מורה כולל|מורה לכל|כולל|כללי|אחר|מורה|הוראה)\s*(\/?ת)?\s*$/.test(s.trim());
+}
+
+// Detect a specific role mentioned in the description (overrides "מורה" if present)
+function inferRoleFromText(text) {
+  if (!text) return null;
+  const t = String(text);
+  if (/מחנכ[א-ת]/.test(t) || /דרוש[\/\sא-ת]+מחנכ/.test(t)) return 'מחנך/ת';
+  if (/יועצ[א-ת]/.test(t) || /דרוש[\/\sא-ת]+יועצ/.test(t)) return 'יועץ/ת';
+  if (/רכז[\/ת]/.test(t) && !/מרכז/.test(t.split('רכז')[0].slice(-3))) return 'רכז/ת';
+  if (/מתמחה הוראה/.test(t)) return 'מתמחה הוראה';
+  if (/סייע[\/ת\s]/.test(t)) return 'סייע/ת';
+  if (/תרפיסט/.test(t)) return 'תרפיסט/ית';
+  return null;
+}
+
+// Try to find a real subject mentioned in free-text description
+function inferSubjectFromText(text) {
+  if (!text) return null;
+  const t = String(text).replace(/[״"]/g, '"');
+  // Pattern attempts (order matters — most specific first)
+  const patterns = [
+    /(?:במקצוע|למקצוע|המקצוע)\s+([א-ת"'\/]+(?:\s+[א-ת"'\/]+){0,2})/,
+    /להוראת\s+([א-ת"'\/]+(?:\s+[א-ת"'\/]+){0,2})/,
+    /מורה\s+ל[-\s]?([א-ת"'\/]+(?:\s+[א-ת"'\/]+){0,2})/,
+    /הוראת\s+([א-ת"'\/]+(?:\s+[א-ת"'\/]+){0,2})/
+  ];
+  for (const re of patterns) {
+    const m = t.match(re);
+    if (m && m[1] && m[1].trim().length > 1) {
+      const candidate = m[1].trim().replace(/[.,;:!?]+$/, '');
+      // Filter out junk like prepositions
+      if (!/^(של|את|עם|על|זה|זו|זאת)$/.test(candidate)) return candidate;
+    }
+  }
+  // Fallback: known subject substring match
+  for (const s of KNOWN_SUBJECTS) {
+    if (t.includes(s)) return s;
+  }
+  return null;
+}
+
+// Build a clean teaching title from subject/role/description
 // "מתמטיקה" → "מורה למתמטיקה"
-// "מורה כולל/ת" → "מורה כולל/ת" (already a role)
+// "מורה כולל/ת" + description has "תיירות" → "מורה לתיירות"
+// "מורה כולל/ת" + description says "מחנכת" → "מחנך/ת"
 // "מחנכת כיתה (א'-ד')" → "מחנכת כיתה"
 function buildJobTitle(j) {
-  const subj = (j.subject || '').trim().replace(/\s*\([^)]*\)\s*/g, ' ').replace(/\s+/g, ' ').trim();
+  let subj = (j.subject || '').trim().replace(/\s*\([^)]*\)\s*/g, ' ').replace(/\s+/g, ' ').trim();
+  const text = j.description || j.snippet || j.title || '';
+
+  // If subject is generic, prefer specific ROLE found in description, then specific subject
+  if (isGenericSubject(subj)) {
+    const inferredRole = inferRoleFromText(text);
+    if (inferredRole) return esc(inferredRole);
+    const inferred = inferSubjectFromText(text);
+    if (inferred) subj = inferred;
+  }
+
   if (!subj) return j.role ? esc(j.role) : 'משרת הוראה';
+
   // Already a role/function noun — use as is
   if (/^(מורה|מחנך|מחנכת|רכז|רכזת|יועץ|יועצת|מתמחה|סייע|סייעת|מדריך|מדריכה|תרפיסט|מטפל)/.test(subj)) return esc(subj);
-  // Multi-subject (split by /) — "מתמטיקה / מדעים" → "מורה למתמטיקה / מדעים"
+
+  // Multi-subject — "מתמטיקה / מדעים" → "מורה למתמטיקה / מדעים"
   return 'מורה ל' + esc(subj);
 }
 
@@ -362,8 +466,16 @@ function renderCard(j) {
   const schoolLine = j.school ? `<div class="card-school"><b>${esc(j.school)}</b></div>` : '';
   const snippet = j.snippet || j.description || '';
   const cityIcon = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>';
-  const cityLine = j.city
-    ? `<div class="card-city">${cityIcon}${esc(j.city)}</div>`
+
+  // City: explicit field → infer from school/description → "לא צוינה"
+  let cityName = (j.city || '').trim();
+  let cityInferred = false;
+  if (!cityName) {
+    cityName = inferCityFromText(j.school || '') || inferCityFromText(j.description || j.snippet || '');
+    if (cityName) cityInferred = true;
+  }
+  const cityLine = cityName
+    ? `<div class="card-city" title="${cityInferred ? 'זוהה מתוך התיאור — נא לאמת' : 'מהמקור'}">${cityIcon}${esc(cityName)}${cityInferred ? ' <span style="font-size:11px;color:#F97316;font-weight:600">(מתוך התיאור)</span>' : ''}</div>`
     : `<div class="card-city no-city">${cityIcon}עיר לא צוינה</div>`;
 
   return `
