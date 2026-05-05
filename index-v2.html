@@ -137,6 +137,17 @@
   .city-suggest-item:hover, .city-suggest-item.active { background: var(--bg-2); }
   .city-suggest-count { font-size: 12px; color: var(--ink-mute); font-weight: 600; }
 
+  /* Hamburger toggle */
+  .menu-toggle {
+    display: none;
+    width: 40px; height: 40px; border-radius: 8px;
+    align-items: center; justify-content: center;
+    background: var(--bg-2); color: var(--ink);
+    transition: background .15s;
+  }
+  .menu-toggle:hover { background: var(--pink-soft); }
+  .menu-toggle svg { width: 22px; height: 22px; }
+
   .topbar-nav { display: flex; gap: 2px; align-items: center; }
   .nav-link {
     padding: 9px 14px; border-radius: 8px;
@@ -195,6 +206,39 @@
   }
   .cat-chip-icon svg { width: 26px; height: 26px; }
   .cat-chip-label { font-size: 13px; font-weight: 600; line-height: 1.1; text-align: center; }
+
+  /* Free-text subject search (sits under chips) */
+  .free-search {
+    display: flex; align-items: center; gap: 8px;
+    background: var(--bg-2);
+    border: 1.5px solid transparent;
+    border-radius: 999px;
+    padding: 6px 14px 6px 6px;
+    margin-top: 6px;
+    transition: all .15s;
+    flex: 1; min-width: 200px; max-width: 360px;
+  }
+  .free-search:hover { background: var(--pink-soft); }
+  .free-search:focus-within {
+    background: var(--bg); border-color: var(--pink-deep);
+    box-shadow: 0 0 0 4px var(--pink);
+  }
+  .free-search svg { width: 16px; height: 16px; color: var(--ink-mute); flex-shrink: 0; margin-inline-start: 8px; }
+  .free-search input {
+    flex: 1; border: none; outline: none;
+    background: transparent;
+    font-size: 13px; color: var(--ink); font-family: inherit;
+    min-width: 0;
+  }
+  .free-search input::placeholder { color: var(--ink-mute); }
+  .free-search-clear {
+    width: 24px; height: 24px; border-radius: 50%;
+    background: var(--ink-mute); color: #fff;
+    display: none; align-items: center; justify-content: center;
+    font-size: 14px; line-height: 1; flex-shrink: 0;
+  }
+  .free-search-clear.visible { display: flex; }
+  .free-search-clear:hover { background: var(--pink-deep); }
 
   /* Level chips (pill style with pink accent) */
   .level-chip {
@@ -587,10 +631,62 @@
     font-weight: 600; border: 1px solid var(--line);
   }
 
+  /* Mobile drawer */
+  .drawer-overlay {
+    position: fixed; inset: 0;
+    background: rgba(14,27,44,.45);
+    backdrop-filter: blur(2px);
+    z-index: 200;
+    display: none;
+    animation: fadeIn .2s;
+  }
+  .drawer-overlay.open { display: block; }
+  .drawer {
+    position: fixed; top: 0; right: -300px; bottom: 0;
+    width: 280px; background: var(--bg);
+    z-index: 201;
+    transition: right .25s ease;
+    display: flex; flex-direction: column;
+    box-shadow: -8px 0 24px rgba(14,27,44,.18);
+  }
+  .drawer.open { right: 0; }
+  .drawer-head {
+    padding: 16px 20px;
+    display: flex; align-items: center; justify-content: space-between;
+    border-bottom: 1px solid var(--line-soft);
+  }
+  .drawer-close {
+    width: 36px; height: 36px; border-radius: 50%;
+    background: var(--bg-2); color: var(--ink);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px; line-height: 1;
+  }
+  .drawer-nav {
+    padding: 16px 12px; display: flex; flex-direction: column; gap: 2px;
+    flex: 1;
+  }
+  .drawer-nav a {
+    padding: 12px 16px; border-radius: 10px;
+    font-size: 15px; font-weight: 600; color: var(--ink);
+    display: flex; align-items: center; gap: 12px;
+  }
+  .drawer-nav a:hover { background: var(--bg-2); }
+  .drawer-nav a.primary { background: var(--ink); color: var(--bg); margin-top: 8px; }
+  .drawer-nav a.primary:hover { background: var(--pink-deep); }
+  .drawer-nav a svg { width: 18px; height: 18px; }
+  .drawer-foot {
+    padding: 14px 20px;
+    border-top: 1px solid var(--line-soft);
+    font-size: 12px; color: var(--ink-mute);
+    display: flex; flex-direction: column; gap: 6px;
+  }
+  .drawer-foot a { color: var(--ink-soft); }
+
   @media (max-width: 768px) {
     .topbar { padding: 10px 12px; }
-    .topbar-inner { grid-template-columns: 1fr; gap: 10px; }
+    .topbar-inner { grid-template-columns: auto 1fr auto; gap: 10px; }
     .topbar-nav { display: none; }
+    .menu-toggle { display: flex; }
     .row-title { font-size: 19px; }
     .job-card { width: 248px; }
     .job-hero { height: 150px; }
@@ -602,7 +698,86 @@
     .cat-chip-icon { width: 56px; height: 56px; }
     .cat-chip-icon svg { width: 24px; height: 24px; }
     .discovery { padding: 0 12px 40px; }
+    .free-search { max-width: none; }
   }
+
+  /* ───── FOOTER ───── */
+  .site-footer {
+    background: var(--bg-2);
+    border-top: 1px solid var(--line);
+    padding: 40px 24px 20px;
+    margin-top: 40px;
+  }
+  .footer-inner {
+    max-width: 1320px; margin: 0 auto;
+    display: grid; gap: 32px;
+    grid-template-columns: 1.4fr 1fr 1fr 1fr;
+  }
+  .footer-col h4 {
+    font-size: 13px; font-weight: 800; color: var(--ink);
+    margin: 0 0 12px; letter-spacing: 0.3px;
+    text-transform: uppercase;
+  }
+  .footer-col ul { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 8px; }
+  .footer-col a {
+    font-size: 14px; color: var(--ink-soft); font-weight: 500;
+    transition: color .15s;
+  }
+  .footer-col a:hover { color: var(--pink-deep); }
+  .footer-brand {
+    font-size: 22px; font-weight: 900; color: var(--ink);
+    letter-spacing: -0.8px; display: flex; align-items: center; gap: 8px;
+    margin-bottom: 12px;
+  }
+  .footer-brand .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--pink-deep); }
+  .footer-tagline { font-size: 13px; color: var(--ink-mute); line-height: 1.6; max-width: 280px; }
+  .footer-bottom {
+    max-width: 1320px; margin: 32px auto 0;
+    padding-top: 20px; border-top: 1px solid var(--line);
+    display: flex; justify-content: space-between; align-items: center; gap: 16px;
+    flex-wrap: wrap;
+    font-size: 12px; color: var(--ink-mute);
+  }
+  .footer-socials { display: flex; gap: 8px; }
+  .footer-socials a {
+    width: 34px; height: 34px; border-radius: 50%;
+    background: var(--bg); border: 1px solid var(--line);
+    display: flex; align-items: center; justify-content: center;
+    color: var(--ink-soft); transition: all .15s;
+  }
+  .footer-socials a:hover { background: var(--pink-deep); color: #fff; border-color: var(--pink-deep); }
+  .footer-socials svg { width: 16px; height: 16px; }
+  @media (max-width: 768px) {
+    .footer-inner { grid-template-columns: 1fr 1fr; gap: 24px; }
+    .footer-col:first-child { grid-column: 1 / -1; }
+    .site-footer { padding: 32px 16px 16px; }
+  }
+
+  /* ───── COOKIES BANNER ───── */
+  .cookies-banner {
+    position: fixed; bottom: 16px; left: 16px; right: 16px;
+    max-width: 540px; margin: 0 auto;
+    background: var(--ink); color: #fff;
+    border-radius: var(--r-md); padding: 16px 18px;
+    box-shadow: 0 12px 28px rgba(14,27,44,.3);
+    display: none;
+    z-index: 400;
+    font-size: 13px; line-height: 1.5;
+    animation: slideUp .3s cubic-bezier(.2,.8,.3,1);
+  }
+  .cookies-banner.visible { display: block; }
+  .cookies-banner-text { margin-bottom: 12px; }
+  .cookies-banner-text a { color: var(--pink-2); text-decoration: underline; text-underline-offset: 2px; }
+  .cookies-banner-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+  .cookies-btn {
+    padding: 8px 16px; border-radius: 999px;
+    font-size: 13px; font-weight: 700;
+    transition: background .15s;
+  }
+  .cookies-btn.primary { background: var(--pink-deep); color: #fff; }
+  .cookies-btn.primary:hover { background: var(--pink-deeper); }
+  .cookies-btn.secondary { background: rgba(255,255,255,.12); color: #fff; }
+  .cookies-btn.secondary:hover { background: rgba(255,255,255,.2); }
 </style>
 </head>
 <body>
@@ -635,6 +810,7 @@
     <symbol id="cat-sport" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20"/><path d="M2 12h20"/></symbol>
     <symbol id="cat-art" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="13.5" cy="6.5" r=".5"/><circle cx="17.5" cy="10.5" r=".5"/><circle cx="8.5" cy="7.5" r=".5"/><circle cx="6.5" cy="12.5" r=".5"/><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.926 0 1.648-.746 1.648-1.688 0-.437-.18-.835-.437-1.125-.29-.289-.438-.652-.438-1.125a1.64 1.64 0 0 1 1.668-1.668h1.996c3.051 0 5.555-2.503 5.555-5.554C21.965 6.012 17.461 2 12 2z"/></symbol>
     <symbol id="cat-bible" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></symbol>
+    <symbol id="cat-other" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="5" cy="12" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="19" cy="12" r="1.5"/></symbol>
   </defs>
 </svg>
 
@@ -652,13 +828,47 @@
       <a href="teachers.html" class="nav-link"><svg><use href="#i-users"/></svg> מורים</a>
       <a href="chat.html" class="nav-link primary"><svg><use href="#i-bot"/></svg> בוט חיפוש</a>
     </nav>
+    <button class="menu-toggle" id="menu-toggle" aria-label="תפריט">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+    </button>
   </div>
 </header>
+
+<!-- Mobile drawer -->
+<div class="drawer-overlay" id="drawer-overlay" onclick="closeDrawer()"></div>
+<aside class="drawer" id="drawer" aria-label="תפריט ניווט">
+  <div class="drawer-head">
+    <span style="font-weight:900;font-size:18px">תפריט</span>
+    <button class="drawer-close" onclick="closeDrawer()" aria-label="סגור">×</button>
+  </div>
+  <nav class="drawer-nav">
+    <a href="index.html"><svg><use href="#i-briefcase"/></svg> כל המשרות</a>
+    <a href="teachers.html"><svg><use href="#i-users"/></svg> מאגר מורים</a>
+    <a href="saved.html"><svg><use href="#i-heart"/></svg> שמורות שלי</a>
+    <a href="publish-job.html"><svg><use href="#i-sparkle"/></svg> פרסום משרה</a>
+    <a href="cv-builder.html"><svg><use href="#i-target"/></svg> בניית קורות חיים</a>
+    <a href="about.html"><svg><use href="#i-pin"/></svg> על אדורה</a>
+    <a href="chat.html" class="primary"><svg><use href="#i-bot"/></svg> בוט חיפוש חכם</a>
+  </nav>
+  <div class="drawer-foot">
+    <a href="privacy.html">פרטיות ואבטחה</a>
+    <a href="accessibility.html">נגישות</a>
+    <a href="mailto:meytalp@bethaarava.ort.org.il">צור קשר</a>
+    <span>© 2026 אדורה · edura.co.il</span>
+  </div>
+</aside>
 
 <section class="filters">
   <div class="filter-section">
     <div class="filter-label">מקצוע</div>
-    <div class="chips-scroll" id="subject-chips"></div>
+    <div style="flex:1; min-width:0">
+      <div class="chips-scroll" id="subject-chips"></div>
+      <div class="free-search">
+        <svg><use href="#i-search"/></svg>
+        <input id="subject-query" type="text" placeholder='לא מצאת? חפשו מקצוע אחר (תיירות, מדעי המחשב...)' autocomplete="off" />
+        <button class="free-search-clear" id="subject-query-clear" aria-label="נקה">×</button>
+      </div>
+    </div>
   </div>
   <div class="filter-section">
     <div class="filter-label">שכבת גיל</div>
@@ -710,6 +920,64 @@
   </div>
 
 </main>
+
+<!-- ───── FOOTER ───── -->
+<footer class="site-footer">
+  <div class="footer-inner">
+    <div class="footer-col">
+      <div class="footer-brand">אדורה<span class="dot"></span></div>
+      <p class="footer-tagline">לוח המשרות הגדול בישראל לחינוך — מאות משרות מכל הזרמים, המגזרים והאזורים, מתעדכן יומי. הרשמה חינם.</p>
+    </div>
+    <div class="footer-col">
+      <h4>גלו</h4>
+      <ul>
+        <li><a href="index.html">כל המשרות</a></li>
+        <li><a href="teachers.html">מאגר מורים</a></li>
+        <li><a href="saved.html">שמורות שלי</a></li>
+        <li><a href="chat.html">בוט חיפוש</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>פרסום</h4>
+      <ul>
+        <li><a href="publish-job.html">פרסום משרה</a></li>
+        <li><a href="publish-job.html#teacher">פרופיל מורה</a></li>
+        <li><a href="cv-builder.html">בניית קורות חיים</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>אודות</h4>
+      <ul>
+        <li><a href="about.html">על אדורה</a></li>
+        <li><a href="privacy.html">פרטיות ואבטחה</a></li>
+        <li><a href="accessibility.html">הצהרת נגישות</a></li>
+        <li><a href="mailto:meytalp@bethaarava.ort.org.il">יצירת קשר</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2026 אדורה · נבנה באהבה למורים ולמנהלים</span>
+    <div class="footer-socials">
+      <a href="mailto:meytalp@bethaarava.ort.org.il" aria-label="מייל">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+      </a>
+      <a href="https://api.whatsapp.com/send?phone=972536256653" target="_blank" rel="noopener" aria-label="WhatsApp">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 2.1.55 4.15 1.6 5.96L2 22l4.25-1.71c1.74.95 3.71 1.45 5.79 1.45 5.46 0 9.91-4.45 9.91-9.91S17.5 2 12.04 2z"/></svg>
+      </a>
+    </div>
+  </div>
+</footer>
+
+<!-- ───── COOKIES BANNER ───── -->
+<div class="cookies-banner" id="cookies-banner" role="dialog" aria-label="שימוש בקוקיז">
+  <div class="cookies-banner-text">
+    אנחנו משתמשים בקוקיז בסיסיים לתפעול האתר ולשמירת ההעדפות שלך (סינונים, משרות שמורות). אין שיתוף עם צד שלישי. פרטים מלאים ב<a href="privacy.html">מדיניות הפרטיות</a>.
+  </div>
+  <div class="cookies-banner-actions">
+    <button class="cookies-btn primary" onclick="acceptCookies()">הבנתי</button>
+    <a class="cookies-btn secondary" href="privacy.html">קראו עוד</a>
+  </div>
+</div>
 
 <!-- Job detail modal -->
 <div class="modal-overlay" id="job-modal" onclick="if(event.target===this)closeJobModal()" role="dialog" aria-labelledby="modal-title">
@@ -824,7 +1092,17 @@ const SUBJECT_CATS = [
   { key: 'ספורט',       label: 'חנ"ג',       icon: 'cat-sport',    match: ['חנ"ג','גופני','ספורט'] },
   { key: 'אומנות',      label: 'אומנות',     icon: 'cat-art',      match: ['אומנות','ציור','מוזיקה'] },
   { key: 'תורה',        label: 'תורה ותנ"ך',  icon: 'cat-bible',    match: ['תנ"ך','תושב"ע','תורה','גמרא'] },
+  { key: 'other',       label: 'אחר',        icon: 'cat-other',    match: 'OTHER' },
 ];
+
+// Subjects considered as "other" — anything not matched by the 11 named categories.
+function jobIsOtherSubject(job) {
+  const s = (job.subject || '') + ' ' + (job.title || '') + ' ' + (job.role || '');
+  for (const cat of SUBJECT_CATS) {
+    if (cat.match && Array.isArray(cat.match) && cat.match.some(m => s.includes(m))) return false;
+  }
+  return true;
+}
 
 const LEVELS = [
   { key: 'all',          label: 'כל הגילאים' },
@@ -866,7 +1144,7 @@ function citiesMatch(a, b) {
 // Filter state
 // ──────────────────────────────────────────────────
 let JOBS = [];
-let STATE = { city: '', subject: 'all', level: 'all' };
+let STATE = { city: '', subject: 'all', subjectQuery: '', level: 'all' };
 
 async function loadJobs() {
   try {
@@ -883,10 +1161,18 @@ async function loadJobs() {
 
 function jobMatchesSubject(job, subjKey) {
   if (subjKey === 'all') return true;
+  if (subjKey === 'other') return jobIsOtherSubject(job);
   const cat = SUBJECT_CATS.find(c => c.key === subjKey);
-  if (!cat || !cat.match) return true;
+  if (!cat || !cat.match || !Array.isArray(cat.match)) return true;
   const s = (job.subject || '') + ' ' + (job.title || '') + ' ' + (job.role || '');
   return cat.match.some(m => s.includes(m));
+}
+function jobMatchesSubjectQuery(job, q) {
+  if (!q) return true;
+  const needle = q.trim().toLowerCase();
+  if (!needle) return true;
+  const hay = ((job.subject || '') + ' ' + (job.title || '') + ' ' + (job.role || '') + ' ' + (job.sub_area || '')).toLowerCase();
+  return hay.includes(needle);
 }
 function jobMatchesLevel(job, lvlKey) {
   if (lvlKey === 'all') return true;
@@ -900,6 +1186,7 @@ function applyFilters() {
   return JOBS.filter(j =>
     jobMatchesCity(j, STATE.city) &&
     jobMatchesSubject(j, STATE.subject) &&
+    jobMatchesSubjectQuery(j, STATE.subjectQuery) &&
     jobMatchesLevel(j, STATE.level)
   );
 }
@@ -914,9 +1201,11 @@ function escapeHtml(s) {
 }
 
 function renderSubjectChips() {
-  // Count using current city+level filter to give live counts
+  // Count using current city+level+query filter to give live counts
   const ctx = JOBS.filter(j =>
-    jobMatchesCity(j, STATE.city) && jobMatchesLevel(j, STATE.level)
+    jobMatchesCity(j, STATE.city) &&
+    jobMatchesLevel(j, STATE.level) &&
+    jobMatchesSubjectQuery(j, STATE.subjectQuery)
   );
   const html = SUBJECT_CATS.map(cat => {
     const count = cat.match ? ctx.filter(j => jobMatchesSubject(j, cat.key)).length : ctx.length;
@@ -938,7 +1227,9 @@ function renderSubjectChips() {
 
 function renderLevelChips() {
   const ctx = JOBS.filter(j =>
-    jobMatchesCity(j, STATE.city) && jobMatchesSubject(j, STATE.subject)
+    jobMatchesCity(j, STATE.city) &&
+    jobMatchesSubject(j, STATE.subject) &&
+    jobMatchesSubjectQuery(j, STATE.subjectQuery)
   );
   const html = LEVELS.map(lvl => {
     const count = lvl.key === 'all' ? ctx.length : ctx.filter(j => j.level === lvl.key).length;
@@ -966,6 +1257,9 @@ function renderActiveFilters() {
     const cat = SUBJECT_CATS.find(c => c.key === STATE.subject);
     pills.push({ key: 'subject', label: 'מקצוע: ' + (cat ? cat.label : STATE.subject) });
   }
+  if (STATE.subjectQuery) {
+    pills.push({ key: 'subjectQuery', label: 'חיפוש: ' + STATE.subjectQuery });
+  }
   if (STATE.level !== 'all') {
     const lvl = LEVELS.find(l => l.key === STATE.level);
     pills.push({ key: 'level', label: 'שכבה: ' + (lvl ? lvl.label : STATE.level) });
@@ -990,13 +1284,16 @@ function renderActiveFilters() {
     const k = b.dataset.clear;
     if (k === 'city') { STATE.city = ''; document.getElementById('city-input').value = ''; }
     if (k === 'subject') STATE.subject = 'all';
+    if (k === 'subjectQuery') { STATE.subjectQuery = ''; document.getElementById('subject-query').value = ''; document.getElementById('subject-query-clear').classList.remove('visible'); }
     if (k === 'level') STATE.level = 'all';
     renderAll();
   }));
   const clearAll = document.getElementById('clear-all');
   if (clearAll) clearAll.addEventListener('click', () => {
-    STATE = { city: '', subject: 'all', level: 'all' };
+    STATE = { city: '', subject: 'all', subjectQuery: '', level: 'all' };
     document.getElementById('city-input').value = '';
+    document.getElementById('subject-query').value = '';
+    document.getElementById('subject-query-clear').classList.remove('visible');
     renderAll();
   });
 }
@@ -1248,6 +1545,52 @@ function closeJobModal() {
 window.openJobModal = openJobModal;
 window.closeJobModal = closeJobModal;
 document.addEventListener('keydown', e => { if (e.key === 'Escape') closeJobModal(); });
+
+// Mobile drawer
+function openDrawer() {
+  document.getElementById('drawer').classList.add('open');
+  document.getElementById('drawer-overlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function closeDrawer() {
+  document.getElementById('drawer').classList.remove('open');
+  document.getElementById('drawer-overlay').classList.remove('open');
+  document.body.style.overflow = '';
+}
+window.openDrawer = openDrawer;
+window.closeDrawer = closeDrawer;
+document.getElementById('menu-toggle').addEventListener('click', openDrawer);
+
+// Cookies banner
+function acceptCookies() {
+  try { localStorage.setItem('edura_cookies_accepted', '1'); } catch (e) {}
+  document.getElementById('cookies-banner').classList.remove('visible');
+}
+window.acceptCookies = acceptCookies;
+(function showCookiesIfNeeded() {
+  let accepted = false;
+  try { accepted = localStorage.getItem('edura_cookies_accepted') === '1'; } catch (e) {}
+  if (!accepted) setTimeout(() => document.getElementById('cookies-banner').classList.add('visible'), 1000);
+})();
+
+// Subject free-text search
+const subjectQueryInput = document.getElementById('subject-query');
+const subjectQueryClear = document.getElementById('subject-query-clear');
+let subjectQueryDebounce;
+subjectQueryInput.addEventListener('input', () => {
+  clearTimeout(subjectQueryDebounce);
+  subjectQueryClear.classList.toggle('visible', !!subjectQueryInput.value);
+  subjectQueryDebounce = setTimeout(() => {
+    STATE.subjectQuery = subjectQueryInput.value.trim();
+    renderAll();
+  }, 220);
+});
+subjectQueryClear.addEventListener('click', () => {
+  subjectQueryInput.value = '';
+  STATE.subjectQuery = '';
+  subjectQueryClear.classList.remove('visible');
+  renderAll();
+});
 
 // Row arrows
 document.querySelectorAll('.row-arrow').forEach(btn => {
