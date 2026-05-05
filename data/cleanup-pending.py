@@ -114,6 +114,34 @@ CITY_VARIANTS = {
     'הר חברון': ['דרום הר חברון', 'הר חברון'],
     'בנימין': ['בנימין'],
     'שומרון': ['שומרון'],
+    # Yishuvim added after manual review
+    'טירת הכרמל': ['טירת הכרמל', 'טירת-הכרמל'],
+    'תל מונד': ['תל מונד', 'תל-מונד'],
+    'שילה': ['שילה'],
+    'אליקים': ['אליקים'],
+    'רעות': ['רעות'],
+    'בית דגן': ['בית דגן'],
+    'גן רווה': ['גן רווה'],
+    'גזר': ['גזר'],
+    'מבשרת ציון': ['מבשרת ציון', 'מבשרת'],
+    'אבו גוש': ['אבו גוש', 'אבו-גוש'],
+    'נווה אילן': ['נווה אילן'],
+    'גני תקווה': ['גני תקווה', 'גני תקוה'],
+    'יבנאל': ['יבנאל'],
+    'מצפה רמון': ['מצפה רמון'],
+    'יד בנימין': ['יד בנימין'],
+    'בית יצחק': ['בית יצחק'],
+    'גדרה': ['גדרה'],
+    'נצר סרני': ['נצר סרני'],
+}
+
+# School-name → city overrides for cases where city isn't extractable from text alone
+# (e.g., "חטב רבין אזור" — אזור is too short to safely substring-match,
+# but as a school suffix it's diagnostic)
+SCHOOL_CITY_OVERRIDES = {
+    'חטב רבין אזור': 'אזור',
+    'יצחק נבון': 'נתניה',  # known via ynavon.co.il email domain
+    'מקיף רוגוזין': 'מגדל העמק',  # ORT Rogozin
 }
 
 # Flatten variants → canonical map. Sort by variant length so longer wins.
@@ -217,9 +245,17 @@ def cleanup_job(job):
     ]))
     fixes = []
 
-    # City
+    # City — first check school-name overrides, then variant dictionary
     if not job.get('city', '').strip():
-        c = infer_city(text)
+        school = (job.get('school') or '').strip()
+        c = SCHOOL_CITY_OVERRIDES.get(school)
+        if not c:
+            # Match by ynavon.co.il email domain etc
+            email = (job.get('email') or '').lower()
+            if 'ynavon' in email:
+                c = 'נתניה'
+        if not c:
+            c = infer_city(text)
         if c:
             job['city'] = c
             fixes.append(f'city={c}')
