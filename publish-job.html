@@ -62,9 +62,9 @@
 </script>
 <style>
   :root {
-    --ink: #0B2A4A;
-    --ink-soft: #1E3A5F;
-    --ink-mute: #475569;
+    --ink: #000000;
+    --ink-soft: #1A1A1A;
+    --ink-mute: #4A4A4A;
     --teal: #14B8A6;
     --teal-deep: #0F766E;
     --teal-pale: #F0FDFA;
@@ -75,7 +75,7 @@
     --lime-deep: #9D174D;
     --lime-pale: #FDF2F8;
     --lime-soft: #FCE7F3;
-    --ink-lime: #4A0420;
+    --ink-lime: #000000;
     --orange: #D97706;
     --orange-soft: #FEF3C7;
     --orange-pale: #FFFBEB;
@@ -148,7 +148,7 @@
   .logo-h { fill: var(--lime); }
   .logo-tagline {
     font-family: 'Playpen Sans Hebrew', cursive;
-    font-size: 11.5px; color: var(--lime-deep); font-weight: 500;
+    font-size: 11.5px; color: #000; font-weight: 500;
     line-height: 1.1;
     white-space: nowrap;
   }
@@ -1378,7 +1378,7 @@
   <div class="hero-inner">
     <span class="hero-chip">
       <span class="chip-dot" aria-hidden="true"></span>
-      חיבור ישיר · בלי מתווכים
+      חיכינו לך
     </span>
     <h1 class="hero-title">
       <span class="row">מורים? מנהלים?</span>
@@ -2361,17 +2361,33 @@
     };
   }
 
-  // Init bots — fresh start on each modal open
+  // Init bots — start on ANY modal open (click, hash, programmatic)
   let teacherBot, schoolBot;
-  $('open-teacher')?.addEventListener('click', () => {
+  function watchAndStart(overlayId, innerId, getFlow, getAction, botRef) {
+    const overlay = $(overlayId);
+    if (!overlay) return;
+    const launch = () => {
+      try {
+        const bot = botRef();
+        document.getElementById(innerId).classList.remove('is-success');
+        bot.start();
+      } catch (err) {
+        console.error('chatbot init error:', err);
+      }
+    };
+    if (overlay.classList.contains('open')) launch();
+    const obs = new MutationObserver(() => {
+      if (overlay.classList.contains('open')) launch();
+    });
+    obs.observe(overlay, { attributes: true, attributeFilter: ['class'] });
+  }
+  watchAndStart('modal-teacher', 'modal-teacher-inner', null, null, () => {
     if (!teacherBot) teacherBot = ChatBot('modal-teacher', TEACHER_FLOW, 'submit_teacher');
-    document.getElementById('modal-teacher-inner').classList.remove('is-success');
-    teacherBot.start();
+    return teacherBot;
   });
-  $('open-school')?.addEventListener('click', () => {
+  watchAndStart('modal-school', 'modal-school-inner', null, null, () => {
     if (!schoolBot) schoolBot = ChatBot('modal-school', SCHOOL_FLOW, 'submit_job');
-    document.getElementById('modal-school-inner').classList.remove('is-success');
-    schoolBot.start();
+    return schoolBot;
   });
 </script>
 
