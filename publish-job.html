@@ -145,10 +145,10 @@
   }
   .logo-svg { height: 30px; width: auto; display: block; }
   .logo-word { font-family: 'Heebo', sans-serif; font-weight: 900; font-size: 32px; letter-spacing: -1.2px; fill: var(--ink); }
-  .logo-h { fill: var(--teal-deep); }
+  .logo-h { fill: var(--lime); }
   .logo-tagline {
     font-family: 'Playpen Sans Hebrew', cursive;
-    font-size: 11.5px; color: var(--teal-deep); font-weight: 500;
+    font-size: 11.5px; color: var(--lime-deep); font-weight: 500;
     line-height: 1.1;
     white-space: nowrap;
   }
@@ -232,48 +232,80 @@
     font-family: 'Heebo', sans-serif;
     font-size: clamp(44px, 8.2vw, 110px);
     font-weight: 900;
-    color: var(--ink-lime);
+    color: #000;
     line-height: 0.96;
     letter-spacing: -2.5px;
     margin-bottom: 22px;
-    text-shadow: 0 1px 0 rgba(255,255,255,.25);
   }
   h1.hero-title .row { display: block; }
   h1.hero-title .row.accent {
-    color: var(--ink-lime);
+    color: #000;
     position: relative;
     display: inline-block;
     background: linear-gradient(180deg, transparent 60%, rgba(255,255,255,.55) 60%, rgba(255,255,255,.55) 92%, transparent 92%);
     padding: 0 6px;
   }
+  /* End-dot drop animation */
+  h1.hero-title .end-dot {
+    display: inline-block;
+    color: var(--lime);
+    opacity: 0;
+    transform-origin: center bottom;
+    animation:
+      dotDrop 1.05s cubic-bezier(0.34, 1.56, 0.64, 1) 0.55s forwards,
+      dotPulse 2.4s ease-in-out 2.2s infinite;
+  }
+  @keyframes dotDrop {
+    0%   { opacity: 0; transform: translateY(-220px) scale(2.6) rotate(35deg); }
+    55%  { opacity: 1; transform: translateY(-12px) scale(1.55) rotate(0); }
+    72%  { transform: translateY(0) scale(0.7); }
+    85%  { transform: translateY(-7px) scale(1.18); }
+    100% { opacity: 1; transform: translateY(0) scale(1); }
+  }
+  @keyframes dotPulse {
+    0%, 100% { transform: scale(1); }
+    50%      { transform: scale(1.18); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    h1.hero-title .end-dot { animation: none; opacity: 1; }
+  }
 
   .hero-tagline {
     font-family: 'Playpen Sans Hebrew', 'Heebo', cursive;
-    font-size: clamp(15px, 1.7vw, 19px);
+    font-size: clamp(16px, 1.75vw, 20px);
     font-weight: 500;
-    color: var(--ink-lime);
+    color: #000;
     line-height: 1.55;
     max-width: 680px;
     margin: 0 auto 36px;
-    opacity: 0.92;
+    opacity: 0.88;
     letter-spacing: -0.2px;
   }
+  .hero-tagline strong { font-weight: 700; }
   .hero-tagline .strike {
     position: relative;
     display: inline-block;
-    color: var(--ink-lime);
-    opacity: 0.65;
+    color: #000;
+    opacity: 0.6;
   }
   .hero-tagline .strike::after {
     content: '';
     position: absolute;
-    left: -2px; right: -2px;
-    top: 50%;
+    right: -3px; top: 50%;
+    width: calc(100% + 6px);
     height: 2.5px;
-    background: var(--ink-lime);
-    transform: rotate(-2deg);
+    background: #000;
     border-radius: 2px;
-    opacity: 0.85;
+    opacity: 0.9;
+    transform: rotate(-2deg) scaleX(0);
+    transform-origin: right center;
+    animation: strikeDraw 0.7s cubic-bezier(0.65, 0, 0.35, 1) 1.5s forwards;
+  }
+  @keyframes strikeDraw {
+    to { transform: rotate(-2deg) scaleX(1); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .hero-tagline .strike::after { animation: none; transform: rotate(-2deg) scaleX(1); }
   }
 
   .hero-search-bar {
@@ -287,6 +319,15 @@
       0 8px 16px rgba(74,4,32,.10),
       0 0 0 1px rgba(74,4,32,.04);
     gap: 4px;
+    opacity: 0;
+    transform: translateY(36px) scale(0.96);
+    animation: searchBarIn 0.75s cubic-bezier(0.34, 1.56, 0.64, 1) 0.85s forwards;
+  }
+  @keyframes searchBarIn {
+    to { opacity: 1; transform: translateY(0) scale(1); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .hero-search-bar { animation: none; opacity: 1; transform: none; }
   }
   .hero-search-btn {
     flex: 1;
@@ -311,10 +352,31 @@
   .hero-search-btn.primary {
     background: var(--ink-lime);
     color: var(--lime-glow);
+    position: relative;
+    overflow: hidden;
+    isolation: isolate;
+  }
+  .hero-search-btn.primary::before {
+    content: '';
+    position: absolute;
+    top: 0; left: -120%;
+    width: 60%; height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(251,207,232,.45), transparent);
+    transform: skewX(-20deg);
+    pointer-events: none;
+    z-index: -1;
+    animation: shimmer 11s ease-in-out 2.5s infinite;
+  }
+  @keyframes shimmer {
+    0%, 92%, 100% { left: -120%; }
+    96%           { left: 220%; }
   }
   .hero-search-btn.primary:hover {
     background: #2A0210;
     transform: translateY(-1px);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .hero-search-btn.primary::before { animation: none; }
   }
   .hero-search-btn.primary:hover svg { transform: rotate(90deg); }
   .hero-search-btn.secondary:hover {
@@ -347,40 +409,74 @@
     margin: 0 8px; opacity: .4;
   }
 
-  /* ─── Partners / features strip below hero ─── */
-  .partners-strip {
+  /* ─── Categories strip — Wolt-style chips ─── */
+  .categories-strip {
     background: var(--white);
-    padding: 28px 16px;
+    padding: 32px 16px 28px;
     border-bottom: 1px solid var(--line);
     position: relative;
     z-index: 1;
   }
-  .partners-strip-inner {
+  .categories-strip-title {
+    font-size: 13px;
+    font-weight: 800;
+    color: var(--ink-mute);
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    text-align: center;
+    margin-bottom: 18px;
+  }
+  .categories-strip-inner {
     max-width: 1200px;
     margin: 0 auto;
     display: flex; justify-content: center;
-    align-items: center;
+    align-items: stretch;
     flex-wrap: wrap;
-    gap: 12px 28px;
+    gap: 10px 12px;
   }
-  .partner-pill {
+  .category-chip {
     display: inline-flex; align-items: center; gap: 10px;
-    font-size: 14px; font-weight: 800;
-    color: var(--ink-soft);
-    padding: 12px 18px;
+    font-size: 14px; font-weight: 700;
+    color: var(--ink);
+    padding: 12px 16px;
+    background: var(--white);
+    border: 1.5px solid var(--line);
+    border-radius: 999px;
+    cursor: pointer;
+    transition: all .2s ease;
+    text-decoration: none;
+    opacity: 0;
+    transform: translateY(18px);
+  }
+  .categories-strip.is-visible .category-chip {
+    opacity: 1;
+    transform: translateY(0);
+    transition: opacity .55s ease, transform .55s cubic-bezier(0.34, 1.56, 0.64, 1), background .15s, border-color .15s, color .15s;
+  }
+  .categories-strip.is-visible .category-chip:nth-child(1)  { transition-delay: 0ms,   0ms,   0ms,   0ms,   0ms; }
+  .categories-strip.is-visible .category-chip:nth-child(2)  { transition-delay: 70ms,  70ms,  0ms,   0ms,   0ms; }
+  .categories-strip.is-visible .category-chip:nth-child(3)  { transition-delay: 140ms, 140ms, 0ms,   0ms,   0ms; }
+  .categories-strip.is-visible .category-chip:nth-child(4)  { transition-delay: 210ms, 210ms, 0ms,   0ms,   0ms; }
+  .categories-strip.is-visible .category-chip:nth-child(5)  { transition-delay: 280ms, 280ms, 0ms,   0ms,   0ms; }
+  .categories-strip.is-visible .category-chip:nth-child(6)  { transition-delay: 350ms, 350ms, 0ms,   0ms,   0ms; }
+  .categories-strip.is-visible .category-chip:nth-child(7)  { transition-delay: 420ms, 420ms, 0ms,   0ms,   0ms; }
+  .categories-strip.is-visible .category-chip:nth-child(8)  { transition-delay: 490ms, 490ms, 0ms,   0ms,   0ms; }
+  .categories-strip.is-visible .category-chip:nth-child(9)  { transition-delay: 560ms, 560ms, 0ms,   0ms,   0ms; }
+  .categories-strip.is-visible .category-chip:nth-child(10) { transition-delay: 630ms, 630ms, 0ms,   0ms,   0ms; }
+  .category-chip:hover {
+    transform: translateY(-3px);
+    border-color: var(--lime);
     background: var(--lime-pale);
-    border: 1px solid var(--lime-soft);
-    border-radius: 14px;
-    transition: transform .15s, box-shadow .15s;
+    color: var(--lime-deep);
+    box-shadow: 0 10px 20px rgba(157,23,77,.12);
   }
-  .partner-pill:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 16px rgba(157,23,77,.14);
-  }
-  .partner-pill svg {
+  .category-chip svg {
     width: 18px; height: 18px;
     color: var(--lime-deep);
     flex-shrink: 0;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .category-chip { opacity: 1; transform: none; }
   }
 
   /* ─── kept (hidden) legacy hooks for compatibility ─── */
@@ -889,9 +985,9 @@
     .modal { padding: 32px 22px 22px; }
     .form-row, .form-row-3 { grid-template-columns: 1fr; }
     .header-links { display: none; }
-    .partners-strip { padding: 22px 14px; }
-    .partners-strip-inner { gap: 10px 18px; }
-    .partner-pill { padding: 10px 14px; font-size: 13px; }
+    .categories-strip { padding: 26px 14px 22px; }
+    .categories-strip-inner { gap: 8px 10px; }
+    .category-chip { padding: 10px 14px; font-size: 13px; }
   }
 
   /* ─── Mobile (≤640px) ─── */
@@ -943,13 +1039,13 @@
     .hero-helper { font-size: 13px; line-height: 1.7; }
     .hero-helper .dot { margin: 0 6px; }
 
-    .partner-pill {
+    .category-chip {
       padding: 9px 13px;
       font-size: 12.5px;
       gap: 8px;
-      border-radius: 12px;
     }
-    .partner-pill svg { width: 16px; height: 16px; }
+    .category-chip svg { width: 16px; height: 16px; }
+    .categories-strip-title { font-size: 11.5px; margin-bottom: 14px; }
 
     /* Modal — tighter on small screens, full-bleed sticky button */
     .modal-overlay { padding: 8px; align-items: center; }
@@ -998,7 +1094,7 @@
       <svg class="logo-svg" viewBox="0 0 130 38" aria-hidden="true">
         <text x="65" y="29" text-anchor="middle" direction="rtl" class="logo-word">אדור<tspan class="logo-h">ה</tspan></text>
       </svg>
-      <span class="logo-tagline">פרסום משרות</span>
+      <span class="logo-tagline">המאצ' שלך למשרת החינוך</span>
     </span>
   </div>
 </header>
@@ -1011,10 +1107,11 @@
     </span>
     <h1 class="hero-title">
       <span class="row">מורים? מנהלים?</span>
-      <span class="row accent">נגמר הסיפור.</span>
+      <span class="row accent">נגמר הסיפור<span class="end-dot">.</span></span>
     </h1>
     <p class="hero-tagline">
-      לוח מחפשי המשרה הגדול ביותר — שיגרום לכם להפסיק לשתות <span class="strike">נס קפה של עלית</span> ולמצוא את משרת או מורה החלומות שלכם.
+      <strong>לוח המשרות הגדול בישראל לעולם החינוך.</strong><br>
+      הפסיקו לדפדף בעשרה לוחות ולשתות <span class="strike">נס קפה של עלית</span> — מצאו או פרסמו משרה ב-2 דקות.
     </p>
     <div class="hero-search-bar" role="group" aria-label="בחירת מסלול">
       <button type="button" class="hero-search-btn primary" id="open-school" data-trigger="school">
@@ -1045,42 +1142,69 @@
   </div>
 </section>
 
-<section class="partners-strip" aria-label="יתרונות המערכת">
-  <div class="partners-strip-inner">
-    <span class="partner-pill">
+<section class="categories-strip" id="categories-strip" aria-label="קטגוריות משרות">
+  <div class="categories-strip-title">חפשו לפי תחום</div>
+  <div class="categories-strip-inner">
+    <a class="category-chip" href="https://edura.co.il/?subject=מתמטיקה">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-        <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/>
+        <line x1="6" y1="12" x2="18" y2="12"/><line x1="12" y1="6" x2="12" y2="18"/>
       </svg>
-      חינם לתמיד
-    </span>
-    <span class="partner-pill">
+      מתמטיקה
+    </a>
+    <a class="category-chip" href="https://edura.co.il/?subject=אנגלית">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-        <path d="M5 12l5 5L20 7"/>
+        <circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
       </svg>
-      בלי מתווכים
-    </span>
-    <span class="partner-pill">
+      אנגלית
+    </a>
+    <a class="category-chip" href="https://edura.co.il/?role=מחנך">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+      </svg>
+      מחנכים
+    </a>
+    <a class="category-chip" href="https://edura.co.il/?level=חינוך-מיוחד">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+      </svg>
+      חינוך מיוחד
+    </a>
+    <a class="category-chip" href="https://edura.co.il/?role=רכז">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+      </svg>
+      רכזים
+    </a>
+    <a class="category-chip" href="https://edura.co.il/?subject=מדעים">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M9 2h6v6l4 8a2 2 0 0 1-2 3H7a2 2 0 0 1-2-3l4-8V2z"/>
+      </svg>
+      מדעים
+    </a>
+    <a class="category-chip" href="https://edura.co.il/?level=תיכון">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/>
+      </svg>
+      תיכון
+    </a>
+    <a class="category-chip" href="https://edura.co.il/?level=יסודי">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/>
+      </svg>
+      יסודי
+    </a>
+    <a class="category-chip" href="https://edura.co.il/?role=יועץ">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
         <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
       </svg>
-      פנייה ישירה
-    </span>
-    <span class="partner-pill">
+      יועצים
+    </a>
+    <a class="category-chip" href="https://edura.co.il/?subject=ספרות">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-        <circle cx="12" cy="10" r="3"/>
-        <path d="M12 2a8 8 0 0 0-8 8c0 5.4 8 12 8 12s8-6.6 8-12a8 8 0 0 0-8-8z"/>
+        <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
       </svg>
-      חשיפה ממוקדת
-    </span>
-    <span class="partner-pill">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-        <circle cx="9" cy="7" r="4"/>
-        <path d="M3 21v-2a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2"/>
-        <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
-        <path d="M21 21v-2a4 4 0 0 0-3-3.87"/>
-      </svg>
-      כל המגזרים
-    </span>
+      ספרות
+    </a>
   </div>
 </section>
 
@@ -1853,6 +1977,24 @@
     const res = await submitForm(payload, $('submit-school'), 'פרסום משרה', form);
     if (res.ok) showSuccess('modal-school', res.refId);
   });
+
+  // ─── IntersectionObserver — stagger entrance for category chips ───
+  (function () {
+    const strip = document.getElementById('categories-strip');
+    if (!strip || !('IntersectionObserver' in window)) {
+      strip && strip.classList.add('is-visible');
+      return;
+    }
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('is-visible');
+          io.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.25, rootMargin: '0px 0px -50px 0px' });
+    io.observe(strip);
+  })();
 </script>
 
 </body>
