@@ -222,11 +222,20 @@
 
   <header class="page">
     <div>
-      <h1>Edura · אישור משרות לפרסום</h1>
+      <h1>Edura · אישור פרסומים</h1>
       <div class="scan-meta" id="scan-meta">טוען…</div>
     </div>
     <a href="https://edura.co.il/" style="color:var(--teal-deep);text-decoration:none;font-weight:600;font-size:14px">→ חזרה לאתר</a>
   </header>
+
+  <div class="mode-toggle" id="mode-toggle" style="display:flex;gap:8px;margin-bottom:16px;background:var(--line-soft);padding:4px;border-radius:12px;width:fit-content">
+    <button class="mode-btn active" data-mode="jobs" style="background:var(--white);border:none;padding:10px 22px;border-radius:9px;font-family:inherit;font-size:14px;font-weight:700;cursor:pointer;color:var(--ink);box-shadow:var(--shadow-sm)">
+      משרות (<span id="count-jobs">0</span>)
+    </button>
+    <button class="mode-btn" data-mode="teachers" style="background:transparent;border:none;padding:10px 22px;border-radius:9px;font-family:inherit;font-size:14px;font-weight:600;cursor:pointer;color:var(--ink-mute)">
+      מורים (<span id="count-teachers">0</span>)
+    </button>
+  </div>
 
   <div class="stats-bar">
     <div class="stat total"><div class="stat-num" id="stat-total">0</div><div class="stat-label">סה״כ ממתינות</div></div>
@@ -275,10 +284,16 @@
 
 <script>
 const STATE = {
+  mode: 'jobs',  // 'jobs' | 'teachers'
   jobs: [],
+  teachers: [],
   decisions: {},  // id → 'approved' | 'rejected' | undefined
   filter: 'all',
 };
+
+function currentItems() {
+  return STATE.mode === 'jobs' ? STATE.jobs : STATE.teachers;
+}
 
 const ICON_CHECK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>';
 const ICON_X = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>';
@@ -330,29 +345,40 @@ function decide(id, decision) {
 function render() {
   const grid = document.getElementById('grid');
   const empty = document.getElementById('empty');
-  const filtered = STATE.jobs.filter(j => STATE.filter === 'all' || j.source === STATE.filter);
+  const items = currentItems();
+  const filtered = items.filter(j => STATE.filter === 'all' || j.source === STATE.filter);
+  const renderFn = STATE.mode === 'jobs' ? renderCard : renderTeacherCard;
 
   if (filtered.length === 0) {
     grid.innerHTML = '';
     empty.style.display = 'block';
+    empty.querySelector('h3').textContent = STATE.mode === 'jobs' ? 'אין משרות ממתינות' : 'אין מורים ממתינים';
   } else {
     empty.style.display = 'none';
-    grid.innerHTML = filtered.map(renderCard).join('');
+    grid.innerHTML = filtered.map(renderFn).join('');
   }
 
-  // stats
-  const total = STATE.jobs.length;
-  const approved = STATE.jobs.filter(j => STATE.decisions[j.id] === 'approved').length;
-  const rejected = STATE.jobs.filter(j => STATE.decisions[j.id] === 'rejected').length;
+  // Mode counts (always show both)
+  document.getElementById('count-jobs').textContent = STATE.jobs.length;
+  document.getElementById('count-teachers').textContent = STATE.teachers.length;
+
+  // stats — only for current mode's items
+  const total = items.length;
+  const approved = items.filter(j => STATE.decisions[j.id] === 'approved').length;
+  const rejected = items.filter(j => STATE.decisions[j.id] === 'rejected').length;
   const remaining = total - approved - rejected;
   document.getElementById('stat-total').textContent = total;
   document.getElementById('stat-approved').textContent = approved;
   document.getElementById('stat-rejected').textContent = rejected;
   document.getElementById('stat-remaining').textContent = remaining;
+  document.querySelector('.stat.total .stat-label').textContent = STATE.mode === 'jobs' ? 'סה״כ ממתינות' : 'סה״כ ממתינים';
 
   const btn = document.getElementById('publish-btn');
   document.getElementById('publish-count').textContent = approved;
   btn.disabled = approved === 0;
+  btn.querySelector('span').innerHTML = STATE.mode === 'jobs'
+    ? `פרסם <b id="publish-count">${approved}</b> מאושרים →`
+    : `פרסם <b id="publish-count">${approved}</b> מורים →`;
 }
 
 // Known cities & regional councils — used to infer city from school name / description
@@ -522,6 +548,91 @@ function renderCard(j) {
   `;
 }
 
+// Render a teacher (CV) card
+function renderTeacherCard(t) {
+  const decision = STATE.decisions[t.id];
+  const cls = decision === 'approved' ? 'approved' : decision === 'rejected' ? 'rejected' : '';
+  const tags = [];
+  if (t.level) tags.push(`<span class="tag">${esc(t.level)}</span>`);
+  if (t.region) tags.push(`<span class="tag region">${esc(t.region)}</span>`);
+  if (t.scope) tags.push(`<span class="tag">${esc(t.scope)}</span>`);
+  tags.push(`<span class="tag" style="background:#FEE2E2;color:#991B1B">${esc(t.source_name || t.source)}</span>`);
+
+  const cityIcon = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>';
+  const cityName = (t.city || '').trim() || (t.region || '').trim();
+  const cityLine = cityName
+    ? `<div class="card-city">${cityIcon}${esc(cityName)}</div>`
+    : `<div class="card-city no-city">${cityIcon}אזור לא צוין</div>`;
+
+  const titleSubject = (t.subject || '').trim();
+  const cleanName = (t.name || '').trim() || 'מורה אנונימי/ת';
+  const dateLine = formatJobDate(t) ? `<div class="card-date">${ICON_CAL}${formatJobDate(t)}</div>` : '';
+
+  const links = [];
+  if (t.email) links.push(`<a href="mailto:${esc(t.email)}">${ICON_MAIL}${esc(t.email)}</a>`);
+  if (t.phone) links.push(`<a href="tel:${esc(t.phone)}">${ICON_PHONE}${esc(t.phone)}</a>`);
+  if (t.fb_url || t.url) links.push(`<a href="${esc(t.fb_url || t.url)}" target="_blank" rel="noopener">הפוסט המקורי ↗</a>`);
+
+  return `
+    <article class="card ${cls}">
+      ${cityLine}
+      <div class="card-head">
+        <h3 class="card-title">${esc(titleSubject || 'מורה')}</h3>
+        <div class="card-actions">
+          <button class="act approve ${decision==='approved'?'on':''}" onclick="decide('${esc(t.id)}','approved')" title="אשר">${ICON_CHECK}</button>
+          <button class="act reject ${decision==='rejected'?'on':''}" onclick="decide('${esc(t.id)}','rejected')" title="דחה">${ICON_X}</button>
+        </div>
+      </div>
+      <div class="card-school"><b>${esc(cleanName)}</b></div>
+      ${dateLine}
+      <div class="tags">${tags.join('')}</div>
+      ${t.notes ? `<p class="card-snippet">${esc(t.notes.slice(0,400))}${t.notes.length>400?'…':''}</p>` : ''}
+      ${links.length ? `<div class="card-contact">${links.join('')}</div>` : ''}
+    </article>
+  `;
+}
+
+// Mode toggle (משרות / מורים)
+document.getElementById('mode-toggle').addEventListener('click', e => {
+  if (!e.target.closest('.mode-btn')) return;
+  const btn = e.target.closest('.mode-btn');
+  const mode = btn.dataset.mode;
+  if (mode === STATE.mode) return;
+  STATE.mode = mode;
+  // Visual state
+  document.querySelectorAll('.mode-btn').forEach(b => {
+    const active = b.dataset.mode === mode;
+    b.style.background = active ? 'var(--white)' : 'transparent';
+    b.style.color = active ? 'var(--ink)' : 'var(--ink-mute)';
+    b.style.fontWeight = active ? '700' : '600';
+    b.style.boxShadow = active ? 'var(--shadow-sm)' : 'none';
+  });
+  // Reset filter when switching
+  STATE.filter = 'all';
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.toggle('active', b.dataset.filter === 'all'));
+  // Update filter buttons for the current mode
+  updateFiltersForMode();
+  render();
+});
+
+function updateFiltersForMode() {
+  const filtersEl = document.getElementById('source-filters');
+  if (STATE.mode === 'jobs') {
+    filtersEl.innerHTML = `
+      <button class="filter-btn active" data-filter="all">הכל</button>
+      <button class="filter-btn" data-filter="igm">ארגון המורים</button>
+      <button class="filter-btn" data-filter="itu">הסתדרות המורים</button>
+      <button class="filter-btn" data-filter="shatil">שתיל</button>
+      <button class="filter-btn" data-filter="fb">פייסבוק</button>
+    `;
+  } else {
+    filtersEl.innerHTML = `
+      <button class="filter-btn active" data-filter="all">הכל</button>
+      <button class="filter-btn" data-filter="fb-mlb">דרושים מורים מהלב</button>
+    `;
+  }
+}
+
 document.getElementById('source-filters').addEventListener('click', e => {
   if (e.target.matches('.filter-btn')) {
     document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
@@ -532,12 +643,12 @@ document.getElementById('source-filters').addEventListener('click', e => {
 });
 
 document.getElementById('bulk-approve-all').addEventListener('click', () => {
-  STATE.jobs.filter(j => STATE.filter === 'all' || j.source === STATE.filter)
+  currentItems().filter(j => STATE.filter === 'all' || j.source === STATE.filter)
     .forEach(j => STATE.decisions[j.id] = 'approved');
   saveDecisions(); render();
 });
 document.getElementById('bulk-reject-all').addEventListener('click', () => {
-  STATE.jobs.filter(j => STATE.filter === 'all' || j.source === STATE.filter)
+  currentItems().filter(j => STATE.filter === 'all' || j.source === STATE.filter)
     .forEach(j => STATE.decisions[j.id] = 'rejected');
   saveDecisions(); render();
 });
@@ -548,10 +659,13 @@ document.getElementById('bulk-clear').addEventListener('click', () => {
 });
 
 document.getElementById('publish-btn').addEventListener('click', () => {
-  const approved = STATE.jobs.filter(j => STATE.decisions[j.id] === 'approved').map(j => j.id);
-  const rejected = STATE.jobs.filter(j => STATE.decisions[j.id] === 'rejected').map(j => j.id);
-  const cmd = `/publish-edura-approved approved=${approved.join(',')} rejected=${rejected.join(',')}`;
+  const items = currentItems();
+  const approved = items.filter(j => STATE.decisions[j.id] === 'approved').map(j => j.id);
+  const rejected = items.filter(j => STATE.decisions[j.id] === 'rejected').map(j => j.id);
+  const skill = STATE.mode === 'jobs' ? '/publish-edura-approved' : '/publish-edura-approved-teachers';
+  const cmd = `${skill} approved=${approved.join(',')} rejected=${rejected.join(',')}`;
   document.getElementById('cmd').textContent = cmd;
+  document.querySelector('#modal h2').textContent = STATE.mode === 'jobs' ? 'פרסום משרות מאושרות' : 'פרסום מורים מאושרים';
   document.getElementById('modal').classList.add('open');
 });
 document.getElementById('close').addEventListener('click', () => {
@@ -568,26 +682,28 @@ document.getElementById('copy').addEventListener('click', async () => {
   } catch (e) { alert('שגיאה בהעתקה. סמני ידנית.'); }
 });
 
-// load pending
-fetch('data/jobs-pending.json?t=' + Date.now())
-  .then(r => {
-    if (!r.ok) throw new Error('No pending file yet');
-    return r.json();
-  })
-  .then(data => {
-    STATE.jobs = data.jobs || [];
-    STATE.decisions = loadDecisions();
-    const meta = data.scanned_at
-      ? `נסרק ב-${data.scanned_at} · ${data.total_pending || STATE.jobs.length} משרות ממתינות`
-      : `${STATE.jobs.length} משרות ממתינות`;
-    document.getElementById('scan-meta').textContent = meta;
-    render();
-  })
-  .catch(err => {
-    document.getElementById('scan-meta').textContent = 'אין סקירה ממתינה — תרוץ הסקירה הבאה ב-06:00';
-    document.getElementById('grid').innerHTML = '';
-    document.getElementById('empty').style.display = 'block';
-  });
+// Initialize filters for default mode
+updateFiltersForMode();
+
+// load both pending files in parallel
+const cacheBust = '?t=' + Date.now();
+Promise.all([
+  fetch('data/jobs-pending.json' + cacheBust).then(r => r.ok ? r.json() : { jobs: [], scanned_at: '' }).catch(() => ({ jobs: [], scanned_at: '' })),
+  fetch('data/teachers-pending.json' + cacheBust).then(r => r.ok ? r.json() : { teachers: [] }).catch(() => ({ teachers: [] })),
+]).then(([jobsData, teachersData]) => {
+  STATE.jobs = jobsData.jobs || [];
+  STATE.teachers = teachersData.teachers || [];
+  STATE.decisions = loadDecisions();
+  const meta = jobsData.scanned_at
+    ? `נסרק ב-${jobsData.scanned_at} · ${STATE.jobs.length} משרות + ${STATE.teachers.length} מורים`
+    : `${STATE.jobs.length} משרות + ${STATE.teachers.length} מורים`;
+  document.getElementById('scan-meta').textContent = meta;
+  render();
+}).catch(err => {
+  document.getElementById('scan-meta').textContent = 'אין סקירה ממתינה — תרוץ הסקירה הבאה ב-06:00';
+  document.getElementById('grid').innerHTML = '';
+  document.getElementById('empty').style.display = 'block';
+});
 </script>
 
 </body>
