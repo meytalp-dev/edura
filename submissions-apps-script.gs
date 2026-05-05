@@ -235,6 +235,26 @@ function handleApproveByLink_(params) {
 }
 
 // ════════════════════════════════════════════════════════════════════
+// HTML confirmation email — used at submission time (before approval)
+// ════════════════════════════════════════════════════════════════════
+function buildConfirmationEmail_(o) {
+  // o: { greetingName, chip, headline, paragraphs[], refId }
+  const paragraphs = (o.paragraphs || []).map(function (p) {
+    return '<p style="margin:0 0 14px;color:#1A1A1A;">' + escHtml_(p) + '</p>';
+  }).join('');
+  return '<div dir="rtl" style="font-family:Arial,Helvetica,sans-serif;color:#000;line-height:1.6;max-width:600px;background:#FDF2F8;padding:24px;">' +
+    '<div style="background:#FFF;border-radius:18px;padding:28px 24px;border:1px solid #FCE7F3;">' +
+      (o.chip ? '<div style="background:#FCE7F3;color:#9D174D;font-size:11px;font-weight:800;display:inline-block;padding:4px 12px;border-radius:999px;letter-spacing:1px;margin-bottom:14px;">' + escHtml_(o.chip) + '</div>' : '') +
+      '<h2 style="margin:0 0 14px;color:#000;font-size:22px;line-height:1.3;">' + escHtml_(o.headline) + '</h2>' +
+      (o.greetingName ? '<p style="margin:0 0 14px;color:#1A1A1A;">שלום ' + escHtml_(o.greetingName) + ',</p>' : '') +
+      paragraphs +
+      (o.refId ? '<p style="margin:14px 0 0;font-size:13px;color:#4A4A4A;">מספר פנייה: <code style="background:#FDF2F8;padding:2px 8px;border-radius:6px;font-size:12px;">' + escHtml_(o.refId) + '</code></p>' : '') +
+    '</div>' +
+    '<p style="text-align:center;font-size:12px;color:#4A4A4A;margin:18px 0 0;">— אדורה · <a href="https://edura.co.il" style="color:#9D174D;">edura.co.il</a></p>' +
+  '</div>';
+}
+
+// ════════════════════════════════════════════════════════════════════
 // Approval notifications — to publisher + matching teachers
 // ════════════════════════════════════════════════════════════════════
 function notifyPublisherOnApproval_(type, row, refId) {
@@ -513,15 +533,22 @@ function handleApplication_(b) {
     MailApp.sendEmail(targetEmail, subject, htmlToText_(html), mailOpts);
 
     // Confirmation למורה
+    const appConfHtml = buildConfirmationEmail_({
+      chip: 'הפנייה נשלחה',
+      headline: 'הפנייה שלך נשלחה — בהצלחה!',
+      greetingName: name,
+      paragraphs: [
+        'הפנייה שלך למשרה "' + (jobTitle || school || 'הוראה') + '" נשלחה בהצלחה.',
+        schoolEmail
+          ? 'הפנייה הועברה ישירות לבית הספר. הם יחזרו אלייך למייל הזה.'
+          : 'הפנייה הגיעה אלינו ב-אדורה. אם תהיה התקדמות — נעדכן אותך.',
+        'בהצלחה!'
+      ],
+      refId: refId
+    });
     MailApp.sendEmail(email, 'אישור פנייה למשרה · אדורה (' + refId + ')',
-      'שלום ' + name + ',\n\n' +
-      'הפנייה שלך למשרה "' + (jobTitle || school || 'הוראה') + '" נשלחה בהצלחה.\n' +
-      'מספר פנייה: ' + refId + '\n\n' +
-      (schoolEmail
-        ? 'הפנייה הועברה ישירות לבית הספר. הם יחזרו אלייך למייל הזה.'
-        : 'הפנייה הגיעה אלינו ב-אדורה. אם תהיה התקדמות נעדכן אותך.') + '\n\n' +
-      'בהצלחה!\n— אדורה · edura.co.il',
-      { name: 'אדורה · edura.co.il', replyTo: ADMIN_EMAIL });
+      htmlToText_(appConfHtml),
+      { name: 'אדורה · edura.co.il', replyTo: ADMIN_EMAIL, htmlBody: appConfHtml });
 
     log_('application-sent', refId + ' · ' + email + ' → ' + targetEmail);
     return { ok: true, refId: refId, sentTo: targetEmail };
@@ -613,13 +640,19 @@ function handlePostJob_(b) {
       htmlToText_(html), { name: 'אדורה · edura.co.il', replyTo: email, htmlBody: html });
 
     // אישור קבלה למנהל המגיש
+    const confHtml = buildConfirmationEmail_({
+      chip: 'בקשה התקבלה',
+      headline: 'בקשת הפרסום שלכם בבדיקה',
+      greetingName: contactName,
+      paragraphs: [
+        'בקשת הפרסום של ' + school + ' למשרת ' + subject + ' התקבלה ונמצאת בבדיקה אצלנו.',
+        'אחרי אישור (תוך 24 שעות) המשרה תופיע ב-edura.co.il ומורות רשומות יקבלו התראה אוטומטית. הן יפנו אליכם ישירות במייל / טלפון — בלי מתווכים.'
+      ],
+      refId: refId
+    });
     MailApp.sendEmail(email, 'התקבלה בקשת פרסום באדורה (' + refId + ')',
-      'שלום ' + contactName + ',\n\n' +
-      'בקשת הפרסום של ' + school + ' למשרת ' + subject + ' התקבלה ונמצאת בבדיקה.\n' +
-      'מספר פנייה: ' + refId + '\n\n' +
-      'אחרי אישור (תוך 24 שעות) המשרה תופיע באדורה ומורות יוכלו לפנות אלייך.\n\n' +
-      '— אדורה · edura.co.il',
-      { name: 'אדורה · edura.co.il', replyTo: ADMIN_EMAIL });
+      htmlToText_(confHtml),
+      { name: 'אדורה · edura.co.il', replyTo: ADMIN_EMAIL, htmlBody: confHtml });
     log_('job-posted', refId + ' · ' + school);
     return { ok: true, refId: refId };
   } catch (err) {
@@ -679,13 +712,19 @@ function handlePostTeacher_(b) {
       htmlToText_(html), { name: 'אדורה · edura.co.il', replyTo: email, htmlBody: html });
 
     // אישור קבלה למורה המגיש
+    const confHtml = buildConfirmationEmail_({
+      chip: 'בקשה התקבלה',
+      headline: 'הפרופיל שלך בבדיקה',
+      greetingName: name,
+      paragraphs: [
+        'הפרטים שלך התקבלו ונמצאים בבדיקה אצלנו.',
+        'אחרי אישור (תוך 24 שעות) הפרופיל ייכנס למאגר אדורה. כשיתפרסמו משרות מתאימות לאזור, מקצוע ושכבה שציינת — תקבל/י מאיתנו מייל ישירות.'
+      ],
+      refId: refId
+    });
     MailApp.sendEmail(email, 'התקבלה בקשת פרסום באדורה (' + refId + ')',
-      'שלום ' + name + ',\n\n' +
-      'בקשת הפרסום שלך באדורה התקבלה ונמצאת בבדיקה.\n' +
-      'מספר פנייה: ' + refId + '\n\n' +
-      'אחרי אישור (תוך 24 שעות) הפרופיל יופיע באתר ומנהלי בתי ספר יוכלו לפנות אלייך.\n\n' +
-      '— אדורה · edura.co.il',
-      { name: 'אדורה · edura.co.il', replyTo: ADMIN_EMAIL });
+      htmlToText_(confHtml),
+      { name: 'אדורה · edura.co.il', replyTo: ADMIN_EMAIL, htmlBody: confHtml });
     log_('teacher-posted', refId + ' · ' + name);
     return { ok: true, refId: refId };
   } catch (err) {
