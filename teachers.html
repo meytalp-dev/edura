@@ -876,6 +876,7 @@ const TEACHERS_URL = 'data/teachers.json';
 const FB_TEACHERS_URL = 'data/fb-teachers.json';
 const FB_TEACHERS_2_URL = 'data/fb-teachers-2.json';
 const JOBS_URL = 'data/jobs.json';
+const SUBMISSIONS_URL = 'https://script.google.com/macros/s/AKfycbwleldcwH8c5k9OZ8EMDIKZ8veRbrtO1M7XwYFWg7HHbEV-SrZkLTElbFRiq4cHPlyarw/exec';
 let allT = [];
 let allJobs = [];
 let filtered = [];
@@ -1362,7 +1363,6 @@ $('clear-filters').addEventListener('click', () => { clearAllFiltersDrawer(); $(
 loadTeachers();
 
 // ─── Contact-via-platform modal (manager → teacher) ─────────
-const SUBMISSIONS_URL = 'https://script.google.com/macros/s/AKfycbwleldcwH8c5k9OZ8EMDIKZ8veRbrtO1M7XwYFWg7HHbEV-SrZkLTElbFRiq4cHPlyarw/exec';
 let _contactTeacher = null;
 
 function openContactModal(teacherIndex) {
