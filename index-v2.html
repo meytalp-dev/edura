@@ -1,0 +1,614 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1.0" />
+<title>אדורה · גרסת עיצוב חדש (Wolt-style)</title>
+<meta name="robots" content="noindex" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;700;800;900&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --teal: #0F766E;
+    --teal-2: #14B8A6;
+    --teal-pale: #ECFDF5;
+    --coral: #FB7185;
+    --coral-deep: #E11D48;
+    --coral-pale: #FFF1F2;
+    --cream: #FEF7ED;
+    --cream-2: #FDF2E9;
+    --sun: #FACC15;
+    --sun-pale: #FEF9C3;
+    --ink: #0B1F3A;
+    --ink-soft: #334155;
+    --ink-mute: #64748B;
+    --line: #E5E7EB;
+    --line-soft: #F1F5F9;
+    --white: #FFFFFF;
+    --shadow-sm: 0 1px 2px rgba(11,31,58,.06);
+    --shadow: 0 4px 14px rgba(11,31,58,.08);
+    --shadow-lg: 0 12px 32px rgba(11,31,58,.10);
+    --r: 14px;
+    --r-lg: 20px;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    font-family: 'Heebo', -apple-system, sans-serif;
+    background: var(--white);
+    color: var(--ink);
+    -webkit-font-smoothing: antialiased;
+    line-height: 1.5;
+  }
+  a { color: inherit; text-decoration: none; }
+  button { font-family: inherit; cursor: pointer; border: none; background: none; }
+
+  /* ───── TOP BAR ───── */
+  .topbar {
+    position: sticky; top: 0; z-index: 100;
+    background: var(--white);
+    border-bottom: 1px solid var(--line-soft);
+    padding: 14px 24px;
+  }
+  .topbar-inner {
+    max-width: 1320px; margin: 0 auto;
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    align-items: center; gap: 24px;
+  }
+  .topbar-logo {
+    font-family: 'Heebo'; font-weight: 900; font-size: 22px;
+    color: var(--ink); letter-spacing: -1px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .topbar-logo .dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: var(--coral);
+  }
+  .topbar-logo .tag {
+    font-size: 10px; font-weight: 600; color: var(--coral-deep);
+    background: var(--coral-pale); padding: 2px 8px; border-radius: 999px;
+    margin-inline-start: 6px;
+  }
+
+  /* City picker — the "Where to?" */
+  .city-picker {
+    display: flex; align-items: center; gap: 0;
+    background: var(--cream);
+    border: 1.5px solid transparent;
+    border-radius: 999px;
+    padding: 6px 8px 6px 6px;
+    transition: border-color .15s, box-shadow .15s;
+    cursor: pointer;
+    max-width: 580px; margin: 0 auto;
+    width: 100%;
+  }
+  .city-picker:hover { border-color: var(--teal); box-shadow: var(--shadow); }
+  .city-picker:focus-within { border-color: var(--teal); box-shadow: 0 0 0 4px rgba(15,118,110,.12); }
+  .city-pin {
+    background: var(--ink); color: var(--white);
+    width: 36px; height: 36px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .city-pin svg { width: 16px; height: 16px; }
+  .city-input {
+    flex: 1; border: none; outline: none;
+    background: transparent; padding: 0 14px;
+    font-size: 16px; font-weight: 600;
+    color: var(--ink); font-family: inherit;
+  }
+  .city-input::placeholder { color: var(--ink-mute); font-weight: 500; }
+  .city-go {
+    background: var(--ink); color: var(--white);
+    width: 36px; height: 36px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0; transition: background .15s;
+  }
+  .city-go:hover { background: var(--teal); }
+
+  .topbar-nav { display: flex; gap: 4px; align-items: center; }
+  .nav-link {
+    padding: 8px 14px; border-radius: 8px;
+    font-size: 14px; font-weight: 500; color: var(--ink-soft);
+    transition: background .15s, color .15s;
+  }
+  .nav-link:hover { background: var(--cream); color: var(--ink); }
+  .nav-link.primary {
+    background: var(--ink); color: var(--white);
+    font-weight: 600;
+  }
+  .nav-link.primary:hover { background: var(--teal); color: var(--white); }
+
+  /* ───── CATEGORY CHIPS ───── */
+  .categories {
+    max-width: 1320px; margin: 0 auto;
+    padding: 24px 24px 8px;
+  }
+  .categories-scroll {
+    display: flex; gap: 12px; overflow-x: auto;
+    padding-bottom: 8px;
+    scrollbar-width: none;
+  }
+  .categories-scroll::-webkit-scrollbar { display: none; }
+  .cat-chip {
+    flex-shrink: 0;
+    display: flex; flex-direction: column; align-items: center; gap: 8px;
+    padding: 14px 20px;
+    background: var(--white);
+    border: 1.5px solid var(--line);
+    border-radius: var(--r);
+    transition: all .15s;
+    min-width: 100px;
+  }
+  .cat-chip:hover { border-color: var(--teal); transform: translateY(-2px); box-shadow: var(--shadow); }
+  .cat-chip.active { background: var(--ink); color: var(--white); border-color: var(--ink); }
+  .cat-chip-icon {
+    width: 40px; height: 40px;
+    background: var(--cream); border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px;
+  }
+  .cat-chip.active .cat-chip-icon { background: rgba(255,255,255,.15); }
+  .cat-chip-label { font-size: 13px; font-weight: 600; }
+  .cat-chip-count { font-size: 11px; color: var(--ink-mute); font-weight: 500; }
+  .cat-chip.active .cat-chip-count { color: rgba(255,255,255,.7); }
+
+  /* ───── DISCOVERY ROWS ───── */
+  .discovery {
+    max-width: 1320px; margin: 0 auto;
+    padding: 0 24px;
+  }
+  .row {
+    margin-top: 36px;
+  }
+  .row-head {
+    display: flex; align-items: baseline; justify-content: space-between;
+    margin-bottom: 16px;
+    gap: 16px;
+  }
+  .row-title {
+    font-size: 22px; font-weight: 900; color: var(--ink);
+    letter-spacing: -0.5px;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .row-emoji {
+    font-size: 24px;
+  }
+  .row-sub {
+    font-size: 13px; color: var(--ink-mute); font-weight: 500;
+  }
+  .row-link {
+    font-size: 13px; font-weight: 700; color: var(--teal);
+    display: flex; align-items: center; gap: 4px;
+    transition: gap .15s;
+  }
+  .row-link:hover { gap: 8px; }
+
+  .row-scroll {
+    display: flex; gap: 16px; overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    padding-bottom: 12px;
+    scrollbar-width: none;
+    scroll-behavior: smooth;
+  }
+  .row-scroll::-webkit-scrollbar { display: none; }
+
+  /* ───── JOB CARD (Wolt-style) ───── */
+  .job-card {
+    flex-shrink: 0;
+    width: 280px;
+    background: var(--white);
+    border-radius: var(--r-lg);
+    overflow: hidden;
+    box-shadow: var(--shadow-sm);
+    border: 1px solid var(--line-soft);
+    transition: transform .2s, box-shadow .2s;
+    scroll-snap-align: start;
+    cursor: pointer;
+    position: relative;
+    display: flex; flex-direction: column;
+  }
+  .job-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-lg); }
+
+  .job-hero {
+    height: 100px;
+    position: relative;
+    display: flex; align-items: flex-end;
+    padding: 14px 16px;
+    color: var(--white);
+    overflow: hidden;
+  }
+  .job-hero::before {
+    content: ''; position: absolute; inset: 0;
+    background: linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(0,0,0,.25) 100%);
+    pointer-events: none;
+  }
+  .job-hero-city {
+    font-size: 26px; font-weight: 900; letter-spacing: -0.8px;
+    line-height: 1; position: relative; z-index: 1;
+    text-shadow: 0 1px 2px rgba(0,0,0,.15);
+  }
+  .job-hero-region {
+    font-size: 11px; font-weight: 600; opacity: .9; margin-top: 4px;
+    position: relative; z-index: 1;
+    text-transform: uppercase; letter-spacing: 0.5px;
+  }
+
+  /* Hero color by region */
+  .job-hero[data-region="ירושלים"]   { background: linear-gradient(135deg, #7C3AED 0%, #A78BFA 100%); }
+  .job-hero[data-region="צפון"]      { background: linear-gradient(135deg, #059669 0%, #34D399 100%); }
+  .job-hero[data-region="דרום"]      { background: linear-gradient(135deg, #DC2626 0%, #FB923C 100%); }
+  .job-hero[data-region="מרכז"]      { background: linear-gradient(135deg, #0F766E 0%, #14B8A6 100%); }
+  .job-hero[data-region='ת"א']       { background: linear-gradient(135deg, #1E40AF 0%, #3B82F6 100%); }
+  .job-hero[data-region="שפלה"]      { background: linear-gradient(135deg, #B45309 0%, #F59E0B 100%); }
+  .job-hero[data-region="default"]   { background: linear-gradient(135deg, #475569 0%, #94A3B8 100%); }
+
+  .job-body {
+    padding: 14px 16px 16px;
+    display: flex; flex-direction: column; gap: 8px;
+    flex: 1;
+  }
+  .job-title {
+    font-size: 15px; font-weight: 700; color: var(--ink);
+    line-height: 1.3;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    min-height: 39px;
+  }
+  .job-school {
+    font-size: 13px; color: var(--ink-mute); font-weight: 500;
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  }
+  .job-tags {
+    display: flex; gap: 6px; flex-wrap: wrap;
+    margin-top: auto; padding-top: 4px;
+  }
+  .job-tag {
+    font-size: 11px; font-weight: 600;
+    padding: 3px 9px; border-radius: 999px;
+    display: inline-flex; align-items: center; gap: 4px;
+  }
+  .job-tag.subject { background: var(--teal-pale); color: var(--teal); }
+  .job-tag.scope { background: var(--cream); color: #92400E; }
+  .job-tag.level { background: var(--line-soft); color: var(--ink-soft); }
+
+  .job-badge {
+    position: absolute; top: 12px; left: 12px;
+    background: var(--white); color: var(--ink);
+    padding: 5px 10px; border-radius: 999px;
+    font-size: 11px; font-weight: 800;
+    box-shadow: var(--shadow-sm);
+    display: flex; align-items: center; gap: 4px;
+    z-index: 2;
+  }
+  .job-badge.hot { background: var(--coral); color: var(--white); }
+  .job-badge.urgent { background: var(--ink); color: var(--white); }
+  .job-badge.fresh { background: var(--sun); color: var(--ink); }
+
+  .job-save {
+    position: absolute; top: 12px; right: 12px;
+    width: 32px; height: 32px; border-radius: 50%;
+    background: rgba(255,255,255,.92);
+    display: flex; align-items: center; justify-content: center;
+    z-index: 2;
+    backdrop-filter: blur(4px);
+    transition: transform .15s, background .15s;
+  }
+  .job-save:hover { transform: scale(1.1); background: var(--white); }
+  .job-save svg { width: 16px; height: 16px; color: var(--ink-soft); }
+  .job-save.saved svg { fill: var(--coral); color: var(--coral); }
+
+  /* ───── EMPTY / LOADING ───── */
+  .skeleton-card {
+    flex-shrink: 0; width: 280px;
+    border-radius: var(--r-lg); overflow: hidden;
+    border: 1px solid var(--line-soft);
+    background: var(--white);
+  }
+  .skeleton-hero { height: 100px; background: linear-gradient(90deg, #f1f5f9 25%, #e2e8f0 50%, #f1f5f9 75%); background-size: 200% 100%; animation: shimmer 1.4s infinite; }
+  .skeleton-body { padding: 16px; }
+  .skeleton-line { height: 12px; background: #f1f5f9; border-radius: 6px; margin-bottom: 8px; }
+  .skeleton-line.w-3-4 { width: 75%; }
+  .skeleton-line.w-1-2 { width: 50%; }
+  @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+
+  /* ───── FOOTER NOTE ───── */
+  .v2-note {
+    max-width: 1320px; margin: 60px auto 24px;
+    padding: 24px;
+    background: var(--cream); border-radius: var(--r-lg);
+    text-align: center;
+    color: var(--ink-soft);
+    font-size: 13px;
+  }
+  .v2-note strong { color: var(--ink); }
+  .v2-note .compare {
+    display: inline-flex; gap: 12px; margin-top: 12px;
+  }
+  .v2-note .compare a {
+    padding: 8px 16px; border-radius: 999px;
+    background: var(--white); color: var(--ink);
+    font-weight: 600; border: 1px solid var(--line);
+    transition: border-color .15s;
+  }
+  .v2-note .compare a:hover { border-color: var(--teal); }
+
+  /* ───── RESPONSIVE ───── */
+  @media (max-width: 768px) {
+    .topbar-inner { grid-template-columns: 1fr; gap: 12px; }
+    .topbar-nav { display: none; }
+    .row-title { font-size: 18px; }
+    .job-card { width: 240px; }
+    .job-hero { height: 80px; }
+    .job-hero-city { font-size: 22px; }
+    .categories { padding: 16px 12px 4px; }
+    .discovery { padding: 0 12px; }
+  }
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="topbar-inner">
+    <a href="/" class="topbar-logo">
+      אדורה<span class="dot"></span>
+      <span class="tag">v2 · ניסוי</span>
+    </a>
+    <div class="city-picker" onclick="document.getElementById('city-input').focus()">
+      <div class="city-pin">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+      </div>
+      <input id="city-input" class="city-input" type="text" placeholder="באיזו עיר את/ה מחפש/ת משרה?" autocomplete="off" />
+      <button class="city-go" aria-label="חפש">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+      </button>
+    </div>
+    <nav class="topbar-nav">
+      <a href="index.html" class="nav-link">משרות</a>
+      <a href="teachers.html" class="nav-link">מורים</a>
+      <a href="chat.html" class="nav-link primary">בוט חיפוש</a>
+    </nav>
+  </div>
+</header>
+
+<section class="categories">
+  <div class="categories-scroll" id="categories-scroll">
+    <!-- generated by JS -->
+  </div>
+</section>
+
+<main class="discovery" id="discovery">
+
+  <div class="row">
+    <div class="row-head">
+      <div>
+        <div class="row-title"><span class="row-emoji">🔥</span> הכי חמות השבוע</div>
+        <div class="row-sub">משרות שמופיעות אצלנו ביותר ממקור אחד</div>
+      </div>
+      <a href="#" class="row-link">הצג הכל ←</a>
+    </div>
+    <div class="row-scroll" id="row-hot">
+      <!-- skeleton until data loads -->
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="row-head">
+      <div>
+        <div class="row-title"><span class="row-emoji">⏰</span> נוספו השבוע</div>
+        <div class="row-sub">מודעות חדשות מ-7 הימים האחרונים</div>
+      </div>
+      <a href="#" class="row-link">הצג הכל ←</a>
+    </div>
+    <div class="row-scroll" id="row-fresh"></div>
+  </div>
+
+  <div class="row">
+    <div class="row-head">
+      <div>
+        <div class="row-title"><span class="row-emoji">🎯</span> מתאים לפרופיל שלך</div>
+        <div class="row-sub">לפי המקצוע והאזור שבחרת</div>
+      </div>
+      <a href="#" class="row-link">בנה פרופיל ←</a>
+    </div>
+    <div class="row-scroll" id="row-match"></div>
+  </div>
+
+</main>
+
+<div class="v2-note">
+  <strong>זו גרסת ניסוי לעיצוב חדש</strong> בהשראת Wolt — ארכיטקטורה של "discovery rows" במקום רשימה.<br>
+  הנתונים אמיתיים מ-data/jobs.json. קליקים על כרטיסים פותחים את המודעה המקורית.
+  <div class="compare">
+    <a href="index.html">← חזרה לגרסה הנוכחית</a>
+    <a href="teachers.html">דף מורים →</a>
+  </div>
+</div>
+
+<script>
+const SUBJECT_CATS = [
+  { key: 'מתמטיקה', label: 'מתמטיקה', emoji: '🔢', match: ['מתמטיקה','מתמט'] },
+  { key: 'אנגלית', label: 'אנגלית', emoji: '🇬🇧', match: ['אנגלית'] },
+  { key: 'עברית', label: 'עברית', emoji: '📝', match: ['עברית','לשון'] },
+  { key: 'מדעים', label: 'מדעים', emoji: '🔬', match: ['מדע','ביולוגיה','כימיה','פיזיקה'] },
+  { key: 'חינוך מיוחד', label: 'חינוך מיוחד', emoji: '💜', match: ['חנ"מ','חינוך מיוחד','חנמ'] },
+  { key: 'היסטוריה', label: 'היסטוריה', emoji: '🏛️', match: ['היסטוריה','אזרחות'] },
+  { key: 'מחנכת', label: 'מחנכ/ת', emoji: '👩‍🏫', match: ['מחנכ'] },
+  { key: 'יועץ', label: 'יועץ/ת', emoji: '💬', match: ['יועצ','ייעוץ'] },
+  { key: 'ספורט', label: 'חינוך גופני', emoji: '⚽', match: ['חנ"ג','גופני','ספורט'] },
+  { key: 'אומנות', label: 'אומנות', emoji: '🎨', match: ['אומנות','ציור','מוזיקה'] },
+  { key: 'תורה', label: 'תורה ותנ"ך', emoji: '📖', match: ['תנ"ך','תושב"ע','תורה','גמרא'] },
+];
+
+const REGION_FALLBACK = 'default';
+
+let JOBS = [];
+
+async function loadJobs() {
+  try {
+    const res = await fetch('data/jobs.json');
+    const data = await res.json();
+    JOBS = data.jobs || [];
+    render();
+  } catch (e) {
+    console.error('Failed to load jobs', e);
+    document.getElementById('row-hot').innerHTML = '<div style="padding:20px;color:#64748B">לא הצלחנו לטעון משרות.</div>';
+  }
+}
+
+function jobMatchesSubjectCat(job, cat) {
+  const s = (job.subject || '') + ' ' + (job.title || '') + ' ' + (job.role || '');
+  return cat.match.some(m => s.includes(m));
+}
+
+function renderCategories() {
+  const counts = SUBJECT_CATS.map(cat => ({
+    cat,
+    count: JOBS.filter(j => jobMatchesSubjectCat(j, cat)).length
+  })).filter(x => x.count > 0).sort((a,b) => b.count - a.count);
+
+  const html = ['<button class="cat-chip active" data-cat="all"><div class="cat-chip-icon">✨</div><div class="cat-chip-label">הכל</div><div class="cat-chip-count">' + JOBS.length + ' משרות</div></button>']
+    .concat(counts.map(({cat,count}) =>
+      '<button class="cat-chip" data-cat="' + cat.key + '">' +
+        '<div class="cat-chip-icon">' + cat.emoji + '</div>' +
+        '<div class="cat-chip-label">' + cat.label + '</div>' +
+        '<div class="cat-chip-count">' + count + ' משרות</div>' +
+      '</button>'
+    )).join('');
+
+  document.getElementById('categories-scroll').innerHTML = html;
+
+  document.querySelectorAll('.cat-chip').forEach(chip => {
+    chip.addEventListener('click', () => {
+      document.querySelectorAll('.cat-chip').forEach(c => c.classList.remove('active'));
+      chip.classList.add('active');
+      const cat = chip.dataset.cat;
+      filterByCategory(cat);
+    });
+  });
+}
+
+function filterByCategory(catKey) {
+  let filtered = JOBS;
+  if (catKey !== 'all') {
+    const cat = SUBJECT_CATS.find(c => c.key === catKey);
+    if (cat) filtered = JOBS.filter(j => jobMatchesSubjectCat(j, cat));
+  }
+  renderRows(filtered);
+}
+
+function escapeHtml(s) {
+  return String(s == null ? '' : s)
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+    .replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+}
+
+function renderJobCard(job, badge) {
+  const region = job.region && ['ירושלים','צפון','דרום','מרכז','ת"א','שפלה'].includes(job.region) ? job.region : REGION_FALLBACK;
+  const city = job.city || job.school || 'ללא עיר';
+  const title = job.title || (job.role ? job.role + (job.subject ? ' ל' + job.subject : '') : 'משרה');
+  const tags = [];
+  if (job.subject) tags.push('<span class="job-tag subject">' + escapeHtml(job.subject) + '</span>');
+  if (job.level) tags.push('<span class="job-tag level">' + escapeHtml(job.level) + '</span>');
+  if (job.scope) tags.push('<span class="job-tag scope">' + escapeHtml(job.scope) + '</span>');
+
+  const badgeHtml = badge
+    ? '<div class="job-badge ' + badge.cls + '">' + badge.icon + escapeHtml(badge.label) + '</div>'
+    : '';
+
+  return (
+    '<article class="job-card" onclick="window.open(\'' + escapeHtml(job.url || '#') + '\',\'_blank\')">' +
+      badgeHtml +
+      '<button class="job-save" aria-label="שמור" onclick="event.stopPropagation();this.classList.toggle(\'saved\')">' +
+        '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>' +
+      '</button>' +
+      '<div class="job-hero" data-region="' + escapeHtml(region) + '">' +
+        '<div>' +
+          '<div class="job-hero-city">' + escapeHtml(city) + '</div>' +
+          '<div class="job-hero-region">' + escapeHtml(job.region || 'אזור לא צוין') + '</div>' +
+        '</div>' +
+      '</div>' +
+      '<div class="job-body">' +
+        '<div class="job-title">' + escapeHtml(title) + '</div>' +
+        (job.school ? '<div class="job-school">' + escapeHtml(job.school) + '</div>' : '') +
+        (tags.length ? '<div class="job-tags">' + tags.join('') + '</div>' : '') +
+      '</div>' +
+    '</article>'
+  );
+}
+
+function renderRows(pool) {
+  const today = new Date('2026-05-05');
+  const sevenDaysAgo = new Date(today.getTime() - 7*24*60*60*1000);
+
+  // HOT — group by school+title to detect duplicates across sources, take top with most copies
+  const sig = j => (j.school || '') + '|' + (j.subject || '') + '|' + (j.city || '');
+  const groups = {};
+  pool.forEach(j => {
+    const k = sig(j);
+    (groups[k] = groups[k] || []).push(j);
+  });
+  const hot = Object.values(groups)
+    .filter(g => g.length > 1 || (g[0].region === 'מרכז' && g[0].subject))
+    .sort((a,b) => b.length - a.length)
+    .slice(0, 12)
+    .map(g => g[0]);
+
+  // FRESH — last 7 days
+  const fresh = pool
+    .filter(j => j.date_iso && new Date(j.date_iso) >= sevenDaysAgo)
+    .sort((a,b) => (b.date_iso || '').localeCompare(a.date_iso || ''))
+    .slice(0, 12);
+
+  // MATCH (placeholder) — random sample
+  const match = pool.slice().sort(() => Math.random() - 0.5).slice(0, 12);
+
+  document.getElementById('row-hot').innerHTML = hot.length
+    ? hot.map(j => renderJobCard(j, { cls: 'hot', icon: '🔥 ', label: 'חמה' })).join('')
+    : emptyRow('אין משרות חמות בקטגוריה הזו כרגע');
+
+  document.getElementById('row-fresh').innerHTML = fresh.length
+    ? fresh.map(j => renderJobCard(j, { cls: 'fresh', icon: '✨ ', label: 'חדש' })).join('')
+    : emptyRow('אין מודעות חדשות מהשבוע');
+
+  document.getElementById('row-match').innerHTML = match.length
+    ? match.map(j => renderJobCard(j, null)).join('')
+    : emptyRow('בנה פרופיל כדי לראות התאמות');
+}
+
+function emptyRow(msg) {
+  return '<div style="padding:20px 4px;color:#64748B;font-size:14px">' + msg + '</div>';
+}
+
+function showSkeletons() {
+  const sk = Array(5).fill('<div class="skeleton-card"><div class="skeleton-hero"></div><div class="skeleton-body"><div class="skeleton-line w-3-4"></div><div class="skeleton-line w-1-2"></div></div></div>').join('');
+  document.getElementById('row-hot').innerHTML = sk;
+  document.getElementById('row-fresh').innerHTML = sk;
+  document.getElementById('row-match').innerHTML = sk;
+}
+
+function render() {
+  renderCategories();
+  renderRows(JOBS);
+}
+
+// City picker — basic filter
+document.getElementById('city-input').addEventListener('keydown', e => {
+  if (e.key === 'Enter') filterByCity(e.target.value.trim());
+});
+function filterByCity(city) {
+  if (!city) { renderRows(JOBS); return; }
+  const filtered = JOBS.filter(j => j.city && j.city.includes(city));
+  renderRows(filtered);
+}
+
+showSkeletons();
+loadJobs();
+</script>
+
+</body>
+</html>
