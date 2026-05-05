@@ -176,7 +176,8 @@
   .hero-blob-1 { width: 360px; height: 360px; background: var(--teal-glow); top: -80px; left: -80px; }
   .hero-blob-2 { width: 320px; height: 320px; background: var(--orange-soft); bottom: -100px; right: 15%; opacity: .45; }
 
-  .hero-text { position: relative; z-index: 1; }
+  .hero-text { position: relative; z-index: 1; min-width: 0; }
+  .hero-grid > * { min-width: 0; }
 
   .winks-wrap {
     display: flex; align-items: center; gap: 10px;
@@ -830,6 +831,7 @@
     .logo-tagline { font-size: 11px; }
 
     .hero { padding: 28px 16px 44px; }
+    .hero-grid, .hero-text { min-width: 0; max-width: 100%; }
     h1.hero-title {
       font-size: 28px;
       line-height: 1.22;
