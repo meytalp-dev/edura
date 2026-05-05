@@ -1100,6 +1100,33 @@
     cursor: pointer;
   }
 
+  .email-notice {
+    background: var(--lime-pale);
+    border: 1.5px solid var(--lime-soft);
+    border-radius: 14px;
+    padding: 14px 16px;
+    margin: 14px 0;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    text-align: right;
+    font-size: 13.5px;
+    line-height: 1.55;
+    color: var(--ink);
+    max-width: 420px;
+    width: 100%;
+  }
+  .email-notice strong { font-size: 14.5px; color: var(--lime-deep); }
+  .email-notice .email-help {
+    margin-top: 4px;
+    font-size: 13px;
+    color: var(--lime-deep);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    font-weight: 700;
+  }
+  .email-notice .email-help:hover { color: var(--ink); }
+
   .modal--chat .modal-success {
     padding: 28px 24px 24px;
     text-align: center;
@@ -1544,9 +1571,16 @@
         </svg>
       </div>
       <h3>קיבלנו! הפרופיל שלך במאגר.</h3>
-      <p style="font-size:14px;color:var(--ink-mute);line-height:1.6">בתי ספר עם משרה תואמת יוכלו לפנות אליך ישירות. אם יש שאלה — meytal@edura.co.il.</p>
+      <p style="font-size:14px;color:var(--ink-mute);line-height:1.6">בתי ספר עם משרה תואמת יוכלו לפנות אליך ישירות.</p>
 
       <p class="success-ref">מספר פנייה: <code id="ref-teacher">—</code></p>
+
+      <div class="email-notice">
+        <strong>📩 מייל אישור בדרך אליך</strong>
+        <span>אמור להגיע תוך כמה דקות. <strong>אם לא הגיע — בדקו ספאם.</strong></span>
+        <a href="mailto:meytal@edura.co.il?subject=לא קיבלתי מייל - מורה" class="email-help">לא הגיע? כתבו לנו ←</a>
+      </div>
+
       <div class="success-cta-row">
         <button type="button" class="success-cta" data-close-modal="modal-teacher">סגירה</button>
       </div>
@@ -1582,30 +1616,22 @@
           <polyline points="20 6 9 17 4 12"/>
         </svg>
       </div>
-      <h3>המשרה התקבלה. עכשיו נכנסת למאגר.</h3>
-      <p style="font-size:14px;color:var(--ink-mute);line-height:1.6">מורים רשומים יראו את המשרה לפי המקצוע, האזור והשכבה — ויפנו אליכם ישירות. שאלות? meytal@edura.co.il</p>
+      <h3>המשרה התקבלה. עכשיו ממתינה לאישור.</h3>
+      <p style="font-size:14px;color:var(--ink-mute);line-height:1.6">תוך 24 שעות המשרה תיכנס למאגר ומורות יוכלו לפנות אליכם ישירות.</p>
 
-      <div class="success-timeline">
-        <div class="success-timeline-item">
-          <span class="success-timeline-icon">1</span>
-          <span><strong>המשרה נכנסת למאגר</strong>מורים רשומים יראו אותה ויפנו אליכם ישירות.</span>
-        </div>
-        <div class="success-timeline-item">
-          <span class="success-timeline-icon">2</span>
-          <span><strong>פנייה ישירה</strong>אתם מקבלים מייל / טלפון מהמועמדים — בלי מתווכים, בלי עמלות.</span>
-        </div>
-        <div class="success-timeline-item">
-          <span class="success-timeline-icon">3</span>
-          <span><strong>אפשר להוריד בכל רגע</strong>מייל ל-meytal@edura.co.il ונוריד את המשרה מהמאגר.</span>
-        </div>
+      <p class="success-ref">מספר פנייה: <code id="ref-school">—</code></p>
+
+      <div class="email-notice">
+        <strong>📩 מייל אישור בדרך אליכם</strong>
+        <span>אמור להגיע תוך כמה דקות עם פרטי הפנייה. <strong>אם לא הגיע — בדקו ספאם.</strong></span>
+        <a href="mailto:meytal@edura.co.il?subject=לא קיבלתי מייל - בית ספר" class="email-help">לא הגיע? כתבו לנו ←</a>
       </div>
 
       <p class="success-cta-link">
-        <sup>*</sup> עכשיו יש לכם גישה למאגר המלא:
+        בינתיים — אפשר לעיין במאגר המורים:
         <a href="https://edura.co.il" target="_blank" rel="noopener">edura.co.il ←</a>
       </p>
 
-      <p class="success-ref">מספר פנייה: <code id="ref-school">—</code></p>
       <div class="success-cta-row">
         <button type="button" class="success-cta" data-close-modal="modal-school">סגירה</button>
       </div>
@@ -2348,10 +2374,14 @@
         const data = await res.json();
         hideTyping();
         if (data && data.ok) {
-          // Success — show success card
+          // Honeypot block? show plain success but flag issue
+          const refId = data.refId || '—';
+          // Confirm in chat first with refId
+          botSay('✓ נקלט! מספר הפנייה שלכם: ' + refId);
+          // Then transition to success card
           const refSpan = document.getElementById(modalId === 'modal-teacher' ? 'ref-teacher' : 'ref-school');
-          if (refSpan) refSpan.textContent = data.refId || '—';
-          inner.classList.add('is-success');
+          if (refSpan) refSpan.textContent = refId;
+          setTimeout(() => inner.classList.add('is-success'), 800);
         } else {
           throw new Error((data && data.error) || 'שליחה נכשלה');
         }
