@@ -18,6 +18,12 @@
     --coral-pale: #FFEBEB;
     --cream: #FFF7E8;
     --sun: #FFD466;
+    /* Brand pink — dominant on landing page, ACCENT here */
+    --pink: #FCE7F3;
+    --pink-2: #FBCFE8;
+    --pink-soft: #FDF2F8;
+    --pink-deep: #BE185D;
+    --pink-deeper: #9D174D;
     --ink: #0E1B2C;
     --ink-soft: #2C3D55;
     --ink-mute: #6B7B8E;
@@ -63,15 +69,15 @@
     color: var(--ink); letter-spacing: -1px;
     display: flex; align-items: center; gap: 8px;
   }
-  .topbar-logo .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--teal); }
+  .topbar-logo .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--pink-deep); }
   .topbar-logo .tag {
-    font-size: 10px; font-weight: 700; color: var(--coral);
-    background: var(--coral-pale); padding: 3px 8px; border-radius: 999px;
+    font-size: 10px; font-weight: 700; color: var(--pink-deep);
+    background: var(--pink); padding: 3px 8px; border-radius: 999px;
     margin-inline-start: 4px; letter-spacing: 0.3px;
   }
   .city-picker {
     display: flex; align-items: center;
-    background: var(--bg-2);
+    background: var(--pink-soft);
     border: 2px solid transparent;
     border-radius: 999px;
     padding: 5px 6px 5px 5px;
@@ -81,9 +87,10 @@
     width: 100%;
     position: relative;
   }
+  .city-picker:hover { background: var(--pink); }
   .city-picker:focus-within {
-    border-color: var(--ink); background: var(--bg);
-    box-shadow: 0 4px 14px rgba(14,27,44,.08);
+    border-color: var(--pink-deep); background: var(--bg);
+    box-shadow: 0 0 0 4px var(--pink), 0 4px 14px rgba(190,24,93,.12);
   }
   .city-pin {
     background: var(--ink); color: var(--bg);
@@ -106,7 +113,7 @@
     display: flex; align-items: center; justify-content: center;
     flex-shrink: 0; transition: background .15s;
   }
-  .city-go:hover { background: var(--teal); }
+  .city-go:hover { background: var(--pink-deep); }
 
   /* City suggestions dropdown */
   .city-suggest {
@@ -189,11 +196,11 @@
   .cat-chip-icon svg { width: 26px; height: 26px; }
   .cat-chip-label { font-size: 13px; font-weight: 600; line-height: 1.1; text-align: center; }
 
-  /* Level chips (pill style) */
+  /* Level chips (pill style with pink accent) */
   .level-chip {
     flex-shrink: 0;
     padding: 8px 16px;
-    background: var(--bg-2);
+    background: var(--pink-soft);
     border: 1.5px solid transparent;
     border-radius: 999px;
     font-size: 13px; font-weight: 600;
@@ -201,42 +208,46 @@
     transition: all .15s;
     display: inline-flex; align-items: center; gap: 6px;
   }
-  .level-chip:hover { background: var(--bg); border-color: var(--line); }
+  .level-chip:hover { background: var(--pink); border-color: var(--pink-2); color: var(--pink-deeper); }
   .level-chip.active {
-    background: var(--ink); color: var(--bg); border-color: var(--ink);
+    background: var(--pink-deep); color: #fff; border-color: var(--pink-deep);
+    box-shadow: 0 4px 12px rgba(190,24,93,.25);
   }
-  .level-chip-count { font-size: 11px; opacity: .7; font-weight: 700; }
+  .level-chip-count { font-size: 11px; opacity: .75; font-weight: 700; }
 
-  /* Active filters bar */
+  /* Active filters bar — pink-tinted */
   .active-filters {
     display: flex; align-items: center; gap: 8px;
-    padding: 12px 24px; max-width: 1320px; margin: 0 auto;
+    padding: 14px 20px; max-width: 1320px; margin: 0 auto;
     flex-wrap: wrap;
+    background: var(--pink-soft);
+    border-radius: var(--r-md);
+    margin: 8px 24px 0;
   }
   .active-filters-count {
     font-size: 14px; font-weight: 800; color: var(--ink);
   }
-  .active-filters-count strong { color: var(--coral); }
+  .active-filters-count strong { color: var(--pink-deep); }
   .active-pill {
     display: inline-flex; align-items: center; gap: 6px;
     padding: 5px 8px 5px 12px;
-    background: var(--ink); color: var(--bg);
+    background: var(--pink-deep); color: var(--bg);
     border-radius: 999px;
     font-size: 12px; font-weight: 600;
   }
   .active-pill button {
     width: 18px; height: 18px; border-radius: 50%;
-    background: rgba(255,255,255,.2); color: #fff;
+    background: rgba(255,255,255,.22); color: #fff;
     display: flex; align-items: center; justify-content: center;
     font-size: 14px; line-height: 1;
   }
-  .active-pill button:hover { background: rgba(255,255,255,.35); }
+  .active-pill button:hover { background: rgba(255,255,255,.4); }
   .clear-all-btn {
-    font-size: 12px; font-weight: 700; color: var(--coral);
+    font-size: 12px; font-weight: 700; color: var(--pink-deep);
     padding: 6px 10px; border-radius: 999px;
     transition: background .15s;
   }
-  .clear-all-btn:hover { background: var(--coral-pale); }
+  .clear-all-btn:hover { background: var(--pink-2); }
 
   /* ───── DISCOVERY ROWS ───── */
   .discovery {
@@ -340,7 +351,7 @@
   }
   .job-save:hover { transform: scale(1.08); background: #fff; }
   .job-save svg { width: 18px; height: 18px; color: var(--ink-soft); transition: color .2s, fill .2s; }
-  .job-save.saved svg { fill: var(--coral); color: var(--coral); }
+  .job-save.saved svg { fill: var(--pink-deep); color: var(--pink-deep); }
 
   .job-badge {
     position: absolute; top: 12px; left: 12px;
@@ -518,7 +529,7 @@
   <div class="row" id="row-fresh-wrap">
     <div class="row-head">
       <div class="row-title">
-        <span class="row-icon" style="background:#FFF7E8;color:#B8860B"><svg><use href="#i-clock"/></svg></span>
+        <span class="row-icon" style="background:#FCE7F3;color:#BE185D"><svg><use href="#i-clock"/></svg></span>
         נוספו השבוע
       </div>
       <div class="row-actions">
@@ -544,8 +555,8 @@
 </main>
 
 <div class="v2-note">
-  <strong>גרסה v3 — חיפוש משולש (עיר + מקצוע + שכבת גיל) + תמונות אמיתיות</strong><br>
-  522 משרות אמיתיות מ-3 מקורות (ITU 276 · IGM 180 · שתיל 66) · 6 פוטוסטים מאומתים מ-Unsplash
+  <strong>גרסה v4 — תמונות לפי מקצוע + ורוד מותג כאקסנט</strong><br>
+  522 משרות אמיתיות · 19 תמונות מקצוע + 12 תמונות אזור (fallback) · ורוד מהדף מורים בלוגו, search, level chips, save heart
   <div class="compare">
     <a href="index.html">← לגרסה הנוכחית</a>
     <a href="teachers.html">דף מורים →</a>
@@ -554,42 +565,83 @@
 
 <script>
 // ──────────────────────────────────────────────────
-// REAL Unsplash photos by region (verified by agent)
+// REAL Unsplash photos — by SUBJECT (primary) + REGION (fallback)
+// All URLs verified HTTP 200 via agent
 // ──────────────────────────────────────────────────
-const REGION_PHOTOS = {
-  'ירושלים': [
-    'https://images.unsplash.com/photo-1556861321-b7a1e5b1c291?w=600&h=400&fit=crop&q=80&auto=format',
-    'https://images.unsplash.com/photo-1587297069400-6cc5da81658a?w=600&h=400&fit=crop&q=80&auto=format'
+const SUBJECT_PHOTOS = {
+  'מתמטיקה': [
+    'https://images.unsplash.com/photo-1635070041078-e363dbe005cb?w=600&h=400&fit=crop&q=80&auto=format',
+    'https://images.unsplash.com/photo-1509228468518-180dd4864904?w=600&h=400&fit=crop&q=80&auto=format'
   ],
-  'ת"א': [
-    'https://images.unsplash.com/photo-1500990702037-7620ccb6a60a?w=600&h=400&fit=crop&q=80&auto=format',
-    'https://images.unsplash.com/photo-1544971587-b842c27f8e14?w=600&h=400&fit=crop&q=80&auto=format'
+  'אנגלית': [
+    'https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?w=600&h=400&fit=crop&q=80&auto=format',
+    'https://images.unsplash.com/photo-1490633874781-1c63cc424610?w=600&h=400&fit=crop&q=80&auto=format'
   ],
-  'מרכז': [
-    'https://images.unsplash.com/photo-1561369669-a6531d6eb336?w=600&h=400&fit=crop&q=80&auto=format',
-    'https://images.unsplash.com/photo-1607277332070-e39d58864cd3?w=600&h=400&fit=crop&q=80&auto=format',
-    'https://images.unsplash.com/photo-1668968644027-6bd069eae0a7?w=600&h=400&fit=crop&q=80&auto=format'
+  'עברית': [
+    'https://images.unsplash.com/photo-1544383835-bda2bc66a55d?w=600&h=400&fit=crop&q=80&auto=format'
   ],
-  'צפון': [
-    'https://images.unsplash.com/photo-1613412984420-1300edb8219f?w=600&h=400&fit=crop&q=80&auto=format',
-    'https://images.unsplash.com/photo-1570651851409-93d5add773d7?w=600&h=400&fit=crop&q=80&auto=format'
+  'מדעים': [
+    'https://images.unsplash.com/photo-1582408921715-18e7806365c1?w=600&h=400&fit=crop&q=80&auto=format',
+    'https://images.unsplash.com/photo-1532094349884-543bc11b234d?w=600&h=400&fit=crop&q=80&auto=format'
   ],
-  'דרום': [
-    'https://images.unsplash.com/photo-1633088926847-435cdb7e76da?w=600&h=400&fit=crop&q=80&auto=format',
-    'https://images.unsplash.com/photo-1574513828599-a4fefc82fe7d?w=600&h=400&fit=crop&q=80&auto=format'
+  'חינוך מיוחד': [
+    'https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?w=600&h=400&fit=crop&q=80&auto=format',
+    'https://images.unsplash.com/photo-1469571486292-0ba58a3f068b?w=600&h=400&fit=crop&q=80&auto=format'
   ],
-  'שפלה': [
-    'https://images.unsplash.com/photo-1437252611977-07f74518abd7?w=600&h=400&fit=crop&q=80&auto=format'
+  'היסטוריה': [
+    'https://images.unsplash.com/photo-1457369804613-52c61a468e7d?w=600&h=400&fit=crop&q=80&auto=format',
+    'https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?w=600&h=400&fit=crop&q=80&auto=format'
   ],
-  'חיפה': [
-    'https://images.unsplash.com/photo-1613412984420-1300edb8219f?w=600&h=400&fit=crop&q=80&auto=format'
+  'מחנכת': [
+    'https://images.unsplash.com/photo-1580582932707-520aed937b7b?w=600&h=400&fit=crop&q=80&auto=format'
+  ],
+  'יועץ': [
+    'https://images.unsplash.com/photo-1497486751825-1233686d5d80?w=600&h=400&fit=crop&q=80&auto=format',
+    'https://images.unsplash.com/photo-1607706189992-eae578626c86?w=600&h=400&fit=crop&q=80&auto=format'
+  ],
+  'ספורט': [
+    'https://images.unsplash.com/photo-1546519638-68e109498ffc?w=600&h=400&fit=crop&q=80&auto=format',
+    'https://images.unsplash.com/photo-1518998053901-5348d3961a04?w=600&h=400&fit=crop&q=80&auto=format'
+  ],
+  'אומנות': [
+    'https://images.unsplash.com/photo-1513364776144-60967b0f800f?w=600&h=400&fit=crop&q=80&auto=format',
+    'https://images.unsplash.com/photo-1502691876148-a84978e59af8?w=600&h=400&fit=crop&q=80&auto=format'
+  ],
+  'תורה': [
+    'https://images.unsplash.com/photo-1591373032221-2d1c0a9c9a32?w=600&h=400&fit=crop&q=80&auto=format'
   ]
 };
-function pickPhoto(region, city) {
-  const pool = REGION_PHOTOS[region] || REGION_PHOTOS['מרכז'];
-  // hash by city to get a stable but varied image per city within region
+
+// Region fallback (when subject doesn't match any category)
+const REGION_PHOTOS_FALLBACK = {
+  'ירושלים': ['https://images.unsplash.com/photo-1556861321-b7a1e5b1c291?w=600&h=400&fit=crop&q=80&auto=format', 'https://images.unsplash.com/photo-1587297069400-6cc5da81658a?w=600&h=400&fit=crop&q=80&auto=format'],
+  'ת"א':     ['https://images.unsplash.com/photo-1500990702037-7620ccb6a60a?w=600&h=400&fit=crop&q=80&auto=format', 'https://images.unsplash.com/photo-1544971587-b842c27f8e14?w=600&h=400&fit=crop&q=80&auto=format'],
+  'מרכז':    ['https://images.unsplash.com/photo-1561369669-a6531d6eb336?w=600&h=400&fit=crop&q=80&auto=format', 'https://images.unsplash.com/photo-1607277332070-e39d58864cd3?w=600&h=400&fit=crop&q=80&auto=format'],
+  'צפון':    ['https://images.unsplash.com/photo-1613412984420-1300edb8219f?w=600&h=400&fit=crop&q=80&auto=format'],
+  'דרום':    ['https://images.unsplash.com/photo-1633088926847-435cdb7e76da?w=600&h=400&fit=crop&q=80&auto=format'],
+  'שפלה':    ['https://images.unsplash.com/photo-1437252611977-07f74518abd7?w=600&h=400&fit=crop&q=80&auto=format'],
+  'חיפה':    ['https://images.unsplash.com/photo-1613412984420-1300edb8219f?w=600&h=400&fit=crop&q=80&auto=format'],
+  'default': ['https://images.unsplash.com/photo-1561369669-a6531d6eb336?w=600&h=400&fit=crop&q=80&auto=format']
+};
+
+// Map a job to the best subject category key (returns '' if no match)
+function jobSubjectKey(job) {
+  const s = (job.subject || '') + ' ' + (job.title || '') + ' ' + (job.role || '');
+  for (const cat of SUBJECT_CATS) {
+    if (cat.match && cat.match.some(m => s.includes(m))) return cat.key;
+  }
+  return '';
+}
+
+function pickPhoto(job) {
+  const subjKey = jobSubjectKey(job);
+  let pool = SUBJECT_PHOTOS[subjKey];
+  if (!pool || !pool.length) {
+    pool = REGION_PHOTOS_FALLBACK[job.region] || REGION_PHOTOS_FALLBACK['default'];
+  }
+  // hash by city+title for stable but varied photo per job
   let h = 0;
-  const s = city || region || '';
+  const s = (job.city || '') + (job.title || job.id || '');
   for (let i = 0; i < s.length; i++) h = (h * 31 + s.charCodeAt(i)) >>> 0;
   return pool[h % pool.length];
 }
@@ -789,9 +841,8 @@ function renderActiveFilters() {
 }
 
 function renderJobCard(job, badge) {
-  const region = (REGION_PHOTOS[job.region] || job.region) ? job.region : 'מרכז';
   const city = job.city || job.school || 'לא צוינה עיר';
-  const photo = pickPhoto(job.region, city);
+  const photo = pickPhoto(job);
   const title = job.title || (job.role ? job.role + (job.subject ? ' ל' + job.subject : '') : 'משרה');
 
   const metaParts = [];
