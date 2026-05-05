@@ -324,9 +324,11 @@
   window.EduraCopy = C;
 
   // mount אוטומטי אם הדף סימן data-edura-marquee על ה-body
+  // אופציונלי: data-edura-marquee-before="<selector>" כדי להציב לפני אלמנט אחר (ברירת מחדל: footer)
   document.addEventListener('DOMContentLoaded', () => {
     if (document.body && document.body.dataset.eduraMarquee === 'on') {
-      C.mountMarquee();
+      const before = document.body.dataset.eduraMarqueeBefore;
+      C.mountMarquee(before ? { before } : undefined);
     }
   });
 })();
