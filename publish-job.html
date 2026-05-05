@@ -846,6 +846,281 @@
     box-shadow: 0 -10px 16px -10px rgba(0,0,0,.15);
   }
   .submit-btn:disabled { opacity: .65; cursor: not-allowed; }
+
+  /* ─── Chatbot ─── */
+  .modal--chat {
+    padding: 0;
+    overflow: hidden;
+    height: 600px;
+    max-height: calc(100dvh - 32px);
+    max-height: calc(100vh - 32px);
+  }
+  .modal--chat .modal-close {
+    background: var(--white);
+    box-shadow: 0 2px 6px rgba(0,0,0,.10);
+    z-index: 5;
+  }
+  .chat-shell {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    width: 100%;
+    background: var(--bg);
+  }
+  .chat-header {
+    display: flex; align-items: center; gap: 12px;
+    padding: 18px 22px 16px;
+    background: var(--white);
+    border-bottom: 1px solid var(--line);
+    position: relative;
+    flex-shrink: 0;
+  }
+  .chat-avatar {
+    width: 42px; height: 42px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--lime), var(--lime-deep));
+    display: grid; place-items: center;
+    color: white;
+    flex-shrink: 0;
+    box-shadow: 0 4px 12px rgba(157,23,77,.20);
+    position: relative;
+  }
+  .chat-avatar svg { width: 22px; height: 22px; }
+  .chat-avatar::after {
+    content: '';
+    position: absolute;
+    bottom: -2px; left: -2px;
+    width: 12px; height: 12px;
+    border-radius: 50%;
+    background: var(--success);
+    border: 2.5px solid var(--white);
+  }
+  .chat-meta { display: flex; flex-direction: column; gap: 2px; flex: 1; min-width: 0; }
+  .chat-meta strong { font-size: 14.5px; color: var(--ink); font-weight: 800; }
+  .chat-meta span { font-size: 11.5px; color: var(--ink-mute); font-weight: 600; }
+  .chat-progress {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 3px;
+    background: var(--line-soft);
+    overflow: hidden;
+  }
+  .chat-progress-fill {
+    display: block; height: 100%; width: 0%;
+    background: linear-gradient(90deg, var(--lime), var(--lime-deep));
+    transition: width .45s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  .chat-stream {
+    flex: 1;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    padding: 18px 18px 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    scroll-behavior: smooth;
+  }
+  .chat-stream::-webkit-scrollbar { width: 5px; }
+  .chat-stream::-webkit-scrollbar-thumb { background: rgba(74,4,32,.18); border-radius: 3px; }
+
+  .bubble {
+    max-width: 82%;
+    padding: 10px 14px;
+    border-radius: 18px;
+    font-size: 14px;
+    line-height: 1.45;
+    animation: bubbleIn .28s cubic-bezier(0.34, 1.56, 0.64, 1);
+    word-wrap: break-word;
+    overflow-wrap: anywhere;
+  }
+  @keyframes bubbleIn {
+    from { opacity: 0; transform: translateY(10px) scale(.96); }
+    to   { opacity: 1; transform: translateY(0) scale(1); }
+  }
+  .bubble.bot {
+    background: var(--white);
+    color: var(--ink);
+    border: 1px solid var(--line);
+    align-self: flex-start;
+    border-bottom-right-radius: 6px;
+    box-shadow: 0 1px 2px rgba(0,0,0,.04);
+  }
+  .bubble.user {
+    background: var(--ink-lime);
+    color: var(--white);
+    align-self: flex-end;
+    border-bottom-left-radius: 6px;
+  }
+  .bubble.typing {
+    display: inline-flex; align-items: center; gap: 5px;
+    padding: 14px 16px;
+    align-self: flex-start;
+  }
+  .typing-dot {
+    width: 7px; height: 7px;
+    background: var(--ink-mute);
+    border-radius: 50%;
+    animation: typingBob 1.2s infinite;
+    opacity: .35;
+  }
+  .typing-dot:nth-child(2) { animation-delay: .15s; }
+  .typing-dot:nth-child(3) { animation-delay: .3s; }
+  @keyframes typingBob {
+    0%, 100% { transform: translateY(0); opacity: .3; }
+    50%      { transform: translateY(-4px); opacity: 1; }
+  }
+
+  .chat-input-row {
+    background: var(--white);
+    border-top: 1px solid var(--line);
+    padding: 12px 14px 14px;
+    flex-shrink: 0;
+  }
+  .chat-chips {
+    display: flex; flex-wrap: wrap; gap: 6px;
+    margin-bottom: 8px;
+    max-height: 140px;
+    overflow-y: auto;
+  }
+  .chat-chip {
+    padding: 9px 14px;
+    border-radius: 999px;
+    background: var(--lime-pale);
+    border: 1.5px solid var(--lime-soft);
+    color: var(--ink-lime);
+    font-size: 13.5px;
+    font-weight: 700;
+    cursor: pointer;
+    font-family: inherit;
+    transition: all .15s;
+    white-space: nowrap;
+  }
+  .chat-chip:hover {
+    background: var(--lime-soft);
+    border-color: var(--lime);
+    transform: translateY(-1px);
+  }
+  .chat-chip.primary {
+    background: var(--ink-lime);
+    color: var(--white);
+    border-color: var(--ink-lime);
+    padding: 11px 22px;
+  }
+  .chat-chip.primary:hover { background: #2A0210; border-color: #2A0210; }
+
+  .chat-input-bar { display: flex; gap: 8px; align-items: flex-end; }
+  .chat-input-bar input,
+  .chat-input-bar textarea {
+    flex: 1;
+    padding: 11px 14px;
+    border-radius: 22px;
+    border: 1.5px solid var(--line);
+    font-family: inherit;
+    font-size: 15px;
+    background: var(--bg);
+    color: var(--ink);
+    min-height: 44px;
+    transition: border-color .15s, background .15s;
+    resize: none;
+  }
+  .chat-input-bar textarea { min-height: 60px; padding-top: 11px; }
+  .chat-input-bar input:focus,
+  .chat-input-bar textarea:focus {
+    outline: none;
+    border-color: var(--lime);
+    background: var(--white);
+  }
+  .chat-send-btn {
+    width: 44px; height: 44px;
+    border-radius: 50%;
+    background: var(--ink-lime);
+    color: var(--white);
+    border: none;
+    cursor: pointer;
+    display: grid; place-items: center;
+    flex-shrink: 0;
+    transition: background .15s, transform .15s;
+  }
+  .chat-send-btn:hover { background: #2A0210; transform: scale(1.06); }
+  .chat-send-btn:disabled { opacity: .35; cursor: not-allowed; transform: none; }
+  .chat-send-btn svg { width: 18px; height: 18px; transform: scaleX(-1); }
+
+  .chat-skip {
+    display: inline-block;
+    margin-top: 4px;
+    font-size: 12.5px;
+    color: var(--ink-mute);
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    font-family: inherit;
+    padding: 4px 6px;
+  }
+  .chat-skip:hover { color: var(--ink); }
+
+  .chat-consent {
+    display: flex; gap: 10px; align-items: flex-start;
+    padding: 12px 14px;
+    background: var(--lime-pale);
+    border: 1px solid var(--lime-soft);
+    border-radius: 14px;
+    cursor: pointer;
+    font-size: 13px;
+    color: var(--ink);
+    margin-bottom: 8px;
+    line-height: 1.5;
+    transition: background .15s, border-color .15s;
+  }
+  .chat-consent.shake {
+    animation: shake .35s;
+    background: var(--error-soft);
+    border-color: var(--error);
+  }
+  @keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-5px); }
+    75% { transform: translateX(5px); }
+  }
+  .chat-consent input {
+    width: 22px; height: 22px;
+    flex-shrink: 0;
+    accent-color: var(--ink-lime);
+    margin-top: 1px;
+    cursor: pointer;
+  }
+
+  .modal--chat .modal-success {
+    padding: 28px 24px 24px;
+    text-align: center;
+    height: 100%;
+    width: 100%;
+    display: none;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    background: var(--white);
+    overflow-y: auto;
+  }
+  .modal--chat.is-success .chat-shell { display: none; }
+  .modal--chat.is-success .modal-success { display: flex; }
+
+  /* Mobile chatbot */
+  @media (max-width: 640px) {
+    .modal--chat {
+      height: 100dvh;
+      height: 100vh;
+      max-height: 100dvh;
+      max-height: 100vh;
+      border-radius: 0;
+    }
+    .modal-overlay:has(.modal--chat) { padding: 0 !important; }
+    .chat-header { padding: 14px 18px 14px; }
+    .chat-stream { padding: 14px 14px 10px; }
+    .bubble { font-size: 14.5px; max-width: 88%; }
+  }
   .submit-btn.teacher { background: var(--ink); }
   .submit-btn.teacher:hover:not(:disabled) { background: var(--ink-soft); }
   .submit-btn.school { background: var(--orange); }
@@ -1231,107 +1506,27 @@
   </div>
 </footer>
 
-<!-- ─── Teacher modal (looking for a job) ─── -->
+<!-- ─── Teacher modal (chatbot — looking for a job) ─── -->
 <div class="modal-overlay" id="modal-teacher" role="dialog" aria-labelledby="teacher-title" aria-modal="true" hidden>
-  <div class="modal" id="modal-teacher-inner" onclick="event.stopPropagation()">
+  <div class="modal modal--chat" id="modal-teacher-inner" onclick="event.stopPropagation()">
     <button type="button" class="modal-close" id="close-teacher" aria-label="סגור">&times;</button>
 
-    <form class="modal-form" id="form-teacher" novalidate>
-      <div class="modal-supra teacher">חיפוש משרה למורים · חינם</div>
-      <h2 id="teacher-title">מחפש/ת משרה? אנחנו נתאים</h2>
-      <p class="modal-info">ממלאים פרטים בסיסיים — והפרופיל שלכם נכנס למאגר. בתי ספר עם משרות מתאימות יוכלו לפנות אליכם, ואתם תקבלו גישה לכל מאגר המשרות.</p>
-
-      <!-- honeypot -->
-      <div class="hp-field" aria-hidden="true">
-        <label for="pt-hp">אם אתם רואים שדה זה — אל תמלאו אותו</label>
-        <input type="text" id="pt-hp" name="hp" tabindex="-1" autocomplete="off" />
-      </div>
-
-      <div class="form-row">
-        <div class="field">
-          <label for="pt-name">שם מלא <span class="req" aria-hidden="true">*</span></label>
-          <input type="text" id="pt-name" name="name" placeholder="שם פרטי ומשפחה" required autocomplete="name" />
-          <span class="field-error">שם מלא חובה</span>
+    <div class="chat-shell" id="chat-teacher" data-flow="teacher">
+      <div class="chat-header">
+        <div class="chat-avatar" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+          </svg>
         </div>
-        <div class="field">
-          <label for="pt-subject">מקצוע <span class="req" aria-hidden="true">*</span></label>
-          <input type="text" id="pt-subject" name="subject" placeholder="אנגלית, מתמטיקה..." required />
-          <span class="field-error">מקצוע חובה</span>
+        <div class="chat-meta">
+          <strong id="teacher-title">אדורה</strong>
+          <span>חיפוש משרה למורים · חינם</span>
         </div>
+        <div class="chat-progress"><span class="chat-progress-fill"></span></div>
       </div>
-
-      <div class="form-row-3">
-        <div class="field">
-          <label for="pt-region">אזור</label>
-          <select id="pt-region" name="region">
-            <option value="">בחרו</option>
-            <option value="ירושלים">ירושלים והסביבה</option>
-            <option value="מרכז">מרכז (גוש דן, פ"ת, רעננה...)</option>
-            <option value="צפון">צפון</option>
-            <option value="דרום">דרום</option>
-            <option value="שפלה">שפלה (אשדוד, רחובות, רמלה...)</option>
-            <option value="כל הארץ">פתוחים לכל הארץ</option>
-          </select>
-        </div>
-        <div class="field">
-          <label for="pt-city">עיר</label>
-          <input type="text" id="pt-city" name="city" placeholder="פתח תקווה" autocomplete="address-level2" />
-        </div>
-        <div class="field">
-          <label for="pt-level">שכבה</label>
-          <select id="pt-level" name="level">
-            <option value="">לא צוין</option>
-            <option value="גן">גן</option>
-            <option value="יסודי">יסודי</option>
-            <option value="חטיבת ביניים">חטיבת ביניים</option>
-            <option value="תיכון">תיכון</option>
-            <option value="חינוך מיוחד">חינוך מיוחד</option>
-          </select>
-        </div>
-      </div>
-
-      <div class="form-row">
-        <div class="field">
-          <label for="pt-scope">היקף משרה</label>
-          <select id="pt-scope" name="scope">
-            <option value="">לא צוין</option>
-            <option value="מלאה">מלאה</option>
-            <option value="חלקית">חלקית</option>
-            <option value="גמישה">גמישה</option>
-          </select>
-        </div>
-        <div class="field">
-          <label for="pt-phone">טלפון</label>
-          <input type="tel" id="pt-phone" name="phone" placeholder="050-1234567" autocomplete="tel" inputmode="tel" />
-          <span class="field-error">טלפון לא תקין</span>
-        </div>
-      </div>
-
-      <div class="field">
-        <label for="pt-email">מייל <span class="req" aria-hidden="true">*</span></label>
-        <input type="email" id="pt-email" name="email" placeholder="name@example.com" required autocomplete="email" inputmode="email" />
-        <span class="field-error">כתובת מייל לא תקינה</span>
-      </div>
-
-      <div class="field">
-        <label for="pt-notes">הערות (אופציונלי)</label>
-        <textarea id="pt-notes" name="notes" placeholder="ניסיון רלוונטי, העדפות נוספות..."></textarea>
-      </div>
-
-      <div class="privacy-note">
-        <strong>מה קורה עם הפרטים שלך:</strong> אדורה שומרת אותם מוצפנים. רק בתי ספר עם משרה תואמת רואים את שם, מייל וטלפון. אפשר להסיר עצמך מהמאגר בכל רגע במייל לכתובת meytal@edura.co.il.
-      </div>
-
-      <label class="consent" id="pt-consent-label">
-        <input type="checkbox" id="pt-consent" name="consent" />
-        <span>אני מסכים/ה שאדורה תשמור את הפרטים ותציג לי משרות מתאימות, ושבית ספר רלוונטי יוכל לפנות אליי.</span>
-      </label>
-
-      <button type="submit" class="submit-btn teacher" id="submit-teacher">
-        <span class="spinner" aria-hidden="true"></span>
-        <span class="btn-label">שליחה</span>
-      </button>
-    </form>
+      <div class="chat-stream" aria-live="polite"></div>
+      <div class="chat-input-row"></div>
+    </div>
 
     <div class="modal-success" id="success-teacher">
       <div class="success-icon">
@@ -1350,137 +1545,27 @@
   </div>
 </div>
 
-<!-- ─── School modal (job posting) ─── -->
+<!-- ─── School modal (chatbot — job posting) ─── -->
 <div class="modal-overlay" id="modal-school" role="dialog" aria-labelledby="school-title" aria-modal="true" hidden>
-  <div class="modal" id="modal-school-inner" onclick="event.stopPropagation()">
+  <div class="modal modal--chat" id="modal-school-inner" onclick="event.stopPropagation()">
     <button type="button" class="modal-close" id="close-school" aria-label="סגור">&times;</button>
 
-    <form class="modal-form" id="form-school" novalidate>
-      <div class="modal-supra school">פרסום משרה לבתי ספר · חינם</div>
-      <h2 id="school-title">מפרסמים משרה — מקבלים מועמדים מתאימים</h2>
-      <p class="modal-info">ממלאים פרטי משרה — והיא נכנסת למאגר. מורים רשומים יראו אותה לפי האזור, המקצוע והשכבה ויפנו אליכם ישירות.</p>
-
-      <!-- honeypot -->
-      <div class="hp-field" aria-hidden="true">
-        <label for="ps-hp">אם אתם רואים שדה זה — אל תמלאו אותו</label>
-        <input type="text" id="ps-hp" name="hp" tabindex="-1" autocomplete="off" />
+    <div class="chat-shell" id="chat-school" data-flow="school">
+      <div class="chat-header">
+        <div class="chat-avatar" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+          </svg>
+        </div>
+        <div class="chat-meta">
+          <strong id="school-title">אדורה</strong>
+          <span>פרסום משרה ב-2 דקות · חינם</span>
+        </div>
+        <div class="chat-progress"><span class="chat-progress-fill"></span></div>
       </div>
-
-      <div class="form-row">
-        <div class="field">
-          <label for="ps-school">שם בית הספר <span class="req" aria-hidden="true">*</span></label>
-          <input type="text" id="ps-school" name="school" placeholder="לדוגמה: תיכון אורט אורנית" required />
-          <span class="field-error">שם בית הספר חובה</span>
-        </div>
-        <div class="field">
-          <label for="ps-subject">מקצוע <span class="req" aria-hidden="true">*</span></label>
-          <input type="text" id="ps-subject" name="subject" placeholder="אנגלית, מתמטיקה..." required />
-          <span class="field-error">מקצוע חובה</span>
-        </div>
-      </div>
-
-      <div class="form-row">
-        <div class="field">
-          <label for="ps-role">תפקיד</label>
-          <select id="ps-role" name="role">
-            <option value="מורה">מורה</option>
-            <option value="מחנך/ת">מחנך/ת</option>
-            <option value="רכז/ת">רכז/ת</option>
-            <option value="יועץ/ת">יועץ/ת</option>
-            <option value="מדריך/ה">מדריך/ה</option>
-            <option value="סייע/ת">סייע/ת</option>
-            <option value="מנהל/ת">מנהל/ת</option>
-            <option value="סגן/ית">סגן/ית מנהל</option>
-          </select>
-        </div>
-        <div class="field">
-          <label for="ps-scope">היקף משרה</label>
-          <select id="ps-scope" name="scope">
-            <option value="">לא צוין</option>
-            <option value="מלאה">מלאה</option>
-            <option value="חלקית">חלקית</option>
-            <option value="מלאה/חלקית">מלאה/חלקית</option>
-            <option value="גמישה">גמישה</option>
-          </select>
-        </div>
-      </div>
-
-      <div class="form-row-3">
-        <div class="field">
-          <label for="ps-region">אזור</label>
-          <select id="ps-region" name="region">
-            <option value="">בחרו</option>
-            <option value="ירושלים">ירושלים</option>
-            <option value="מרכז">מרכז</option>
-            <option value="צפון">צפון</option>
-            <option value="דרום">דרום</option>
-            <option value="שפלה">שפלה</option>
-          </select>
-        </div>
-        <div class="field">
-          <label for="ps-city">עיר</label>
-          <input type="text" id="ps-city" name="city" placeholder="ראש העין" autocomplete="address-level2" />
-        </div>
-        <div class="field">
-          <label for="ps-level">שכבה</label>
-          <select id="ps-level" name="level">
-            <option value="">לא צוין</option>
-            <option value="גן">גן</option>
-            <option value="יסודי">יסודי</option>
-            <option value="חטיבת ביניים">חטיבת ביניים</option>
-            <option value="תיכון">תיכון</option>
-            <option value="חינוך מיוחד">חינוך מיוחד</option>
-          </select>
-        </div>
-      </div>
-
-      <div class="field">
-        <label for="ps-sector">מגזר</label>
-        <select id="ps-sector" name="sector">
-          <option value="ממלכתי">ממלכתי</option>
-          <option value='ממ"ד'>ממ"ד</option>
-          <option value="חרדי">חרדי</option>
-          <option value="ערבי">ערבי</option>
-        </select>
-      </div>
-
-      <div class="field">
-        <label for="ps-desc">תיאור המשרה</label>
-        <textarea id="ps-desc" name="description" placeholder='לדוגמה: דרוש/ה מורה לאנגלית לשנת תשפ"ז. ניסיון בהגשה לבגרות. אפשרות למשרה מלאה או חלקית.'></textarea>
-      </div>
-
-      <div class="form-row-3">
-        <div class="field">
-          <label for="ps-contact-name">איש קשר <span class="req" aria-hidden="true">*</span></label>
-          <input type="text" id="ps-contact-name" name="contactName" placeholder="שם המנהל/ת" required autocomplete="name" />
-          <span class="field-error">שם איש קשר חובה</span>
-        </div>
-        <div class="field">
-          <label for="ps-email">מייל <span class="req" aria-hidden="true">*</span></label>
-          <input type="email" id="ps-email" name="email" placeholder="contact@school.org.il" required autocomplete="email" inputmode="email" />
-          <span class="field-error">כתובת מייל לא תקינה</span>
-        </div>
-        <div class="field">
-          <label for="ps-phone">טלפון <span class="req" aria-hidden="true">*</span></label>
-          <input type="tel" id="ps-phone" name="phone" placeholder="03-1234567" required autocomplete="tel" inputmode="tel" />
-          <span class="field-error">טלפון לא תקין</span>
-        </div>
-      </div>
-
-      <div class="privacy-note">
-        <strong>מה קורה אחרי שליחה:</strong> המשרה נכנסת למאגר אדורה. מורים רשומים יראו אותה ויפנו אליכם ישירות במייל / טלפון. אתם מקבלים גישה לכל מאגר המורים.
-      </div>
-
-      <label class="consent" id="ps-consent-label">
-        <input type="checkbox" id="ps-consent" name="consent" />
-        <span>אני מסכים/ה שאדורה תפרסם את המשרה ותציג אותה למורים שמחפשים משרה תואמת.</span>
-      </label>
-
-      <button type="submit" class="submit-btn school" id="submit-school">
-        <span class="spinner" aria-hidden="true"></span>
-        <span class="btn-label">פרסום משרה</span>
-      </button>
-    </form>
+      <div class="chat-stream" aria-live="polite"></div>
+      <div class="chat-input-row"></div>
+    </div>
 
     <div class="modal-success" id="success-school">
       <div class="success-icon">
@@ -1995,6 +2080,299 @@
     }, { threshold: 0.25, rootMargin: '0px 0px -50px 0px' });
     io.observe(strip);
   })();
+
+  // ════════════════════════════════════════════════════════════════════
+  // Chatbot engine
+  // ════════════════════════════════════════════════════════════════════
+  const isEmail = (v) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);
+  const isPhone = (v) => /^[\d\-+\s()]{9,16}$/.test(v.replace(/\s/g, ''));
+
+  const REGION_OPTS = ['ירושלים והסביבה','מרכז (גוש דן)','שפלה','צפון','דרום','כל הארץ'];
+  const LEVEL_OPTS  = ['גן','יסודי','חטיבת ביניים','תיכון','חינוך מיוחד'];
+  const SUBJECT_HINTS = ['מתמטיקה','אנגלית','עברית','תנ״ך','היסטוריה','אזרחות','ספרות','מדעים','פיזיקה','כימיה','ביולוגיה','מחשבים','חינוך גופני','אומנות','מוזיקה'];
+
+  const TEACHER_FLOW = [
+    { id: 'name',    type: 'text',  q: 'איך קוראים לך?', placeholder: 'שם פרטי ומשפחה', required: true, autocomplete: 'name', errorMsg: 'אפשר לכתוב שם מלא?' },
+    { id: 'subject', type: 'chips-or-text', q: 'איזה מקצוע את/ה מלמד/ת?', options: SUBJECT_HINTS, placeholder: 'או הקלידו מקצוע אחר', required: true },
+    { id: 'level',   type: 'chips', q: 'איזו שכבת גיל?', options: LEVEL_OPTS, skip: true, skipLabel: 'דלגו' },
+    { id: 'region',  type: 'chips', q: 'באיזה אזור?', options: REGION_OPTS, skip: true },
+    { id: 'city',    type: 'text',  q: 'יש עיר ספציפית שתעדיפו?', placeholder: 'למשל פתח תקווה', skip: true, autocomplete: 'address-level2' },
+    { id: 'scope',   type: 'chips', q: 'איזה היקף משרה מתאים?', options: ['מלאה','חלקית','גמישה'], skip: true },
+    { id: 'email',   type: 'email', q: 'מצוין! לאן לשלוח לך התראות על משרות?', placeholder: 'name@example.com', required: true, autocomplete: 'email', errorMsg: 'נראה שיש טעות במייל. לנסות שוב?' },
+    { id: 'phone',   type: 'tel',   q: 'מספר טלפון? (אופציונלי — בתי הספר יוכלו להתקשר ישירות)', placeholder: '050-1234567', skip: true, autocomplete: 'tel', errorMsg: 'מספר לא תקין. אפשר רק ספרות.' },
+    { id: 'notes',   type: 'textarea', q: 'משהו נוסף שכדאי לבית הספר לדעת? (ניסיון, העדפות...)', placeholder: 'אופציונלי', skip: true, skipLabel: 'דלגו, אין לי מה להוסיף' },
+    { id: 'consent', type: 'consent',
+      q: 'אני מסכימ/ה שאדורה תשמור את הפרטים ותציג לי משרות מתאימות, ושבית ספר רלוונטי יוכל לפנות אליי.',
+      cta: 'אישור ושליחה' },
+  ];
+
+  const ROLE_OPTS  = ['מורה','מחנך/ת','רכז/ת','יועץ/ת','מדריך/ה','סייע/ת','מנהל/ת','סגן/ית מנהל'];
+  const SCOPE_OPTS = ['מלאה','חלקית','מלאה/חלקית','גמישה'];
+  const SECTOR_OPTS = ['ממלכתי','ממ"ד','חרדי','ערבי'];
+
+  const SCHOOL_FLOW = [
+    { id: 'school',   type: 'text',  q: 'מה שם בית הספר?', placeholder: 'תיכון אורט אורנית', required: true, errorMsg: 'איך קוראים לבית הספר?' },
+    { id: 'subject',  type: 'chips-or-text', q: 'איזה מקצוע מחפשים?', options: SUBJECT_HINTS, placeholder: 'או הקלידו מקצוע אחר', required: true },
+    { id: 'role',     type: 'chips', q: 'איזה תפקיד?', options: ROLE_OPTS, skip: true, skipLabel: 'דלגו (ברירת מחדל: מורה)' },
+    { id: 'scope',    type: 'chips', q: 'היקף המשרה?', options: SCOPE_OPTS, skip: true },
+    { id: 'level',    type: 'chips', q: 'איזו שכבה?', options: LEVEL_OPTS, skip: true },
+    { id: 'region',   type: 'chips', q: 'באיזה אזור?', options: REGION_OPTS, skip: true },
+    { id: 'city',     type: 'text',  q: 'באיזו עיר נמצא בית הספר?', placeholder: 'ראש העין', skip: true, autocomplete: 'address-level2' },
+    { id: 'sector',   type: 'chips', q: 'מגזר?', options: SECTOR_OPTS, skip: true, skipLabel: 'דלגו (ברירת מחדל: ממלכתי)' },
+    { id: 'description', type: 'textarea', q: 'תיאור קצר של המשרה? (תפקיד, תכניות, ניסיון נדרש...)', placeholder: 'אופציונלי — אבל עוזר למצוא מורים מתאימים', skip: true },
+    { id: 'contactName', type: 'text', q: 'מי איש הקשר אצלכם?', placeholder: 'שם המנהל/ת או הרכז/ת', required: true, autocomplete: 'name' },
+    { id: 'email',    type: 'email', q: 'לאן מורים מתעניינים יוכלו לכתוב?', placeholder: 'contact@school.org.il', required: true, autocomplete: 'email', errorMsg: 'נראה שיש טעות במייל.' },
+    { id: 'phone',    type: 'tel',   q: 'ומספר טלפון?', placeholder: '03-1234567', required: true, autocomplete: 'tel', errorMsg: 'מספר לא תקין.' },
+    { id: 'consent',  type: 'consent',
+      q: 'אני מסכימ/ה שאדורה תפרסם את המשרה ותציג אותה למורים שמחפשים משרה תואמת.',
+      cta: 'פרסום משרה' },
+  ];
+
+  function ChatBot(modalId, flow, action) {
+    const modal = document.getElementById(modalId);
+    const inner = modal.querySelector('.modal--chat');
+    const stream = modal.querySelector('.chat-stream');
+    const inputRow = modal.querySelector('.chat-input-row');
+    const progress = modal.querySelector('.chat-progress-fill');
+
+    let state = {};
+    let stepIdx = 0;
+
+    const scroll = () => { stream.scrollTop = stream.scrollHeight; };
+
+    const showTyping = () => {
+      const t = document.createElement('div');
+      t.className = 'bubble typing';
+      t.id = '__typing__';
+      t.innerHTML = '<span class="typing-dot"></span><span class="typing-dot"></span><span class="typing-dot"></span>';
+      stream.appendChild(t);
+      scroll();
+    };
+    const hideTyping = () => {
+      const t = stream.querySelector('#__typing__');
+      if (t) t.remove();
+    };
+
+    const botSay = (text) => {
+      const b = document.createElement('div');
+      b.className = 'bubble bot';
+      b.textContent = text;
+      stream.appendChild(b);
+      scroll();
+    };
+    const userSay = (text) => {
+      const b = document.createElement('div');
+      b.className = 'bubble user';
+      b.textContent = text;
+      stream.appendChild(b);
+      scroll();
+    };
+
+    const updateProgress = () => {
+      const pct = Math.round((stepIdx / flow.length) * 100);
+      if (progress) progress.style.width = pct + '%';
+    };
+
+    const buildSkip = (step) => {
+      const s = document.createElement('button');
+      s.type = 'button';
+      s.className = 'chat-skip';
+      s.textContent = step.skipLabel || 'דלגו';
+      s.onclick = () => accept(step, '', '— דילגתי —', true);
+      return s;
+    };
+
+    const buildTextInput = (step) => {
+      const row = document.createElement('div');
+      row.className = 'chat-input-bar';
+      const isArea = step.type === 'textarea';
+      const input = document.createElement(isArea ? 'textarea' : 'input');
+      if (!isArea) {
+        input.type = step.type === 'email' ? 'email' : step.type === 'tel' ? 'tel' : 'text';
+        if (step.type === 'tel')   input.inputMode = 'tel';
+        if (step.type === 'email') input.inputMode = 'email';
+      }
+      input.placeholder = step.placeholder || 'תקליד/י כאן...';
+      if (step.autocomplete) input.autocomplete = step.autocomplete;
+
+      const send = document.createElement('button');
+      send.type = 'button';
+      send.className = 'chat-send-btn';
+      send.setAttribute('aria-label', 'שלח');
+      send.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>';
+
+      const submit = () => {
+        const v = (input.value || '').trim();
+        if (!v) {
+          if (step.required) {
+            input.focus();
+            return;
+          }
+          return accept(step, '', '— דילגתי —', true);
+        }
+        if (step.type === 'email' && !isEmail(v)) {
+          botSay(step.errorMsg || 'המייל לא נראה תקין. לנסות שוב?');
+          return;
+        }
+        if (step.type === 'tel' && !isPhone(v)) {
+          botSay(step.errorMsg || 'מספר לא תקין.');
+          return;
+        }
+        accept(step, v, v);
+      };
+      send.onclick = submit;
+      input.onkeydown = (e) => {
+        if (e.key === 'Enter' && !e.shiftKey && !isArea) { e.preventDefault(); submit(); }
+        if (e.key === 'Enter' && (e.metaKey || e.ctrlKey) && isArea) { e.preventDefault(); submit(); }
+      };
+
+      row.appendChild(input);
+      row.appendChild(send);
+      setTimeout(() => input.focus({ preventScroll: true }), 60);
+      return row;
+    };
+
+    const renderInput = (step) => {
+      inputRow.innerHTML = '';
+      if (step.type === 'chips' || step.type === 'chips-or-text') {
+        const chips = document.createElement('div');
+        chips.className = 'chat-chips';
+        step.options.forEach(opt => {
+          const c = document.createElement('button');
+          c.className = 'chat-chip';
+          c.type = 'button';
+          c.textContent = opt;
+          c.onclick = () => accept(step, opt, opt);
+          chips.appendChild(c);
+        });
+        inputRow.appendChild(chips);
+        if (step.type === 'chips-or-text') {
+          inputRow.appendChild(buildTextInput(step));
+        }
+        if (step.skip) inputRow.appendChild(buildSkip(step));
+      } else if (step.type === 'consent') {
+        const note = document.createElement('div');
+        note.style.cssText = 'font-size:11.5px; color:var(--ink-mute); padding:0 4px 8px; line-height:1.5;';
+        note.textContent = action === 'submit_teacher'
+          ? 'הפרטים נשמרים מוצפנים. אפשר להסיר עצמך בכל רגע במייל ל-meytal@edura.co.il.'
+          : 'המשרה תוצג למורים רשומים שמחפשים משרה תואמת.';
+        const consent = document.createElement('label');
+        consent.className = 'chat-consent';
+        consent.innerHTML = '<input type="checkbox" /><span>' + step.q + '</span>';
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'chat-chip primary';
+        btn.style.cssText = 'width:100%; margin-top:4px; padding:14px 22px; font-size:15px;';
+        btn.textContent = step.cta || 'שליחה';
+        btn.onclick = () => {
+          const ck = consent.querySelector('input');
+          if (!ck.checked) {
+            consent.classList.add('shake');
+            setTimeout(() => consent.classList.remove('shake'), 400);
+            return;
+          }
+          accept(step, true, '✓ אישרתי');
+        };
+        inputRow.appendChild(note);
+        inputRow.appendChild(consent);
+        inputRow.appendChild(btn);
+      } else {
+        inputRow.appendChild(buildTextInput(step));
+        if (step.skip) inputRow.appendChild(buildSkip(step));
+      }
+    };
+
+    const accept = (step, value, displayText, isSkip) => {
+      state[step.id] = value;
+      if (!isSkip) userSay(displayText);
+      else userSay(displayText);
+      inputRow.innerHTML = '';
+      stepIdx++;
+      askNext(380);
+    };
+
+    const askNext = (delay = 600) => {
+      updateProgress();
+      if (stepIdx >= flow.length) return finish();
+      const step = flow[stepIdx];
+      setTimeout(() => {
+        showTyping();
+        setTimeout(() => {
+          hideTyping();
+          botSay(step.q);
+          renderInput(step);
+        }, 650 + Math.random() * 250);
+      }, delay);
+    };
+
+    const finish = async () => {
+      if (progress) progress.style.width = '100%';
+      botSay('מעולה — שולחים עכשיו...');
+      showTyping();
+
+      // Build payload
+      const payload = { action: action, hp: '' };
+      Object.assign(payload, state);
+      delete payload.consent;
+
+      try {
+        const res = await fetch(SUBMISSIONS_URL, {
+          method: 'POST',
+          body: JSON.stringify(payload),
+          headers: { 'Content-Type': 'text/plain;charset=utf-8' }
+        });
+        const data = await res.json();
+        hideTyping();
+        if (data && data.ok) {
+          // Success — show success card
+          const refSpan = document.getElementById(modalId === 'modal-teacher' ? 'ref-teacher' : 'ref-school');
+          if (refSpan) refSpan.textContent = data.refId || '—';
+          inner.classList.add('is-success');
+        } else {
+          throw new Error((data && data.error) || 'שליחה נכשלה');
+        }
+      } catch (err) {
+        hideTyping();
+        botSay('משהו השתבש בשליחה. נסה שוב או כתבו ל-meytal@edura.co.il');
+        const retry = document.createElement('button');
+        retry.type = 'button';
+        retry.className = 'chat-chip primary';
+        retry.textContent = 'ניסיון נוסף';
+        retry.style.marginTop = '6px';
+        retry.onclick = () => { stepIdx--; askNext(100); };
+        inputRow.innerHTML = '';
+        inputRow.appendChild(retry);
+      }
+    };
+
+    return {
+      start() {
+        stream.innerHTML = '';
+        inputRow.innerHTML = '';
+        state = {};
+        stepIdx = 0;
+        if (progress) progress.style.width = '0%';
+        const greet = action === 'submit_teacher'
+          ? 'היי! 👋 אני אדורה. אני אעזור למצוא לך משרה תואמת.'
+          : 'היי! 👋 אני אדורה. אעזור לך לפרסם משרה תוך פחות מ-2 דקות.';
+        botSay(greet);
+        askNext(900);
+      },
+    };
+  }
+
+  // Init bots — fresh start on each modal open
+  let teacherBot, schoolBot;
+  $('open-teacher')?.addEventListener('click', () => {
+    if (!teacherBot) teacherBot = ChatBot('modal-teacher', TEACHER_FLOW, 'submit_teacher');
+    document.getElementById('modal-teacher-inner').classList.remove('is-success');
+    teacherBot.start();
+  });
+  $('open-school')?.addEventListener('click', () => {
+    if (!schoolBot) schoolBot = ChatBot('modal-school', SCHOOL_FLOW, 'submit_job');
+    document.getElementById('modal-school-inner').classList.remove('is-success');
+    schoolBot.start();
+  });
 </script>
 
 </body>
