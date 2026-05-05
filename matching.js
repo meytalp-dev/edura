@@ -6,7 +6,19 @@
 (function (root) {
   'use strict';
 
-  const MIN_SCORE = 50;
+  // סדר חשיבות (מבוקש): עיר > מקצוע > שכבה > היקף > אזור (משני)
+  // המשקלים נבחרו כך שעיר זהה תמיד מנצחת כל שילוב אחר, ובהיעדר עיר
+  // מקצוע מוביל. אזור הוא תוספת רכה — כבר לא חובה.
+  const W = {
+    CITY_SAME: 100,
+    SUBJECT_EXACT: 50,
+    SUBJECT_PARTIAL: 30,
+    LEVEL_MATCH: 25,    // שני הצדדים ציינו ויש חפיפה
+    SCOPE_MATCH: 15,    // שני הצדדים ציינו ויש קלסיפיקציה זהה (מלאה/חלקית)
+    REGION_SAME: 8,
+    REGION_NEIGHBOR: 4,
+  };
+  const MIN_SCORE = 35;
 
   // Level synonyms — group equivalent stage names (יסודי/חט"ב/תיכון/גן)
   const LEVEL_SYNONYMS = [
@@ -145,26 +157,35 @@
     return best;
   }
 
-  function cityBonus(cA, cB) {
+  function citySame(cA, cB) {
     const a = normalizeText(cA);
     const b = normalizeText(cB);
-    if (!a || !b) return 0;
-    return a === b ? 10 : 0;
+    if (!a || !b) return false;
+    return a === b;
   }
 
-  // City is a sort bonus only — the matching unit is region.
-  // מורה שהצהיר אזור = מוכן לנסוע באזור. עיר היא איפה שהוא גר, לא איפה שהוא חייב לעבוד.
-  function cityCompatible() {
-    return true;
+  // Scope canonicalization — מסווג ל-full / partial / unknown.
+  // "מלאה" / "100%" → full. "חלקית" / "X ימים" / "X%" אחר → partial. ריק → unknown.
+  function canonicalScope(scope) {
+    const s = normalizeText(scope);
+    if (!s) return '';
+    if (/מלא/.test(s) || /\b100\s*%/.test(s)) return 'full';
+    if (/חלק/.test(s) || /ימי/.test(s) || /%|אחוז/.test(s) || /\d/.test(s)) return 'partial';
+    return '';
   }
 
-  // Level must match if both sides specify one (יסודי≠תיכון).
-  // If either side is missing — don't penalize.
-  // Multi-level support: 'יסודי / חטיבה' compatible with either.
-  function levelCompatible(lA, lB) {
+  function scopeMatch(scA, scB) {
+    const a = canonicalScope(scA);
+    const b = canonicalScope(scB);
+    if (!a || !b) return false;
+    return a === b;
+  }
+
+  // שכבה — חובה אם שני הצדדים ציינו (יסודי≠תיכון). Bonus רק אם באמת חופפים.
+  function levelHasOverlap(lA, lB) {
     const partsA = splitSubjects(lA).map(canonicalLevel).filter(Boolean);
     const partsB = splitSubjects(lB).map(canonicalLevel).filter(Boolean);
-    if (partsA.length === 0 || partsB.length === 0) return true;
+    if (partsA.length === 0 || partsB.length === 0) return null;  // missing
     for (const a of partsA) {
       for (const b of partsB) {
         if (a === b) return true;
@@ -174,17 +195,38 @@
   }
 
   function scoreMatch(teacher, job) {
+    // ── חובות (filters) ───────────────────────────────
+    // מקצוע: חייב להיות חופף — אחרת אין טעם
     const subj = subjectScore(teacher.subject, job.subject);
     if (subj === 0) return 0;
-    // אזור הוא חובה: בלי חפיפה אזורית/שכנה — אין התאמה, גם אם המקצוע זהה
-    const reg = regionScore(teacher.region, job.region);
-    if (reg === 0) return 0;
-    // שכבה חובה אם שני הצדדים ציינו (יסודי≠תיכון)
-    if (!levelCompatible(teacher.level, job.level)) return 0;
-    // עיר חובה אם שני הצדדים ציינו
-    if (!cityCompatible(teacher.city, job.city)) return 0;
-    const city = cityBonus(teacher.city, job.city);
-    return subj + reg + city;
+    // שכבה: אם שניהם ציינו — חייב להיות חופף (יסודי≠תיכון)
+    const levelOverlap = levelHasOverlap(teacher.level, job.level);
+    if (levelOverlap === false) return 0;
+
+    // ── ניקוד לפי סדר עדיפות ──────────────────────────
+    let score = 0;
+
+    // 1. עיר — האות החזק ביותר
+    const sameCity = citySame(teacher.city, job.city);
+    if (sameCity) score += W.CITY_SAME;
+
+    // 2. מקצוע
+    score += (subj === 60) ? W.SUBJECT_EXACT : W.SUBJECT_PARTIAL;
+
+    // 3. שכבה — בונוס רק אם שניהם ציינו וחופפים
+    if (levelOverlap === true) score += W.LEVEL_MATCH;
+
+    // 4. היקף משרה — בונוס אם שניהם בקלסיפיקציה זהה
+    if (scopeMatch(teacher.scope, job.scope)) score += W.SCOPE_MATCH;
+
+    // 5. אזור — משני, רק כשעיר לא תפסה (כי עיר זהה כבר משמעותה אזור זהה)
+    if (!sameCity) {
+      const reg = regionScore(teacher.region, job.region);
+      if (reg === 30) score += W.REGION_SAME;
+      else if (reg === 15) score += W.REGION_NEIGHBOR;
+    }
+
+    return score;
   }
 
   function findJobsForTeacher(teacher, jobs) {
