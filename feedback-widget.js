@@ -16,7 +16,7 @@
 
   var STYLES = '' +
     '.efb-fab{' +
-    'position:fixed;bottom:24px;right:24px;' +
+    'position:fixed;top:24px;right:24px;' +
     'display:flex;align-items:center;gap:10px;' +
     'background:#25D366;color:#fff;' +
     'padding:12px 18px 12px 14px;' +
