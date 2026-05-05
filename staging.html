@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Edura · אישור משרות לפרסום</title>
+<meta name="robots" content="noindex" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --teal: #5EC8C8;
+    --teal-deep: #14B8A6;
+    --teal-glow: rgba(94,200,200,.18);
+    --orange: #F97316;
+    --orange-soft: rgba(249,115,22,.10);
+    --ink: #0B2A4A;
+    --ink-soft: #1E3A5F;
+    --ink-mute: #475569;
+    --bg: #F8FAFC;
+    --white: #FFFFFF;
+    --line: #E2E8F0;
+    --line-soft: #F1F5F9;
+    --green: #10B981;
+    --green-soft: #D1FAE5;
+    --red: #EF4444;
+    --red-soft: #FEE2E2;
+    --shadow-sm: 0 1px 3px rgba(11,42,74,.06);
+    --shadow-md: 0 4px 12px rgba(11,42,74,.08);
+  }
+  * { box-sizing: border-box; }
+  html { overflow-x: hidden; }
+  body {
+    font-family: 'Heebo', system-ui, sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+    margin: 0;
+    line-height: 1.55;
+    min-height: 100vh;
+  }
+  .wrap { max-width: 1100px; margin: 0 auto; padding: 28px 20px 80px; }
+
+  header.page {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 22px; padding-bottom: 18px; border-bottom: 1px solid var(--line);
+    flex-wrap: wrap; gap: 12px;
+  }
+  header.page h1 { font-size: 26px; font-weight: 800; margin: 0; letter-spacing: -.4px; }
+  header.page .scan-meta { font-size: 13px; color: var(--ink-mute); }
+
+  .stats-bar {
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px;
+    margin-bottom: 22px;
+  }
+  .stat {
+    background: var(--white); padding: 14px 16px; border-radius: 12px;
+    border: 1px solid var(--line); box-shadow: var(--shadow-sm);
+  }
+  .stat-num { font-size: 24px; font-weight: 900; line-height: 1; letter-spacing: -.5px; }
+  .stat-label { font-size: 12px; color: var(--ink-mute); margin-top: 4px; font-weight: 600; }
+  .stat.approved .stat-num { color: var(--green); }
+  .stat.rejected .stat-num { color: var(--red); }
+  .stat.total .stat-num { color: var(--teal-deep); }
+  .stat.remaining .stat-num { color: var(--orange); }
+
+  .filters {
+    display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 18px;
+  }
+  .filter-btn {
+    background: var(--white); border: 1px solid var(--line);
+    padding: 8px 14px; border-radius: 999px; cursor: pointer;
+    font-family: inherit; font-size: 13px; font-weight: 600;
+    color: var(--ink-mute); transition: all .15s;
+  }
+  .filter-btn:hover { border-color: var(--teal); color: var(--ink); }
+  .filter-btn.active { background: var(--ink); color: var(--white); border-color: var(--ink); }
+
+  .bulk-actions {
+    display: flex; gap: 8px; margin-bottom: 14px; align-items: center; flex-wrap: wrap;
+  }
+  .bulk-btn {
+    background: var(--white); border: 1px solid var(--line);
+    padding: 7px 13px; border-radius: 8px; cursor: pointer;
+    font-family: inherit; font-size: 13px; font-weight: 600;
+    color: var(--ink-soft); transition: all .15s;
+  }
+  .bulk-btn:hover { background: var(--line-soft); }
+
+  .grid {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 14px;
+  }
+
+  .card {
+    background: var(--white); border: 1px solid var(--line);
+    border-radius: 14px; padding: 16px 16px 14px;
+    box-shadow: var(--shadow-sm); transition: all .15s;
+    position: relative; display: flex; flex-direction: column;
+  }
+  .card.approved { border-color: var(--green); box-shadow: 0 0 0 2px var(--green-soft), var(--shadow-sm); }
+  .card.rejected { border-color: var(--red); opacity: .55; box-shadow: 0 0 0 2px var(--red-soft), var(--shadow-sm); }
+
+  .card-head {
+    display: flex; align-items: flex-start; justify-content: space-between;
+    gap: 10px; margin-bottom: 8px;
+  }
+  .card-title { font-size: 15.5px; font-weight: 700; line-height: 1.35; flex: 1; min-width: 0; }
+  .card-actions { display: flex; gap: 6px; flex-shrink: 0; }
+  .act {
+    width: 32px; height: 32px; border-radius: 8px; cursor: pointer;
+    display: inline-flex; align-items: center; justify-content: center;
+    border: 1px solid var(--line); background: var(--white);
+    transition: all .12s;
+  }
+  .act:hover { transform: translateY(-1px); }
+  .act svg { width: 16px; height: 16px; }
+  .act.approve { color: var(--green); }
+  .act.approve.on { background: var(--green); color: var(--white); border-color: var(--green); }
+  .act.reject { color: var(--red); }
+  .act.reject.on { background: var(--red); color: var(--white); border-color: var(--red); }
+
+  .card-school { font-size: 13.5px; color: var(--ink-mute); margin-bottom: 9px; line-height: 1.4; }
+  .card-school b { color: var(--ink-soft); font-weight: 700; }
+
+  .tags { display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 10px; }
+  .tag {
+    font-size: 11px; padding: 3px 9px; border-radius: 999px; font-weight: 600;
+    background: var(--line-soft); color: var(--ink-soft);
+  }
+  .tag.subject { background: var(--teal-glow); color: var(--teal-deep); }
+  .tag.region { background: var(--orange-soft); color: var(--orange); }
+  .tag.source-igm { background: #DBEAFE; color: #1D4ED8; }
+  .tag.source-itu { background: #FEF3C7; color: #92400E; }
+  .tag.source-shatil { background: #E9D5FF; color: #6B21A8; }
+
+  .card-snippet { font-size: 13px; color: var(--ink-mute); line-height: 1.55; margin-bottom: 10px; flex: 1; }
+  .card-contact {
+    font-size: 12.5px; color: var(--ink-mute); padding-top: 9px;
+    border-top: 1px dashed var(--line); display: flex; gap: 12px; flex-wrap: wrap;
+  }
+  .card-contact a { color: var(--teal-deep); text-decoration: none; font-weight: 600; }
+  .card-contact a:hover { text-decoration: underline; }
+
+  .floating-publish {
+    position: fixed; bottom: 22px; left: 50%; transform: translateX(-50%);
+    background: var(--ink); color: var(--white);
+    padding: 14px 26px; border-radius: 999px; font-weight: 700;
+    font-family: inherit; font-size: 15px; cursor: pointer; border: none;
+    box-shadow: 0 12px 32px rgba(11,42,74,.32);
+    transition: all .2s; z-index: 100;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .floating-publish:hover { background: var(--ink-soft); transform: translateX(-50%) translateY(-2px); }
+  .floating-publish:disabled { opacity: .4; cursor: not-allowed; transform: translateX(-50%); }
+  .floating-publish svg { width: 18px; height: 18px; }
+
+  .empty-state {
+    text-align: center; padding: 60px 20px; color: var(--ink-mute);
+    background: var(--white); border-radius: 14px; border: 1px dashed var(--line);
+  }
+  .empty-state h3 { color: var(--ink); margin: 0 0 8px; }
+
+  .modal-backdrop {
+    position: fixed; inset: 0; background: rgba(11,42,74,.55);
+    display: none; align-items: center; justify-content: center; z-index: 200;
+    padding: 20px;
+  }
+  .modal-backdrop.open { display: flex; }
+  .modal {
+    background: var(--white); border-radius: 16px; padding: 28px;
+    max-width: 560px; width: 100%; max-height: 85vh; overflow-y: auto;
+    box-shadow: 0 24px 64px rgba(11,42,74,.4);
+  }
+  .modal h2 { margin: 0 0 12px; font-size: 22px; }
+  .modal p { color: var(--ink-mute); font-size: 14px; line-height: 1.6; margin: 0 0 14px; }
+  .cmd-box {
+    background: #0F172A; color: #E2E8F0; padding: 14px 16px; border-radius: 10px;
+    font-family: 'SF Mono', Monaco, Consolas, monospace; font-size: 13px;
+    direction: ltr; text-align: left; word-break: break-all; line-height: 1.6;
+    user-select: all; cursor: text; margin-bottom: 14px;
+  }
+  .copy-btn {
+    background: var(--teal-deep); color: var(--white); border: none;
+    padding: 10px 22px; border-radius: 8px; font-family: inherit;
+    font-weight: 700; font-size: 14px; cursor: pointer; transition: all .15s;
+  }
+  .copy-btn:hover { background: #0F9285; }
+  .copy-btn.copied { background: var(--green); }
+  .modal-close {
+    background: var(--line-soft); color: var(--ink-soft); border: none;
+    padding: 10px 22px; border-radius: 8px; font-family: inherit;
+    font-weight: 600; font-size: 14px; cursor: pointer; margin-inline-start: 8px;
+  }
+
+  @media (max-width: 640px) {
+    .stats-bar { grid-template-columns: repeat(2, 1fr); }
+    header.page h1 { font-size: 22px; }
+    .grid { grid-template-columns: 1fr; }
+    .floating-publish { left: 16px; right: 16px; transform: none; width: calc(100% - 32px); justify-content: center; }
+    .floating-publish:hover { transform: translateY(-2px); }
+  }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+  <header class="page">
+    <div>
+      <h1>Edura · אישור משרות לפרסום</h1>
+      <div class="scan-meta" id="scan-meta">טוען…</div>
+    </div>
+    <a href="https://edura.co.il/" style="color:var(--teal-deep);text-decoration:none;font-weight:600;font-size:14px">→ חזרה לאתר</a>
+  </header>
+
+  <div class="stats-bar">
+    <div class="stat total"><div class="stat-num" id="stat-total">0</div><div class="stat-label">סה״כ ממתינות</div></div>
+    <div class="stat approved"><div class="stat-num" id="stat-approved">0</div><div class="stat-label">מאושרות לפרסום</div></div>
+    <div class="stat rejected"><div class="stat-num" id="stat-rejected">0</div><div class="stat-label">דחויות</div></div>
+    <div class="stat remaining"><div class="stat-num" id="stat-remaining">0</div><div class="stat-label">לא הוחלט</div></div>
+  </div>
+
+  <div class="filters" id="source-filters">
+    <button class="filter-btn active" data-filter="all">הכל</button>
+    <button class="filter-btn" data-filter="igm">ארגון המורים</button>
+    <button class="filter-btn" data-filter="itu">הסתדרות המורים</button>
+    <button class="filter-btn" data-filter="shatil">שתיל</button>
+  </div>
+
+  <div class="bulk-actions">
+    <button class="bulk-btn" id="bulk-approve-all">אשר הכל (גלוי)</button>
+    <button class="bulk-btn" id="bulk-reject-all">דחה הכל (גלוי)</button>
+    <button class="bulk-btn" id="bulk-clear">איפוס</button>
+  </div>
+
+  <div id="grid" class="grid"></div>
+
+  <div id="empty" class="empty-state" style="display:none">
+    <h3>אין משרות ממתינות</h3>
+    <p>הסקירה הבאה תרוץ מחר ב-06:00.</p>
+  </div>
+
+</div>
+
+<button id="publish-btn" class="floating-publish" disabled>
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+  <span>פרסם <b id="publish-count">0</b> מאושרים →</span>
+</button>
+
+<div class="modal-backdrop" id="modal">
+  <div class="modal">
+    <h2>פרסום משרות מאושרות</h2>
+    <p>העתיקי את הפקודה והדביקי ב-Claude Code (בתיקיית <code>ort-presentation-builder</code>):</p>
+    <div class="cmd-box" id="cmd"></div>
+    <p style="font-size:12.5px;color:var(--ink-mute)">הסקיל יקרא את המשרות המאושרות מ-jobs-pending.json, יעביר אותן ל-jobs.json, ידחוף לאתר. הדחויות יוסרו מ-pending.</p>
+    <button class="copy-btn" id="copy">העתק פקודה</button>
+    <button class="modal-close" id="close">סגור</button>
+  </div>
+</div>
+
+<script>
+const STATE = {
+  jobs: [],
+  decisions: {},  // id → 'approved' | 'rejected' | undefined
+  filter: 'all',
+};
+
+const ICON_CHECK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>';
+const ICON_X = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>';
+const ICON_MAIL = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:13px;height:13px;vertical-align:-2px;margin-inline-start:3px"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>';
+const ICON_PHONE = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:13px;height:13px;vertical-align:-2px;margin-inline-start:3px"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>';
+
+const STORAGE_KEY = 'edura_staging_decisions';
+
+function loadDecisions() {
+  try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}'); } catch(e) { return {}; }
+}
+function saveDecisions() {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(STATE.decisions));
+}
+
+function esc(s) { return String(s||'').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[c]); }
+
+function decide(id, decision) {
+  if (STATE.decisions[id] === decision) {
+    delete STATE.decisions[id];  // toggle off
+  } else {
+    STATE.decisions[id] = decision;
+  }
+  saveDecisions();
+  render();
+}
+
+function render() {
+  const grid = document.getElementById('grid');
+  const empty = document.getElementById('empty');
+  const filtered = STATE.jobs.filter(j => STATE.filter === 'all' || j.source === STATE.filter);
+
+  if (filtered.length === 0) {
+    grid.innerHTML = '';
+    empty.style.display = 'block';
+  } else {
+    empty.style.display = 'none';
+    grid.innerHTML = filtered.map(renderCard).join('');
+  }
+
+  // stats
+  const total = STATE.jobs.length;
+  const approved = STATE.jobs.filter(j => STATE.decisions[j.id] === 'approved').length;
+  const rejected = STATE.jobs.filter(j => STATE.decisions[j.id] === 'rejected').length;
+  const remaining = total - approved - rejected;
+  document.getElementById('stat-total').textContent = total;
+  document.getElementById('stat-approved').textContent = approved;
+  document.getElementById('stat-rejected').textContent = rejected;
+  document.getElementById('stat-remaining').textContent = remaining;
+
+  const btn = document.getElementById('publish-btn');
+  document.getElementById('publish-count').textContent = approved;
+  btn.disabled = approved === 0;
+}
+
+function renderCard(j) {
+  const decision = STATE.decisions[j.id];
+  const cls = decision === 'approved' ? 'approved' : decision === 'rejected' ? 'rejected' : '';
+  const tags = [];
+  if (j.subject) tags.push(`<span class="tag subject">${esc(j.subject)}</span>`);
+  if (j.level) tags.push(`<span class="tag">${esc(j.level)}</span>`);
+  if (j.region) tags.push(`<span class="tag region">${esc(j.region)}</span>`);
+  if (j.scope) tags.push(`<span class="tag">${esc(j.scope)}</span>`);
+  tags.push(`<span class="tag source-${j.source}">${esc(j.source_name || j.source)}</span>`);
+
+  const contact = [];
+  if (j.email) contact.push(`<a href="mailto:${esc(j.email)}">${ICON_MAIL}${esc(j.email)}</a>`);
+  if (j.phone) contact.push(`<a href="tel:${esc(j.phone)}">${ICON_PHONE}${esc(j.phone)}</a>`);
+  if (j.url) contact.push(`<a href="${esc(j.url)}" target="_blank" rel="noopener">המקור ↗</a>`);
+
+  const schoolLine = j.school || j.city ? `<div class="card-school">${j.school?`<b>${esc(j.school)}</b>`:''}${j.school&&j.city?' · ':''}${j.city?esc(j.city):''}</div>` : '';
+  const snippet = j.snippet || j.description || '';
+
+  return `
+    <article class="card ${cls}">
+      <div class="card-head">
+        <h3 class="card-title">${esc(j.title || '(ללא כותרת)')}</h3>
+        <div class="card-actions">
+          <button class="act approve ${decision==='approved'?'on':''}" onclick="decide('${esc(j.id)}','approved')" title="אשר">${ICON_CHECK}</button>
+          <button class="act reject ${decision==='rejected'?'on':''}" onclick="decide('${esc(j.id)}','rejected')" title="דחה">${ICON_X}</button>
+        </div>
+      </div>
+      ${schoolLine}
+      <div class="tags">${tags.join('')}</div>
+      ${snippet ? `<p class="card-snippet">${esc(snippet.slice(0,260))}${snippet.length>260?'…':''}</p>` : ''}
+      ${contact.length ? `<div class="card-contact">${contact.join('')}</div>` : ''}
+    </article>
+  `;
+}
+
+document.getElementById('source-filters').addEventListener('click', e => {
+  if (e.target.matches('.filter-btn')) {
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    e.target.classList.add('active');
+    STATE.filter = e.target.dataset.filter;
+    render();
+  }
+});
+
+document.getElementById('bulk-approve-all').addEventListener('click', () => {
+  STATE.jobs.filter(j => STATE.filter === 'all' || j.source === STATE.filter)
+    .forEach(j => STATE.decisions[j.id] = 'approved');
+  saveDecisions(); render();
+});
+document.getElementById('bulk-reject-all').addEventListener('click', () => {
+  STATE.jobs.filter(j => STATE.filter === 'all' || j.source === STATE.filter)
+    .forEach(j => STATE.decisions[j.id] = 'rejected');
+  saveDecisions(); render();
+});
+document.getElementById('bulk-clear').addEventListener('click', () => {
+  if (!confirm('לאפס את כל ההחלטות?')) return;
+  STATE.decisions = {};
+  saveDecisions(); render();
+});
+
+document.getElementById('publish-btn').addEventListener('click', () => {
+  const approved = STATE.jobs.filter(j => STATE.decisions[j.id] === 'approved').map(j => j.id);
+  const rejected = STATE.jobs.filter(j => STATE.decisions[j.id] === 'rejected').map(j => j.id);
+  const cmd = `/publish-edura-approved approved=${approved.join(',')} rejected=${rejected.join(',')}`;
+  document.getElementById('cmd').textContent = cmd;
+  document.getElementById('modal').classList.add('open');
+});
+document.getElementById('close').addEventListener('click', () => {
+  document.getElementById('modal').classList.remove('open');
+});
+document.getElementById('copy').addEventListener('click', async () => {
+  const cmd = document.getElementById('cmd').textContent;
+  try {
+    await navigator.clipboard.writeText(cmd);
+    const btn = document.getElementById('copy');
+    btn.classList.add('copied');
+    btn.textContent = '✓ הועתק';
+    setTimeout(() => { btn.classList.remove('copied'); btn.textContent = 'העתק פקודה'; }, 2000);
+  } catch (e) { alert('שגיאה בהעתקה. סמני ידנית.'); }
+});
+
+// load pending
+fetch('data/jobs-pending.json?t=' + Date.now())
+  .then(r => {
+    if (!r.ok) throw new Error('No pending file yet');
+    return r.json();
+  })
+  .then(data => {
+    STATE.jobs = data.jobs || [];
+    STATE.decisions = loadDecisions();
+    const meta = data.scanned_at
+      ? `נסרק ב-${data.scanned_at} · ${data.total_pending || STATE.jobs.length} משרות ממתינות`
+      : `${STATE.jobs.length} משרות ממתינות`;
+    document.getElementById('scan-meta').textContent = meta;
+    render();
+  })
+  .catch(err => {
+    document.getElementById('scan-meta').textContent = 'אין סקירה ממתינה — תרוץ הסקירה הבאה ב-06:00';
+    document.getElementById('grid').innerHTML = '';
+    document.getElementById('empty').style.display = 'block';
+  });
+</script>
+
+</body>
+</html>
