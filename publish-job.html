@@ -6,8 +6,8 @@
 <title>פרסום משרות — אדורה</title>
 <meta name="description" content="אדורה — לוח דרושים ייעודי למורים בישראל. ממלאים טופס אחד והמערכת מתאימה משרות לפי אזור, מקצוע ושכבה. בלי מתווכים." />
 <meta name="robots" content="index,follow,max-image-preview:large" />
-<meta property="og:title" content="פרסום משרות — אדורה" />
-<meta property="og:description" content="ממלאים טופס אחד — והמערכת מתאימה משרות. בלי מתווכים." />
+<meta property="og:title" content="אדורה — לוח מחפשי המשרה הגדול בישראל" />
+<meta property="og:description" content="מורים? מנהלים? נגמר הסיפור. הפסיקו לדפדף בעשרה לוחות — מצאו את משרת או מורה החלומות שלכם." />
 <meta property="og:url" content="https://edura.co.il/publish-job.html" />
 <meta property="og:type" content="website" />
 <meta property="og:site_name" content="אדורה" />
@@ -17,8 +17,8 @@
 <meta property="og:image:height" content="630" />
 <meta property="og:image:alt" content="פרסום משרות — אדורה" />
 <meta name="twitter:card" content="summary_large_image" />
-<meta name="twitter:title" content="פרסום משרות — אדורה" />
-<meta name="twitter:description" content="ממלאים טופס אחד — והמערכת מתאימה משרות. בלי מתווכים." />
+<meta name="twitter:title" content="אדורה — לוח מחפשי המשרה הגדול בישראל" />
+<meta name="twitter:description" content="מורים? מנהלים? נגמר הסיפור. הפסיקו לדפדף בעשרה לוחות — מצאו את משרת או מורה החלומות שלכם." />
 <meta name="twitter:image" content="https://edura.co.il/assets/og-publish-job.png" />
 <link rel="canonical" href="https://edura.co.il/publish-job.html" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -69,6 +69,13 @@
     --teal-deep: #0F766E;
     --teal-pale: #F0FDFA;
     --teal-glow: #CCFBF1;
+    --lime: #84CC16;
+    --lime-bright: #A3E635;
+    --lime-glow: #BEF264;
+    --lime-deep: #4D7C0F;
+    --lime-pale: #F7FEE7;
+    --lime-soft: #ECFCCB;
+    --ink-lime: #1A2E05;
     --orange: #D97706;
     --orange-soft: #FEF3C7;
     --orange-pale: #FFFBEB;
@@ -155,152 +162,234 @@
   }
   .header-links a:hover { color: var(--teal-deep); }
 
-  /* ─── Hero ─── */
+  /* ─── Hero — Wolt-style lime ─── */
   .hero {
     position: relative;
-    padding: 56px 28px 72px;
+    padding: 96px 24px 120px;
+    background:
+      radial-gradient(ellipse 80% 60% at 50% 30%, var(--lime-glow) 0%, var(--lime-bright) 45%, var(--lime) 100%);
     overflow: hidden;
+    text-align: center;
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
   }
-  .hero-grid {
-    max-width: 1200px; margin: 0 auto;
-    display: grid;
-    grid-template-columns: 1.05fr 0.95fr;
-    gap: 56px;
-    align-items: center;
-    width: 100%;
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: -200px; left: 50%;
+    transform: translateX(-50%);
+    width: min(900px, 90vw); height: 600px;
+    background: radial-gradient(ellipse, rgba(240,253,180,.85), transparent 65%);
+    filter: blur(50px);
+    pointer-events: none;
+    z-index: 0;
   }
-  .hero-blob-1, .hero-blob-2 {
-    position: absolute; border-radius: 50%; filter: blur(60px);
-    pointer-events: none; opacity: .55; z-index: 0;
+  .hero::after {
+    content: '';
+    position: absolute;
+    bottom: -100px; right: -100px;
+    width: 400px; height: 400px;
+    background: radial-gradient(circle, rgba(190,242,100,.55), transparent 60%);
+    filter: blur(40px);
+    pointer-events: none;
+    z-index: 0;
   }
-  .hero-blob-1 { width: 360px; height: 360px; background: var(--teal-glow); top: -80px; left: -80px; }
-  .hero-blob-2 { width: 320px; height: 320px; background: var(--orange-soft); bottom: -100px; right: 15%; opacity: .45; }
+  .hero-inner {
+    position: relative; z-index: 2;
+    max-width: 920px; margin: 0 auto;
+  }
+  /* keep these IDs alive for existing JS, hide visually */
+  .winks-wrap, #winks-track { display: none !important; }
 
-  .hero-text { position: relative; z-index: 1; min-width: 0; }
-  .hero-grid > * { min-width: 0; }
-
-  .winks-wrap {
-    display: flex; align-items: center; gap: 10px;
-    margin-bottom: 22px;
-    max-width: 600px;
+  .hero-chip {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: var(--white);
+    color: var(--ink-lime);
+    padding: 9px 20px;
+    border-radius: 999px;
+    font-size: 13px; font-weight: 800;
+    letter-spacing: 0.2px;
+    margin-bottom: 36px;
+    box-shadow: 0 8px 24px rgba(26,46,5,.10), 0 2px 4px rgba(26,46,5,.06);
+    border: 1px solid rgba(255,255,255,.6);
   }
-  .winks-prefix {
-    font-family: 'Playpen Sans Hebrew', cursive;
-    font-size: 14px;
-    font-weight: 600;
-    color: var(--ink);
-    flex-shrink: 0;
-    white-space: nowrap;
-    transform: rotate(-1deg);
+  .hero-chip svg {
+    width: 14px; height: 14px;
+    color: var(--lime-deep);
+    fill: var(--lime-deep);
   }
-  .winks-marquee {
-    overflow: hidden;
-    flex: 1; min-width: 0;
-    position: relative;
-    direction: ltr;
-    -webkit-mask-image: linear-gradient(to right, transparent, black 6%, black 94%, transparent);
-            mask-image: linear-gradient(to right, transparent, black 6%, black 94%, transparent);
+  .hero-chip .chip-dot {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--lime-deep);
+    animation: chipPulse 2s ease-in-out infinite;
   }
-  .winks-track {
-    display: flex;
-    gap: 28px;
-    width: max-content;
-    animation: winksScroll 45s linear infinite;
-    white-space: nowrap;
-    direction: ltr;
-    will-change: transform;
-  }
-  .wink {
-    font-family: 'Playpen Sans Hebrew', cursive;
-    font-size: 14px;
-    font-weight: 500;
-    color: var(--teal-deep);
-    line-height: 1;
-    letter-spacing: -0.2px;
-    flex-shrink: 0;
-    unicode-bidi: plaintext;
-  }
-  .wink:nth-child(3n) { color: var(--orange); transform: rotate(-1deg); }
-  .wink:nth-child(3n+1) { transform: rotate(0.5deg); }
-  .wink:nth-child(3n+2) { color: var(--lavender); transform: rotate(-0.5deg); }
-  @keyframes winksScroll {
-    from { transform: translateX(0); }
-    to { transform: translateX(-50%); }
+  @keyframes chipPulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: .5; transform: scale(.85); }
   }
 
   h1.hero-title {
-    font-family: 'Playpen Sans Hebrew', 'Heebo', cursive;
-    font-size: clamp(32px, 5vw, 56px);
-    font-weight: 700;
-    color: var(--ink);
-    line-height: 1.2;
-    letter-spacing: -0.5px;
+    font-family: 'Heebo', sans-serif;
+    font-size: clamp(44px, 8.2vw, 110px);
+    font-weight: 900;
+    color: var(--ink-lime);
+    line-height: 0.96;
+    letter-spacing: -2.5px;
     margin-bottom: 22px;
-    /* Force own compositing layer so backdrop blur from sticky header
-       doesn't smear the title on iOS Safari */
-    transform: translateZ(0);
-    -webkit-transform: translateZ(0);
+    text-shadow: 0 1px 0 rgba(255,255,255,.25);
   }
-  h1.hero-title .underline-mark {
-    position: relative; display: inline-block; color: var(--teal-deep);
-  }
-  h1.hero-title .underline-mark::after {
-    content: ''; position: absolute; left: 4%; right: 4%; bottom: 4px;
-    height: 14px; background: var(--teal-glow); z-index: -1;
-    transform: skew(-6deg);
-  }
-  .hero-lead {
-    font-size: clamp(16px, 1.7vw, 19px);
-    color: var(--ink-soft);
-    line-height: 1.65;
-    margin-bottom: 14px;
-    max-width: 560px;
-  }
-  .hero-lead strong { color: var(--ink); font-weight: 800; }
-  .hero-sub {
-    font-size: 15px;
-    color: var(--ink-mute);
-    line-height: 1.6;
-    margin-bottom: 28px;
-    max-width: 560px;
+  h1.hero-title .row { display: block; }
+  h1.hero-title .row.accent {
+    color: var(--ink-lime);
+    position: relative;
+    display: inline-block;
+    background: linear-gradient(180deg, transparent 60%, rgba(255,255,255,.55) 60%, rgba(255,255,255,.55) 92%, transparent 92%);
+    padding: 0 6px;
   }
 
-  .hero-cta-row {
-    display: flex; flex-wrap: wrap; gap: 14px; align-items: center;
-    margin-bottom: 18px;
+  .hero-tagline {
+    font-family: 'Playpen Sans Hebrew', 'Heebo', cursive;
+    font-size: clamp(15px, 1.7vw, 19px);
+    font-weight: 500;
+    color: var(--ink-lime);
+    line-height: 1.55;
+    max-width: 680px;
+    margin: 0 auto 36px;
+    opacity: 0.92;
+    letter-spacing: -0.2px;
   }
-  .cta-primary {
-    display: inline-flex; align-items: center; gap: 10px;
-    padding: 16px 28px;
+  .hero-tagline .strike {
+    position: relative;
+    display: inline-block;
+    color: var(--ink-lime);
+    opacity: 0.65;
+  }
+  .hero-tagline .strike::after {
+    content: '';
+    position: absolute;
+    left: -2px; right: -2px;
+    top: 50%;
+    height: 2.5px;
+    background: var(--ink-lime);
+    transform: rotate(-2deg);
+    border-radius: 2px;
+    opacity: 0.85;
+  }
+
+  .hero-search-bar {
+    display: flex; align-items: center;
+    background: var(--white);
     border-radius: 999px;
-    font-size: 15.5px; font-weight: 700;
-    transition: transform .2s, box-shadow .2s, background .2s;
-    cursor: pointer;
+    padding: 6px;
+    max-width: 600px; margin: 0 auto 22px;
+    box-shadow:
+      0 24px 56px rgba(26,46,5,.20),
+      0 8px 16px rgba(26,46,5,.10),
+      0 0 0 1px rgba(26,46,5,.04);
+    gap: 4px;
+  }
+  .hero-search-btn {
+    flex: 1;
+    display: inline-flex; align-items: center; justify-content: center;
+    gap: 8px;
+    padding: 16px 22px;
+    border-radius: 999px;
+    font-size: 15.5px; font-weight: 800;
     border: none;
+    cursor: pointer;
+    background: transparent;
+    color: var(--ink-lime);
+    transition: background .18s, transform .18s, color .18s;
     font-family: inherit;
-    min-height: 48px;
+    min-height: 52px;
+    line-height: 1;
+    white-space: nowrap;
   }
-  .cta-primary:hover { transform: translateY(-2px); }
-  .cta-primary svg { width: 18px; height: 18px; transition: transform .2s; }
-  .cta-primary:hover svg { transform: translateX(-3px); }
-  .cta-school {
-    background: var(--ink); color: var(--white);
-    box-shadow: 0 10px 24px rgba(11,42,74,.22);
+  .hero-search-btn svg {
+    width: 18px; height: 18px; transition: transform .2s;
   }
-  .cta-school:hover {
-    background: var(--ink-soft);
-    box-shadow: 0 16px 32px rgba(11,42,74,.28);
+  .hero-search-btn.primary {
+    background: var(--ink-lime);
+    color: var(--lime-bright);
   }
-  .cta-teacher {
-    background: var(--white); color: var(--orange-deep);
-    border: 1.5px solid var(--orange);
-    box-shadow: 0 6px 18px rgba(217,119,6,.12);
+  .hero-search-btn.primary:hover {
+    background: #0F1F03;
+    transform: translateY(-1px);
   }
-  .cta-teacher:hover {
-    background: var(--orange-pale);
-    border-color: var(--orange-deep);
-    box-shadow: 0 12px 24px rgba(217,119,6,.18);
+  .hero-search-btn.primary:hover svg { transform: rotate(90deg); }
+  .hero-search-btn.secondary:hover {
+    background: var(--lime-soft);
+    color: var(--ink-lime);
   }
+
+  .hero-helper {
+    font-size: 14px;
+    color: var(--ink-lime);
+    opacity: 0.78;
+    font-weight: 700;
+    letter-spacing: 0.1px;
+  }
+  .hero-helper a {
+    color: var(--ink-lime);
+    text-decoration: underline;
+    text-underline-offset: 4px;
+    text-decoration-thickness: 2px;
+    text-decoration-color: rgba(26,46,5,.35);
+    transition: text-decoration-color .15s;
+  }
+  .hero-helper a:hover { text-decoration-color: var(--ink-lime); }
+  .hero-helper strong {
+    color: var(--ink-lime);
+    font-weight: 900;
+    opacity: 1;
+  }
+  .hero-helper .dot {
+    margin: 0 8px; opacity: .4;
+  }
+
+  /* ─── Partners / features strip below hero ─── */
+  .partners-strip {
+    background: var(--white);
+    padding: 28px 16px;
+    border-bottom: 1px solid var(--line);
+    position: relative;
+    z-index: 1;
+  }
+  .partners-strip-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex; justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px 28px;
+  }
+  .partner-pill {
+    display: inline-flex; align-items: center; gap: 10px;
+    font-size: 14px; font-weight: 800;
+    color: var(--ink-soft);
+    padding: 12px 18px;
+    background: var(--lime-pale);
+    border: 1px solid var(--lime-soft);
+    border-radius: 14px;
+    transition: transform .15s, box-shadow .15s;
+  }
+  .partner-pill:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 16px rgba(77,124,15,.12);
+  }
+  .partner-pill svg {
+    width: 18px; height: 18px;
+    color: var(--lime-deep);
+    flex-shrink: 0;
+  }
+
+  /* ─── kept (hidden) legacy hooks for compatibility ─── */
+  .hero-cta-row, .hero-grid, .hero-blob-1, .hero-blob-2,
+  .hero-text, .hero-collage, .float-card,
+  .hero-lead, .hero-sub, .asterisk-note,
+  .social-proof, .mini-reasons-strip, .hero-meta { display: none !important; }
+  /* keep sp-jobs / sp-teachers refs alive in helper inline */
+  .cta-primary, .cta-school, .cta-teacher { display: none !important; }
 
   /* ─── Footer social icons ─── */
   .footer-social {
@@ -780,50 +869,21 @@
     input, select, textarea { font-size: 16px !important; }
   }
   @media (max-width: 900px) {
-    .hero { padding: 36px 18px 52px; }
-    .hero-grid { grid-template-columns: 1fr; gap: 28px; }
-    .hero-collage {
-      height: auto;
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 12px;
-      max-width: 480px;
-      margin: 0 auto;
-    }
-    .float-card,
-    .float-card.fc1,
-    .float-card.fc2,
-    .float-card.fc3,
-    .float-card.fc4 {
-      position: static;
-      width: auto;
-      animation: none;
-      --rot: 0deg;
-    }
-    .mini-reasons-strip { grid-template-columns: 1fr; gap: 10px; }
-    h1.hero-title { font-size: 34px; }
+    .hero { padding: 64px 20px 80px; }
+    h1.hero-title { letter-spacing: -2px; }
     .modal { padding: 32px 22px 22px; }
     .form-row, .form-row-3 { grid-template-columns: 1fr; }
     .header-links { display: none; }
+    .partners-strip { padding: 22px 14px; }
+    .partners-strip-inner { gap: 10px 18px; }
+    .partner-pill { padding: 10px 14px; font-size: 13px; }
   }
 
-  /* ─── Mobile (≤640px) — fix hero CTAs, header, float cards ─── */
+  /* ─── Mobile (≤640px) ─── */
   @media (max-width: 640px) {
-    /* iOS Safari: filter:blur + backdrop-filter compositing layers smear text.
-       Hide blurred blobs entirely on mobile and make header opaque. */
-    .hero-blob-1, .hero-blob-2 { display: none !important; }
-    .hero { isolation: isolate; background: var(--bg); }
-    .hero::before {
-      content: '';
-      position: absolute; inset: 0; z-index: 0; pointer-events: none;
-      background:
-        radial-gradient(ellipse 60% 40% at 10% 10%, rgba(94,200,200,.10) 0%, transparent 70%),
-        radial-gradient(ellipse 50% 35% at 90% 30%, rgba(255,165,90,.08) 0%, transparent 70%);
-    }
-
     .header {
       padding: 10px 0;
-      background: var(--bg) !important;
+      background: var(--white) !important;
       backdrop-filter: none !important;
       -webkit-backdrop-filter: none !important;
     }
@@ -832,104 +892,49 @@
     .logo-word { font-size: 28px; }
     .logo-tagline { font-size: 11px; }
 
-    .hero { padding: 28px 16px 44px; }
-    .hero-grid, .hero-text { min-width: 0; max-width: 100%; }
+    .hero {
+      padding: 56px 18px 72px;
+      isolation: isolate;
+    }
     h1.hero-title {
-      font-size: 28px;
-      line-height: 1.22;
-      letter-spacing: -0.3px;
-      margin-bottom: 16px;
+      font-size: clamp(38px, 11.5vw, 60px);
+      letter-spacing: -1.2px;
+      line-height: 0.98;
+      margin-bottom: 18px;
     }
-    .hero-lead { font-size: 15.5px; margin-bottom: 12px; }
-    .hero-sub { font-size: 14px; margin-bottom: 22px; }
-
-    .winks-wrap { margin-bottom: 18px; }
-    .winks-prefix { font-size: 13px; transform: none; }
-    .wink { font-size: 13px; transform: none !important; }
-    /* Pause continuous marquee on mobile — animated transform smears text on iOS */
-    .winks-track { animation: none !important; transform: none !important; }
-    .winks-marquee {
-      -webkit-mask-image: none;
-              mask-image: none;
-      overflow-x: auto;
-      -webkit-overflow-scrolling: touch;
+    .hero-tagline {
+      font-size: 14.5px;
+      line-height: 1.55;
+      margin-bottom: 26px;
+      max-width: 90%;
     }
+    .hero-chip { margin-bottom: 28px; font-size: 12.5px; padding: 8px 16px; }
 
-    /* CTAs — full-width stacked, no smudge, no truncation */
-    .hero-cta-row {
-      display: flex !important;
-      flex-direction: column !important;
-      align-items: stretch !important;
-      flex-wrap: nowrap !important;
-      gap: 10px;
-      margin-bottom: 14px;
-      width: 100% !important;
-      max-width: 100% !important;
-    }
-    .cta-primary {
-      display: flex !important;
-      width: 100% !important;
-      max-width: 100% !important;
-      box-sizing: border-box !important;
-      justify-content: center;
-      align-items: center;
-      gap: 8px;
-      padding: 13px 14px !important;
-      font-size: 14.5px !important;
-      white-space: normal !important;
-      word-break: break-word;
-      text-align: center;
-      line-height: 1.3;
-      min-height: 50px;
-      min-width: 0 !important;
-    }
-    .cta-primary svg { width: 16px; height: 16px; flex-shrink: 0; }
-
-    .asterisk-note { font-size: 11px; margin-bottom: 14px; }
-
-    /* Job cards — compact 2-col grid, no rotation, no float animation */
-    .hero-collage {
-      grid-template-columns: 1fr 1fr;
-      gap: 10px;
+    /* Search bar — stack vertically on small screens for full-width CTAs */
+    .hero-search-bar {
+      flex-direction: column;
+      border-radius: 28px;
+      padding: 8px;
+      gap: 6px;
       max-width: 100%;
-      margin-top: 8px;
     }
-    /* Hard reset on float cards — no leftover absolute positioning, no rotation, no float anim */
-    .float-card,
-    .float-card.fc1,
-    .float-card.fc2,
-    .float-card.fc3,
-    .float-card.fc4 {
-      position: static !important;
-      top: auto !important; left: auto !important; right: auto !important; bottom: auto !important;
-      width: auto !important;
-      transform: none !important;
-      animation: none !important;
-      --rot: 0deg;
+    .hero-search-btn {
+      width: 100%;
+      padding: 15px 18px;
+      font-size: 15px;
+      min-height: 50px;
     }
-    .float-card {
-      padding: 12px 14px;
-      border-radius: 14px;
-    }
-    .float-card .fc-tag { font-size: 10.5px; padding: 2px 8px; margin-bottom: 6px; }
-    .float-card .fc-title { font-size: 13.5px; margin-bottom: 4px; }
-    .float-card .fc-meta { font-size: 11px; gap: 6px; }
 
-    .social-proof {
-      gap: 10px;
-      padding: 12px 14px;
-      justify-content: space-between;
-    }
-    .sp-item { flex: 1; min-width: 0; }
-    .sp-num { font-size: 18px; }
-    .sp-label { font-size: 10.5px; }
+    .hero-helper { font-size: 13px; line-height: 1.7; }
+    .hero-helper .dot { margin: 0 6px; }
 
-    .hero-meta {
-      gap: 10px 14px;
+    .partner-pill {
+      padding: 9px 13px;
       font-size: 12.5px;
+      gap: 8px;
+      border-radius: 12px;
     }
-
-    .mini-reasons-strip { margin-top: 22px; padding-top: 18px; }
+    .partner-pill svg { width: 16px; height: 16px; }
 
     /* Modal — tighter on small screens */
     .modal-overlay { padding: 12px 12px 80px; align-items: flex-start; }
@@ -948,8 +953,9 @@
   }
 
   @media (max-width: 380px) {
-    h1.hero-title { font-size: 25px; }
-    .cta-primary { font-size: 14px; padding: 13px 14px; }
+    h1.hero-title { font-size: 38px; letter-spacing: -1px; }
+    .hero { padding: 44px 16px 60px; }
+    .hero-search-btn { font-size: 14.5px; }
   }
 
   /* ─── Reduced motion ─── */
@@ -977,105 +983,82 @@
 </header>
 
 <section class="hero">
-  <div class="hero-blob-1"></div>
-  <div class="hero-blob-2"></div>
-  <div class="hero-grid">
-    <div class="hero-text">
-      <div class="winks-wrap">
-        <span class="winks-prefix">מאחלים לכם:</span>
-        <div class="winks-marquee" aria-hidden="true">
-          <div class="winks-track" id="winks-track"></div>
-        </div>
-      </div>
-      <h1 class="hero-title">
-        מחפשים משרת הוראה?<br>
-        מפרסמים משרה? — <span class="underline-mark">כאן זה קורה.</span>
-      </h1>
-      <p class="hero-lead">
-        אדורה היא לוח דרושים ייעודי למורים בישראל. <strong>מורים</strong> נרשמים פעם אחת ומקבלים משרות מותאמות לפי אזור, מקצוע ושכבה. <strong>בתי ספר</strong> מפרסמים פעם אחת ונחשפים למאגר המורים.
-      </p>
-      <p class="hero-sub">
-        בלי לדפדף בעשרה לוחות, בלי מתווכים, בלי עמלות. <strong>לאחר הפרסום מקבלים קישור למאגר המורים.</strong>
-      </p>
-      <div class="hero-cta-row">
-        <button type="button" class="cta-primary cta-school" id="open-school" data-trigger="school">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-            <line x1="12" y1="5" x2="12" y2="19"/>
-            <line x1="5" y1="12" x2="19" y2="12"/>
-          </svg>
-          אני מפרסם/ת משרה
-        </button>
-        <button type="button" class="cta-primary cta-teacher" id="open-teacher" data-trigger="teacher">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-            <circle cx="11" cy="11" r="8"/>
-            <line x1="21" y1="21" x2="16.65" y2="16.65"/>
-          </svg>
-          אני מחפש/ת משרה
-        </button>
-      </div>
-      <p class="asterisk-note">הקישור למאגר נשלח אחרי שמפרסמים משרה.</p>
-<div class="social-proof" id="social-proof" aria-label="נתוני המאגר">
-        <div class="sp-item">
-          <span class="sp-num" id="sp-jobs">—</span>
-          <span class="sp-label">משרות פעילות</span>
-        </div>
-        <div class="sp-item">
-          <span class="sp-num" id="sp-teachers">—</span>
-          <span class="sp-label">מורים במאגר</span>
-        </div>
-        <div class="sp-item">
-          <span class="sp-num" id="sp-updated">היום</span>
-          <span class="sp-label">עודכן</span>
-        </div>
-      </div>
-
-      <div class="mini-reasons-strip" aria-label="3 סיבות לפרסם אצלנו">
-        <div class="mini-reason">
-          <span class="mini-num">1</span>
-          <div>
-            <strong>חשיפה ממוקדת</strong>
-            <span>לפי אזור · מקצוע · שכבה.</span>
-          </div>
-        </div>
-        <div class="mini-reason">
-          <span class="mini-num">2</span>
-          <div>
-            <strong>בלי מתווכים</strong>
-            <span>פנייה ישירה של המורה לבית הספר.</span>
-          </div>
-        </div>
-        <div class="mini-reason">
-          <span class="mini-num">3</span>
-          <div>
-            <strong>חינם, בלי התחייבות</strong>
-            <span>פרסום משרה — ללא עלות.</span>
-          </div>
-        </div>
-      </div>
+  <div class="hero-inner">
+    <span class="hero-chip">
+      <span class="chip-dot" aria-hidden="true"></span>
+      חיבור ישיר · בלי מתווכים
+    </span>
+    <h1 class="hero-title">
+      <span class="row">מורים? מנהלים?</span>
+      <span class="row accent">נגמר הסיפור.</span>
+    </h1>
+    <p class="hero-tagline">
+      לוח מחפשי המשרה הגדול ביותר — שיגרום לכם להפסיק לשתות <span class="strike">נס קפה של עלית</span> ולמצוא את משרת או מורה החלומות שלכם.
+    </p>
+    <div class="hero-search-bar" role="group" aria-label="בחירת מסלול">
+      <button type="button" class="hero-search-btn primary" id="open-school" data-trigger="school">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <line x1="12" y1="5" x2="12" y2="19"/>
+          <line x1="5" y1="12" x2="19" y2="12"/>
+        </svg>
+        מפרסמים משרה
+      </button>
+      <button type="button" class="hero-search-btn secondary" id="open-teacher" data-trigger="teacher">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <circle cx="11" cy="11" r="8"/>
+          <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+        </svg>
+        מחפשים משרה
+      </button>
     </div>
+    <p class="hero-helper">
+      <strong id="sp-jobs">—</strong> משרות פעילות
+      <span class="dot">·</span>
+      <strong id="sp-teachers">—</strong> מורים במאגר
+      <span class="dot">·</span>
+      <span id="sp-updated">עודכן היום</span>
+    </p>
+    <!-- legacy: kept for JS compatibility -->
+    <div class="winks-wrap" aria-hidden="true"><div id="winks-track"></div></div>
+  </div>
+</section>
 
-    <div class="hero-collage" aria-hidden="true">
-      <div class="float-card fc1">
-        <span class="fc-tag">חטיבת ביניים</span>
-        <div class="fc-title">מורה למתמטיקה</div>
-        <div class="fc-meta"><span>ירושלים</span><span>ממלכתי</span><span>מלאה</span></div>
-      </div>
-      <div class="float-card fc2">
-        <span class="fc-tag">יסודי</span>
-        <div class="fc-title">מחנכת כיתה ג'</div>
-        <div class="fc-meta"><span>פתח תקווה</span><span>ממלכתי</span></div>
-      </div>
-      <div class="float-card fc3">
-        <span class="fc-tag">חינוך מיוחד</span>
-        <div class="fc-title">רכזת שילוב</div>
-        <div class="fc-meta"><span>חיפה</span><span>חלקית</span></div>
-      </div>
-      <div class="float-card fc4">
-        <span class="fc-tag">תיכון</span>
-        <div class="fc-title">מורה לאזרחות</div>
-        <div class="fc-meta"><span>מרכז</span><span>ממלכתי</span></div>
-      </div>
-    </div>
+<section class="partners-strip" aria-label="יתרונות המערכת">
+  <div class="partners-strip-inner">
+    <span class="partner-pill">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/>
+      </svg>
+      חינם לתמיד
+    </span>
+    <span class="partner-pill">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M5 12l5 5L20 7"/>
+      </svg>
+      בלי מתווכים
+    </span>
+    <span class="partner-pill">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+      </svg>
+      פנייה ישירה
+    </span>
+    <span class="partner-pill">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <circle cx="12" cy="10" r="3"/>
+        <path d="M12 2a8 8 0 0 0-8 8c0 5.4 8 12 8 12s8-6.6 8-12a8 8 0 0 0-8-8z"/>
+      </svg>
+      חשיפה ממוקדת
+    </span>
+    <span class="partner-pill">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <circle cx="9" cy="7" r="4"/>
+        <path d="M3 21v-2a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2"/>
+        <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+        <path d="M21 21v-2a4 4 0 0 0-3-3.87"/>
+      </svg>
+      כל המגזרים
+    </span>
   </div>
 </section>
 
