@@ -1247,10 +1247,6 @@ function openJobModal(jobId) {
         '</div>'
       ) : '') +
       contactBlock +
-      '<div class="modal-source">' +
-        '<span>נסרק מ' + escapeHtml(job.source_name || job.source || 'מקור חיצוני') + '</span>' +
-        (job.url ? '<a class="modal-source-link" href="' + escapeHtml(job.url) + '" target="_blank" rel="noopener">המודעה המקורית ↗</a>' : '') +
-      '</div>' +
     '</div>';
 
   document.getElementById('modal-content').innerHTML = html;
