@@ -69,13 +69,13 @@
     --teal-deep: #0F766E;
     --teal-pale: #F0FDFA;
     --teal-glow: #CCFBF1;
-    --lime: #84CC16;
-    --lime-bright: #A3E635;
-    --lime-glow: #BEF264;
-    --lime-deep: #4D7C0F;
-    --lime-pale: #F7FEE7;
-    --lime-soft: #ECFCCB;
-    --ink-lime: #1A2E05;
+    --lime: #EC4899;
+    --lime-bright: #F472B6;
+    --lime-glow: #FBCFE8;
+    --lime-deep: #9D174D;
+    --lime-pale: #FDF2F8;
+    --lime-soft: #FCE7F3;
+    --ink-lime: #4A0420;
     --orange: #D97706;
     --orange-soft: #FEF3C7;
     --orange-pale: #FFFBEB;
@@ -179,7 +179,7 @@
     top: -200px; left: 50%;
     transform: translateX(-50%);
     width: min(900px, 90vw); height: 600px;
-    background: radial-gradient(ellipse, rgba(240,253,180,.85), transparent 65%);
+    background: radial-gradient(ellipse, rgba(253,232,243,.92), transparent 65%);
     filter: blur(50px);
     pointer-events: none;
     z-index: 0;
@@ -189,7 +189,7 @@
     position: absolute;
     bottom: -100px; right: -100px;
     width: 400px; height: 400px;
-    background: radial-gradient(circle, rgba(190,242,100,.55), transparent 60%);
+    background: radial-gradient(circle, rgba(244,114,182,.55), transparent 60%);
     filter: blur(40px);
     pointer-events: none;
     z-index: 0;
@@ -210,7 +210,7 @@
     font-size: 13px; font-weight: 800;
     letter-spacing: 0.2px;
     margin-bottom: 36px;
-    box-shadow: 0 8px 24px rgba(26,46,5,.10), 0 2px 4px rgba(26,46,5,.06);
+    box-shadow: 0 8px 24px rgba(74,4,32,.10), 0 2px 4px rgba(74,4,32,.06);
     border: 1px solid rgba(255,255,255,.6);
   }
   .hero-chip svg {
@@ -283,9 +283,9 @@
     padding: 6px;
     max-width: 600px; margin: 0 auto 22px;
     box-shadow:
-      0 24px 56px rgba(26,46,5,.20),
-      0 8px 16px rgba(26,46,5,.10),
-      0 0 0 1px rgba(26,46,5,.04);
+      0 24px 56px rgba(74,4,32,.20),
+      0 8px 16px rgba(74,4,32,.10),
+      0 0 0 1px rgba(74,4,32,.04);
     gap: 4px;
   }
   .hero-search-btn {
@@ -310,10 +310,10 @@
   }
   .hero-search-btn.primary {
     background: var(--ink-lime);
-    color: var(--lime-bright);
+    color: var(--lime-glow);
   }
   .hero-search-btn.primary:hover {
-    background: #0F1F03;
+    background: #2A0210;
     transform: translateY(-1px);
   }
   .hero-search-btn.primary:hover svg { transform: rotate(90deg); }
@@ -334,7 +334,7 @@
     text-decoration: underline;
     text-underline-offset: 4px;
     text-decoration-thickness: 2px;
-    text-decoration-color: rgba(26,46,5,.35);
+    text-decoration-color: rgba(74,4,32,.35);
     transition: text-decoration-color .15s;
   }
   .hero-helper a:hover { text-decoration-color: var(--ink-lime); }
@@ -375,7 +375,7 @@
   }
   .partner-pill:hover {
     transform: translateY(-2px);
-    box-shadow: 0 8px 16px rgba(77,124,15,.12);
+    box-shadow: 0 8px 16px rgba(157,23,77,.14);
   }
   .partner-pill svg {
     width: 18px; height: 18px;
@@ -589,27 +589,32 @@
   /* ─── Modals ─── */
   .modal-overlay {
     position: fixed; inset: 0;
-    background: rgba(11,42,74,.55);
+    background: rgba(74,4,32,.55);
     backdrop-filter: blur(4px);
     -webkit-backdrop-filter: blur(4px);
     display: none;
-    align-items: flex-start; justify-content: center;
+    align-items: center; justify-content: center;
     z-index: 200;
-    padding: 24px 24px 80px;
-    overflow-y: auto;
-    -webkit-overflow-scrolling: touch;
-    overscroll-behavior: contain;
+    padding: 16px;
+    overflow: hidden;
   }
   .modal-overlay.open { display: flex; }
   .modal {
     background: var(--white);
-    border-radius: 24px;
-    width: 100%; max-width: 580px;
+    border-radius: 20px;
+    width: 100%; max-width: 540px;
     margin: 0 auto;
-    padding: 36px 32px 28px;
+    padding: 28px 26px 0;
     box-shadow: 0 32px 80px rgba(0,0,0,.32);
     position: relative;
     animation: modalIn .25s ease-out;
+    max-height: calc(100dvh - 32px);
+    max-height: calc(100vh - 32px);
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;
+    display: flex;
+    flex-direction: column;
   }
   @keyframes modalIn {
     from { opacity: 0; transform: translateY(20px) scale(.97); }
@@ -637,23 +642,23 @@
   .modal-supra.school { color: var(--orange-deep); }
   .modal h2 {
     font-family: 'Playpen Sans Hebrew', 'Heebo', sans-serif;
-    font-size: 26px; font-weight: 700;
+    font-size: 22px; font-weight: 700;
     color: var(--ink);
     line-height: 1.25;
-    margin-bottom: 8px;
+    margin-bottom: 6px;
     letter-spacing: -0.5px;
   }
   .modal-info {
-    font-size: 13.5px; color: var(--ink-mute);
-    line-height: 1.55; margin-bottom: 22px;
+    font-size: 13px; color: var(--ink-mute);
+    line-height: 1.5; margin-bottom: 16px;
   }
   .form-row {
     display: grid; grid-template-columns: 1fr 1fr;
-    gap: 12px; margin-bottom: 12px;
+    gap: 10px; margin-bottom: 10px;
   }
   .form-row-3 {
     display: grid; grid-template-columns: 1fr 1fr 1fr;
-    gap: 12px; margin-bottom: 12px;
+    gap: 10px; margin-bottom: 10px;
   }
   .modal label {
     display: block;
@@ -666,7 +671,7 @@
   .modal select,
   .modal textarea {
     width: 100%;
-    padding: 11px 13px;
+    padding: 10px 12px;
     border: 1px solid var(--line);
     border-radius: 10px;
     font-size: 14.5px;
@@ -688,8 +693,8 @@
     border-color: var(--error);
     background: var(--error-soft);
   }
-  .modal textarea { resize: vertical; min-height: 80px; }
-  .modal .field { margin-bottom: 12px; }
+  .modal textarea { resize: vertical; min-height: 64px; }
+  .modal .field { margin-bottom: 10px; }
   .field-error {
     display: none;
     font-size: 11.5px;
@@ -701,8 +706,8 @@
   .form-row .is-error + .field-error { display: block; }
   .consent {
     display: flex; gap: 10px; align-items: flex-start;
-    margin-top: 14px; margin-bottom: 16px;
-    font-size: 12.5px; color: var(--ink-mute);
+    margin-top: 10px; margin-bottom: 12px;
+    font-size: 12px; color: var(--ink-mute);
     line-height: 1.5; cursor: pointer;
   }
   .consent input {
@@ -713,10 +718,10 @@
   }
   .consent.is-error { color: var(--error); }
   .privacy-note {
-    font-size: 11.5px; color: var(--ink-mute);
-    margin-top: 4px; margin-bottom: 16px;
+    font-size: 11px; color: var(--ink-mute);
+    margin-top: 2px; margin-bottom: 10px;
     line-height: 1.5;
-    padding: 10px 12px;
+    padding: 8px 10px;
     background: var(--line-soft);
     border-radius: 8px;
   }
@@ -733,6 +738,16 @@
     transition: background .2s, transform .15s;
     min-height: 50px;
     display: inline-flex; align-items: center; justify-content: center; gap: 10px;
+    /* Sticky to modal bottom — always reachable */
+    position: sticky;
+    bottom: 0;
+    z-index: 10;
+    margin-top: 14px;
+    margin-inline: -26px;
+    margin-bottom: 0;
+    width: calc(100% + 52px);
+    border-radius: 0;
+    box-shadow: 0 -10px 16px -10px rgba(0,0,0,.15);
   }
   .submit-btn:disabled { opacity: .65; cursor: not-allowed; }
   .submit-btn.teacher { background: var(--ink); }
@@ -936,16 +951,22 @@
     }
     .partner-pill svg { width: 16px; height: 16px; }
 
-    /* Modal — tighter on small screens */
-    .modal-overlay { padding: 12px 12px 80px; align-items: flex-start; }
+    /* Modal — tighter on small screens, full-bleed sticky button */
+    .modal-overlay { padding: 8px; align-items: center; }
     .modal {
-      padding: 28px 18px 20px;
-      border-radius: 18px;
-      margin: 8px auto 0;
+      padding: 22px 18px 0;
+      border-radius: 16px;
+      margin: 0 auto;
+      max-height: calc(100dvh - 16px);
+      max-height: calc(100vh - 16px);
     }
-    .modal h2 { font-size: 22px; }
-    .modal-info { font-size: 13px; margin-bottom: 18px; }
+    .modal h2 { font-size: 20px; }
+    .modal-info { font-size: 12.5px; margin-bottom: 14px; }
     .modal-close { top: 10px; left: 10px; width: 40px; height: 40px; }
+    .submit-btn {
+      margin-inline: -18px;
+      width: calc(100% + 36px);
+    }
 
     .footer-social { gap: 10px; margin: 12px 0 4px; }
     .footer-social a { width: 32px; height: 32px; }
@@ -1012,14 +1033,15 @@
       </button>
     </div>
     <p class="hero-helper">
-      <strong id="sp-jobs">—</strong> משרות פעילות
-      <span class="dot">·</span>
-      <strong id="sp-teachers">—</strong> מורים במאגר
-      <span class="dot">·</span>
-      <span id="sp-updated">עודכן היום</span>
+      <strong>מאות משרות פעילות</strong> ו<strong>מורים מחפשי עבודה</strong> — הכל במקום אחד.
     </p>
-    <!-- legacy: kept for JS compatibility -->
-    <div class="winks-wrap" aria-hidden="true"><div id="winks-track"></div></div>
+    <!-- legacy: kept hidden for JS compatibility (sp-jobs/sp-teachers/sp-updated/winks-track) -->
+    <div class="winks-wrap" aria-hidden="true">
+      <span id="sp-jobs" hidden>—</span>
+      <span id="sp-teachers" hidden>—</span>
+      <span id="sp-updated" hidden>—</span>
+      <div id="winks-track"></div>
+    </div>
   </div>
 </section>
 
