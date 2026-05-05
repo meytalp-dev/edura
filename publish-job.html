@@ -506,15 +506,17 @@
     display: none;
     align-items: flex-start; justify-content: center;
     z-index: 200;
-    padding: 24px;
+    padding: 24px 24px 80px;
     overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;
   }
   .modal-overlay.open { display: flex; }
   .modal {
     background: var(--white);
     border-radius: 24px;
     width: 100%; max-width: 580px;
-    margin: auto;
+    margin: 0 auto;
     padding: 36px 32px 28px;
     box-shadow: 0 32px 80px rgba(0,0,0,.32);
     position: relative;
@@ -930,11 +932,11 @@
     .mini-reasons-strip { margin-top: 22px; padding-top: 18px; }
 
     /* Modal — tighter on small screens */
-    .modal-overlay { padding: 12px; align-items: flex-start; }
+    .modal-overlay { padding: 12px 12px 80px; align-items: flex-start; }
     .modal {
       padding: 28px 18px 20px;
       border-radius: 18px;
-      margin-top: 8px;
+      margin: 8px auto 0;
     }
     .modal h2 { font-size: 22px; }
     .modal-info { font-size: 13px; margin-bottom: 18px; }
@@ -986,11 +988,11 @@
         </div>
       </div>
       <h1 class="hero-title">
-        מפרסמים משרת הוראה?<br>
-        <span class="underline-mark">המורה הבא/ה — כאן.</span>
+        מחפשים משרת הוראה?<br>
+        מפרסמים משרה? — <span class="underline-mark">כאן זה קורה.</span>
       </h1>
       <p class="hero-lead">
-        אדורה היא לוח דרושים ייעודי למורים בישראל. ממלאים טופס פעם אחת — והמשרה <strong>נכנסת למאגר ונחשפת למורים הרלוונטיים</strong>.
+        אדורה היא לוח דרושים ייעודי למורים בישראל. <strong>מורים</strong> נרשמים פעם אחת ומקבלים משרות מותאמות לפי אזור, מקצוע ושכבה. <strong>בתי ספר</strong> מפרסמים פעם אחת ונחשפים למאגר המורים.
       </p>
       <p class="hero-sub">
         בלי לדפדף בעשרה לוחות, בלי מתווכים, בלי עמלות. <strong>לאחר הפרסום מקבלים קישור למאגר המורים.</strong>
