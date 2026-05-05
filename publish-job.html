@@ -951,23 +951,32 @@
     align-self: flex-end;
     border-bottom-left-radius: 6px;
   }
-  .bubble.typing {
-    display: inline-flex; align-items: center; gap: 5px;
-    padding: 14px 16px;
+  .bubble.funny-typing {
     align-self: flex-start;
+    background: var(--lime-pale);
+    border: 1px dashed var(--lime-soft);
+    color: var(--ink-mute);
+    font-size: 13px;
+    font-style: italic;
+    line-height: 1.45;
+    padding: 9px 13px;
+    animation: funnyPulse 1.6s ease-in-out infinite;
   }
-  .typing-dot {
-    width: 7px; height: 7px;
-    background: var(--ink-mute);
-    border-radius: 50%;
-    animation: typingBob 1.2s infinite;
-    opacity: .35;
+  .bubble.funny-typing .funny-prefix {
+    font-style: normal;
+    font-weight: 700;
+    color: var(--lime-deep);
+    margin-inline-end: 4px;
   }
-  .typing-dot:nth-child(2) { animation-delay: .15s; }
-  .typing-dot:nth-child(3) { animation-delay: .3s; }
-  @keyframes typingBob {
-    0%, 100% { transform: translateY(0); opacity: .3; }
-    50%      { transform: translateY(-4px); opacity: 1; }
+  .bubble.funny-typing .funny-text { font-family: 'Playpen Sans Hebrew', cursive; }
+  @keyframes funnyPulse {
+    0%, 100% { opacity: .82; }
+    50%      { opacity: 1; }
+  }
+  /* keep old class names alive in case used elsewhere */
+  .bubble.typing { display: none; }
+  @media (prefers-reduced-motion: reduce) {
+    .bubble.funny-typing { animation: none; }
   }
 
   .chat-input-row {
@@ -2139,13 +2148,27 @@
     let state = {};
     let stepIdx = 0;
 
-    const scroll = () => { stream.scrollTop = stream.scrollHeight; };
+    // Funny phrases from copy.js — fallback to dots
+    const FUNNY = (window.EduraCopy && EduraCopy.funnyMarquee && EduraCopy.funnyMarquee.length)
+      ? EduraCopy.funnyMarquee.slice()
+      : ['חושב/ת...'];
+    const pickFunny = () => FUNNY[Math.floor(Math.random() * FUNNY.length)];
+
+    const scroll = () => {
+      // double rAF — ensure layout settled before scrolling so latest bubble is fully visible
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          stream.scrollTop = stream.scrollHeight + 200;
+        });
+      });
+    };
 
     const showTyping = () => {
       const t = document.createElement('div');
-      t.className = 'bubble typing';
+      t.className = 'bubble bot funny-typing';
       t.id = '__typing__';
-      t.innerHTML = '<span class="typing-dot"></span><span class="typing-dot"></span><span class="typing-dot"></span>';
+      t.innerHTML = '<span class="funny-prefix">מחפשים לכם:</span> <span class="funny-text"></span>';
+      t.querySelector('.funny-text').textContent = pickFunny();
       stream.appendChild(t);
       scroll();
     };
