@@ -208,14 +208,163 @@ function handleApproveByLink_(params) {
       }
       sh.getRange(rowNum, statusCol).setValue(newStatus);
       log_('approve-link', refId + ' · ' + type + ' · → ' + newStatus);
+
+      // ─── Send notification emails on approval ───
+      let extraMsg = '';
+      if (decision !== 'reject') {
+        try {
+          notifyPublisherOnApproval_(type, data[i], refId);
+        } catch (e) { log_('notify-publisher-error', refId + ' · ' + String(e)); }
+        if (type === 'job') {
+          try {
+            const matched = notifyMatchingTeachersForJob_(data[i], refId);
+            log_('notify-teachers', refId + ' · matched ' + matched + ' teachers');
+            if (matched > 0) extraMsg = ' נשלחו התראות ל-' + matched + ' מורות תואמות.';
+          } catch (e) { log_('notify-teachers-error', refId + ' · ' + String(e)); }
+        }
+      }
+
       const title = (decision === 'reject') ? 'נדחתה' : 'אושרה ופורסמה';
       const msg = (decision === 'reject')
         ? 'ההגשה ' + refId + ' סומנה כנדחית. היא לא תוצג באתר.'
-        : 'ההגשה ' + refId + ' אושרה ותופיע באתר. תודה!';
+        : 'ההגשה ' + refId + ' אושרה ותופיע באתר.' + extraMsg + ' תודה!';
       return htmlPage_(title, msg, true);
     }
   }
   return htmlPage_('לא נמצא', 'לא נמצאה רשומה עם מזהה ' + refId, false);
+}
+
+// ════════════════════════════════════════════════════════════════════
+// Approval notifications — to publisher + matching teachers
+// ════════════════════════════════════════════════════════════════════
+function notifyPublisherOnApproval_(type, row, refId) {
+  if (type === 'job') {
+    const school      = String(row[POSTED_JOBS_HEADERS.indexOf('school')] || '');
+    const subject     = String(row[POSTED_JOBS_HEADERS.indexOf('subject')] || '');
+    const contactName = String(row[POSTED_JOBS_HEADERS.indexOf('contact_name')] || '');
+    const email       = String(row[POSTED_JOBS_HEADERS.indexOf('email')] || '').trim();
+    if (!email) return;
+
+    const html = '<div dir="rtl" style="font-family:Arial,Helvetica,sans-serif;color:#000;line-height:1.6;max-width:600px;background:#FDF2F8;padding:24px;">' +
+      '<div style="background:#FFF;border-radius:18px;padding:28px 24px;border:1px solid #FCE7F3;">' +
+        '<div style="background:#FCE7F3;color:#9D174D;font-size:11px;font-weight:800;display:inline-block;padding:4px 12px;border-radius:999px;letter-spacing:1px;margin-bottom:14px;">המשרה אושרה</div>' +
+        '<h2 style="margin:0 0 12px;color:#000;font-size:22px;line-height:1.3;">המשרה שלכם פורסמה ב-אדורה</h2>' +
+        '<p style="margin:0 0 12px;color:#1A1A1A;">שלום ' + escHtml_(contactName) + ',</p>' +
+        '<p style="margin:0 0 16px;">בקשת הפרסום של <strong>' + escHtml_(school) + '</strong> למשרת <strong>' + escHtml_(subject) + '</strong> אושרה ועלתה לאוויר.</p>' +
+        '<p style="margin:0 0 16px;">מורות רשומות במאגר עם התאמה למשרה יקבלו התראה ויפנו אליכם ישירות במייל / טלפון. אין מתווכים, אין עמלות.</p>' +
+        '<a href="https://edura.co.il" style="display:inline-block;background:#EC4899;color:#FFF;text-decoration:none;padding:12px 24px;border-radius:999px;font-weight:700;">לצפייה בלוח →</a>' +
+        '<p style="margin:18px 0 0;font-size:13px;color:#4A4A4A;">מספר פנייה: <code>' + escHtml_(refId) + '</code></p>' +
+      '</div>' +
+      '<p style="text-align:center;font-size:12px;color:#4A4A4A;margin:18px 0 0;">— אדורה · edura.co.il</p>' +
+    '</div>';
+
+    MailApp.sendEmail(email, 'המשרה שלכם פורסמה ב-אדורה (' + refId + ')',
+      htmlToText_(html), { name: 'אדורה · edura.co.il', replyTo: ADMIN_EMAIL, htmlBody: html });
+    log_('notify-publisher', refId + ' · job → ' + email);
+  } else if (type === 'teacher') {
+    const name  = String(row[POSTED_TEACHERS_HEADERS.indexOf('name')] || '');
+    const email = String(row[POSTED_TEACHERS_HEADERS.indexOf('email')] || '').trim();
+    if (!email) return;
+
+    const html = '<div dir="rtl" style="font-family:Arial,Helvetica,sans-serif;color:#000;line-height:1.6;max-width:600px;background:#FDF2F8;padding:24px;">' +
+      '<div style="background:#FFF;border-radius:18px;padding:28px 24px;border:1px solid #FCE7F3;">' +
+        '<div style="background:#FCE7F3;color:#9D174D;font-size:11px;font-weight:800;display:inline-block;padding:4px 12px;border-radius:999px;letter-spacing:1px;margin-bottom:14px;">הפרופיל אושר</div>' +
+        '<h2 style="margin:0 0 12px;color:#000;font-size:22px;line-height:1.3;">הפרופיל שלך נכנס למאגר</h2>' +
+        '<p style="margin:0 0 12px;color:#1A1A1A;">שלום ' + escHtml_(name) + ',</p>' +
+        '<p style="margin:0 0 16px;">הפרטים שלך נכנסו למאגר המורים של אדורה. כשיתפרסמו משרות מתאימות לאזור, מקצוע ושכבה שציינת — תקבל/י מאיתנו מייל ישירות.</p>' +
+        '<p style="margin:0 0 16px;">בינתיים אפשר לעיין בכל המשרות הזמינות:</p>' +
+        '<a href="https://edura.co.il" style="display:inline-block;background:#EC4899;color:#FFF;text-decoration:none;padding:12px 24px;border-radius:999px;font-weight:700;">לצפייה במשרות →</a>' +
+        '<p style="margin:18px 0 0;font-size:13px;color:#4A4A4A;">מספר פנייה: <code>' + escHtml_(refId) + '</code></p>' +
+      '</div>' +
+      '<p style="text-align:center;font-size:12px;color:#4A4A4A;margin:18px 0 0;">— אדורה · edura.co.il</p>' +
+    '</div>';
+
+    MailApp.sendEmail(email, 'הפרופיל שלך אושר במאגר אדורה (' + refId + ')',
+      htmlToText_(html), { name: 'אדורה · edura.co.il', replyTo: ADMIN_EMAIL, htmlBody: html });
+    log_('notify-publisher', refId + ' · teacher → ' + email);
+  }
+}
+
+function notifyMatchingTeachersForJob_(jobRow, refId) {
+  const jSchool  = String(jobRow[POSTED_JOBS_HEADERS.indexOf('school')] || '');
+  const jSubject = String(jobRow[POSTED_JOBS_HEADERS.indexOf('subject')] || '').trim();
+  const jCity    = String(jobRow[POSTED_JOBS_HEADERS.indexOf('city')] || '').trim();
+  const jRegion  = String(jobRow[POSTED_JOBS_HEADERS.indexOf('region')] || '').trim();
+  const jLevel   = String(jobRow[POSTED_JOBS_HEADERS.indexOf('level')] || '').trim();
+  const jRole    = String(jobRow[POSTED_JOBS_HEADERS.indexOf('role')] || '').trim();
+  const jScope   = String(jobRow[POSTED_JOBS_HEADERS.indexOf('scope')] || '').trim();
+  const jDesc    = String(jobRow[POSTED_JOBS_HEADERS.indexOf('description')] || '').trim();
+
+  if (!jSubject) return 0;
+
+  const sh = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(SHEET_POSTED_TEACHERS);
+  if (!sh) return 0;
+  const last = sh.getLastRow();
+  if (last < 2) return 0;
+
+  const data = sh.getRange(2, 1, last - 1, POSTED_TEACHERS_HEADERS.length).getValues();
+  const idx = function (h) { return POSTED_TEACHERS_HEADERS.indexOf(h); };
+
+  let sent = 0;
+  data.forEach(function (row) {
+    const status = String(row[idx('status')] || '').toLowerCase();
+    if (status !== 'approved') return;
+
+    const tSubject = String(row[idx('subject')] || '').trim();
+    const tCity    = String(row[idx('city')] || '').trim();
+    const tRegion  = String(row[idx('region')] || '').trim();
+    const tLevel   = String(row[idx('level')] || '').trim();
+    const tEmail   = String(row[idx('email')] || '').trim();
+    const tName    = String(row[idx('name')] || '').trim();
+
+    if (!tEmail) return;
+
+    // Subject — required match (substring either way)
+    const subjectMatch = !!(tSubject && (
+      jSubject.indexOf(tSubject) !== -1 ||
+      tSubject.indexOf(jSubject) !== -1
+    ));
+    if (!subjectMatch) return;
+
+    // Location — same city OR same region OR teacher = "כל הארץ"
+    const locationMatch = (
+      (jCity && tCity && jCity === tCity) ||
+      (jRegion && tRegion && jRegion === tRegion) ||
+      (tRegion && tRegion.indexOf('כל הארץ') !== -1) ||
+      !tCity && !tRegion // teacher didn't specify — match all
+    );
+    if (!locationMatch) return;
+
+    // Level — if teacher specified, must match
+    if (tLevel && jLevel && tLevel !== jLevel) return;
+
+    const html = '<div dir="rtl" style="font-family:Arial,Helvetica,sans-serif;color:#000;line-height:1.6;max-width:600px;background:#FDF2F8;padding:24px;">' +
+      '<div style="background:#FFF;border-radius:18px;padding:28px 24px;border:1px solid #FCE7F3;">' +
+        '<div style="background:#FCE7F3;color:#9D174D;font-size:11px;font-weight:800;display:inline-block;padding:4px 12px;border-radius:999px;letter-spacing:1px;margin-bottom:14px;">משרה תואמת חדשה</div>' +
+        '<h2 style="margin:0 0 8px;color:#000;font-size:22px;line-height:1.3;">' + escHtml_(jSubject) + (jRole ? ' · ' + escHtml_(jRole) : '') + '</h2>' +
+        '<div style="font-size:14px;color:#4A4A4A;margin:0 0 16px;">' + escHtml_(jSchool) + (jCity ? ' · ' + escHtml_(jCity) : '') + '</div>' +
+        '<p style="margin:0 0 16px;color:#1A1A1A;">שלום ' + escHtml_(tName) + ',</p>' +
+        '<p style="margin:0 0 16px;">פורסמה משרה חדשה במאגר אדורה שעשויה להתאים לך:</p>' +
+        '<table style="width:100%;border-collapse:collapse;margin:0 0 16px;font-size:14px;">' +
+          (jLevel ? '<tr><td style="padding:6px 0;color:#4A4A4A;width:90px;">שכבה:</td><td style="color:#000;font-weight:600;">' + escHtml_(jLevel) + '</td></tr>' : '') +
+          (jRegion ? '<tr><td style="padding:6px 0;color:#4A4A4A;">אזור:</td><td style="color:#000;font-weight:600;">' + escHtml_(jRegion) + '</td></tr>' : '') +
+          (jScope ? '<tr><td style="padding:6px 0;color:#4A4A4A;">היקף:</td><td style="color:#000;font-weight:600;">' + escHtml_(jScope) + '</td></tr>' : '') +
+        '</table>' +
+        (jDesc ? '<p style="background:#FDF2F8;padding:12px 14px;border-radius:10px;font-size:13.5px;color:#1A1A1A;margin:0 0 16px;">' + escHtml_(jDesc) + '</p>' : '') +
+        '<a href="https://edura.co.il" style="display:inline-block;background:#EC4899;color:#FFF;text-decoration:none;padding:12px 24px;border-radius:999px;font-weight:700;">לפנייה ישירה לבית הספר →</a>' +
+        '<p style="margin:18px 0 0;font-size:11.5px;color:#4A4A4A;line-height:1.5;">קיבלת מייל זה כי נרשמת למאגר המורים של אדורה. רוצה להפסיק התראות? כתבו ל-meytal@edura.co.il</p>' +
+      '</div>' +
+      '<p style="text-align:center;font-size:12px;color:#4A4A4A;margin:18px 0 0;">— אדורה · edura.co.il</p>' +
+    '</div>';
+
+    try {
+      MailApp.sendEmail(tEmail, 'משרה תואמת חדשה — ' + jSubject + ' · ' + jSchool,
+        htmlToText_(html), { name: 'אדורה · edura.co.il', replyTo: ADMIN_EMAIL, htmlBody: html });
+      sent++;
+    } catch (e) { log_('match-email-error', tEmail + ' · ' + String(e)); }
+  });
+
+  return sent;
 }
 
 function signToken_(type, refId) {
