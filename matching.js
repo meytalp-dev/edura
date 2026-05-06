@@ -128,17 +128,24 @@
   }
 
   // Split on '/' or ',' — teachers often write "חינוך מיוחד / מדעים"
+  // אבל "מחנך/ת" / "יועץ/ת" / "מחנכים/ות" — סיומות מגדר עבריות, לא מקצועות נפרדים.
+  // לכן: מסננים חלקים באורך ≤2 (כולל ת, ה, ית, ות, ים) כדי שלא ייחשבו "מקצוע".
   function splitSubjects(s) {
-    return String(s || '').split(/[\/,]/).map(x => stripParens(x)).filter(Boolean);
+    return String(s || '')
+      .split(/[\/,]/)
+      .map(x => stripParens(x))
+      .filter(x => x && x.length > 2);
   }
 
+  // includes() בעברית קצרה מייצר false-positives ('אדריכלות'.includes('מת') = true).
+  // לכן מתירים partial רק כששני הצדדים באורך ≥4 ושהמשותף משמעותי (≥3 תווים).
   function singleSubjectScore(sA, sB) {
     if (isGenericSubject(sA) || isGenericSubject(sB)) return 0;
     const cA = canonicalSubject(sA);
     const cB = canonicalSubject(sB);
     if (!cA || !cB) return 0;
     if (cA === cB) return 60;
-    if (cA.includes(cB) || cB.includes(cA)) return 40;
+    if (cA.length >= 4 && cB.length >= 4 && (cA.includes(cB) || cB.includes(cA))) return 40;
     return 0;
   }
 
