@@ -1154,12 +1154,46 @@ function citiesMatch(a, b) {
 let JOBS = [];
 let STATE = { city: '', subject: 'all', subjectQuery: '', level: 'all' };
 
+const SUBMISSIONS_URL = 'https://script.google.com/macros/s/AKfycbwleldcwH8c5k9OZ8EMDIKZ8veRbrtO1M7XwYFWg7HHbEV-SrZkLTElbFRiq4cHPlyarw/exec';
+
+function normalizeSubmittedJob(r) {
+  const ts = r.timestamp || '';
+  const dateIso = ts ? String(ts).slice(0, 10) : '';
+  return {
+    id: r.ref_id,
+    source: 'submitted',
+    source_name: 'הגשה ישירה',
+    title: (r.subject ? r.subject + ' · ' : '') + (r.school || ''),
+    school: r.school || '',
+    subject: r.subject || '',
+    role: r.role || '',
+    region: r.region || '',
+    city: r.city || '',
+    level: r.level || '',
+    sector: r.sector || '',
+    scope: r.scope || '',
+    description: r.description || '',
+    email: r.email || '',
+    phone: r.phone || '',
+    contact_name: r.contact_name || '',
+    date: dateIso,
+    date_iso: dateIso,
+    url: '',
+    is_submitted: true
+  };
+}
+
 async function loadJobs() {
   try {
-    const res = await fetch('data/jobs.json');
-    const data = await res.json();
-    JOBS = data.jobs || [];
-    console.log('[edura v3] loaded', JOBS.length, 'jobs');
+    const [resJobs, resApproved] = await Promise.all([
+      fetch('data/jobs.json').then(r => r.json()),
+      fetch(SUBMISSIONS_URL + '?action=approved').then(r => r.ok ? r.json() : null).catch(() => null)
+    ]);
+    const submitted = (resApproved && Array.isArray(resApproved.jobs))
+      ? resApproved.jobs.map(normalizeSubmittedJob)
+      : [];
+    JOBS = [...submitted, ...(resJobs.jobs || [])];
+    console.log('[edura v3] loaded', JOBS.length, 'jobs (' + submitted.length + ' submitted)');
     initUI();
   } catch (e) {
     console.error('Failed to load jobs', e);

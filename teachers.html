@@ -497,18 +497,46 @@ function citiesMatch(a, b) {
 let TEACHERS = [];
 let STATE = { city: '', subject: 'all', subjectQuery: '', level: 'all' };
 
+const SUBMISSIONS_URL = 'https://script.google.com/macros/s/AKfycbwleldcwH8c5k9OZ8EMDIKZ8veRbrtO1M7XwYFWg7HHbEV-SrZkLTElbFRiq4cHPlyarw/exec';
+
+function normalizeSubmittedTeacher(r) {
+  const ts = r.timestamp || '';
+  const dateIso = ts ? String(ts).slice(0, 10) : '';
+  return {
+    id: r.ref_id,
+    source: 'submitted',
+    source_name: 'הגשה ישירה',
+    name: r.name || '',
+    subject: r.subject || '',
+    level: r.level || '',
+    region: r.region || '',
+    city: r.city || '',
+    scope: r.scope || '',
+    notes: r.notes || '',
+    email: r.email || '',
+    phone: r.phone || '',
+    date: dateIso,
+    date_iso: dateIso,
+    is_submitted: true
+  };
+}
+
 async function loadTeachers() {
   try {
     const responses = await Promise.all([
       fetch('data/teachers.json').then(r => r.json()).catch(() => ({})),
       fetch('data/fb-teachers.json').then(r => r.ok ? r.json() : null).catch(() => null),
-      fetch('data/fb-teachers-2.json').then(r => r.ok ? r.json() : null).catch(() => null)
+      fetch('data/fb-teachers-2.json').then(r => r.ok ? r.json() : null).catch(() => null),
+      fetch(SUBMISSIONS_URL + '?action=approved').then(r => r.ok ? r.json() : null).catch(() => null)
     ]);
     const main = responses[0].teachers || [];
     const fb1 = (responses[1] && responses[1].teachers) ? responses[1].teachers : [];
     const fb2 = (responses[2] && responses[2].teachers) ? responses[2].teachers : [];
-    TEACHERS = [...main, ...fb1, ...fb2].filter(t => t && (t.name || t.id));
-    console.log('[teachers v2] loaded', TEACHERS.length);
+    const submitted = (responses[3] && Array.isArray(responses[3].teachers))
+      ? responses[3].teachers.map(normalizeSubmittedTeacher)
+      : [];
+    TEACHERS = [...submitted, ...main, ...fb1, ...fb2].filter(t => t && (t.name || t.id));
+    console.log('[teachers v2] loaded', TEACHERS.length, '(' + submitted.length + ' submitted)');
     initUI();
   } catch (e) { console.error(e); }
 }
