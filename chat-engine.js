@@ -13,6 +13,9 @@ window.EDURA_JOBS_URL = 'data/jobs.json';
 window.EDURA_TEACHERS_URL = 'data/teachers.json';
 window.EDURA_FB_TEACHERS_URL = 'data/fb-teachers.json';
 window.EDURA_API_URL = 'https://script.google.com/macros/s/AKfycbxFqT828xAhAAhe9mJ6h55Kt9i6zKjcRZBscMYjrPkUV1BUuKhqT_n7ZLqC7cNZs7wR-Q/exec';
+// Submissions feed: משרות ומורים שמיטל אישרה ידנית דרך לינק במייל (Apps Script).
+// אותו פיד שאתר index/teachers טוענים — כדי שהבוט יראה את אותם רשומות.
+window.EDURA_SUBMISSIONS_URL = 'https://script.google.com/macros/s/AKfycbwleldcwH8c5k9OZ8EMDIKZ8veRbrtO1M7XwYFWg7HHbEV-SrZkLTElbFRiq4cHPlyarw/exec';
 
 (function () {
   'use strict';
@@ -110,6 +113,73 @@ window.EDURA_API_URL = 'https://script.google.com/macros/s/AKfycbxFqT828xAhAAhe9
       url: t.fb_url || '',
       fb_url: t.fb_url || ''
     }));
+  }
+
+  // משרות שאישרת ידנית דרך לינק במייל — מגיעות מ-Apps Script.
+  // נורמליזציה זהה לזו ב-index.html כדי שהבוט יראה את אותן רשומות.
+  function normalizeSubmittedJob(r) {
+    const ts = r.timestamp || '';
+    const dateIso = ts ? String(ts).slice(0, 10) : '';
+    return {
+      id: r.ref_id,
+      source: 'submitted',
+      source_name: 'הגשה ישירה',
+      title: (r.subject ? r.subject + ' · ' : '') + (r.school || ''),
+      school: r.school || '',
+      subject: r.subject || '',
+      role: r.role || '',
+      region: r.region || '',
+      city: r.city || '',
+      level: r.level || '',
+      sector: r.sector || '',
+      scope: r.scope || '',
+      description: r.description || '',
+      email: r.email || '',
+      phone: r.phone || '',
+      contact_name: r.contact_name || '',
+      date: dateIso,
+      date_iso: dateIso,
+      url: '',
+      is_submitted: true
+    };
+  }
+  function normalizeSubmittedTeacher(r) {
+    const ts = r.timestamp || '';
+    const dateIso = ts ? String(ts).slice(0, 10) : '';
+    return {
+      id: r.ref_id,
+      source: 'submitted',
+      source_name: 'הגשה ישירה',
+      name: r.name || '',
+      subject: r.subject || '',
+      level: r.level || '',
+      region: r.region || '',
+      city: r.city || '',
+      scope: r.scope || '',
+      notes: r.notes || '',
+      email: r.email || '',
+      phone: r.phone || '',
+      date: dateIso,
+      date_iso: dateIso,
+      is_submitted: true
+    };
+  }
+  // Cache feed כדי לא להוריד אותו פעמיים אם המשתמש מחליף flow
+  let _submittedCache = null;
+  async function fetchSubmittedFeed() {
+    if (_submittedCache) return _submittedCache;
+    try {
+      const res = await fetch(window.EDURA_SUBMISSIONS_URL + '?action=approved');
+      if (!res.ok) return { jobs: [], teachers: [] };
+      const data = await res.json();
+      _submittedCache = {
+        jobs: Array.isArray(data.jobs) ? data.jobs.map(normalizeSubmittedJob) : [],
+        teachers: Array.isArray(data.teachers) ? data.teachers.map(normalizeSubmittedTeacher) : []
+      };
+      return _submittedCache;
+    } catch (e) {
+      return { jobs: [], teachers: [] };
+    }
   }
 
   const STORAGE_KEY = 'edura.chat.state.v1';
@@ -226,27 +296,34 @@ window.EDURA_API_URL = 'https://script.google.com/macros/s/AKfycbxFqT828xAhAAhe9
       try {
         if (flow === 'teacher') {
           if (!this.allTeachers.length) {
-            const [resA, resB] = await Promise.all([
+            const [resA, resB, submitted] = await Promise.all([
               fetch(window.EDURA_TEACHERS_URL),
-              fetch(window.EDURA_FB_TEACHERS_URL).catch(() => null)
+              fetch(window.EDURA_FB_TEACHERS_URL).catch(() => null),
+              fetchSubmittedFeed()
             ]);
             const dataA = await resA.json();
             const fbData = resB && resB.ok ? await resB.json() : null;
             const fbTeachers = fbData ? normalizeFbTeachers(fbData) : [];
-            this.allTeachers = [...(dataA.teachers || []), ...fbTeachers];
+            // הגשות ידניות מקודמות לתחילת הרשימה — חדשות יותר ומהותיות
+            this.allTeachers = [...submitted.teachers, ...(dataA.teachers || []), ...fbTeachers];
           }
           this.dataset = this.allTeachers;
           this.setStatus('');
           this.botMsg('יש ' + this.dataset.length + ' מורים שמחפשים בית. בואו נצמצם.');
         } else {
           if (!this.allJobs.length) {
-            const res = await fetch(window.EDURA_JOBS_URL);
+            const [res, submitted] = await Promise.all([
+              fetch(window.EDURA_JOBS_URL),
+              fetchSubmittedFeed()
+            ]);
             const data = await res.json();
-            this.allJobs = (data.jobs || []).map(j => ({
+            const scrapedJobs = (data.jobs || []).map(j => ({
               ...j,
               subject: normalizeText(j.subject),
               level: normalizeText(j.level)
             }));
+            // הגשות שמיטל אישרה מהמייל מקודמות לתחילת הרשימה
+            this.allJobs = [...submitted.jobs, ...scrapedJobs];
           }
           if (flow === 'tender') {
             this.dataset = this.allJobs.filter(j => (j.role || '').includes('מנהל'));
