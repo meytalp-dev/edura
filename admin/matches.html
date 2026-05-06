@@ -190,6 +190,25 @@
     overflow: hidden;
     pointer-events: none;
   }
+  /* תג "חדש" — מאצ' שמערב משרה או מורה שנוספו מאז הסריקה האחרונה */
+  .match.is-new { border-right-color: #FACC15; box-shadow: 0 0 0 2px #FEF9C3 inset; }
+  .new-badge {
+    display: inline-flex; align-items: center; gap: 4px;
+    background: #FACC15; color: #713F12;
+    padding: 3px 9px; border-radius: 999px;
+    font-size: 11px; font-weight: 800;
+  }
+  /* באנר עליון "מהסריקה האחרונה" */
+  .scan-banner {
+    background: linear-gradient(90deg, #FEF9C3, #FCE7F3);
+    border: 1.5px solid #FACC15;
+    border-radius: 14px; padding: 14px 18px; margin-bottom: 16px;
+    display: flex; gap: 14px; align-items: center; flex-wrap: wrap;
+    font-size: 14px;
+  }
+  .scan-banner[hidden] { display: none; }
+  .scan-banner strong { color: var(--pink-deeper); font-weight: 900; }
+  .scan-banner .meta { color: var(--ink-mute); font-size: 12px; }
   .reject-tag {
     display: inline-flex; align-items: center; gap: 6px;
     background: var(--error); color: #fff;
@@ -221,6 +240,14 @@
   <h1>התאמות מורה ↔ משרה · אדמין</h1>
   <div class="sub">מציג רק התאמות איכותיות: אותו מקצוע, אותה שכבה, ואותה עיר או זונת נסיעה (~30 דק'). בקרה ידנית — שולחת מיילים בעצמך.</div>
 </header>
+
+<!-- באנר "מהסריקה האחרונה" — מתעדכן רק אם data/scan-fresh.json קיים -->
+<div class="scan-banner" id="scan-banner" hidden>
+  <span style="font-size:18px">🆕</span>
+  <span><strong>מהסריקה האחרונה:</strong> <span id="scan-banner-text">…</span></span>
+  <span class="meta" id="scan-banner-time"></span>
+  <label class="check" style="margin-inline-start:auto"><input type="checkbox" id="f-only-new" /> הצג רק חדש</label>
+</div>
 
 <div class="help-box">
   <strong>איך לקרוא:</strong> כל שורה = מאצ' מאומת בין משרה ספציפית לבין מורה ספציפית. ירוק = פנוי לשליחה · ורוד = score גבוה (עיר זהה) · אפור = כבר נשלח · אדום-עמום = סומן "לא מתאים".
@@ -271,6 +298,9 @@ const M = window.EduraMatch;
 let ALL_JOBS = [];
 let ALL_TEACHERS = [];
 let ALL_MATCHES = [];
+let NEW_JOB_IDS = new Set();
+let NEW_TEACHER_IDS = new Set();
+let SCAN_META = null; // { scanned_at, new_jobs_count, new_teachers_count, new_matches_count }
 
 function nsj(r) {
   const ts = r.timestamp || '';
@@ -312,12 +342,13 @@ function nfb(t, i, sn) {
 
 async function loadAll() {
   try {
-    const [jobs, teachers, fb1, fb2, sub] = await Promise.all([
+    const [jobs, teachers, fb1, fb2, sub, scan] = await Promise.all([
       fetch('../data/jobs.json').then(r => r.json()),
       fetch('../data/teachers.json').then(r => r.json()),
       fetch('../data/fb-teachers.json').then(r => r.ok ? r.json() : null).catch(() => null),
       fetch('../data/fb-teachers-2.json').then(r => r.ok ? r.json() : null).catch(() => null),
-      fetch(SUBMISSIONS_URL + '?action=approved').then(r => r.ok ? r.json() : null).catch(() => null)
+      fetch(SUBMISSIONS_URL + '?action=approved').then(r => r.ok ? r.json() : null).catch(() => null),
+      fetch('../data/scan-fresh.json').then(r => r.ok ? r.json() : null).catch(() => null)
     ]);
     const submitted = sub && sub.ok ? sub : { jobs: [], teachers: [] };
     ALL_JOBS = [
@@ -330,12 +361,40 @@ async function loadAll() {
       ...((fb1 && fb1.teachers) ? fb1.teachers.map((t, i) => nfb(t, i, 'fb1')) : []),
       ...((fb2 && fb2.teachers) ? fb2.teachers.map((t, i) => nfb(t, i, 'fb2')) : [])
     ];
+    // Process scan-fresh data if available (from edura-evening-scan skill)
+    if (scan && scan.diff && !scan.is_first_run) {
+      NEW_JOB_IDS = new Set(scan.diff.new_job_ids || []);
+      NEW_TEACHER_IDS = new Set(scan.diff.new_teacher_ids || []);
+      SCAN_META = {
+        scanned_at: scan.scanned_at,
+        new_jobs_count: scan.diff.new_jobs_count || 0,
+        new_teachers_count: scan.diff.new_teachers_count || 0,
+        new_matches_count: scan.diff.new_matches_count || 0
+      };
+    }
     return true;
   } catch (e) {
     console.error(e);
     document.getElementById('matches').innerHTML = '<div class="empty">שגיאה בטעינה. בדקי את ה-console.</div>';
     return false;
   }
+}
+
+function isNewMatch(m) {
+  return NEW_JOB_IDS.has(m.job.id) || NEW_TEACHER_IDS.has(m.teacher.id);
+}
+
+function renderScanBanner() {
+  if (!SCAN_META) return;
+  const banner = document.getElementById('scan-banner');
+  banner.hidden = false;
+  const parts = [];
+  if (SCAN_META.new_jobs_count) parts.push(SCAN_META.new_jobs_count + ' משרות חדשות');
+  if (SCAN_META.new_teachers_count) parts.push(SCAN_META.new_teachers_count + ' מורות חדשות');
+  if (SCAN_META.new_matches_count) parts.push(SCAN_META.new_matches_count + ' מאצ\'ים חדשים');
+  document.getElementById('scan-banner-text').textContent = parts.length ? parts.join(' · ') : 'אין שינויים מאז הסריקה הקודמת';
+  const t = new Date(SCAN_META.scanned_at);
+  document.getElementById('scan-banner-time').textContent = '(נסרק: ' + t.toLocaleString('he-IL', { dateStyle: 'short', timeStyle: 'short' }) + ')';
 }
 
 // ──────────────────────────────────────────────────
@@ -419,7 +478,7 @@ function cssEsc(s) {
 function pillsForJob(j) {
   const out = [];
   if (j.city) out.push('<span class="pill city">📍 ' + esc(j.city) + '</span>');
-  else if (j.region) out.push('<span class="pill region">' + esc(Array.isArray(j.region)?j.region.join('/'):j.region) + '</span>');
+  else if (j.region) out.push('<span class="pill region">אזור ' + esc(Array.isArray(j.region)?j.region.join('/'):j.region) + '</span>');
   if (j.subject) out.push('<span class="pill subject">' + esc(j.subject) + '</span>');
   if (j.level) out.push('<span class="pill level">' + esc(j.level) + '</span>');
   if (j.role) out.push('<span class="pill role">' + esc(j.role) + '</span>');
@@ -608,9 +667,10 @@ function renderMatch(m) {
   const key = matchKey(m);
   const contacted = !!getContacted()[key];
   const rejected = getRejected()[key]; // {reason, ts} or undefined
+  const isNew = isNewMatch(m);
   const tierClass = m.tier === 'same-city' ? 'high' : '';
   const stateClass = rejected ? 'rejected' : (contacted ? 'contacted' : '');
-  const cls = stateClass + ' ' + tierClass;
+  const cls = stateClass + ' ' + tierClass + (isNew ? ' is-new' : '');
   const tierLabel = m.tier === 'same-city' ? 'עיר זהה' : 'זונת נסיעה זהה';
   const scoreClass = m.score >= 130 ? '' : (m.score >= 70 ? 'medium' : 'low');
 
@@ -677,6 +737,7 @@ function renderMatch(m) {
     '</div>' +
     '<div class="match-actions">' +
       '<span class="score-badge ' + scoreClass + '">score ' + m.score + ' · ' + tierLabel + '</span>' +
+      (isNew ? '<span class="new-badge">🆕 חדש</span>' : '') +
       actions.join('') +
     '</div>' +
     rejectPanel +
@@ -714,6 +775,8 @@ function applyFilters(matches) {
     const k = matchKey(m);
     if (fh && contacted[k]) return false;
     if (fhr && rejected[k]) return false;
+    const fOnlyNew = document.getElementById('f-only-new');
+    if (fOnlyNew && fOnlyNew.checked && !isNewMatch(m)) return false;
     return true;
   });
 }
@@ -830,6 +893,7 @@ document.getElementById('f-city').addEventListener('input', render);
 document.getElementById('f-mailable').addEventListener('change', render);
 document.getElementById('f-hide-contacted').addEventListener('change', render);
 document.getElementById('f-hide-rejected').addEventListener('change', render);
+document.getElementById('f-only-new').addEventListener('change', render);
 document.getElementById('btn-reset').addEventListener('click', () => {
   ['f-region','f-subject','f-level'].forEach(id => document.getElementById(id).value = '');
   document.getElementById('f-city').value = '';
@@ -862,6 +926,7 @@ document.getElementById('btn-export-rejects').addEventListener('click', () => {
   const ok = await loadAll();
   if (!ok) return;
   ALL_MATCHES = buildMatches();
+  renderScanBanner();
   // Populate filter dropdowns from actual data
   fillSelect('f-region', ['ירושלים','מרכז','שפלה','צפון','דרום']);
   fillSelect('f-subject', ALL_JOBS.map(j => j.subject).concat(ALL_TEACHERS.map(t => t.subject)));
