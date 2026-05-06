@@ -41,14 +41,6 @@ const ADMIN_EMAIL = 'meytal@edura.co.il';
 // אם רוצים להחליף — שני את ערך זה והגדירי גרסה חדשה ב-Deploy
 const APPROVE_SECRET = 'edura-approve-2026-meytal';
 
-// ─── WhatsApp notifications (via CallMeBot — חינם) ───
-// כדי להפעיל:
-//   1. הוסיפי לאנשי קשר: +34 644 60 84 12 בשם "CallMeBot"
-//   2. שלחי לו ב-WhatsApp: "I allow callmebot to send me messages"
-//   3. תקבלי בתגובה API key — הזיני אותו כאן
-const WA_PHONE   = '972536256653'; // המספר של מיטל (בלי +, בלי רווחים)
-const WA_API_KEY = '';             // ← הזיני את ה-API key אחרי הרישום
-
 // URL של הסוכן הראשי (jobs scanner) — לשליפה ל-daily alerts
 const JOBS_API_URL = 'https://script.google.com/macros/s/AKfycbxFqT828xAhAAhe9mJ6h55Kt9i6zKjcRZBscMYjrPkUV1BUuKhqT_n7ZLqC7cNZs7wR-Q/exec';
 
@@ -240,26 +232,6 @@ function handleApproveByLink_(params) {
     }
   }
   return htmlPage_('לא נמצא', 'לא נמצאה רשומה עם מזהה ' + refId, false);
-}
-
-// ════════════════════════════════════════════════════════════════════
-// WhatsApp notification (CallMeBot) — non-blocking
-// ════════════════════════════════════════════════════════════════════
-function sendWhatsAppToAdmin_(message) {
-  if (!WA_API_KEY || !WA_PHONE) {
-    log_('wa-skip', 'no api key');
-    return;
-  }
-  try {
-    const url = 'https://api.callmebot.com/whatsapp.php' +
-      '?phone=' + encodeURIComponent(WA_PHONE) +
-      '&text='  + encodeURIComponent(message) +
-      '&apikey=' + encodeURIComponent(WA_API_KEY);
-    const res = UrlFetchApp.fetch(url, { muteHttpExceptions: true, deadline: 10 });
-    log_('wa-sent', 'code=' + res.getResponseCode() + ' · ' + message.substring(0, 80));
-  } catch (e) {
-    log_('wa-error', String(e));
-  }
 }
 
 // ════════════════════════════════════════════════════════════════════
@@ -682,14 +654,6 @@ function handlePostJob_(b) {
       htmlToText_(confHtml),
       { name: 'אדורה · edura.co.il', replyTo: ADMIN_EMAIL, htmlBody: confHtml });
     log_('job-posted', refId + ' · ' + school);
-
-    // WhatsApp לאדמין — התראה מיידית עם קישור אישור
-    sendWhatsAppToAdmin_(
-      '🏫 משרה חדשה ממתינה: ' + school + ' · ' + subject +
-      ' (' + refId + ')\n\n✅ אישור: ' + approveUrl +
-      '\n❌ דחייה: ' + rejectUrl
-    );
-
     return { ok: true, refId: refId };
   } catch (err) {
     log_('job-post-error', refId + ' · ' + String(err));
@@ -762,14 +726,6 @@ function handlePostTeacher_(b) {
       htmlToText_(confHtml),
       { name: 'אדורה · edura.co.il', replyTo: ADMIN_EMAIL, htmlBody: confHtml });
     log_('teacher-posted', refId + ' · ' + name);
-
-    // WhatsApp לאדמין
-    sendWhatsAppToAdmin_(
-      '👩‍🏫 מורה חדש/ה ממתין/ה: ' + name + ' · ' + subject +
-      (city ? ' · ' + city : '') + ' (' + refId + ')\n\n✅ אישור: ' + approveUrl +
-      '\n❌ דחייה: ' + rejectUrl
-    );
-
     return { ok: true, refId: refId };
   } catch (err) {
     log_('teacher-post-error', refId + ' · ' + String(err));
