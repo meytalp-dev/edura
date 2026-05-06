@@ -149,7 +149,45 @@
   .btn.secondary:hover { background: var(--line-soft); }
   .btn.disabled { background: var(--bg-2); color: var(--ink-mute); cursor: not-allowed; }
   .btn.contacted { background: var(--success-soft); color: var(--success); }
+  .btn.danger { background: var(--error-soft); color: var(--error); }
+  .btn.danger:hover { background: #FECACA; }
   .btn svg { width: 14px; height: 14px; }
+
+  /* Reject panel — נפתח כשלוחצים "לא מתאים" */
+  .reject-panel {
+    grid-column: 1 / -1;
+    background: var(--error-soft);
+    border-radius: 10px;
+    padding: 10px 14px;
+    margin-top: 8px;
+    display: flex; gap: 8px; flex-wrap: wrap; align-items: center;
+  }
+  .reject-panel[hidden] { display: none; }
+  .reject-panel .label {
+    font-size: 12px; font-weight: 800; color: var(--error);
+    margin-inline-end: 4px;
+  }
+  .reject-chip {
+    background: var(--bg); border: 1.5px solid var(--error);
+    color: var(--error); padding: 5px 12px; border-radius: 999px;
+    font-size: 12px; font-weight: 700; cursor: pointer;
+    transition: all .12s;
+  }
+  .reject-chip:hover { background: var(--error); color: #fff; }
+  .reject-chip.cancel { border-color: var(--ink-mute); color: var(--ink-mute); }
+  .reject-chip.cancel:hover { background: var(--ink-mute); color: #fff; }
+
+  .match.rejected {
+    border-right-color: var(--error);
+    opacity: 0.55;
+    background: #FFFAFA;
+  }
+  .reject-tag {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: var(--error); color: #fff;
+    padding: 4px 10px; border-radius: 999px;
+    font-size: 11px; font-weight: 800;
+  }
 
   .empty {
     text-align: center; padding: 40px; color: var(--ink-mute);
@@ -187,6 +225,7 @@
   <div class="stat"><span class="stat-num warn" id="stat-region">…</span><span class="stat-label">אותו אזור</span></div>
   <div class="stat"><span class="stat-num ok" id="stat-mailable">…</span><span class="stat-label">ניתנים לפנייה (יש מייל/טלפון)</span></div>
   <div class="stat"><span class="stat-num" id="stat-contacted">…</span><span class="stat-label">סומנו כטופלו</span></div>
+  <div class="stat"><span class="stat-num" id="stat-rejected" style="color:var(--error)">…</span><span class="stat-label">סומנו לא מתאים</span></div>
 </div>
 
 <div class="toolbar">
@@ -197,8 +236,10 @@
   <input type="text" id="f-city" placeholder="עיר (חיפוש חופשי)" />
   <label class="check"><input type="checkbox" id="f-mailable" checked /> רק עם דרך פנייה</label>
   <label class="check"><input type="checkbox" id="f-hide-contacted" checked /> הסתר טופלו</label>
+  <label class="check"><input type="checkbox" id="f-hide-rejected" checked /> הסתר "לא מתאים"</label>
   <button id="btn-reset">אפס</button>
-  <button id="btn-clear-marks" style="background:var(--error)">נקה סימוני "טופל"</button>
+  <button id="btn-export-rejects" style="background:var(--ink)">⬇ ייצא דחיות (JSON)</button>
+  <button id="btn-clear-marks" style="background:var(--error)">נקה כל הסימונים</button>
 </div>
 
 <div id="matches"><div class="loading">טוען נתונים…</div></div>
@@ -209,6 +250,7 @@
 <script>
 const SUBMISSIONS_URL = 'https://script.google.com/macros/s/AKfycbwleldcwH8c5k9OZ8EMDIKZ8veRbrtO1M7XwYFWg7HHbEV-SrZkLTElbFRiq4cHPlyarw/exec';
 const STORAGE_KEY = 'edura.admin.matches.contacted.v1';
+const REJECT_KEY = 'edura.admin.matches.rejected.v1';
 // המייל שממנו יישלחו ההתאמות. /mail/u/EMAIL/ מאלץ את Gmail לפתוח
 // בחשבון הזה גם אם המשתמשת מחוברת לכמה חשבונות במקביל.
 const SENDER_GMAIL = 'mlypeleg@gmail.com';
@@ -345,6 +387,12 @@ function getContacted() {
 }
 function setContacted(map) {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(map));
+}
+function getRejected() {
+  try { return JSON.parse(localStorage.getItem(REJECT_KEY) || '{}'); } catch (e) { return {}; }
+}
+function setRejected(map) {
+  localStorage.setItem(REJECT_KEY, JSON.stringify(map));
 }
 function matchKey(m) {
   return (m.teacher.id || m.teacher.name || '') + '__' + (m.job.id || m.job.title || '');
@@ -494,8 +542,10 @@ function renderMatch(m) {
   const t = m.teacher, j = m.job;
   const key = matchKey(m);
   const contacted = !!getContacted()[key];
+  const rejected = getRejected()[key]; // {reason, ts} or undefined
   const tierClass = m.tier === 'same-city' ? 'high' : '';
-  const cls = (contacted ? 'contacted ' : '') + tierClass;
+  const stateClass = rejected ? 'rejected' : (contacted ? 'contacted' : '');
+  const cls = stateClass + ' ' + tierClass;
   const tierLabel = m.tier === 'same-city' ? 'עיר זהה' :
                     m.tier === 'same-region' ? 'אותו אזור' : 'אזור שכן';
   const scoreClass = m.score >= 130 ? '' : (m.score >= 70 ? 'medium' : 'low');
@@ -520,6 +570,24 @@ function renderMatch(m) {
     actions.push('<a class="btn secondary" href="' + schoolMail.gmail + '" target="_blank" rel="noopener">📧 מייל לבי"ס (Gmail)</a>');
   }
   actions.push('<button class="btn ' + (contacted ? 'contacted' : 'secondary') + '" data-mark="' + esc(key) + '">' + (contacted ? '✓ סומן כטופל' : 'סמן כטופל') + '</button>');
+  if (rejected) {
+    actions.push('<span class="reject-tag">✗ לא מתאים: ' + esc(rejected.reason) + '</span>');
+    actions.push('<button class="btn secondary" data-unreject="' + esc(key) + '">בטלי</button>');
+  } else {
+    actions.push('<button class="btn danger" data-reject-toggle="' + esc(key) + '">✗ לא מתאים</button>');
+  }
+
+  // Reject reasons panel — מתפתח כשלוחצים "לא מתאים"
+  const REASONS = ['אזור', 'עיר', 'מקצוע', 'תפקיד', 'שכבה', 'אחר'];
+  const rejectChips = REASONS.map(r =>
+    '<button class="reject-chip" data-reject-reason="' + esc(r) + '" data-reject-key="' + esc(key) + '">' + esc(r) + '</button>'
+  ).join('');
+  const rejectPanel = rejected ? '' :
+    '<div class="reject-panel" id="reject-' + esc(key) + '" hidden>' +
+      '<span class="label">למה לא מאצ\'?</span>' +
+      rejectChips +
+      '<button class="reject-chip cancel" data-reject-cancel="' + esc(key) + '">בטלי</button>' +
+    '</div>';
 
   return '<div class="match ' + cls + '" data-key="' + esc(key) + '">' +
     '<div class="side">' +
@@ -537,6 +605,7 @@ function renderMatch(m) {
       '<span class="score-badge ' + scoreClass + '">score ' + m.score + ' · ' + tierLabel + '</span>' +
       actions.join('') +
     '</div>' +
+    rejectPanel +
   '</div>';
 }
 
@@ -547,7 +616,9 @@ function applyFilters(matches) {
   const fc = document.getElementById('f-city').value.trim();
   const fm = document.getElementById('f-mailable').checked;
   const fh = document.getElementById('f-hide-contacted').checked;
+  const fhr = document.getElementById('f-hide-rejected').checked;
   const contacted = getContacted();
+  const rejected = getRejected();
 
   return matches.filter(m => {
     if (fr) {
@@ -566,7 +637,9 @@ function applyFilters(matches) {
     if (fm) {
       if (!m.teacher.email && !m.teacher.phone) return false;
     }
-    if (fh && contacted[matchKey(m)]) return false;
+    const k = matchKey(m);
+    if (fh && contacted[k]) return false;
+    if (fhr && rejected[k]) return false;
     return true;
   });
 }
@@ -574,17 +647,20 @@ function applyFilters(matches) {
 function render() {
   const filtered = applyFilters(ALL_MATCHES);
   const contacted = getContacted();
+  const rejected = getRejected();
   const cnt = ALL_MATCHES.length;
   const high = ALL_MATCHES.filter(m => m.tier === 'same-city').length;
   const reg = ALL_MATCHES.filter(m => m.tier === 'same-region').length;
   const mailable = ALL_MATCHES.filter(m => m.teacher.email || m.teacher.phone).length;
   const cnum = Object.keys(contacted).filter(k => contacted[k]).length;
+  const rnum = Object.keys(rejected).filter(k => rejected[k]).length;
 
   document.getElementById('stat-total').textContent = cnt;
   document.getElementById('stat-high').textContent = high;
   document.getElementById('stat-region').textContent = reg;
   document.getElementById('stat-mailable').textContent = mailable;
   document.getElementById('stat-contacted').textContent = cnum;
+  document.getElementById('stat-rejected').textContent = rnum;
 
   const root = document.getElementById('matches');
   if (filtered.length === 0) {
@@ -604,13 +680,66 @@ function fillSelect(id, values) {
 }
 
 document.addEventListener('click', e => {
-  const btn = e.target.closest('button[data-mark]');
-  if (!btn) return;
-  const key = btn.getAttribute('data-mark');
-  const map = getContacted();
-  if (map[key]) delete map[key]; else map[key] = Date.now();
-  setContacted(map);
-  render();
+  // סמן/בטל "טופל"
+  const markBtn = e.target.closest('button[data-mark]');
+  if (markBtn) {
+    const key = markBtn.getAttribute('data-mark');
+    const map = getContacted();
+    if (map[key]) delete map[key]; else map[key] = Date.now();
+    setContacted(map);
+    render();
+    return;
+  }
+  // פתח/סגור פאנל "לא מתאים"
+  const toggleBtn = e.target.closest('button[data-reject-toggle]');
+  if (toggleBtn) {
+    const key = toggleBtn.getAttribute('data-reject-toggle');
+    const panel = document.getElementById('reject-' + key);
+    if (panel) panel.hidden = !panel.hidden;
+    return;
+  }
+  // ביטול פאנל "לא מתאים"
+  const cancelBtn = e.target.closest('button[data-reject-cancel]');
+  if (cancelBtn) {
+    const key = cancelBtn.getAttribute('data-reject-cancel');
+    const panel = document.getElementById('reject-' + key);
+    if (panel) panel.hidden = true;
+    return;
+  }
+  // לחיצה על סיבת דחייה
+  const reasonBtn = e.target.closest('button[data-reject-reason]');
+  if (reasonBtn) {
+    const reason = reasonBtn.getAttribute('data-reject-reason');
+    const key = reasonBtn.getAttribute('data-reject-key');
+    let finalReason = reason;
+    if (reason === 'אחר') {
+      const txt = prompt('סיבה (חופשי):');
+      if (!txt || !txt.trim()) return;
+      finalReason = 'אחר: ' + txt.trim();
+    }
+    // שמור: matchKey -> {reason, ts, snapshot} כדי שנוכל לנתח אחרי זה
+    const m = ALL_MATCHES.find(x => matchKey(x) === key);
+    const snapshot = m ? {
+      job: { id: m.job.id, title: m.job.title, subject: m.job.subject, level: m.job.level, city: m.job.city, region: m.job.region, role: m.job.role },
+      teacher: { id: m.teacher.id, name: m.teacher.name, subject: m.teacher.subject, level: m.teacher.level, city: m.teacher.city, region: m.teacher.region, source: m.teacher.source },
+      score: m.score, tier: m.tier
+    } : null;
+    const map = getRejected();
+    map[key] = { reason: finalReason, ts: Date.now(), snapshot };
+    setRejected(map);
+    render();
+    return;
+  }
+  // ביטול דחייה
+  const unrejectBtn = e.target.closest('button[data-unreject]');
+  if (unrejectBtn) {
+    const key = unrejectBtn.getAttribute('data-unreject');
+    const map = getRejected();
+    delete map[key];
+    setRejected(map);
+    render();
+    return;
+  }
 });
 
 document.getElementById('f-region').addEventListener('change', render);
@@ -619,18 +748,33 @@ document.getElementById('f-level').addEventListener('change', render);
 document.getElementById('f-city').addEventListener('input', render);
 document.getElementById('f-mailable').addEventListener('change', render);
 document.getElementById('f-hide-contacted').addEventListener('change', render);
+document.getElementById('f-hide-rejected').addEventListener('change', render);
 document.getElementById('btn-reset').addEventListener('click', () => {
   ['f-region','f-subject','f-level'].forEach(id => document.getElementById(id).value = '');
   document.getElementById('f-city').value = '';
   document.getElementById('f-mailable').checked = true;
   document.getElementById('f-hide-contacted').checked = true;
+  document.getElementById('f-hide-rejected').checked = true;
   render();
 });
 document.getElementById('btn-clear-marks').addEventListener('click', () => {
-  if (confirm('לנקות את כל סימוני "טופל"? לא ניתן לבטל.')) {
+  if (confirm('לנקות את כל סימוני "טופל" ו"לא מתאים"? לא ניתן לבטל.')) {
     localStorage.removeItem(STORAGE_KEY);
+    localStorage.removeItem(REJECT_KEY);
     render();
   }
+});
+document.getElementById('btn-export-rejects').addEventListener('click', () => {
+  const rejects = getRejected();
+  const items = Object.keys(rejects).map(k => Object.assign({ key: k }, rejects[k]));
+  if (!items.length) { alert('אין דחיות לייצוא עדיין.'); return; }
+  const blob = new Blob([JSON.stringify({ exported_at: new Date().toISOString(), count: items.length, items }, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'edura-match-rejects-' + new Date().toISOString().slice(0,10) + '.json';
+  a.click();
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
 });
 
 (async () => {
