@@ -424,6 +424,54 @@ function buildMailLinks(m) {
     '&body=' + encodeURIComponent(bodyStr);
   return { gmail: gmailUrl, mailto: mailto, email: t.email };
 }
+// בונה לינקים לבית הספר — להציע להם מורה שמתאים למשרה שהם פרסמו.
+function buildSchoolMailLinks(m) {
+  const t = m.teacher, j = m.job;
+  if (!j.email) return null;
+  const subjectStr = 'אדורה — מצאנו מועמד/ת למשרה' + (j.school ? ' ב' + j.school : '');
+  const lines = [
+    'שלום' + (j.contact_name ? ' ' + j.contact_name : '') + ',',
+    '',
+    'דרך אדורה (edura.co.il — לוח דרושים בחינוך) אנחנו מאתרים התאמות בין מורים שמחפשים עבודה לבין משרות פתוחות.',
+    '',
+    'במאגר שלנו יש מורה שעשוי/ה להתאים למשרה שפרסמתם:',
+    ''
+  ];
+  if (j.title) lines.push('המשרה: ' + j.title);
+  if (j.subject) lines.push('מקצוע: ' + j.subject);
+  if (j.level) lines.push('שכבה: ' + j.level);
+  if (j.city) lines.push('עיר: ' + j.city);
+  lines.push('');
+  lines.push('המורה:');
+  if (t.name) lines.push('  שם: ' + t.name);
+  if (t.subject) lines.push('  מקצוע: ' + t.subject);
+  if (t.level) lines.push('  שכבה: ' + t.level);
+  const tloc = t.city || t.sub_area;
+  if (tloc) lines.push('  אזור: ' + tloc);
+  if (t.scope) lines.push('  היקף מבוקש: ' + t.scope);
+  if (t.notes) lines.push('  הערות: ' + t.notes);
+  lines.push('');
+  if (t.email || t.phone) {
+    lines.push('פרטי קשר ישירים של המורה:');
+    if (t.email) lines.push('  מייל: ' + t.email);
+    if (t.phone) lines.push('  טלפון: ' + t.phone);
+  } else {
+    lines.push('המורה הזה הגיע ממאגר ללא פרטי קשר ישירים — אם זה רלוונטי, נשמח לעזור ליצור קשר. השיבו למייל הזה.');
+  }
+  lines.push('');
+  lines.push('בהצלחה!');
+  lines.push('מיטל פלג · אדורה');
+  const bodyStr = lines.join('\n');
+  const gmailUrl = 'https://mail.google.com/mail/?view=cm&fs=1' +
+    '&to=' + encodeURIComponent(j.email) +
+    '&su=' + encodeURIComponent(subjectStr) +
+    '&body=' + encodeURIComponent(bodyStr);
+  const mailto = 'mailto:' + encodeURIComponent(j.email) +
+    '?subject=' + encodeURIComponent(subjectStr) +
+    '&body=' + encodeURIComponent(bodyStr);
+  return { gmail: gmailUrl, mailto: mailto, email: j.email };
+}
+
 function buildWa(m) {
   const t = m.teacher, j = m.job;
   if (!t.phone) return null;
@@ -459,9 +507,9 @@ function renderMatch(m) {
   if (wa) actions.push('<a class="btn secondary" href="' + wa + '" target="_blank" rel="noopener">WhatsApp</a>');
   if (!mail && !wa && fbUrl) actions.push('<a class="btn secondary" href="' + esc(fbUrl) + '" target="_blank" rel="noopener">פוסט ב-FB</a>');
   if (!mail && !wa && !fbUrl) actions.push('<span class="btn disabled">אין דרך ליצור קשר</span>');
-  if (j.email) {
-    const schoolGmail = 'https://mail.google.com/mail/?view=cm&fs=1&to=' + encodeURIComponent(j.email);
-    actions.push('<a class="btn secondary" href="' + schoolGmail + '" target="_blank" rel="noopener">מייל לבי"ס דרך Gmail</a>');
+  const schoolMail = buildSchoolMailLinks(m);
+  if (schoolMail) {
+    actions.push('<a class="btn secondary" href="' + schoolMail.gmail + '" target="_blank" rel="noopener">📧 מייל לבי"ס (Gmail)</a>');
   }
   actions.push('<button class="btn ' + (contacted ? 'contacted' : 'secondary') + '" data-mark="' + esc(key) + '">' + (contacted ? '✓ סומן כטופל' : 'סמן כטופל') + '</button>');
 
