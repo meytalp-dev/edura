@@ -411,6 +411,8 @@ function buildMailLinks(m) {
   if (j.phone) lines.push('  טלפון: ' + j.phone);
   lines.push('');
   lines.push('בהצלחה!');
+  lines.push('עדכנו אם המאצ\' הצליח :)');
+  lines.push('');
   lines.push('מיטל פלג · אדורה');
   const bodyStr = lines.join('\n');
   // Gmail web — לא תלוי בהגדרת ברירת מחדל של מייל ב-Windows
@@ -460,6 +462,8 @@ function buildSchoolMailLinks(m) {
   }
   lines.push('');
   lines.push('בהצלחה!');
+  lines.push('עדכנו אם המאצ\' הצליח :)');
+  lines.push('');
   lines.push('מיטל פלג · אדורה');
   const bodyStr = lines.join('\n');
   const gmailUrl = 'https://mail.google.com/mail/?view=cm&fs=1' +
