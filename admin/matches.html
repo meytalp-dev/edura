@@ -182,6 +182,14 @@
     opacity: 0.55;
     background: #FFFAFA;
   }
+  .match.dismissing {
+    transition: opacity .25s ease, transform .25s ease, max-height .35s ease, padding .25s ease, margin .25s ease;
+    opacity: 0; transform: translateX(-30px);
+    max-height: 0; padding-top: 0; padding-bottom: 0;
+    margin-top: 0; margin-bottom: 0;
+    overflow: hidden;
+    pointer-events: none;
+  }
   .reject-tag {
     display: inline-flex; align-items: center; gap: 6px;
     background: var(--error); color: #fff;
@@ -215,8 +223,9 @@
 </header>
 
 <div class="help-box">
-  <strong>איך לקרוא:</strong> כל שורה = מאצ' מאומת בין משרה ספציפית לבין מורה ספציפית. ירוק = פנוי לשליחה · ורוד = score גבוה (עיר זהה) · אפור = כבר נשלח (סימנת ידנית). הסטטוס נשמר בדפדפן הזה בלבד (localStorage).
-  <br><strong>שליחת מייל:</strong> כפתור "Gmail" פותח את Gmail בדפדפן (לא תלוי בהגדרת Windows). כפתור "mailto" פותח את ברירת המחדל של המחשב (Outlook וכו').
+  <strong>איך לקרוא:</strong> כל שורה = מאצ' מאומת בין משרה ספציפית לבין מורה ספציפית. ירוק = פנוי לשליחה · ורוד = score גבוה (עיר זהה) · אפור = כבר נשלח · אדום-עמום = סומן "לא מתאים".
+  <br><strong>שליחת מייל:</strong> כפתור "Gmail" פותח את Gmail בדפדפן (לא תלוי בהגדרת Windows). כפתור "mailto" פותח את ברירת המחדל של המחשב.
+  <br><strong>למה "לא מתאים" חשוב:</strong> כל סימון נשמר עם snapshot של המאצ' + הסיבה. בכניסות עתידיות הזוג הזה לא יחזור. כשייצטברו ~20 דחיות, הורידי "ייצא דחיות (JSON)" ושלחי לי — אנתח ואעדכן את <code>matching.js</code> כדי שזה לא יחזור גם למאצ'ים דומים.
 </div>
 
 <div class="summary" id="summary">
@@ -405,6 +414,11 @@ function esc(s) {
   return String(s == null ? '' : s)
     .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
     .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+}
+// CSS attribute selector escape — ה-key עלול לכלול תווים מיוחדים
+function cssEsc(s) {
+  if (window.CSS && CSS.escape) return CSS.escape(s);
+  return String(s).replace(/(["\\])/g, '\\$1');
 }
 function pillsForJob(j) {
   const out = [];
@@ -727,7 +741,14 @@ document.addEventListener('click', e => {
     const map = getRejected();
     map[key] = { reason: finalReason, ts: Date.now(), snapshot };
     setRejected(map);
-    render();
+    // הסרה מיידית מהדף עם אנימציה — אחר כך re-render מלא
+    const card = document.querySelector('.match[data-key="' + cssEsc(key) + '"]');
+    if (card) {
+      card.classList.add('dismissing');
+      setTimeout(() => render(), 350);
+    } else {
+      render();
+    }
     return;
   }
   // ביטול דחייה
