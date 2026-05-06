@@ -173,10 +173,13 @@ window.EDURA_API_URL = 'https://script.google.com/macros/s/AKfycbxFqT828xAhAAhe9
       return { job: j, score: score, blocker: blocker, exactMatches: exactMatches };
     });
 
-    const hasAnyFilter = !!(f.region || f.level || f.subject || f.role);
+    const filterCount = (f.region?1:0) + (f.subject?1:0) + (f.level?1:0) + (f.role?1:0) + (f.city?1:0);
+    // ככל שהמשתמשת מציינת יותר פרטים — אנחנו דורשים יותר התאמות מדויקות.
+    // אחרת הספירה הופכת מטעה (מציגים "103" כשבפועל רק 30 קרובות באמת).
+    const minExact = filterCount >= 3 ? Math.max(2, filterCount - 1) : Math.min(1, filterCount);
     const filtered = scored
       .filter(s => !s.blocker)
-      .filter(s => !hasAnyFilter || s.exactMatches >= 1)
+      .filter(s => s.exactMatches >= minExact)
       .sort((a, b) => b.exactMatches - a.exactMatches || b.score - a.score);
 
     return filtered.map(s => s.job);
@@ -203,18 +206,17 @@ window.EDURA_API_URL = 'https://script.google.com/macros/s/AKfycbxFqT828xAhAAhe9
     }
 
     askFlow() {
-      this.botMsg('מה מביא אותך הנה?', [
-        { label: 'מחפש/ת משרה', onClick: () => this.startFlow('job') },
-        { label: 'מחפש/ת מורה', onClick: () => this.startFlow('teacher') },
-        { label: 'מחפש/ת מכרז ניהול', onClick: () => this.startFlow('tender') }
-      ]);
+      // Job-only mode — flow selection (teacher/tender) disabled for now.
+      this.startFlow('job', { silent: true });
     }
 
-    async startFlow(flow) {
+    async startFlow(flow, opts) {
       this.flow = flow;
-      this.userMsg(flow === 'job' ? 'מחפש/ת משרה' :
-                   flow === 'teacher' ? 'מחפש/ת מורה' :
-                   'מחפש/ת מכרז ניהול');
+      if (!opts || !opts.silent) {
+        this.userMsg(flow === 'job' ? 'מחפש/ת משרה' :
+                     flow === 'teacher' ? 'מחפש/ת מורה' :
+                     'מחפש/ת מכרז ניהול');
+      }
 
       const loadingArr = flow === 'job' ? LOADING_LINES :
                          flow === 'teacher' ? TEACHER_LOADING_LINES :
@@ -628,7 +630,14 @@ window.EDURA_API_URL = 'https://script.google.com/macros/s/AKfycbxFqT828xAhAAhe9
 
     showInput(handler) {
       this.inputRow.hidden = false;
-      this.inputEl.focus();
+      // גלילה לתחתית כדי שהשאלה האחרונה תישאר גלויה מעל מקלדת המובייל.
+      this.scrollDown();
+      // עיכוב קל — מאפשר ל-layout להתאים את עצמו לפני הפוקוס (אחרת המקלדת
+      // נפתחת לפני שהפאנל מתעדכן ל-100dvh ומסתירה את ההודעה האחרונה).
+      setTimeout(() => {
+        this.inputEl.focus({ preventScroll: false });
+        this.scrollDown();
+      }, 80);
       const submit = () => {
         const v = this.inputEl.value.trim();
         if (!v) return;

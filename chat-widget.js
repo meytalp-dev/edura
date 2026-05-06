@@ -63,7 +63,7 @@
 
     .ew-panel {
       width: 400px; max-width: 100vw;
-      height: min(640px, calc(100vh - 24px));
+      height: min(640px, calc(100dvh - 24px));
       background: #F8FAFC;
       box-shadow: 0 -4px 32px rgba(0,0,0,.18);
       display: flex; flex-direction: column;
@@ -251,10 +251,12 @@
 
     @media (max-width: 480px) {
       .ew-panel {
-        width: 100%; height: 100vh;
+        width: 100%; height: 100dvh;
         margin: 0; border-radius: 0;
       }
       .ew-fab { bottom: 16px; left: 16px; }
+      /* iOS — input זום אוטו נמנע מ-16px+, ושומר את השאלה גלויה מעל המקלדת */
+      #ew-chat-root .ec-input-row input { font-size: 16px; }
     }
   `;
 
