@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>בדיקות בוט אדורה · QA</title>
+<meta name="robots" content="noindex" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --ink: #0E1B2C;
+    --ink-soft: #2C3D55;
+    --ink-mute: #6B7B8E;
+    --line: #E8EAED;
+    --line-soft: #F4F5F7;
+    --bg: #FFFFFF;
+    --bg-2: #F7F8FA;
+    --pink-deep: #BE185D;
+    --pink-soft: #FDF2F8;
+    --success: #059669;
+    --success-soft: #D1FAE5;
+    --error: #DC2626;
+    --error-soft: #FEE2E2;
+    --warn: #D97706;
+    --warn-soft: #FEF3C7;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Heebo', sans-serif;
+    background: var(--bg-2); color: var(--ink);
+    -webkit-font-smoothing: antialiased; line-height: 1.5;
+    padding: 24px;
+  }
+  .container { max-width: 1080px; margin: 0 auto; }
+  header { margin-bottom: 24px; }
+  h1 { font-size: 28px; font-weight: 900; letter-spacing: -0.5px; margin-bottom: 6px; }
+  .sub { font-size: 14px; color: var(--ink-mute); }
+  .summary {
+    display: flex; gap: 12px; flex-wrap: wrap;
+    background: var(--bg); border: 1px solid var(--line);
+    border-radius: 16px; padding: 16px 20px; margin: 20px 0;
+  }
+  .stat { display: flex; flex-direction: column; gap: 2px; padding-inline-end: 20px; border-inline-end: 1px solid var(--line); }
+  .stat:last-child { border-inline-end: none; padding-inline-end: 0; }
+  .stat-num { font-size: 26px; font-weight: 900; line-height: 1; }
+  .stat-num.ok { color: var(--success); }
+  .stat-num.fail { color: var(--error); }
+  .stat-label { font-size: 12px; color: var(--ink-mute); font-weight: 600; }
+  button {
+    font: inherit; cursor: pointer; border: none;
+    padding: 10px 18px; border-radius: 999px;
+    background: var(--pink-deep); color: #fff; font-weight: 700;
+    transition: background .15s;
+  }
+  button:hover { background: #9D174D; }
+  button.secondary { background: var(--ink); }
+  button.secondary:hover { background: var(--ink-soft); }
+  .controls { display: flex; gap: 8px; flex-wrap: wrap; margin: 16px 0; }
+
+  .scenario {
+    background: var(--bg); border: 1px solid var(--line);
+    border-radius: 14px; padding: 16px 18px; margin-bottom: 12px;
+    transition: border-color .15s;
+  }
+  .scenario.pass { border-right: 4px solid var(--success); }
+  .scenario.fail { border-right: 4px solid var(--error); }
+  .scenario.warn { border-right: 4px solid var(--warn); }
+  .scenario-head {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 12px; margin-bottom: 10px;
+  }
+  .scenario-name {
+    font-size: 16px; font-weight: 800;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .scenario-status {
+    width: 28px; height: 28px; border-radius: 999px;
+    display: inline-flex; align-items: center; justify-content: center;
+    font-weight: 900; font-size: 14px;
+    flex-shrink: 0;
+  }
+  .scenario-status.pass { background: var(--success-soft); color: var(--success); }
+  .scenario-status.fail { background: var(--error-soft); color: var(--error); }
+  .scenario-status.warn { background: var(--warn-soft); color: var(--warn); }
+  .scenario-status.run { background: var(--bg-2); color: var(--ink-mute); }
+  .filters-line {
+    font-size: 12px; color: var(--ink-mute); font-weight: 600;
+    background: var(--bg-2); padding: 6px 10px; border-radius: 8px;
+    font-family: 'Courier New', monospace; direction: ltr; text-align: left;
+  }
+  .checks { display: flex; flex-direction: column; gap: 6px; }
+  .check {
+    display: flex; align-items: flex-start; gap: 8px;
+    font-size: 13px; padding: 6px 10px; border-radius: 8px;
+  }
+  .check.pass { background: var(--success-soft); color: var(--success); }
+  .check.fail { background: var(--error-soft); color: var(--error); }
+  .check-mark { font-weight: 900; flex-shrink: 0; min-width: 14px; }
+  .check-detail { flex: 1; font-weight: 600; }
+  .check-extra { color: var(--ink-mute); font-weight: 500; font-size: 12px; margin-top: 2px; direction: ltr; text-align: left; font-family: 'Courier New', monospace; }
+  .sample-results {
+    margin-top: 10px;
+    font-size: 12px; color: var(--ink-mute);
+    background: var(--bg-2); border-radius: 8px; padding: 8px 12px;
+  }
+  .sample-results summary { cursor: pointer; font-weight: 700; color: var(--ink-soft); }
+  .sample-results .row { padding: 4px 0; border-top: 1px dashed var(--line); }
+  .sample-results .row:first-child { border-top: none; }
+
+  .toolbar-row {
+    background: var(--bg); border: 1px solid var(--line);
+    border-radius: 14px; padding: 12px 16px; margin-bottom: 16px;
+    display: flex; gap: 10px; align-items: center; flex-wrap: wrap;
+  }
+  .toolbar-row label { font-size: 13px; font-weight: 700; }
+  .toolbar-row input, .toolbar-row select {
+    font: inherit; padding: 6px 10px; border-radius: 8px;
+    border: 1.5px solid var(--line); background: var(--bg);
+    font-size: 13px;
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+<header>
+  <h1>בדיקות בוט אדורה · QA</h1>
+  <div class="sub">תרחישים זהובים על <code>matchJobs</code> — עליות/ירידות בכל פריסה צריכות לעבור 100%.</div>
+</header>
+
+<div class="summary" id="summary">
+  <div class="stat"><span class="stat-num" id="total">—</span><span class="stat-label">תרחישים</span></div>
+  <div class="stat"><span class="stat-num ok" id="passed">—</span><span class="stat-label">עברו</span></div>
+  <div class="stat"><span class="stat-num fail" id="failed">—</span><span class="stat-label">נכשלו</span></div>
+  <div class="stat"><span class="stat-num" id="duration">—</span><span class="stat-label">משך (ms)</span></div>
+  <div class="stat"><span class="stat-num" id="dataset">—</span><span class="stat-label">משרות במאגר</span></div>
+</div>
+
+<div class="controls">
+  <button id="btn-run">הרץ הכל</button>
+  <button class="secondary" id="btn-failed">הצג רק נכשלים</button>
+</div>
+
+<div class="toolbar-row">
+  <label>בדיקה ידנית:</label>
+  <select id="m-region"><option value="">אזור...</option></select>
+  <select id="m-role"><option value="">תפקיד...</option></select>
+  <select id="m-subject"><option value="">מקצוע...</option></select>
+  <select id="m-level"><option value="">שכבה...</option></select>
+  <input type="text" id="m-city" placeholder="עיר (חופשי)" style="width:140px" />
+  <button id="m-run">חפש</button>
+  <span id="m-result" style="font-weight:700;color:var(--ink-soft)"></span>
+</div>
+
+<div id="scenarios"></div>
+
+</div>
+
+<script src="../chat-engine.js"></script>
+<script>
+// ──────────────────────────────────────────────────
+// תרחישי בדיקה — כל אחד מתאר filters + assertions
+// assertion יכולה להיות: count (exact/min/max), allHave (predicate),
+// noneHave (predicate), all values from given array.
+// ──────────────────────────────────────────────────
+const SCENARIOS = [
+  {
+    name: 'מנהלת בירושלים',
+    filters: { region: 'ירושלים', role: 'מנהל/ת' },
+    assert: [
+      { type: 'count', max: 5, label: 'עד 5 משרות (כי יש רק 3 מנהל/ת בכל הארץ)' },
+      { type: 'noneHave', fn: j => /מורה|מחנך|רכז|יועץ/.test(j.role || ''), label: 'אסור משרות מורה/מחנך/רכז/יועץ' },
+      { type: 'allHave', fn: j => !j.role || /מנהל/.test(j.role) || j.role === 'אחר', label: 'כל משרה: תפקיד מנהל/ת או ריק או "אחר"' }
+    ]
+  },
+  {
+    name: 'מורה למתמטיקה',
+    filters: { role: 'מורה', subject: 'מתמטיקה' },
+    assert: [
+      { type: 'count', min: 20, label: 'לפחות 20 (יש 52 משרות מתמטיקה)' },
+      { type: 'allHave', fn: j => /מורה/.test(j.role || '') || !j.role || j.role === 'אחר', label: 'תפקיד מורה (או ריק)' },
+      { type: 'allHave', fn: j => j.subject === 'מתמטיקה' || !j.subject || j.subject === 'מורה' || j.subject === 'אחר', label: 'מקצוע מתמטיקה' }
+    ]
+  },
+  {
+    name: 'יועצ/ת בכל הארץ',
+    filters: { role: 'יועץ/ת' },
+    assert: [
+      { type: 'count', max: 10, label: 'עד 10 (יש רק 4 יועצ/ות במאגר)' },
+      { type: 'allHave', fn: j => !j.role || /יועץ/.test(j.role) || j.role === 'אחר', label: 'תפקיד יועץ' },
+      { type: 'noneHave', fn: j => /^מורה$|מנהל|רכז|מחנך/.test(j.role || ''), label: 'בלי מורה/מנהל/רכז/מחנך' }
+    ]
+  },
+  {
+    name: 'רכז/ת בכל הארץ',
+    filters: { role: 'רכז/ת' },
+    assert: [
+      { type: 'count', max: 15, label: 'עד 15 (יש 7 רכז/ות)' },
+      { type: 'allHave', fn: j => !j.role || /רכז/.test(j.role) || j.role === 'אחר', label: 'תפקיד רכז' }
+    ]
+  },
+  {
+    name: 'אנגלית בתיכון',
+    filters: { subject: 'אנגלית', level: 'תיכון' },
+    assert: [
+      { type: 'count', min: 5, label: 'לפחות 5' },
+      { type: 'allHave', fn: j => j.subject === 'אנגלית' || !j.subject || j.subject === 'מורה' || j.subject === 'אחר', label: 'מקצוע אנגלית' }
+    ]
+  },
+  {
+    name: 'משרות בירושלים (כל תפקיד)',
+    filters: { region: 'ירושלים' },
+    assert: [
+      { type: 'count', min: 30, max: 80, label: '30-80 (יש 46 לפי גריד)' },
+      { type: 'allHave', fn: j => {
+          const regions = Array.isArray(j.region) ? j.region : [j.region];
+          return regions.indexOf('ירושלים') !== -1 || !j.region || j.region === 'ארצי';
+        }, label: 'אזור ירושלים (או ריק/ארצי)' }
+    ]
+  },
+  {
+    name: 'משרות בחולון',
+    filters: { city: 'חולון', region: 'מרכז' },
+    assert: [
+      { type: 'count', min: 30, max: 60, label: '30-60 (יש 42 בחולון)' },
+      { type: 'allHave', fn: j => !j.city || j.city === 'חולון', label: 'עיר חולון או ריק' }
+    ]
+  },
+  {
+    name: 'בלי שום סינון',
+    filters: {},
+    assert: [
+      { type: 'count', min: 500, label: 'כל המאגר (598+)' }
+    ]
+  },
+  {
+    name: 'עיר לא קיימת',
+    filters: { city: 'אטלנטיס', region: 'מרכז' },
+    assert: [
+      { type: 'count', max: 30, label: 'מעט מאוד (רק כאלה בלי עיר)' }
+    ]
+  },
+  {
+    name: 'מקצוע לא קיים',
+    filters: { subject: 'איחוד-קוואנטים' },
+    assert: [
+      { type: 'count', max: 10, label: 'מעט (רק כאלה בלי מקצוע מוגדר)' }
+    ]
+  },
+  {
+    name: 'מנהל/ת בכל הארץ',
+    filters: { role: 'מנהל/ת' },
+    assert: [
+      { type: 'count', min: 1, max: 10, label: 'יש 3 משרות מנהל/ת' },
+      { type: 'allHave', fn: j => !j.role || /מנהל/.test(j.role) || j.role === 'אחר', label: 'תפקיד מנהל' }
+    ]
+  },
+  {
+    name: 'חינוך מיוחד בכל שכבה',
+    filters: { subject: 'חינוך מיוחד' },
+    assert: [
+      { type: 'count', min: 10, label: 'לפחות 10 (יש 27)' },
+      { type: 'allHave', fn: j => j.subject === 'חינוך מיוחד' || !j.subject || j.subject === 'מורה' || j.subject === 'אחר', label: 'מקצוע חינוך מיוחד' }
+    ]
+  }
+];
+
+// ──────────────────────────────────────────────────
+// Runner
+// ──────────────────────────────────────────────────
+let ALL_JOBS = [];
+
+async function loadJobs() {
+  const res = await fetch('../data/jobs.json');
+  const data = await res.json();
+  ALL_JOBS = (data.jobs || []).map(j => ({
+    ...j,
+    subject: window.EduraMatching.normalizeText(j.subject),
+    level: window.EduraMatching.normalizeText(j.level)
+  }));
+  document.getElementById('dataset').textContent = ALL_JOBS.length;
+}
+
+function runScenario(s) {
+  const filters = Object.assign({ region: '', city: '', role: '', subject: '', level: '', scope: '' }, s.filters);
+  const t0 = performance.now();
+  const results = window.EduraMatching.matchJobs(ALL_JOBS, filters);
+  const elapsed = performance.now() - t0;
+
+  const checks = s.assert.map(a => {
+    if (a.type === 'count') {
+      const n = results.length;
+      let pass = true; let detail = '';
+      if (a.exact != null) { pass = n === a.exact; detail = `count = ${n}, expected = ${a.exact}`; }
+      else if (a.min != null && a.max != null) { pass = n >= a.min && n <= a.max; detail = `count = ${n}, expected ${a.min}-${a.max}`; }
+      else if (a.min != null) { pass = n >= a.min; detail = `count = ${n}, expected >= ${a.min}`; }
+      else if (a.max != null) { pass = n <= a.max; detail = `count = ${n}, expected <= ${a.max}`; }
+      return { pass, label: a.label, detail };
+    }
+    if (a.type === 'allHave') {
+      const violations = results.filter(j => !a.fn(j));
+      const pass = violations.length === 0;
+      let detail = `${results.length - violations.length}/${results.length} עברו`;
+      if (violations.length) detail += ` · דוגמה: role=${violations[0].role || '∅'}, subject=${violations[0].subject || '∅'}, city=${violations[0].city || '∅'}`;
+      return { pass, label: a.label, detail };
+    }
+    if (a.type === 'noneHave') {
+      const violations = results.filter(j => a.fn(j));
+      const pass = violations.length === 0;
+      let detail = `${violations.length} מפרים`;
+      if (violations.length) detail += ` · דוגמה: role=${violations[0].role || '∅'}, subject=${violations[0].subject || '∅'}, city=${violations[0].city || '∅'}`;
+      return { pass, label: a.label, detail };
+    }
+    return { pass: false, label: a.label, detail: 'לא ידוע' };
+  });
+
+  const allPass = checks.every(c => c.pass);
+  return { scenario: s, results, checks, allPass, elapsed };
+}
+
+function renderScenario(r) {
+  const status = r.allPass ? 'pass' : 'fail';
+  const symbol = r.allPass ? '✓' : '✗';
+  const filtersLine = JSON.stringify(r.scenario.filters);
+  const sample = r.results.slice(0, 3).map(j => {
+    return `<div class="row">${escape(j.title || '∅')} · role=${escape(j.role || '∅')} · subject=${escape(j.subject || '∅')} · city=${escape(j.city || '∅')} · region=${escape(Array.isArray(j.region)?j.region.join(','):(j.region||'∅'))}</div>`;
+  }).join('');
+
+  const checksHtml = r.checks.map(c => `
+    <div class="check ${c.pass ? 'pass' : 'fail'}">
+      <span class="check-mark">${c.pass ? '✓' : '✗'}</span>
+      <div>
+        <div class="check-detail">${escape(c.label)}</div>
+        <div class="check-extra">${escape(c.detail)}</div>
+      </div>
+    </div>
+  `).join('');
+
+  return `
+    <div class="scenario ${status}" data-status="${status}">
+      <div class="scenario-head">
+        <div class="scenario-name">
+          <span class="scenario-status ${status}">${symbol}</span>
+          ${escape(r.scenario.name)}
+        </div>
+        <div class="filters-line">${escape(filtersLine)}</div>
+      </div>
+      <div class="checks">${checksHtml}</div>
+      ${r.results.length ? `<details class="sample-results"><summary>3 דוגמאות מהתוצאות (${r.results.length} סה"כ, ${r.elapsed.toFixed(1)}ms)</summary>${sample}</details>` : ''}
+    </div>
+  `;
+}
+
+function escape(s) {
+  return String(s == null ? '' : s)
+    .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+}
+
+async function runAll() {
+  if (!ALL_JOBS.length) await loadJobs();
+  const t0 = performance.now();
+  const results = SCENARIOS.map(runScenario);
+  const totalMs = performance.now() - t0;
+
+  const passed = results.filter(r => r.allPass).length;
+  const failed = results.length - passed;
+  document.getElementById('total').textContent = results.length;
+  document.getElementById('passed').textContent = passed;
+  document.getElementById('failed').textContent = failed;
+  document.getElementById('duration').textContent = totalMs.toFixed(1);
+
+  document.getElementById('scenarios').innerHTML = results.map(renderScenario).join('');
+}
+
+// Manual filter UI
+function fillSelect(id, options) {
+  const el = document.getElementById(id);
+  options.forEach(o => {
+    const opt = document.createElement('option');
+    opt.value = o; opt.textContent = o;
+    el.appendChild(opt);
+  });
+}
+
+document.getElementById('btn-run').addEventListener('click', runAll);
+document.getElementById('btn-failed').addEventListener('click', () => {
+  document.querySelectorAll('.scenario').forEach(el => {
+    el.style.display = el.dataset.status === 'fail' ? '' : 'none';
+  });
+});
+
+document.getElementById('m-run').addEventListener('click', async () => {
+  if (!ALL_JOBS.length) await loadJobs();
+  const filters = {
+    region: document.getElementById('m-region').value,
+    role: document.getElementById('m-role').value,
+    subject: document.getElementById('m-subject').value,
+    level: document.getElementById('m-level').value,
+    city: document.getElementById('m-city').value.trim(),
+    scope: ''
+  };
+  const t0 = performance.now();
+  const results = window.EduraMatching.matchJobs(ALL_JOBS, filters);
+  const ms = (performance.now() - t0).toFixed(1);
+  const counts = {};
+  results.forEach(j => { counts[j.role || '∅'] = (counts[j.role || '∅'] || 0) + 1; });
+  const breakdown = Object.entries(counts).map(([k,v]) => `${k}:${v}`).join(' · ');
+  document.getElementById('m-result').textContent = `${results.length} תוצאות (${ms}ms) · ${breakdown}`;
+});
+
+// Init
+loadJobs().then(() => {
+  fillSelect('m-region', window.EduraMatching.REGIONS);
+  fillSelect('m-role', window.EduraMatching.ROLES);
+  fillSelect('m-subject', window.EduraMatching.SUBJECTS);
+  fillSelect('m-level', window.EduraMatching.LEVELS);
+  runAll();
+});
+</script>
+</body>
+</html>

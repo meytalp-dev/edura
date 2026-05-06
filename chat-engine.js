@@ -115,6 +115,73 @@ window.EDURA_API_URL = 'https://script.google.com/macros/s/AKfycbxFqT828xAhAAhe9
   const STORAGE_KEY = 'edura.chat.state.v1';
   const SAVED_KEY = 'edura.chat.saved.v1';
 
+  // ──────────────────────────────────────────────────
+  // matchJobsCore — פונקציה טהורה לסינון משרות לפי filters
+  // מופעלת גם מתוך הצ'אט וגם מ-tests/chat-bot.html (דף בדיקות).
+  // ──────────────────────────────────────────────────
+  function matchJobsCore(dataset, filters) {
+    // סינון רך עם ניקוד. במקום AND קשיח — כל משרה מקבלת score.
+    // מטה-דאטה דלילה (חסר אזור/שכבה) לא פוסל — נותן הזדמנות עם ניקוד נייטרלי.
+    // אבל אי-התאמה ברורה (תפקיד/מקצוע/עיר) חוסמת — אחרת נדלפים אאוטליירס.
+    const f = filters;
+    const scored = dataset.map(j => {
+      let score = 0;
+      let blocker = false;
+      let exactMatches = 0;
+
+      if (f.region) {
+        if (regionMatches(j, f.region)) { score += 100; exactMatches++; }
+        else if (!regionsOf(j).length || j.region === 'ארצי') score += 5;
+      }
+
+      // עיר — בונוס משמעותי להתאמה (50). חוסם אם יש עיר אחרת באותו אזור.
+      if (f.city) {
+        const jCity = (j.city || '').trim();
+        if (jCity === f.city) { score += 50; exactMatches++; }
+        else if (!jCity) score += 3;
+        else if (regionMatches(j, f.region)) blocker = true; // עיר אחרת באותו אזור → לא רלוונטי
+      }
+
+      if (f.subject) {
+        const sub = normalizeText(j.subject);
+        if (sub === f.subject) { score += 80; exactMatches++; }
+        else if (!sub || sub === 'מורה' || sub === 'אחר') score += 5;
+        else blocker = true;
+      }
+
+      if (f.level) {
+        const lvl = normalizeText(j.level);
+        if (lvl === f.level) { score += 40; exactMatches++; }
+        else if (!lvl || lvl === '(לא זוהה)') score += 3;
+      }
+
+      if (f.role) {
+        const role = j.role || '';
+        const roleBase = f.role.replace('/ת', '');
+        if (role.includes(roleBase)) { score += 50; exactMatches++; }
+        else if (!role || role === 'אחר') score += 5;
+        else blocker = true; // תפקיד מפורש אחר (מורה כשביקשו מנהל) → חוסם
+      }
+
+      // טריות לפי date_iso
+      if (j.date_iso) {
+        const days = (Date.now() - new Date(j.date_iso)) / 86400000;
+        if (days < 7) score += 5;
+        else if (days < 30) score += 2;
+      }
+
+      return { job: j, score: score, blocker: blocker, exactMatches: exactMatches };
+    });
+
+    const hasAnyFilter = !!(f.region || f.level || f.subject || f.role);
+    const filtered = scored
+      .filter(s => !s.blocker)
+      .filter(s => !hasAnyFilter || s.exactMatches >= 1)
+      .sort((a, b) => b.exactMatches - a.exactMatches || b.score - a.score);
+
+    return filtered.map(s => s.job);
+  }
+
   class EduraChat {
     constructor(root) {
       this.root = root;
@@ -371,69 +438,7 @@ window.EDURA_API_URL = 'https://script.google.com/macros/s/AKfycbxFqT828xAhAAhe9
     }
 
     matchJobs() {
-      // סינון רך עם ניקוד. במקום AND קשיח — כל משרה מקבלת score.
-      // מטה-דאטה דלילה (חסר אזור/שכבה) לא פוסל — נותן הזדמנות עם ניקוד נייטרלי.
-      // ההגיון: עדיף להראות התאמות חלקיות מאשר רשימה ריקה.
-      const f = this.filters;
-      // משקלים: התאמה מאומתת > דאטה חסרה > סתירה
-      // קריטי שדאטה חסרה לא תקפוץ מעל התאמה אמיתית.
-      // הדאטה החדשה: subject/level הם strings (לא arrays), יש city/sub_area/contact
-      const scored = this.dataset.map(j => {
-        let score = 0;
-        let blocker = false;
-        let exactMatches = 0;
-
-        if (f.region) {
-          if (regionMatches(j, f.region)) { score += 100; exactMatches++; }
-          else if (!regionsOf(j).length || j.region === 'ארצי') score += 5;
-        }
-
-        // עיר — בונוס משמעותי להתאמה (50). חוסם אם יש עיר אחרת באותו אזור.
-        if (f.city) {
-          const jCity = (j.city || '').trim();
-          if (jCity === f.city) { score += 50; exactMatches++; }
-          else if (!jCity) score += 3;
-          else if (regionMatches(j, f.region)) blocker = true; // עיר אחרת באותו אזור → לא רלוונטי
-        }
-
-        if (f.subject) {
-          const sub = normalizeText(j.subject);
-          if (sub === f.subject) { score += 80; exactMatches++; }
-          else if (!sub || sub === 'מורה' || sub === 'אחר') score += 5;
-          else blocker = true;
-        }
-
-        if (f.level) {
-          const lvl = normalizeText(j.level);
-          if (lvl === f.level) { score += 40; exactMatches++; }
-          else if (!lvl || lvl === '(לא זוהה)') score += 3;
-        }
-
-        if (f.role) {
-          const role = j.role || '';
-          const roleBase = f.role.replace('/ת', '');
-          if (role.includes(roleBase)) { score += 50; exactMatches++; }
-          else if (!role || role === 'אחר') score += 5;
-        }
-
-        // טריות לפי date_iso
-        if (j.date_iso) {
-          const days = (Date.now() - new Date(j.date_iso)) / 86400000;
-          if (days < 7) score += 5;
-          else if (days < 30) score += 2;
-        }
-
-        return { job: j, score: score, blocker: blocker, exactMatches: exactMatches };
-      });
-
-      const hasAnyFilter = !!(f.region || f.level || f.subject || f.role);
-      // דרישת מינימום: לפחות 1 התאמה מאומתת אמיתית (לא רק דאטה חסרה)
-      const filtered = scored
-        .filter(s => !s.blocker)
-        .filter(s => !hasAnyFilter || s.exactMatches >= 1)
-        .sort((a, b) => b.exactMatches - a.exactMatches || b.score - a.score);
-
-      return filtered.map(s => s.job);
+      return matchJobsCore(this.dataset, this.filters);
     }
 
     summarizeFilters() {
@@ -643,4 +648,14 @@ window.EDURA_API_URL = 'https://script.google.com/macros/s/AKfycbxFqT828xAhAAhe9
   }
 
   window.EduraChat = EduraChat;
+  window.EduraMatching = {
+    matchJobs: matchJobsCore,
+    normalizeText: normalizeText,
+    regionsOf: regionsOf,
+    regionMatches: regionMatches,
+    REGIONS: REGIONS,
+    ROLES: ROLES,
+    SUBJECTS: SUBJECTS,
+    LEVELS: LEVELS
+  };
 })();
