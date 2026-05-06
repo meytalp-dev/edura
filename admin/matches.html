@@ -488,6 +488,61 @@ function buildMailLinks(m) {
     '&body=' + encodeURIComponent(bodyStr);
   return { gmail: gmailUrl, mailto: mailto, email: t.email };
 }
+// דייג'סט: מייל אחד למורה עם רשימת כל המשרות שמתאימות לה.
+// במקום לשלוח 7 מיילים נפרדים, שולחים אחד עם רשימה.
+function buildDigestGmail(teacher, teacherMatches) {
+  if (!teacher.email || !teacherMatches.length) return null;
+  // מקסימום 15 משרות במייל אחד (להגבלת אורך URL של Gmail)
+  const TOP = 15;
+  const sorted = teacherMatches.slice().sort((a, b) => b.score - a.score);
+  const shown = sorted.slice(0, TOP);
+  const overflow = sorted.length - shown.length;
+  const subj = 'אדורה — ' + sorted.length + ' משרות שמתאימות לך';
+  const lines = [
+    'שלום' + (teacher.name ? ' ' + teacher.name : '') + ',',
+    '',
+    'מצאנו ' + sorted.length + ' משרות באדורה (edura.co.il) שמתאימות לך לפי המקצוע, השכבה והעיר/אזור שציינת:',
+    ''
+  ];
+  shown.forEach((m, idx) => {
+    const j = m.job;
+    lines.push('────────────────────────');
+    lines.push((idx + 1) + '. ' + (j.title || ((j.subject || '') + ' · ' + (j.school || ''))));
+    if (j.school && j.title) lines.push('   בית ספר: ' + j.school);
+    const meta = [];
+    if (j.city) meta.push(j.city);
+    if (j.subject) meta.push(j.subject);
+    if (j.level) meta.push(j.level);
+    if (j.role) meta.push(j.role);
+    if (j.scope) meta.push(j.scope);
+    if (meta.length) lines.push('   ' + meta.join(' · '));
+    lines.push('   ' + jobDeepLink(j));
+    const contact = [];
+    if (j.contact_name) contact.push(j.contact_name);
+    if (j.email) contact.push(j.email);
+    if (j.phone) contact.push(j.phone);
+    if (contact.length) lines.push('   קשר: ' + contact.join(' · '));
+    lines.push('');
+  });
+  lines.push('────────────────────────');
+  if (overflow > 0) {
+    lines.push('');
+    lines.push('+ עוד ' + overflow + ' משרות שמתאימות לך — לרשימה המלאה: https://edura.co.il');
+  }
+  lines.push('');
+  lines.push('לכל המשרות הפתוחות: https://edura.co.il');
+  lines.push('');
+  lines.push('בהצלחה!');
+  lines.push('עדכנו אם המאצ\' הצליח :)');
+  lines.push('');
+  lines.push('מיטל פלג · אדורה');
+  const body = lines.join('\n');
+  return GMAIL_BASE + '?view=cm&fs=1' +
+    '&to=' + encodeURIComponent(teacher.email) +
+    '&su=' + encodeURIComponent(subj) +
+    '&body=' + encodeURIComponent(body);
+}
+
 // בונה לינקים לבית הספר — להציע להם מורה שמתאים למשרה שהם פרסמו.
 function buildSchoolMailLinks(m) {
   const t = m.teacher, j = m.job;
@@ -566,9 +621,19 @@ function renderMatch(m) {
   const teacherName = t.name || (t.source === 'facebook' ? 'מורה מ-FB (אנונימי)' : t.id);
   const jobTitle = j.title || (j.subject ? j.subject + ' · ' + (j.school || '') : 'משרה');
 
+  // ספירת כל המאצ'ים של המורה הזו (לא רק זה הנוכחי) — לדייג'סט
+  const teacherKey = t.id || t.name || '';
+  const teacherMatches = teacherKey
+    ? ALL_MATCHES.filter(x => (x.teacher.id || x.teacher.name || '') === teacherKey)
+    : [m];
+  const digestUrl = teacherMatches.length >= 2 ? buildDigestGmail(t, teacherMatches) : null;
+
   const actions = [];
+  if (digestUrl) {
+    actions.push('<a class="btn primary" href="' + digestUrl + '" target="_blank" rel="noopener" title="מייל אחד עם כל ה-' + teacherMatches.length + ' המשרות שמתאימות למורה הזו">📋 דייג\'סט · ' + teacherMatches.length + ' משרות</a>');
+  }
   if (mail) {
-    actions.push('<a class="btn primary" href="' + mail.gmail + '" target="_blank" rel="noopener">✉ שלחי דרך Gmail</a>');
+    actions.push('<a class="btn ' + (digestUrl ? 'secondary' : 'primary') + '" href="' + mail.gmail + '" target="_blank" rel="noopener" title="מייל רק על המשרה הזו">✉ רק המשרה הזו</a>');
     actions.push('<a class="btn secondary" href="' + mail.mailto + '" title="לפתוח באפליקציית מייל ברירת מחדל (Outlook וכו\')">mailto</a>');
   }
   if (wa) actions.push('<a class="btn secondary" href="' + wa + '" target="_blank" rel="noopener">WhatsApp</a>');
