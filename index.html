@@ -1653,6 +1653,16 @@ function showSkeletons() {
 function initUI() {
   CITY_LIST = buildCityList();
   renderAll();
+  // Deep-link: ?job=ID פותח את המודאל של המשרה אוטומטית.
+  // משמש את הקישורים בהודעות WhatsApp/מייל מהדשבורד admin/matches.
+  try {
+    const params = new URLSearchParams(window.location.search);
+    const jobId = params.get('job');
+    if (jobId) {
+      // שניים-שלוש פריימים אחרי הרינדור הראשון, כדי שהמודאל יוודא שהאלמנטים קיימים
+      requestAnimationFrame(() => requestAnimationFrame(() => openJobModal(jobId)));
+    }
+  } catch (e) { /* ignore */ }
 }
 
 showSkeletons();

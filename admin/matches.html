@@ -371,6 +371,13 @@ function pillsForTeacher(t) {
   if (t.level) out.push('<span class="pill level">' + esc(t.level) + '</span>');
   return out.join('');
 }
+// לינק עמוק לכרטיס המשרה ב-edura — index.html יודע לפתוח את המודאל
+// אוטומטית כשיש ?job=ID. אם יש URL מקור (igm/itu/shatil) נציג גם אותו.
+function jobDeepLink(j) {
+  if (!j.id) return 'https://edura.co.il/';
+  return 'https://edura.co.il/?job=' + encodeURIComponent(j.id);
+}
+
 // בונה subject + body פעם אחת, ומחזיר 2 לינקים (Gmail web ו-mailto).
 function buildMailLinks(m) {
   const t = m.teacher, j = m.job;
@@ -390,6 +397,14 @@ function buildMailLinks(m) {
   if (j.role) lines.push('תפקיד: ' + j.role);
   if (j.scope) lines.push('היקף: ' + j.scope);
   lines.push('');
+  lines.push('לכרטיס המלא של המשרה:');
+  lines.push('  ' + jobDeepLink(j));
+  if (j.url) {
+    lines.push('');
+    lines.push('המודעה במקור:');
+    lines.push('  ' + j.url);
+  }
+  lines.push('');
   lines.push('פרטי קשר ישירים אצל בית הספר:');
   if (j.contact_name) lines.push('  ' + j.contact_name);
   if (j.email) lines.push('  מייל: ' + j.email);
@@ -397,7 +412,6 @@ function buildMailLinks(m) {
   lines.push('');
   lines.push('בהצלחה!');
   lines.push('מיטל פלג · אדורה');
-  lines.push('https://edura.co.il');
   const bodyStr = lines.join('\n');
   // Gmail web — לא תלוי בהגדרת ברירת מחדל של מייל ב-Windows
   const gmailUrl = 'https://mail.google.com/mail/?view=cm&fs=1' +
@@ -416,7 +430,7 @@ function buildWa(m) {
   let p = String(t.phone).replace(/\D/g, '');
   if (!p) return null;
   if (p.startsWith('0')) p = '972' + p.slice(1);
-  const txt = 'שלום' + (t.name ? ' ' + t.name : '') + '! אדורה זיהתה משרה שעשויה להתאים לך' + (j.city ? ' ב-' + j.city : '') + ' (' + (j.subject || '') + ', ' + (j.level || '') + '). פרטים מלאים: https://edura.co.il';
+  const txt = 'שלום' + (t.name ? ' ' + t.name : '') + '! אדורה זיהתה משרה שעשויה להתאים לך' + (j.city ? ' ב-' + j.city : '') + ' (' + (j.subject || '') + ', ' + (j.level || '') + '). לכרטיס המלא: ' + jobDeepLink(j);
   return 'https://api.whatsapp.com/send?phone=' + p + '&text=' + encodeURIComponent(txt);
 }
 
