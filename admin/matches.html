@@ -178,6 +178,7 @@
 
 <div class="help-box">
   <strong>איך לקרוא:</strong> כל שורה = מאצ' מאומת בין משרה ספציפית לבין מורה ספציפית. ירוק = פנוי לשליחה · ורוד = score גבוה (עיר זהה) · אפור = כבר נשלח (סימנת ידנית). הסטטוס נשמר בדפדפן הזה בלבד (localStorage).
+  <br><strong>שליחת מייל:</strong> כפתור "Gmail" פותח את Gmail בדפדפן (לא תלוי בהגדרת Windows). כפתור "mailto" פותח את ברירת המחדל של המחשב (Outlook וכו').
 </div>
 
 <div class="summary" id="summary">
@@ -370,10 +371,11 @@ function pillsForTeacher(t) {
   if (t.level) out.push('<span class="pill level">' + esc(t.level) + '</span>');
   return out.join('');
 }
-function buildMailto(m) {
+// בונה subject + body פעם אחת, ומחזיר 2 לינקים (Gmail web ו-mailto).
+function buildMailLinks(m) {
   const t = m.teacher, j = m.job;
   if (!t.email) return null;
-  const subj = encodeURIComponent('אדורה — משרה שעשויה להתאים לך' + (j.city ? ' ב' + j.city : ''));
+  const subjectStr = 'אדורה — משרה שעשויה להתאים לך' + (j.city ? ' ב' + j.city : '');
   const lines = [
     'שלום' + (t.name ? ' ' + t.name : '') + ',',
     '',
@@ -396,8 +398,17 @@ function buildMailto(m) {
   lines.push('בהצלחה!');
   lines.push('מיטל פלג · אדורה');
   lines.push('https://edura.co.il');
-  const body = encodeURIComponent(lines.join('\n'));
-  return 'mailto:' + encodeURIComponent(t.email) + '?subject=' + subj + '&body=' + body;
+  const bodyStr = lines.join('\n');
+  // Gmail web — לא תלוי בהגדרת ברירת מחדל של מייל ב-Windows
+  const gmailUrl = 'https://mail.google.com/mail/?view=cm&fs=1' +
+    '&to=' + encodeURIComponent(t.email) +
+    '&su=' + encodeURIComponent(subjectStr) +
+    '&body=' + encodeURIComponent(bodyStr);
+  // mailto — לאלה עם Outlook/Thunderbird וכד'
+  const mailto = 'mailto:' + encodeURIComponent(t.email) +
+    '?subject=' + encodeURIComponent(subjectStr) +
+    '&body=' + encodeURIComponent(bodyStr);
+  return { gmail: gmailUrl, mailto: mailto, email: t.email };
 }
 function buildWa(m) {
   const t = m.teacher, j = m.job;
@@ -419,7 +430,7 @@ function renderMatch(m) {
                     m.tier === 'same-region' ? 'אותו אזור' : 'אזור שכן';
   const scoreClass = m.score >= 130 ? '' : (m.score >= 70 ? 'medium' : 'low');
 
-  const mailto = buildMailto(m);
+  const mail = buildMailLinks(m);
   const wa = buildWa(m);
   const fbUrl = t.url || t.fb_url;
 
@@ -427,11 +438,17 @@ function renderMatch(m) {
   const jobTitle = j.title || (j.subject ? j.subject + ' · ' + (j.school || '') : 'משרה');
 
   const actions = [];
-  if (mailto) actions.push('<a class="btn primary" href="' + mailto + '">✉ שלחי מייל למורה</a>');
+  if (mail) {
+    actions.push('<a class="btn primary" href="' + mail.gmail + '" target="_blank" rel="noopener">✉ שלחי דרך Gmail</a>');
+    actions.push('<a class="btn secondary" href="' + mail.mailto + '" title="לפתוח באפליקציית מייל ברירת מחדל (Outlook וכו\')">mailto</a>');
+  }
   if (wa) actions.push('<a class="btn secondary" href="' + wa + '" target="_blank" rel="noopener">WhatsApp</a>');
-  if (!mailto && !wa && fbUrl) actions.push('<a class="btn secondary" href="' + esc(fbUrl) + '" target="_blank" rel="noopener">פוסט ב-FB</a>');
-  if (!mailto && !wa && !fbUrl) actions.push('<span class="btn disabled">אין דרך ליצור קשר</span>');
-  if (j.email) actions.push('<a class="btn secondary" href="mailto:' + esc(j.email) + '">מייל לבית הספר</a>');
+  if (!mail && !wa && fbUrl) actions.push('<a class="btn secondary" href="' + esc(fbUrl) + '" target="_blank" rel="noopener">פוסט ב-FB</a>');
+  if (!mail && !wa && !fbUrl) actions.push('<span class="btn disabled">אין דרך ליצור קשר</span>');
+  if (j.email) {
+    const schoolGmail = 'https://mail.google.com/mail/?view=cm&fs=1&to=' + encodeURIComponent(j.email);
+    actions.push('<a class="btn secondary" href="' + schoolGmail + '" target="_blank" rel="noopener">מייל לבי"ס דרך Gmail</a>');
+  }
   actions.push('<button class="btn ' + (contacted ? 'contacted' : 'secondary') + '" data-mark="' + esc(key) + '">' + (contacted ? '✓ סומן כטופל' : 'סמן כטופל') + '</button>');
 
   return '<div class="match ' + cls + '" data-key="' + esc(key) + '">' +
