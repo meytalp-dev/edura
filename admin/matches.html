@@ -209,6 +209,10 @@
 <script>
 const SUBMISSIONS_URL = 'https://script.google.com/macros/s/AKfycbwleldcwH8c5k9OZ8EMDIKZ8veRbrtO1M7XwYFWg7HHbEV-SrZkLTElbFRiq4cHPlyarw/exec';
 const STORAGE_KEY = 'edura.admin.matches.contacted.v1';
+// המייל שממנו יישלחו ההתאמות. /mail/u/EMAIL/ מאלץ את Gmail לפתוח
+// בחשבון הזה גם אם המשתמשת מחוברת לכמה חשבונות במקביל.
+const SENDER_GMAIL = 'mlypeleg@gmail.com';
+const GMAIL_BASE = 'https://mail.google.com/mail/u/' + encodeURIComponent(SENDER_GMAIL) + '/';
 
 const M = window.EduraMatch;
 
@@ -415,8 +419,8 @@ function buildMailLinks(m) {
   lines.push('');
   lines.push('מיטל פלג · אדורה');
   const bodyStr = lines.join('\n');
-  // Gmail web — לא תלוי בהגדרת ברירת מחדל של מייל ב-Windows
-  const gmailUrl = 'https://mail.google.com/mail/?view=cm&fs=1' +
+  // Gmail web — נשלח מ-SENDER_GMAIL (מייל אישי, לא של העבודה)
+  const gmailUrl = GMAIL_BASE + '?view=cm&fs=1' +
     '&to=' + encodeURIComponent(t.email) +
     '&su=' + encodeURIComponent(subjectStr) +
     '&body=' + encodeURIComponent(bodyStr);
@@ -466,7 +470,7 @@ function buildSchoolMailLinks(m) {
   lines.push('');
   lines.push('מיטל פלג · אדורה');
   const bodyStr = lines.join('\n');
-  const gmailUrl = 'https://mail.google.com/mail/?view=cm&fs=1' +
+  const gmailUrl = GMAIL_BASE + '?view=cm&fs=1' +
     '&to=' + encodeURIComponent(j.email) +
     '&su=' + encodeURIComponent(subjectStr) +
     '&body=' + encodeURIComponent(bodyStr);
