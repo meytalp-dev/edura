@@ -359,8 +359,18 @@ window.EDURA_API_URL = 'https://script.google.com/macros/s/AKfycbxFqT828xAhAAhe9
         label: c + ' (' + counts[c] + ')',
         onClick: () => this.setAndNext('city', c, 'askRole')
       }));
+      opts.push({ label: 'אחר — אכתוב עיר', onClick: () => this.askCityFree() });
       opts.push({ label: 'כל ' + this.filters.region, onClick: () => this.setAndNext('city', '', 'askRole') });
       this.botMsg('איזו עיר ב' + this.filters.region + '?', this.withBack(opts));
+    }
+
+    askCityFree() {
+      this.botMsg('איזו עיר? כתבו את שם העיר.');
+      this.showInput((text) => {
+        const city = String(text || '').trim();
+        if (!city) { this.askCity(); return; }
+        this.setAndNext('city', city, 'askRole');
+      });
     }
 
     askRole() {
@@ -567,9 +577,10 @@ window.EDURA_API_URL = 'https://script.google.com/macros/s/AKfycbxFqT828xAhAAhe9
         const subjText = isT
           ? 'פנייה דרך אדורה לגבי משרת הוראה'
           : 'פנייה דרך אדורה — ' + (j.school || j.title || '');
+        const intro = 'אדורה — לוח המשרות שמתאים לך\n\n';
         const bodyText2 = isT
-          ? 'שלום' + (j.name ? ' ' + j.name.split(' ')[0] : '') + ',\n\nראיתי את הפרופיל שלך באדורה ואשמח לדבר איתך על משרה אצלנו.\n\n'
-          : 'שלום' + (j.contact_name ? ' ' + j.contact_name : '') + ',\n\nראיתי את המשרה שלכם באתר אדורה ואשמח להציג מועמדות.\n\n';
+          ? intro + 'שלום' + (j.name ? ' ' + j.name.split(' ')[0] : '') + ',\n\nראיתי את הפרופיל שלך באדורה ואשמח לדבר איתך על משרה אצלנו.\n\n'
+          : intro + 'שלום' + (j.contact_name ? ' ' + j.contact_name : '') + ',\n\nראיתי את המשרה שלכם באתר אדורה ואשמח להציג מועמדות.\n\n';
         const gmailUrl = 'https://mail.google.com/mail/?view=cm&fs=1&to=' + encodeURIComponent(j.email) +
                          '&su=' + encodeURIComponent(subjText) +
                          '&body=' + encodeURIComponent(bodyText2);
