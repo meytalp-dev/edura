@@ -185,6 +185,10 @@
   .contact-btn.phone:hover { background: var(--pink-deep); }
   .contact-btn.email { background: var(--bg); color: var(--ink); border: 1.5px solid var(--line); }
   .contact-btn.email:hover { border-color: var(--ink); background: var(--bg-2); }
+  .contact-btn.fb-link { background: #1877F2; color: #fff; }
+  .contact-btn.fb-link:hover { background: #155fc7; }
+  .contact-btn.source-link { background: var(--pink-deep); color: #fff; }
+  .contact-btn.source-link:hover { background: var(--pink-deeper); }
 
   /* DRAWER */
   .drawer-overlay { position: fixed; inset: 0; background: rgba(14,27,44,.45); backdrop-filter: blur(2px); z-index: 200; display: none; }
@@ -322,7 +326,7 @@
   <div class="drawer-foot">
     <a href="privacy.html">פרטיות ואבטחה</a>
     <a href="accessibility.html">נגישות</a>
-    <a href="mailto:meytalp@bethaarava.ort.org.il">צור קשר</a>
+    <a href="mailto:meytal@edura.co.il">צור קשר</a>
     <span>© 2026 אדורה · edura.co.il</span>
   </div>
 </aside>
@@ -394,13 +398,13 @@
       <li><a href="about.html">על אדורה</a></li>
       <li><a href="privacy.html">פרטיות ואבטחה</a></li>
       <li><a href="accessibility.html">הצהרת נגישות</a></li>
-      <li><a href="mailto:meytalp@bethaarava.ort.org.il">יצירת קשר</a></li>
+      <li><a href="mailto:meytal@edura.co.il">יצירת קשר</a></li>
     </ul></div>
   </div>
   <div class="footer-bottom">
     <span>© 2026 אדורה · נבנה באהבה למורים ולמנהלים</span>
     <div class="footer-socials">
-      <a href="mailto:meytalp@bethaarava.ort.org.il" aria-label="מייל"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></a>
+      <a href="mailto:meytal@edura.co.il" aria-label="מייל"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></a>
       <a href="https://api.whatsapp.com/send?phone=972536256653" target="_blank" aria-label="WhatsApp"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 2.1.55 4.15 1.6 5.96L2 22l4.25-1.71c1.74.95 3.71 1.45 5.79 1.45 5.46 0 9.91-4.45 9.91-9.91S17.5 2 12.04 2z"/></svg></a>
     </div>
   </div>
@@ -671,9 +675,27 @@ function openTeacherModal(id) {
   if (!blocked && t.phone) actions.push('<a class="contact-btn phone" href="tel:' + escapeHtml(t.phone) + '"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg> ' + escapeHtml(t.phone) + '</a>');
   if (!blocked && t.email) actions.push('<a class="contact-btn email" href="mailto:' + escapeHtml(t.email) + '?subject=' + encodeURIComponent('הצעת עבודה דרך אדורה') + '"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg> מייל</a>');
 
-  const contactBlock = actions.length
-    ? '<div class="modal-contact"><div class="modal-contact-title">יצירת קשר ישירה</div><div class="modal-contact-actions">' + actions.join('') + '</div></div>'
-    : '<div class="modal-contact"><div class="modal-contact-title">פנייה דרך אדורה</div><div style="font-size:13px;color:#2C3D55;margin-top:4px">המורה ביקש/ה שפניות יעברו דרכנו לפני העברת פרטי קשר. שלחו אלינו את ההצעה בכתובת <a href="mailto:meytalp@bethaarava.ort.org.il" style="color:#BE185D;font-weight:700">meytalp@bethaarava.ort.org.il</a></div></div>';
+  let contactBlock;
+  if (actions.length) {
+    contactBlock = '<div class="modal-contact"><div class="modal-contact-title">יצירת קשר ישירה</div><div class="modal-contact-actions">' + actions.join('') + '</div></div>';
+  } else {
+    const linkUrl = t.fb_url || t.url || '';
+    const isFbPost = !!t.fb_url || linkUrl.includes('facebook.com');
+    const sourceName = t.source_name || (isFbPost ? 'פייסבוק' : 'המקור');
+    if (linkUrl) {
+      const btnLabel = isFbPost ? 'צפייה בפוסט בפייסבוק' : 'צפייה במודעה ב' + sourceName;
+      const btnClass = isFbPost ? 'fb-link' : 'source-link';
+      const btnIcon = isFbPost
+        ? '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M22 12c0-5.52-4.48-10-10-10S2 6.48 2 12c0 4.84 3.44 8.87 8 9.8V15H8v-3h2V9.5C10 7.57 11.57 6 13.5 6H16v3h-2c-.55 0-1 .45-1 1v2h3v3h-3v6.95c5.05-.5 9-4.76 9-9.95z"/></svg>'
+        : '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>';
+      const explain = isFbPost
+        ? 'מודעה זו פורסמה ב' + escapeHtml(sourceName) + '. ליצירת קשר עם המורה — היכנסו לפוסט המקורי וכתבו תגובה או הודעה ישירה.'
+        : 'מודעה זו פורסמה ב' + escapeHtml(sourceName) + '. ליצירת קשר עם המורה — צפו במודעה המקורית.';
+      contactBlock = '<div class="modal-contact"><div class="modal-contact-title">פנייה למורה</div><div style="font-size:13px;color:#2C3D55;margin:6px 0 12px;line-height:1.55">' + explain + '</div><div class="modal-contact-actions"><a class="contact-btn ' + btnClass + '" href="' + escapeHtml(linkUrl) + '" target="_blank" rel="noopener">' + btnIcon + ' ' + btnLabel + '</a></div></div>';
+    } else {
+      contactBlock = '<div class="modal-contact"><div class="modal-contact-title">פנייה דרך אדורה</div><div style="font-size:13px;color:#2C3D55;margin-top:4px">לא נמצאו פרטי קשר ישירים. כתבו אלינו ל-<a href="mailto:meytal@edura.co.il" style="color:#BE185D;font-weight:700">meytal@edura.co.il</a> ונחבר אתכם.</div></div>';
+    }
+  }
 
   document.getElementById('modal-content').innerHTML =
     '<div class="modal-hero" style="background-image:url(\'' + photo + '\')"><div class="modal-hero-overlay"></div><button class="modal-close" onclick="closeTeacherModal()">×</button><div class="modal-hero-info"><div class="modal-hero-city">' + escapeHtml(city) + '</div><div class="modal-hero-region">' + escapeHtml(region) + '</div></div></div>' +
