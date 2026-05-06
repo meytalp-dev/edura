@@ -219,7 +219,7 @@
 
 <header>
   <h1>התאמות מורה ↔ משרה · אדמין</h1>
-  <div class="sub">מציג רק התאמות "קשיחות": אותו מקצוע, שכבה תואמת, ועיר/אזור קרוב גיאוגרפית. בקרה ידנית — שולחת מיילים בעצמך.</div>
+  <div class="sub">מציג רק התאמות איכותיות: אותו מקצוע, אותה שכבה, ואותה עיר או זונת נסיעה (~30 דק'). בקרה ידנית — שולחת מיילים בעצמך.</div>
 </header>
 
 <div class="help-box">
@@ -231,7 +231,7 @@
 <div class="summary" id="summary">
   <div class="stat"><span class="stat-num" id="stat-total">…</span><span class="stat-label">סה"כ התאמות</span></div>
   <div class="stat"><span class="stat-num pink" id="stat-high">…</span><span class="stat-label">עיר זהה</span></div>
-  <div class="stat"><span class="stat-num warn" id="stat-region">…</span><span class="stat-label">אותו אזור</span></div>
+  <div class="stat"><span class="stat-num warn" id="stat-region">…</span><span class="stat-label">זונת נסיעה זהה</span></div>
   <div class="stat"><span class="stat-num ok" id="stat-mailable">…</span><span class="stat-label">ניתנים לפנייה (יש מייל/טלפון)</span></div>
   <div class="stat"><span class="stat-num" id="stat-contacted">…</span><span class="stat-label">סומנו כטופלו</span></div>
   <div class="stat"><span class="stat-num" id="stat-rejected" style="color:var(--error)">…</span><span class="stat-label">סומנו לא מתאים</span></div>
@@ -256,6 +256,7 @@
 </div>
 
 <script src="../matching.js"></script>
+<script src="../region-zones.js"></script>
 <script>
 const SUBMISSIONS_URL = 'https://script.google.com/macros/s/AKfycbwleldcwH8c5k9OZ8EMDIKZ8veRbrtO1M7XwYFWg7HHbEV-SrZkLTElbFRiq4cHPlyarw/exec';
 const STORAGE_KEY = 'edura.admin.matches.contacted.v1';
@@ -338,39 +339,34 @@ async function loadAll() {
 }
 
 // ──────────────────────────────────────────────────
-// Strict matching: subject + level overlap mandatory.
-// Region: same city OR same region OR neighbor region (per matching.js REGION_NEIGHBORS).
-// אסור: צפון↔דרום, צפון↔ירושלים, מרכז↔ירושלים (לא שכנים).
+// Strict matching: subject + level overlap mandatory (לפי matching.js).
+// מיקום: עיר זהה OR אותה זונת נסיעה (לפי region-zones.js — 18 זונות, ~30 דק' נסיעה כ"א).
+// בלי neighbor-zone — מייטל מעדיפה פחות מאצ'ים אבל איכותיים.
+// אזורי הלגאסי (מרכז/דרום/צפון) משמשים רק כ-fallback אם אחת הערים לא מזוהה.
 // ──────────────────────────────────────────────────
-const REGION_NEIGHBORS = {
-  'מרכז': ['שפלה'],
-  'שפלה': ['מרכז', 'דרום'],
-  'דרום': ['שפלה'],
-  'ירושלים': ['שפלה']
-};
 function regionsArr(x) {
   if (Array.isArray(x)) return x.map(v => String(v || '').trim()).filter(Boolean);
   const s = String(x || '').trim();
   return s ? [s] : [];
 }
-function regionRelation(rT, rJ) {
-  const a = regionsArr(rT), b = regionsArr(rJ);
-  if (!a.length || !b.length) return null;
-  for (const x of a) if (b.indexOf(x) !== -1) return 'same';
-  for (const x of a) {
-    const neighbors = REGION_NEIGHBORS[x] || [];
-    for (const n of neighbors) if (b.indexOf(n) !== -1) return 'neighbor';
-  }
-  return 'far';
+// פיצול עיר חופשית מ-FB (למשל "חיפה, קריות") ובדיקה אם איזה חלק מאוזן
+function splitCities(c) {
+  if (!c) return [];
+  return String(c).split(/[,/|]/).map(s => s.trim()).filter(Boolean);
 }
 function matchTier(teacher, job) {
-  const sameCity = teacher.city && job.city &&
-    String(teacher.city).trim() === String(job.city).trim();
-  if (sameCity) return 'same-city';
-  const rel = regionRelation(teacher.region, job.region);
-  if (rel === 'same') return 'same-region';
-  if (rel === 'neighbor') return 'neighbor-region';
-  return null; // too far OR no region info on either side → reject
+  const tCities = splitCities(teacher.city);
+  const jCities = splitCities(job.city);
+  // בדיקת every-pair — מספיק שזוג אחד יוצר 'same-city' או 'same-zone'
+  let bestTier = null;
+  for (const tc of tCities) {
+    for (const jc of jCities) {
+      const tier = window.EduraZones.locationTier(tc, jc);
+      if (tier === 'same-city') return 'same-city'; // החזק ביותר — מיד מחזירים
+      if (tier === 'same-zone' && bestTier !== 'same-city') bestTier = 'same-zone';
+    }
+  }
+  return bestTier; // null אם אף זוג לא יצר same-city או same-zone
 }
 
 function buildMatches() {
@@ -560,8 +556,7 @@ function renderMatch(m) {
   const tierClass = m.tier === 'same-city' ? 'high' : '';
   const stateClass = rejected ? 'rejected' : (contacted ? 'contacted' : '');
   const cls = stateClass + ' ' + tierClass;
-  const tierLabel = m.tier === 'same-city' ? 'עיר זהה' :
-                    m.tier === 'same-region' ? 'אותו אזור' : 'אזור שכן';
+  const tierLabel = m.tier === 'same-city' ? 'עיר זהה' : 'זונת נסיעה זהה';
   const scoreClass = m.score >= 130 ? '' : (m.score >= 70 ? 'medium' : 'low');
 
   const mail = buildMailLinks(m);
@@ -664,7 +659,7 @@ function render() {
   const rejected = getRejected();
   const cnt = ALL_MATCHES.length;
   const high = ALL_MATCHES.filter(m => m.tier === 'same-city').length;
-  const reg = ALL_MATCHES.filter(m => m.tier === 'same-region').length;
+  const reg = ALL_MATCHES.filter(m => m.tier === 'same-zone').length;
   const mailable = ALL_MATCHES.filter(m => m.teacher.email || m.teacher.phone).length;
   const cnum = Object.keys(contacted).filter(k => contacted[k]).length;
   const rnum = Object.keys(rejected).filter(k => rejected[k]).length;
