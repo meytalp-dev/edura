@@ -2341,28 +2341,15 @@
       askNext(380);
     };
 
-    const isSchoolFlow = action === 'submit_job';
     const askNext = (delay = 600) => {
       updateProgress();
       if (stepIdx >= flow.length) return finish();
       const step = flow[stepIdx];
+      // Quick transition between questions — funny phrase appears only at finish()
       setTimeout(() => {
-        if (isSchoolFlow) {
-          // School flow: quick transition, no funny phrase between questions
-          setTimeout(() => {
-            botSay(step.q);
-            renderInput(step);
-          }, 280);
-        } else {
-          // Teacher flow: funny phrase between questions
-          showTyping();
-          setTimeout(() => {
-            hideTyping();
-            botSay(step.q);
-            renderInput(step);
-          }, 2650 + Math.random() * 250);
-        }
-      }, delay);
+        botSay(step.q);
+        renderInput(step);
+      }, delay + 280);
     };
 
     const finish = async () => {
