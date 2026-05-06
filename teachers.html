@@ -626,7 +626,8 @@ function renderActiveFilters() {
 function renderTeacherCard(t) {
   const photo = pickPhoto(t);
   const city = t.city || (Array.isArray(t.region) ? t.region[0] : t.region) || 'מורה זמין/ה';
-  const region = (Array.isArray(t.region) ? t.region.join(' / ') : t.region) || '';
+  const regionRaw = (Array.isArray(t.region) ? t.region.join(' / ') : t.region) || '';
+  const region = (regionRaw && regionRaw !== city) ? 'אזור ' + regionRaw : '';
   const meta = [];
   if (t.scope) meta.push((t.scope.includes('%') || /^\d+$/.test(String(t.scope))) ? t.scope + '%' : t.scope);
   if (t.level) meta.push(t.level);
@@ -684,7 +685,8 @@ function openTeacherModal(id) {
   if (!t) return;
   const photo = pickPhoto(t);
   const city = t.city || 'מיקום לא צוין';
-  const region = (Array.isArray(t.region) ? t.region.join(' / ') : t.region) || '';
+  const regionRaw = (Array.isArray(t.region) ? t.region.join(' / ') : t.region) || '';
+  const region = (regionRaw && regionRaw !== city) ? 'אזור ' + regionRaw : '';
   const tags = [];
   if (t.subject) tags.push('<span class="modal-tag">' + escapeHtml(t.subject) + '</span>');
   if (t.scope) tags.push('<span class="modal-tag scope">' + escapeHtml(t.scope) + (t.scope.includes('%') || /^\d+$/.test(String(t.scope)) ? '%' : '') + '</span>');

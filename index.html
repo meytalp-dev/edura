@@ -1342,6 +1342,7 @@ function renderActiveFilters() {
 
 function renderJobCard(job, badge) {
   const city = job.city || job.school || 'לא צוינה עיר';
+  const regionLabel = (job.region && job.region !== city) ? 'אזור ' + job.region : '';
   const photo = pickPhoto(job);
   const title = job.title || (job.role ? job.role + (job.subject ? ' ל' + job.subject : '') : 'משרה');
 
@@ -1365,7 +1366,7 @@ function renderJobCard(job, badge) {
         '</button>' +
         '<div class="job-hero-city">' +
           '<div class="job-hero-city-name">' + escapeHtml(city) + '</div>' +
-          '<div class="job-hero-city-region">' + escapeHtml(job.region || '') + '</div>' +
+          '<div class="job-hero-city-region">' + escapeHtml(regionLabel) + '</div>' +
         '</div>' +
       '</div>' +
       '<div class="job-body">' +
@@ -1497,6 +1498,7 @@ function openJobModal(jobId) {
 
   const photo = pickPhoto(job);
   const city = job.city || job.school || 'לא צוינה עיר';
+  const regionLabel = (job.region && job.region !== city) ? 'אזור ' + job.region : '';
   const title = job.title || (job.role ? job.role + (job.subject ? ' ל' + job.subject : '') : 'משרה');
   const desc = job.description || job.snippet || '';
 
@@ -1552,7 +1554,7 @@ function openJobModal(jobId) {
       '<button class="modal-close" onclick="closeJobModal()" aria-label="סגור">×</button>' +
       '<div class="modal-hero-info">' +
         '<div class="modal-hero-city">' + escapeHtml(city) + '</div>' +
-        '<div class="modal-hero-region">' + escapeHtml(job.region || '') + '</div>' +
+        '<div class="modal-hero-region">' + escapeHtml(regionLabel) + '</div>' +
       '</div>' +
     '</div>' +
     '<div class="modal-body">' +

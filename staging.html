@@ -503,7 +503,7 @@ function renderCard(j) {
   const cls = decision === 'approved' ? 'approved' : decision === 'rejected' ? 'rejected' : '';
   const tags = [];
   if (j.level) tags.push(`<span class="tag">${esc(j.level)}</span>`);
-  if (j.region) tags.push(`<span class="tag region">${esc(j.region)}</span>`);
+  if (j.region && j.region !== (j.city || '').trim()) tags.push(`<span class="tag region">אזור ${esc(j.region)}</span>`);
   if (j.scope) tags.push(`<span class="tag">${esc(j.scope)}</span>`);
   if (j.sector) tags.push(`<span class="tag">${esc(j.sector)}</span>`);
   tags.push(`<span class="tag source-${j.source}">${esc(j.source_name || j.source)}</span>`);
@@ -554,7 +554,7 @@ function renderTeacherCard(t) {
   const cls = decision === 'approved' ? 'approved' : decision === 'rejected' ? 'rejected' : '';
   const tags = [];
   if (t.level) tags.push(`<span class="tag">${esc(t.level)}</span>`);
-  if (t.region) tags.push(`<span class="tag region">${esc(t.region)}</span>`);
+  if (t.region && t.region !== (t.city || '').trim()) tags.push(`<span class="tag region">אזור ${esc(t.region)}</span>`);
   if (t.scope) tags.push(`<span class="tag">${esc(t.scope)}</span>`);
   tags.push(`<span class="tag" style="background:#FEE2E2;color:#991B1B">${esc(t.source_name || t.source)}</span>`);
 
