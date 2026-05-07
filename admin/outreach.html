@@ -429,11 +429,12 @@ function setReplied(id, value) {
 window.setSent = setSent;
 window.setReplied = setReplied;
 
-function buildMailto(c) {
+function buildGmailUrl(c) {
   const link = BASE_URL + c.slug;
   const body = BODY.replace('{{LINK}}', link);
-  return 'mailto:' + encodeURIComponent(c.email)
-    + '?subject=' + encodeURIComponent(SUBJECT)
+  return 'https://mail.google.com/mail/?view=cm&fs=1'
+    + '&to=' + encodeURIComponent(c.email)
+    + '&su=' + encodeURIComponent(SUBJECT)
     + '&body=' + encodeURIComponent(body);
 }
 
@@ -569,9 +570,9 @@ function renderTable() {
         </td>
         <td>
           <div class="actions">
-            <a class="action-btn primary" href="${buildMailto(c)}">
+            <a class="action-btn primary" href="${buildGmailUrl(c)}" target="_blank" rel="noopener" title="פותח חלון חיבור ב-Gmail עם הנוסח כבר מוכן">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
-              פתח מייל
+              פתח ב-Gmail
             </a>
             <button class="action-btn" onclick="copyTemplateFor('${c.slug}')" title="מעתיק את כל המייל (נושא + גוף + קישור אישי) לקליפבורד">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="9" y1="13" x2="15" y2="13"/><line x1="9" y1="17" x2="15" y2="17"/></svg>
