@@ -309,7 +309,7 @@ window.EDURA_SUBMISSIONS_URL = 'https://script.google.com/macros/s/AKfycbwleldcw
           }
           this.dataset = this.allTeachers;
           this.setStatus('');
-          this.botMsg('יש ' + this.dataset.length + ' מורים שמחפשים בית. בואו נצמצם.');
+          this.botMsg('יש מאות מורים שמחפשים בית. בואו נצמצם.');
         } else {
           if (!this.allJobs.length) {
             const [res, submitted] = await Promise.all([
@@ -328,7 +328,7 @@ window.EDURA_SUBMISSIONS_URL = 'https://script.google.com/macros/s/AKfycbwleldcw
           if (flow === 'tender') {
             this.dataset = this.allJobs.filter(j => (j.role || '').includes('מנהל'));
             this.setStatus('');
-            this.botMsg('יש ' + this.dataset.length + ' מכרזי ניהול פתוחים. בואו נחדד.');
+            this.botMsg('יש מכרזי ניהול פתוחים. בואו נחדד.');
           } else {
             this.dataset = this.allJobs;
             this.setStatus('');
