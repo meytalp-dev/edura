@@ -332,7 +332,7 @@ window.EDURA_SUBMISSIONS_URL = 'https://script.google.com/macros/s/AKfycbwleldcw
           } else {
             this.dataset = this.allJobs;
             this.setStatus('');
-            this.botMsg('יש ' + this.dataset.length + ' משרות פתוחות עכשיו. בואו נמצא לך את המתאימה.');
+            this.botMsg('יש מאות משרות פתוחות עכשיו. בואו נמצא לך את המתאימה.');
           }
         }
         this.askMode();
