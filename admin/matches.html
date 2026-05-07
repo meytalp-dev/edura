@@ -676,7 +676,7 @@ function renderMatch(m) {
 
   const mail = buildMailLinks(m);
   const wa = buildWa(m);
-  const fbUrl = t.url || t.fb_url;
+  const fbUrl = t.fb_url || t.url;
 
   const teacherName = t.name || (t.source === 'facebook' ? 'מורה מ-FB (אנונימי)' : t.id);
   const jobTitle = j.title || (j.subject ? j.subject + ' · ' + (j.school || '') : 'משרה');
