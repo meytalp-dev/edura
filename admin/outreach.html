@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>אדורה · מעקב פנייה למוסדות הכשרת מורים</title>
+<meta name="robots" content="noindex,nofollow" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --teal: #009DE0;
+    --pink: #FCE7F3;
+    --pink-soft: #FDF2F8;
+    --pink-deep: #BE185D;
+    --pink-deeper: #9D174D;
+    --ink: #0E1B2C;
+    --ink-soft: #2C3D55;
+    --ink-mute: #6B7B8E;
+    --line: #E8EAED;
+    --line-soft: #F4F5F7;
+    --bg: #FFFFFF;
+    --bg-2: #F7F8FA;
+    --success: #059669;
+    --success-soft: #D1FAE5;
+    --warn: #D97706;
+    --warn-soft: #FEF3C7;
+    --info: #2563EB;
+    --info-soft: #DBEAFE;
+    --error: #DC2626;
+    --error-soft: #FEE2E2;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Heebo', sans-serif;
+    background: var(--bg-2); color: var(--ink);
+    line-height: 1.5; padding: 24px;
+    -webkit-font-smoothing: antialiased;
+  }
+  .container { max-width: 1320px; margin: 0 auto; }
+  a { color: inherit; text-decoration: none; }
+  button { font: inherit; cursor: pointer; border: none; background: none; padding: 0; }
+
+  header { margin-bottom: 20px; }
+  h1 { font-size: 26px; font-weight: 900; letter-spacing: -0.5px; margin-bottom: 4px; }
+  .sub { font-size: 14px; color: var(--ink-mute); }
+
+  .summary {
+    display: flex; gap: 12px; flex-wrap: wrap;
+    background: var(--bg); border: 1px solid var(--line);
+    border-radius: 16px; padding: 16px 20px; margin: 20px 0;
+  }
+  .stat { display: flex; flex-direction: column; gap: 2px; padding-inline-end: 24px; border-inline-end: 1px solid var(--line); }
+  .stat:last-child { border-inline-end: none; padding-inline-end: 0; }
+  .stat-num { font-size: 24px; font-weight: 900; line-height: 1; }
+  .stat-num.ok { color: var(--success); }
+  .stat-num.warn { color: var(--warn); }
+  .stat-num.info { color: var(--info); }
+  .stat-num.pink { color: var(--pink-deep); }
+  .stat-label { font-size: 11px; color: var(--ink-mute); font-weight: 700; text-transform: uppercase; letter-spacing: 0.4px; }
+
+  .toolbar {
+    background: var(--bg); border: 1px solid var(--line);
+    border-radius: 14px; padding: 14px 18px; margin-bottom: 16px;
+    display: flex; gap: 12px; flex-wrap: wrap; align-items: center;
+  }
+  .toolbar label { font-size: 12px; font-weight: 700; color: var(--ink-soft); }
+  .toolbar select, .toolbar input[type="text"] {
+    font: inherit; padding: 7px 12px; border-radius: 8px;
+    border: 1.5px solid var(--line); background: var(--bg);
+    font-size: 13px; min-width: 200px;
+  }
+  .toolbar select:focus, .toolbar input:focus {
+    outline: none; border-color: var(--pink-deep);
+  }
+  .toolbar button {
+    padding: 7px 14px; border-radius: 999px;
+    background: var(--ink); color: #fff; font-size: 13px; font-weight: 700;
+    transition: background .15s;
+  }
+  .toolbar button:hover { background: var(--pink-deep); }
+  .toolbar .danger { background: var(--bg-2); color: var(--error); border: 1px solid var(--error-soft); }
+  .toolbar .danger:hover { background: var(--error-soft); }
+
+  table {
+    width: 100%; border-collapse: collapse;
+    background: var(--bg); border-radius: 16px; overflow: hidden;
+    box-shadow: 0 1px 3px rgba(14,27,44,.04);
+  }
+  thead {
+    background: var(--bg-2);
+    border-bottom: 1px solid var(--line);
+  }
+  th {
+    text-align: start; font-size: 11px; font-weight: 800;
+    color: var(--ink-mute); text-transform: uppercase; letter-spacing: 0.4px;
+    padding: 14px 12px; white-space: nowrap;
+  }
+  td {
+    padding: 14px 12px; font-size: 14px; vertical-align: middle;
+    border-bottom: 1px solid var(--line-soft);
+  }
+  tbody tr { transition: background .12s; }
+  tbody tr:hover { background: var(--bg-2); }
+  tbody tr:last-child td { border-bottom: none; }
+
+  /* row state coloring on inline LEFT marker */
+  td.state-cell {
+    width: 8px; padding: 0;
+    background: transparent;
+  }
+  tr.row-sent td.state-cell { background: var(--info); }
+  tr.row-replied td.state-cell { background: var(--success); }
+  tr.row-overdue td.state-cell { background: var(--warn); }
+
+  .institution {
+    font-weight: 800; font-size: 15px; color: var(--ink);
+    margin-bottom: 2px;
+  }
+  .institution-meta {
+    font-size: 12px; color: var(--ink-mute);
+    display: flex; gap: 6px; flex-wrap: wrap; align-items: center;
+  }
+  .badge {
+    display: inline-block;
+    padding: 2px 8px; border-radius: 999px;
+    font-size: 10px; font-weight: 700;
+    background: var(--line-soft); color: var(--ink-soft);
+  }
+  .badge.verify { background: var(--warn-soft); color: var(--warn); }
+
+  .contact-name { font-weight: 700; font-size: 14px; }
+  .contact-role { font-size: 12px; color: var(--ink-mute); margin-top: 2px; }
+
+  .email-link {
+    font-family: 'Heebo', monospace; font-size: 12.5px;
+    color: var(--info); font-weight: 600;
+    word-break: break-all;
+  }
+  .email-link:hover { text-decoration: underline; }
+  .phone-meta { font-size: 11.5px; color: var(--ink-mute); margin-top: 2px; }
+
+  .actions {
+    display: flex; gap: 6px; flex-wrap: wrap;
+  }
+  .action-btn {
+    display: inline-flex; align-items: center; gap: 5px;
+    padding: 6px 11px; border-radius: 8px;
+    font-size: 12px; font-weight: 700;
+    background: var(--bg-2); color: var(--ink-soft);
+    border: 1px solid var(--line);
+    transition: all .12s;
+  }
+  .action-btn:hover { background: var(--pink-soft); color: var(--pink-deep); border-color: var(--pink); }
+  .action-btn svg { width: 13px; height: 13px; flex-shrink: 0; }
+  .action-btn.primary { background: var(--ink); color: #fff; border-color: var(--ink); }
+  .action-btn.primary:hover { background: var(--pink-deep); border-color: var(--pink-deep); }
+
+  .status-cell {
+    display: flex; flex-direction: column; gap: 6px;
+    min-width: 180px;
+  }
+  .status-row {
+    display: flex; align-items: center; gap: 8px;
+    font-size: 12px;
+  }
+  .status-row label {
+    display: flex; align-items: center; gap: 6px;
+    cursor: pointer; font-weight: 600; color: var(--ink-soft);
+    user-select: none;
+  }
+  .status-row input[type="checkbox"] {
+    width: 16px; height: 16px;
+    accent-color: var(--pink-deep);
+    cursor: pointer;
+  }
+  .status-row .when {
+    font-size: 11px; color: var(--ink-mute);
+  }
+  .reminder-pill {
+    display: inline-flex; align-items: center; gap: 5px;
+    padding: 3px 9px; border-radius: 999px;
+    background: var(--warn-soft); color: var(--warn);
+    font-size: 11px; font-weight: 800;
+    animation: pulse 2s ease-in-out infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.7; }
+  }
+  .reminder-pill svg { width: 11px; height: 11px; }
+
+  .copy-toast {
+    position: fixed; bottom: 30px; right: 30px;
+    background: var(--success); color: #fff;
+    padding: 12px 20px; border-radius: 999px;
+    font-size: 13px; font-weight: 700;
+    box-shadow: 0 8px 24px rgba(5,150,105,.25);
+    opacity: 0; transform: translateY(10px);
+    transition: opacity .2s, transform .2s;
+    pointer-events: none; z-index: 1000;
+  }
+  .copy-toast.show { opacity: 1; transform: translateY(0); }
+
+  details.email-template {
+    background: var(--bg); border: 1px solid var(--line);
+    border-radius: 12px; padding: 14px 18px; margin-bottom: 16px;
+  }
+  details.email-template summary {
+    font-size: 13px; font-weight: 700; cursor: pointer;
+    color: var(--ink-soft); list-style: none;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  details.email-template summary::after { content: "▾"; font-size: 11px; }
+  details[open].email-template summary::after { content: "▴"; }
+  details.email-template pre {
+    margin-top: 14px; padding: 14px;
+    background: var(--bg-2); border-radius: 8px;
+    font-family: inherit; font-size: 13px;
+    line-height: 1.7; white-space: pre-wrap;
+    color: var(--ink-soft);
+  }
+
+  @media (max-width: 768px) {
+    body { padding: 12px; }
+    h1 { font-size: 20px; }
+    table, thead, tbody, th, td, tr { display: block; }
+    thead { display: none; }
+    tr { background: var(--bg); border-radius: 12px; padding: 12px; margin-bottom: 10px; box-shadow: 0 1px 3px rgba(14,27,44,.04); }
+    td { padding: 6px 0; border-bottom: none; }
+    td.state-cell { display: none; }
+    tbody tr.row-sent { border-inline-start: 4px solid var(--info); }
+    tbody tr.row-replied { border-inline-start: 4px solid var(--success); }
+    tbody tr.row-overdue { border-inline-start: 4px solid var(--warn); }
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+  <header>
+    <h1>מעקב פנייה למוסדות הכשרת מורים</h1>
+    <p class="sub">37 אנשי קשר ב-29 מוסדות. נתונים נשמרים בדפדפן (localStorage) — לא נשלחים לשרת.</p>
+  </header>
+
+  <details class="email-template">
+    <summary>נוסח המייל המאושר (להעתקה)</summary>
+    <pre id="email-body-preview"></pre>
+  </details>
+
+  <div class="summary" id="summary"></div>
+
+  <div class="toolbar">
+    <input type="text" id="search" placeholder="חיפוש לפי מוסד, איש קשר או מייל…" />
+    <select id="filter">
+      <option value="all">הצג הכל</option>
+      <option value="pending">ממתינים לשליחה</option>
+      <option value="sent">נשלח, ממתין למענה</option>
+      <option value="replied">חזרו אליי</option>
+      <option value="overdue">צריך תזכורת ⚠</option>
+      <option value="verify">לאמת בטלפון לפני שליחה</option>
+    </select>
+    <button onclick="exportCSV()">ייצוא CSV</button>
+    <button class="danger" onclick="resetAll()">אפס את כל הסימונים</button>
+  </div>
+
+  <table>
+    <thead>
+      <tr>
+        <th></th>
+        <th>#</th>
+        <th>מוסד</th>
+        <th>איש קשר</th>
+        <th>מייל</th>
+        <th>פעולות</th>
+        <th>סטטוס</th>
+      </tr>
+    </thead>
+    <tbody id="tbody"></tbody>
+  </table>
+</div>
+
+<div class="copy-toast" id="toast">הועתק ללוח!</div>
+
+<script>
+const SUBJECT = 'משימה לאומית — Edura, לוח דרושים למשרות הוראה';
+const BODY = `שלום [תואר + שם],
+
+אני מיטל פלג, מנהלת תיכון אורט בית הערבה בירושלים.
+
+מחסור המורים הוא בעיה לאומית. מצד שני — מורים שמחפשים משרה מתישים את עצמם בין עשרות קבוצות פייסבוק ולוחות שונים, חלקם מיושנים, רובם דורשים הרשמה כפולה.
+
+בניתי את Edura כדי לעזור: לוח דרושים אחד למשרות הוראה בישראל. חינם, בלי אותיות קטנות. מטרה אחת ויחידה — להביא להתאמה מיטבית בין מורה מחפש משרה לבין משרה פנויה.
+
+עזרו לי במשימה הזו: בקשו מבוגרי המסלול שסיימו תשפ"ו לפרסם את עצמם ב-Edura. המערכת יודעת לעשות התאמות חכמות לפי אזור, מקצוע, שכבה והיקף משרה.
+
+קישור לרישום: {{LINK}}
+
+הלוואי שנצליח במשימה.
+
+תודה,
+מיטל פלג
+מנהלת אורט בית הערבה, ירושלים
+מקימת Edura
+mlypeleg@gmail.com
+https://edura.co.il`;
+
+const CONTACTS = [
+  { id: 1, inst: 'האוניברסיטה העברית', name: 'מרים שחר', role: 'רכזת ענייני תלמידים — לימודי הוראה', email: 'miriamsha@savion.huji.ac.il', phone: '02-5882021', slug: 'huji', status: 'verified', track: 'A' },
+  { id: 2, inst: 'בר-אילן', name: 'ד"ר אורלי מיכאל', role: 'מרכזת הסטאז\' ומורים חדשים', email: 'orly.michael@biu.ac.il', phone: '03-5318442', slug: 'biu', status: 'verified', track: 'A' },
+  { id: 3, inst: 'בר-אילן', name: 'יפעת בלו', role: 'מתאמת תכניות הסטאז\'', email: 'yifat.blu@biu.ac.il', phone: '03-5318445', slug: 'biu', status: 'verified', track: 'A' },
+  { id: 4, inst: 'בר-אילן', name: 'מזכירות הכשרת מורים', role: '—', email: 'teachers.training@biu.ac.il', phone: '03-5318442', slug: 'biu', status: 'verified', track: 'A' },
+  { id: 5, inst: 'חיפה', name: 'יעל מישורי', role: 'רכזת תוכנית הכשרה והסטאז\'', email: 'ymishory@univ.haifa.ac.il', phone: '04-8288380', slug: 'haifa', status: 'verified', track: 'A' },
+  { id: 6, inst: 'בן-גוריון', name: 'מזכירות תעודת הוראה', role: '—', email: 'edukidum@bgu.ac.il', phone: '08-6461600', slug: 'bgu', status: 'verified', track: 'A' },
+  { id: 7, inst: 'הטכניון', name: 'אורטל פרנקל', role: 'רכזת לימודי הוראה', email: 'edu.ug.ad@technion.ac.il', phone: '073-3782169', slug: 'technion', status: 'verified', track: 'A' },
+  { id: 8, inst: 'האוניברסיטה הפתוחה', name: 'יהודית קלנר', role: 'יועצת אקדמית תעודת הוראה', email: 'yudithk@openu.ac.il', phone: '050-8447314', slug: 'openu', status: 'verified', track: 'A' },
+  { id: 9, inst: 'לוינסקי', name: 'ד"ר רחל פלד', role: 'ראש תוכנית הסטאז\'', email: 'rachel.feld@l-w.ac.il', phone: '03-6902499', slug: 'levinsky', status: 'verified', track: 'A' },
+  { id: 10, inst: 'סמינר הקיבוצים', name: 'סיגל אדלשטיין', role: 'רכזת סטאז\' — חינוך גופני', email: 'Sigal.edelstein@smkb.ac.il', phone: '03-6905428', slug: 'smkb', status: 'verified', track: 'A' },
+  { id: 11, inst: 'אורנים', name: 'מיכל נקר', role: 'רכזת התמחות בהוראה (סטאז\')', email: 'michal.nakar@oranim.ac.il', phone: '04-9838816', slug: 'oranim', status: 'verified', track: 'A' },
+  { id: 12, inst: 'תלפיות', name: 'ד"ר אורן כהן זדה', role: 'רכז קורסי מורים חונכים', email: 'cohenzad@talpiot.ac.il', phone: '', slug: 'talpiot', status: 'verified', track: 'A' },
+  { id: 13, inst: 'תלפיות', name: 'רותם פרל', role: 'רכזת קורסי שנה א\'', email: 'rotem12790@talpiot.ac.il', phone: '', slug: 'talpiot', status: 'verified', track: 'A' },
+  { id: 14, inst: 'גורדון', name: 'פנינה פוקס', role: 'רכזת קורסי סטאז\'', email: 'pninaf@gordon.ac.il', phone: '04-8590148', slug: 'gordon', status: 'verified', track: 'A' },
+  { id: 15, inst: 'חמדת הדרום', name: 'ד"ר כוכי פרג\'ון', role: 'רכזת התמחות בהוראה', email: 'cochavafa@hemdat.ac.il', phone: '', slug: 'hemdat', status: 'verified', track: 'A' },
+  { id: 16, inst: 'אפרתה', name: 'אילנית אברהם', role: 'מרכזת תכנית מורים חדשים', email: 'mikzoi@emef.ac.il', phone: '02-6710998', slug: 'efrata', status: 'verified', track: 'A' },
+  { id: 17, inst: 'מכללה ירושלים', name: 'ד"ר צילה ארן', role: 'ראש מחלקה לחינוך + רכזת "ראשית"', email: 'taran@michlalah.edu', phone: '02-6750735', slug: 'michlalah', status: 'verified', track: 'A' },
+  { id: 18, inst: 'הרצוג', name: 'רישום', role: '—', email: 'rishum@herzog.ac.il', phone: '02-9937337', slug: 'herzog', status: 'verified', track: 'A' },
+  { id: 19, inst: 'וינגייט', name: 'מזכירות הכשרה להוראה', role: '—', email: 'study@wincol.ac.il', phone: '09-863-9111', slug: 'wincol', status: 'verified', track: 'A' },
+  { id: 20, inst: 'תל אביב', name: 'ד"ר יהודה יעקבסון', role: 'ראש היחידה להכשרה להוראה', email: 'yehudaj@tauex.tau.ac.il', phone: '', slug: 'tau', status: 'verified', track: 'B' },
+  { id: 21, inst: 'אריאל', name: 'פרופ\' ניצה דוידוביץ\'', role: 'ראש החוג לחינוך', email: 'nitzad@ariel.ac.il', phone: '1-800-660-660', slug: 'ariel', status: 'verify', track: 'B' },
+  { id: 22, inst: 'אריאל', name: 'ד"ר מירי בן-עמרם', role: 'ראשת תוכנית סטאז\'', email: 'miribena@ariel.ac.il', phone: '1-800-660-660', slug: 'ariel', status: 'verify', track: 'B' },
+  { id: 23, inst: 'אחווה', name: 'ד"ר יעל שגב', role: 'ראשת היחידה לכניסה להוראה', email: 'talam@achva.ac.il', phone: '08-8588087', slug: 'achva', status: 'verified', track: 'B' },
+  { id: 24, inst: 'קיי', name: 'ד"ר ענת קסלר', role: 'ראשת היחידה לכניסה להוראה', email: 'anat.kessler@kaye.ac.il', phone: '08-6402858', slug: 'kaye', status: 'verified', track: 'B' },
+  { id: 25, inst: 'ליפשיץ', name: 'רויטל', role: 'מזכירות / רישום', email: 'revital@lif.ac.il', phone: '02-5679567', slug: 'lifshitz', status: 'verified', track: 'B' },
+  { id: 26, inst: 'סכנין', name: 'webmaster', role: 'אתר רשמי', email: 'webmaster@sakhnin.ac.il', phone: '04-9058000', slug: 'sakhnin', status: 'verified', track: 'B' },
+  { id: 27, inst: 'אלקאסמי', name: 'ד"ר סמיר מג\'אדלה', role: 'רע"ן סטאז\'', email: 'samir_m@qsm.ac.il', phone: '04-6286680', slug: 'qsm', status: 'verified', track: 'B' },
+  { id: 28, inst: 'אלקאסמי', name: 'סטאז\' (כללי)', role: '—', email: 'stajq@qsm.ac.il', phone: '04-6286600', slug: 'qsm', status: 'verified', track: 'B' },
+  { id: 29, inst: 'גבעת ושינגטון', name: 'מייל המכללה', role: 'כללי', email: 'givaa@washington.ac.il', phone: '08-6555-8989', slug: 'washington', status: 'verify', track: 'B' },
+  { id: 30, inst: 'אוהלו (תל-חי)', name: 'פרופ\' דורית אלט', role: 'דקאנית הפקולטה לחינוך והוראה', email: 'altdor@telhai.ac.il', phone: '04-8181111', slug: 'ohalo', status: 'verified', track: 'B' },
+  { id: 31, inst: 'דוד ילין', name: 'ד"ר אירית כהן-מזור', role: 'ראשת תוכנית הסבת אקדמאים יסודי', email: 'mazorcohen@dyellin.ac.il', phone: '02-6587555', slug: 'dyellin', status: 'verified', track: 'B' },
+  { id: 32, inst: 'דוד ילין', name: 'ד"ר בועז', role: 'ראש בית הספר B.Ed', email: 'boazrush@dyellin.ac.il', phone: '02-6587555', slug: 'dyellin', status: 'verified', track: 'B' },
+  { id: 33, inst: 'דוד ילין', name: 'מזכירת B.Ed', role: '—', email: 'niritd@dyellin.ac.il', phone: '02-6587555', slug: 'dyellin', status: 'verified', track: 'B' },
+  { id: 34, inst: 'אורות ישראל', name: 'ד"ר רחל ברטוב', role: 'ראשת יחידת כניסה להוראה', email: 'rachel.b@orot.ac.il', phone: '03-9061336', slug: 'orot', status: 'verified', track: 'B' },
+  { id: 35, inst: 'אורות ישראל', name: 'מזכירות אקדמית', role: '—', email: 'mazkirut_academit@orot.ac.il', phone: '1800-500-210', slug: 'orot', status: 'verified', track: 'B' },
+  { id: 36, inst: 'שאנן', name: 'ד"ר אסתר כלפון', role: 'סגנית נשיא ודיקנית B.Ed', email: 'halfon@shaanan.org', phone: '04-8780012', slug: 'shaanan', status: 'verified', track: 'B' },
+  { id: 37, inst: 'המכללה הערבית — חיפה', name: 'ד"ר אחמד בשיר', role: 'סגן נשיא + ראש רשות לתואר ראשון', email: 'ahmadb@arabcol.ac.il', phone: '04-9515575', slug: 'arabcol', status: 'verified', track: 'B' },
+];
+
+const STORAGE_KEY = 'edura_outreach_v1';
+const REMINDER_DAYS = 7;
+const BASE_URL = 'https://edura.co.il/partners.html?inst=';
+
+function loadState() {
+  try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}'); }
+  catch (e) { return {}; }
+}
+function saveState(s) {
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(s)); } catch (e) {}
+}
+let state = loadState();
+
+function fmtDate(iso) {
+  if (!iso) return '';
+  const d = new Date(iso);
+  const day = String(d.getDate()).padStart(2, '0');
+  const month = String(d.getMonth() + 1).padStart(2, '0');
+  return `${day}.${month}`;
+}
+function daysSince(iso) {
+  if (!iso) return 0;
+  return Math.floor((Date.now() - new Date(iso).getTime()) / (1000 * 60 * 60 * 24));
+}
+function rowState(c) {
+  const s = state[c.id] || {};
+  if (s.replied) return 'replied';
+  if (s.sent && daysSince(s.sent) >= REMINDER_DAYS) return 'overdue';
+  if (s.sent) return 'sent';
+  return 'pending';
+}
+
+function setSent(id, value) {
+  state[id] = state[id] || {};
+  state[id].sent = value ? new Date().toISOString() : null;
+  if (!value) state[id].replied = null;
+  saveState(state); render();
+}
+function setReplied(id, value) {
+  state[id] = state[id] || {};
+  state[id].replied = value ? new Date().toISOString() : null;
+  if (value && !state[id].sent) state[id].sent = new Date().toISOString();
+  saveState(state); render();
+}
+window.setSent = setSent;
+window.setReplied = setReplied;
+
+function buildMailto(c) {
+  const link = BASE_URL + c.slug;
+  const body = BODY.replace('{{LINK}}', link);
+  return 'mailto:' + encodeURIComponent(c.email)
+    + '?subject=' + encodeURIComponent(SUBJECT)
+    + '&body=' + encodeURIComponent(body);
+}
+
+function copyText(text) {
+  navigator.clipboard.writeText(text).then(() => {
+    const t = document.getElementById('toast');
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 1600);
+  });
+}
+window.copyLink = function(slug) {
+  copyText(BASE_URL + slug);
+};
+window.copyEmail = function(email) {
+  copyText(email);
+};
+
+function exportCSV() {
+  const headers = ['#','מוסד','איש קשר','תפקיד','מייל','טלפון','קישור','נשלח','חזרו','ימים מאז שליחה'];
+  const rows = CONTACTS.map(c => {
+    const s = state[c.id] || {};
+    return [
+      c.id, c.inst, c.name, c.role, c.email, c.phone,
+      BASE_URL + c.slug,
+      s.sent ? new Date(s.sent).toLocaleDateString('he-IL') : '',
+      s.replied ? new Date(s.replied).toLocaleDateString('he-IL') : '',
+      s.sent ? daysSince(s.sent) : ''
+    ];
+  });
+  const csv = '﻿' + [headers, ...rows].map(r =>
+    r.map(v => `"${String(v).replace(/"/g,'""')}"`).join(',')
+  ).join('\n');
+  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = `edura-outreach-${new Date().toISOString().slice(0,10)}.csv`;
+  a.click(); URL.revokeObjectURL(url);
+}
+window.exportCSV = exportCSV;
+
+function resetAll() {
+  if (!confirm('לאפס את כל הסימונים? פעולה לא הפיכה.')) return;
+  state = {}; saveState(state); render();
+}
+window.resetAll = resetAll;
+
+function renderSummary() {
+  const counts = { total: CONTACTS.length, sent: 0, replied: 0, pending: 0, overdue: 0 };
+  CONTACTS.forEach(c => {
+    const st = rowState(c);
+    if (st === 'replied') counts.replied++;
+    else if (st === 'overdue') { counts.overdue++; counts.sent++; }
+    else if (st === 'sent') counts.sent++;
+    else counts.pending++;
+  });
+  document.getElementById('summary').innerHTML = `
+    <div class="stat"><span class="stat-num">${counts.total}</span><span class="stat-label">סה"כ</span></div>
+    <div class="stat"><span class="stat-num pink">${counts.pending}</span><span class="stat-label">ממתינים</span></div>
+    <div class="stat"><span class="stat-num info">${counts.sent}</span><span class="stat-label">נשלח</span></div>
+    <div class="stat"><span class="stat-num ok">${counts.replied}</span><span class="stat-label">חזרו</span></div>
+    <div class="stat"><span class="stat-num warn">${counts.overdue}</span><span class="stat-label">צריך תזכורת</span></div>
+  `;
+}
+
+function escapeHtml(s) {
+  return String(s).replace(/[&<>"']/g, c => ({
+    '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
+  }[c]));
+}
+
+function renderTable() {
+  const q = (document.getElementById('search').value || '').toLowerCase().trim();
+  const filter = document.getElementById('filter').value;
+  const tbody = document.getElementById('tbody');
+  const rows = CONTACTS.filter(c => {
+    const st = rowState(c);
+    if (filter === 'pending' && st !== 'pending') return false;
+    if (filter === 'sent' && !(st === 'sent' || st === 'overdue')) return false;
+    if (filter === 'replied' && st !== 'replied') return false;
+    if (filter === 'overdue' && st !== 'overdue') return false;
+    if (filter === 'verify' && c.status !== 'verify') return false;
+    if (q) {
+      const hay = (c.inst + ' ' + c.name + ' ' + c.email + ' ' + c.role).toLowerCase();
+      if (!hay.includes(q)) return false;
+    }
+    return true;
+  });
+  if (!rows.length) {
+    tbody.innerHTML = `<tr><td colspan="7" style="text-align:center;padding:40px;color:var(--ink-mute);">אין שורות מתאימות</td></tr>`;
+    return;
+  }
+  tbody.innerHTML = rows.map(c => {
+    const s = state[c.id] || {};
+    const st = rowState(c);
+    const sent = !!s.sent;
+    const replied = !!s.replied;
+    const days = s.sent ? daysSince(s.sent) : 0;
+    const reminderHtml = st === 'overdue' ? `
+      <span class="reminder-pill" title="חלפו ${days} ימים מאז השליחה">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+        תזכורת · ${days} ימים
+      </span>` : '';
+    return `
+      <tr class="row-${st}">
+        <td class="state-cell"></td>
+        <td>${c.id}</td>
+        <td>
+          <div class="institution">${escapeHtml(c.inst)}</div>
+          <div class="institution-meta">
+            <span class="badge${c.status==='verify'?' verify':''}">${c.status==='verify'?'לאמת':c.track}</span>
+            <span>${c.slug}</span>
+          </div>
+        </td>
+        <td>
+          <div class="contact-name">${escapeHtml(c.name)}</div>
+          <div class="contact-role">${escapeHtml(c.role)}</div>
+        </td>
+        <td>
+          <a class="email-link" href="mailto:${escapeHtml(c.email)}">${escapeHtml(c.email)}</a>
+          ${c.phone ? `<div class="phone-meta">📞 ${escapeHtml(c.phone)}</div>` : ''}
+        </td>
+        <td>
+          <div class="actions">
+            <a class="action-btn primary" href="${buildMailto(c)}">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+              פתח מייל
+            </a>
+            <button class="action-btn" onclick="copyLink('${c.slug}')">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+              העתק קישור
+            </button>
+            <button class="action-btn" onclick="copyEmail('${c.email}')">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+              העתק מייל
+            </button>
+          </div>
+        </td>
+        <td>
+          <div class="status-cell">
+            <div class="status-row">
+              <label><input type="checkbox" ${sent?'checked':''} onchange="setSent(${c.id}, this.checked)"> נשלח</label>
+              ${s.sent ? `<span class="when">${fmtDate(s.sent)}</span>` : ''}
+            </div>
+            <div class="status-row">
+              <label><input type="checkbox" ${replied?'checked':''} onchange="setReplied(${c.id}, this.checked)"> חזרו</label>
+              ${s.replied ? `<span class="when">${fmtDate(s.replied)}</span>` : ''}
+            </div>
+            ${reminderHtml}
+          </div>
+        </td>
+      </tr>
+    `;
+  }).join('');
+}
+
+function render() {
+  renderSummary();
+  renderTable();
+}
+
+document.getElementById('email-body-preview').textContent =
+  'נושא: ' + SUBJECT + '\n\n' + BODY.replace('{{LINK}}', 'https://edura.co.il/partners.html?inst=<slug>');
+document.getElementById('search').addEventListener('input', renderTable);
+document.getElementById('filter').addEventListener('change', renderTable);
+
+render();
+</script>
+
+</body>
+</html>
