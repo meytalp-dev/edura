@@ -512,6 +512,49 @@
   body.partner-error-mode .hero,
   body.partner-error-mode #ec-root,
   body.partner-error-mode .wrap { display: none; }
+
+  /* Privacy line under hero */
+  .hero-privacy {
+    margin: 16px auto 0;
+    max-width: 540px;
+    font-size: 13px;
+    color: var(--ink-mute);
+    display: flex; align-items: center; justify-content: center;
+    gap: 8px;
+    line-height: 1.5;
+  }
+  .hero-privacy svg {
+    width: 14px; height: 14px;
+    flex-shrink: 0;
+    color: var(--pink-deep);
+    opacity: .7;
+  }
+  @media (max-width: 540px) {
+    .hero-privacy { font-size: 12px; padding: 0 16px; }
+  }
+
+  /* Minimal partner footer (replaces full site-footer) */
+  .partner-footer {
+    border-top: 1px solid var(--line-soft);
+    padding: 18px 24px;
+    margin-top: 40px;
+    background: var(--bg-2);
+  }
+  .partner-footer-inner {
+    max-width: 1320px; margin: 0 auto;
+    display: flex; align-items: center; justify-content: space-between;
+    flex-wrap: wrap; gap: 12px;
+    font-size: 13px; color: var(--ink-mute);
+  }
+  .partner-footer-links { display: flex; gap: 16px; }
+  .partner-footer-links a {
+    color: var(--ink-soft); font-weight: 600;
+    transition: color .15s;
+  }
+  .partner-footer-links a:hover { color: var(--pink-deep); }
+  @media (max-width: 540px) {
+    .partner-footer-inner { flex-direction: column; align-items: flex-start; }
+  }
 </style>
 </head>
 <body>
@@ -535,59 +578,27 @@
 
 <header class="topbar">
   <div class="topbar-inner">
-    <a href="index.html" class="topbar-logo">
+    <span class="topbar-logo">
       אדורה<span class="dot"></span>
       <span class="partner-text" id="partner-topbar" hidden></span>
-    </a>
-    <nav class="topbar-nav">
-      <a href="index.html" class="nav-link"><svg><use href="#i-briefcase"/></svg> משרות</a>
-      <a href="teachers.html" class="nav-link"><svg><use href="#i-users"/></svg> מורים</a>
-      <a href="chat.html" class="nav-link primary active"><svg><use href="#i-bot"/></svg> בוט חיפוש</a>
-    </nav>
-    <button class="menu-toggle" id="menu-toggle" aria-label="תפריט">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
-    </button>
+    </span>
   </div>
 </header>
-
-<!-- Mobile drawer -->
-<div class="drawer-overlay" id="drawer-overlay" onclick="closeDrawer()"></div>
-<aside class="drawer" id="drawer" aria-label="תפריט ניווט">
-  <div class="drawer-head">
-    <span style="font-weight:900;font-size:18px">תפריט</span>
-    <button class="drawer-close" onclick="closeDrawer()" aria-label="סגור">×</button>
-  </div>
-  <nav class="drawer-nav">
-    <a href="index.html"><svg><use href="#i-briefcase"/></svg> כל המשרות</a>
-    <a href="teachers.html"><svg><use href="#i-users"/></svg> מאגר מורים</a>
-    <a href="saved.html"><svg><use href="#i-heart"/></svg> שמורות שלי</a>
-    <a href="publish-job.html"><svg><use href="#i-sparkle"/></svg> פרסום משרה</a>
-    <a href="cv-builder.html"><svg><use href="#i-target"/></svg> בניית קורות חיים</a>
-    <a href="about.html"><svg><use href="#i-pin"/></svg> על אדורה</a>
-    <a href="chat.html" class="primary"><svg><use href="#i-bot"/></svg> בוט חיפוש חכם</a>
-  </nav>
-  <div class="drawer-foot">
-    <a href="privacy.html">פרטיות ואבטחה</a>
-    <a href="accessibility.html">נגישות</a>
-    <a href="mailto:meytal@edura.co.il">צור קשר</a>
-    <span>© 2026 אדורה · edura.co.il</span>
-  </div>
-</aside>
 
 <section class="hero">
   <span class="hero-badge" id="partner-badge"><span class="dot"></span><span id="partner-badge-text">בוגרי תעודת הוראה</span></span>
   <h1 id="partner-h1">המשרה הראשונה שלך בחינוך</h1>
   <p class="hero-sub" id="partner-sub">משימה לאומית. לוח דרושים אחד. חינם, בלי אותיות קטנות. שיחה קצרה עם הבוט והמערכת תתאים אותך למשרה מיטבית — לפי אזור, מקצוע, שכבה והיקף.</p>
+  <p class="hero-privacy">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+    הפרטים שלך משמשים אך ורק להתאמה למשרות הוראה. לא משתפים עם אף גורם אחר.
+  </p>
 </section>
 
 <!-- Partner not-found message (hidden by default) -->
 <section class="partner-error" id="partner-error" hidden>
   <h2>הקישור הזה לא תקף</h2>
-  <p>הקישור שהגעת ממנו לא מזהה מוסד שותף. מוזמן/ת להמשיך לבוט החיפוש הראשי או לחזור לעמוד הבית.</p>
-  <div class="partner-error-actions">
-    <a href="chat.html" class="cta-primary">בוט חיפוש חכם</a>
-    <a href="index.html" class="cta-secondary">לעמוד הבית</a>
-  </div>
+  <p>הקישור שהגעת ממנו לא מזהה מוסד שותף. אנא פני/פנה למוסד שלך לקבלת הקישור הנכון.</p>
 </section>
 
 <main class="wrap">
@@ -595,49 +606,13 @@
   <div id="ec-root"></div>
 </main>
 
-<!-- ───── FOOTER ───── -->
-<footer class="site-footer">
-  <div class="footer-inner">
-    <div class="footer-col">
-      <div class="footer-brand">אדורה<span class="dot"></span></div>
-      <p class="footer-tagline">לוח המשרות הגדול בישראל לחינוך — מאות משרות מכל הזרמים, המגזרים והאזורים, מתעדכן יומי. הרשמה חינם.</p>
-    </div>
-    <div class="footer-col">
-      <h4>גלו</h4>
-      <ul>
-        <li><a href="index.html">כל המשרות</a></li>
-        <li><a href="teachers.html">מאגר מורים</a></li>
-        <li><a href="saved.html">שמורות שלי</a></li>
-        <li><a href="chat.html">בוט חיפוש</a></li>
-      </ul>
-    </div>
-    <div class="footer-col">
-      <h4>פרסום</h4>
-      <ul>
-        <li><a href="publish-job.html">פרסום משרה</a></li>
-        <li><a href="publish-job.html#teacher">פרופיל מורה</a></li>
-        <li><a href="cv-builder.html">בניית קורות חיים</a></li>
-      </ul>
-    </div>
-    <div class="footer-col">
-      <h4>אודות</h4>
-      <ul>
-        <li><a href="about.html">על אדורה</a></li>
-        <li><a href="privacy.html">פרטיות ואבטחה</a></li>
-        <li><a href="accessibility.html">הצהרת נגישות</a></li>
-        <li><a href="mailto:meytal@edura.co.il">יצירת קשר</a></li>
-      </ul>
-    </div>
-  </div>
-  <div class="footer-bottom">
-    <span>© 2026 אדורה · נבנה באהבה למורים ולמנהלים</span>
-    <div class="footer-socials">
-      <a href="mailto:meytal@edura.co.il" aria-label="מייל">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
-      </a>
-      <a href="https://api.whatsapp.com/send?phone=972536256653" target="_blank" rel="noopener" aria-label="WhatsApp">
-        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 2.1.55 4.15 1.6 5.96L2 22l4.25-1.71c1.74.95 3.71 1.45 5.79 1.45 5.46 0 9.91-4.45 9.91-9.91S17.5 2 12.04 2z"/></svg>
-      </a>
+<!-- ───── FOOTER (minimal — partners-only) ───── -->
+<footer class="partner-footer">
+  <div class="partner-footer-inner">
+    <span class="partner-footer-copy">© 2026 אדורה · נבנה באהבה למורים ולמנהלים</span>
+    <div class="partner-footer-links">
+      <a href="privacy.html">פרטיות</a>
+      <a href="accessibility.html">נגישות</a>
     </div>
   </div>
 </footer>
@@ -654,20 +629,6 @@
 </div>
 
 <script>
-function openDrawer() {
-  document.getElementById('drawer').classList.add('open');
-  document.getElementById('drawer-overlay').classList.add('open');
-  document.body.style.overflow = 'hidden';
-}
-function closeDrawer() {
-  document.getElementById('drawer').classList.remove('open');
-  document.getElementById('drawer-overlay').classList.remove('open');
-  document.body.style.overflow = '';
-}
-window.openDrawer = openDrawer;
-window.closeDrawer = closeDrawer;
-document.getElementById('menu-toggle').addEventListener('click', openDrawer);
-
 function acceptCookies() {
   try { localStorage.setItem('edura_cookies_accepted', '1'); } catch (e) {}
   document.getElementById('cookies-banner').classList.remove('visible');
