@@ -172,6 +172,16 @@
   .vacancy-permanent { color: var(--green-deep); font-weight: 600; }
   .vacancy-temp { color: var(--orange); font-weight: 600; }
   .complexity-pill { background: var(--bg); border: 1px solid var(--line); padding: 2px 8px; border-radius: 999px; font-size: 11px; color: var(--ink-soft); }
+  .tender-school-link {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-size: 12px; font-weight: 600; color: var(--teal-deep);
+    background: var(--green-pale); padding: 6px 12px; border-radius: 999px;
+    border: 1px solid transparent;
+    transition: background .15s, border-color .15s, transform .1s;
+    margin-top: 4px; align-self: flex-start;
+  }
+  .tender-school-link:hover { background: var(--white); border-color: var(--teal); transform: translateY(-1px); }
+  .tender-school-link svg { width: 13px; height: 13px; flex-shrink: 0; }
 
   .empty, .loading { grid-column: 1 / -1; text-align: center; padding: 80px 24px; color: var(--ink-mute); }
   .empty h3 { color: var(--ink); font-size: 18px; margin-bottom: 8px; font-weight: 700; }
@@ -190,18 +200,18 @@
   .step p { font-size: 14px; color: var(--ink-soft); line-height: 1.6; }
   .step a { color: var(--green-deep); font-weight: 600; border-bottom: 1px solid currentColor; }
 
-  /* Tips section */
-  .tips-section { background: linear-gradient(180deg, var(--orange-soft) 0%, var(--cream) 100%); padding: 64px 24px; border-top: 1px solid var(--line); }
+  /* Tips section — Edura teal palette */
+  .tips-section { background: linear-gradient(180deg, var(--green-pale) 0%, var(--cream) 100%); padding: 64px 24px; border-top: 1px solid var(--line); }
   .tips-section .section-sub { max-width: 720px; }
   .tips-source { display: inline-block; background: var(--white); border: 1px solid var(--line); border-radius: 999px; padding: 6px 14px; font-size: 12px; color: var(--ink-soft); margin-bottom: 18px; }
-  .tips-source strong { color: var(--orange); font-weight: 700; }
+  .tips-source strong { color: var(--teal-deep); font-weight: 700; }
   .tips-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; margin-top: 8px; }
   .tip { background: var(--white); border: 1px solid var(--line); border-radius: var(--radius-lg); padding: 24px 22px; position: relative; transition: border-color .15s, box-shadow .15s, transform .1s; }
-  .tip:hover { border-color: var(--orange); box-shadow: var(--shadow-md); transform: translateY(-2px); }
-  .tip-num { position: absolute; top: -14px; inset-inline-end: 22px; background: var(--orange); color: var(--white); width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 14px; box-shadow: 0 4px 10px rgba(217,119,6,.25); }
+  .tip:hover { border-color: var(--teal); box-shadow: var(--shadow-md); transform: translateY(-2px); }
+  .tip-num { position: absolute; top: -14px; inset-inline-end: 22px; background: var(--teal-deep); color: var(--white); width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 14px; box-shadow: 0 4px 10px rgba(13,148,136,.25); }
   .tip h3 { font-size: 17px; font-weight: 700; color: var(--ink); margin-bottom: 10px; line-height: 1.3; padding-inline-end: 36px; }
   .tip p { font-size: 14px; color: var(--ink-soft); line-height: 1.65; }
-  .tip-tag { display: inline-block; font-size: 11px; font-weight: 600; padding: 3px 10px; border-radius: 999px; background: var(--orange-soft); color: var(--orange); margin-top: 12px; letter-spacing: 0.2px; }
+  .tip-tag { display: inline-block; font-size: 11px; font-weight: 600; padding: 3px 10px; border-radius: 999px; background: var(--green-pale); color: var(--teal-deep); margin-top: 12px; letter-spacing: 0.2px; }
 
   /* FAQ */
   .faq-section { background: var(--bg); padding: 64px 24px; border-top: 1px solid var(--line); }
@@ -717,6 +727,13 @@ function render() {
     const vacancyClass = vacancy.includes('לחלוטין') ? 'vacancy-permanent' : 'vacancy-temp';
     const vacancyText = vacancy.includes('לחלוטין') ? 'משרה קבועה' : 'לשנה + הארכה';
     const complexity = p.complexity ? `<span class="complexity-pill">מורכבות ${esc(p.complexity)}</span>` : '';
+    const schoolSearchLink = p.school_name ? (() => {
+      const q = encodeURIComponent(`${p.school_name} ${p.city || ''} בית ספר`.trim());
+      return `<a href="https://www.google.com/search?q=${q}" target="_blank" rel="noopener" class="tender-school-link" aria-label="חיפוש מידע על ${esc(p.school_name)}">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+        חיפוש מידע על בית הספר
+      </a>`;
+    })() : '';
 
     return `
       <article class="tender-card">
@@ -724,6 +741,7 @@ function render() {
         <h3 class="tender-name">${esc(p.school_name || p.school_type_raw || 'בית ספר')}</h3>
         ${cityLine}
         <div class="tender-tags">${districtTag}${sectorTag}${levelTag}</div>
+        ${schoolSearchLink}
         <div class="tender-meta">
           <span class="${vacancyClass}">${vacancyText}</span>
           ${complexity}
