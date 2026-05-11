@@ -25,8 +25,7 @@
       "school_name": "קשת שהם",
       "school_type_raw": "בית ספר יסודי ממ",
       "sector": "ממלכתי",
-      "level": "יסודי",
-      "website": "https://www.shoham.muni.il/653/"
+      "level": "יסודי"
     },
     {
       "id": "21564",
@@ -278,8 +277,7 @@
       "school_name": "רעות ע ש רועי קליין",
       "school_type_raw": "בית ספר יסודי ממ ד",
       "sector": "ממלכתי דתי",
-      "level": "יסודי",
-      "website": "https://www.rosh-haayin.muni.il/%D7%91%D7%99%D7%AA-%D7%A1%D7%A4%D7%A8-%D7%A8%D7%A2%D7%95%D7%AA-%D7%A2-%D7%A9-%D7%A8%D7%95%D7%A2%D7%99-%D7%A7%D7%9C%D7%99%D7%99%D7%9F/"
+      "level": "יסודי"
     },
     {
       "id": "21592",
@@ -327,8 +325,7 @@
       "school_name": "מרכז פסג ה כפר סבא",
       "school_type_raw": "",
       "sector": "ממלכתי",
-      "level": "אחר",
-      "website": "https://www.pisga-ks.com/"
+      "level": "אחר"
     },
     {
       "id": "21328",
@@ -352,8 +349,7 @@
       "school_name": "חט ב ע ש אילן רמון",
       "school_type_raw": "חטיבת ביניים ממ",
       "sector": "ממלכתי",
-      "level": "חטיבת ביניים",
-      "website": "https://ramonks.mashov.info/"
+      "level": "חטיבת ביניים"
     },
     {
       "id": "21311",
@@ -377,8 +373,7 @@
       "school_name": "אבני החושן",
       "school_type_raw": "מקיף י",
       "sector": "ממלכתי",
-      "level": "תיכון",
-      "website": "https://avney.schooly.co.il/"
+      "level": "תיכון"
     },
     {
       "id": "21304",
@@ -390,8 +385,7 @@
       "school_name": "ישיבת בני עקיבא גבעת שמואל",
       "school_type_raw": "חטיבת ביניים ממ ד",
       "sector": "ממלכתי דתי",
-      "level": "חטיבת ביניים",
-      "website": "https://yba-gvs.org.il/"
+      "level": "חטיבת ביניים"
     },
     {
       "id": "21299",
@@ -487,8 +481,7 @@
       "school_name": "עתיד חנה סנש",
       "school_type_raw": "חטיבת ביניים ממ",
       "sector": "ממלכתי",
-      "level": "חטיבת ביניים",
-      "website": "https://hannahsenesh.atidedu.org.il/"
+      "level": "חטיבת ביניים"
     },
     {
       "id": "21639",
@@ -500,8 +493,7 @@
       "school_name": "אופקים",
       "school_type_raw": "בית ספר ממ",
       "sector": "ממלכתי",
-      "level": "בית ספר",
-      "website": "http://www.ofakim.rlz.org.il/BRPortal/br/P100.jsp"
+      "level": "בית ספר"
     },
     {
       "id": "21333",
@@ -549,8 +541,7 @@
       "school_name": "קריית חינוך נתיבי נועם דרכא",
       "school_type_raw": "חטיבת ביניים ממ ד צמודה",
       "sector": "התיישבותי",
-      "level": "חטיבת ביניים",
-      "website": "https://netiveinoam.tik-tak.net/"
+      "level": "חטיבת ביניים"
     },
     {
       "id": "21310",
@@ -598,8 +589,7 @@
       "school_name": "ישיבת בנ ע רעננה",
       "school_type_raw": "חטיבת ביניים ממ ד",
       "sector": "ממלכתי דתי",
-      "level": "חטיבת ביניים",
-      "website": "https://yeshivaraanana.tik-tak.net/"
+      "level": "חטיבת ביניים"
     },
     {
       "id": "21294",
@@ -707,8 +697,7 @@
       "school_name": "אורט חקלאי פרדס חנה",
       "school_type_raw": "חטיבת ביניים ממ",
       "sector": "התיישבותי",
-      "level": "חטיבת ביניים",
-      "website": "https://pardes-hanna.ort.org.il/"
+      "level": "חטיבת ביניים"
     },
     {
       "id": "21632",
@@ -744,8 +733,7 @@
       "school_name": "בי ס ע ש גניגר",
       "school_type_raw": "בית ספר ממ",
       "sector": "ממלכתי",
-      "level": "בית ספר",
-      "website": "https://www.genigar.org/"
+      "level": "בית ספר"
     },
     {
       "id": "21627",
@@ -889,8 +877,7 @@
       "school_name": "גבריאלי",
       "school_type_raw": "בית ספר יסודי ממ",
       "sector": "ממלכתי",
-      "level": "יסודי",
-      "website": "https://gavrieli.edu-haifa.org.il/"
+      "level": "יסודי"
     },
     {
       "id": "21535",
@@ -962,8 +949,7 @@
       "school_name": "ע ש הנדיב מטולה",
       "school_type_raw": "בית ספר יסודי ממ",
       "sector": "ממלכתי",
-      "level": "יסודי",
-      "website": "https://sites.google.com/a/hanadiv.tzafonet.org.il/hanadiv/"
+      "level": "יסודי"
     },
     {
       "id": "21610",
@@ -999,8 +985,7 @@
       "school_name": "עוזיאל מד קרית שמונה",
       "school_type_raw": "בית ספר יסודי ממ ד",
       "sector": "ממלכתי דתי",
-      "level": "יסודי",
-      "website": "https://sites.google.com/tzfonet.org.il/uzielkiryatshmona/"
+      "level": "יסודי"
     },
     {
       "id": "21606",
@@ -1012,8 +997,7 @@
       "school_name": "עמל נופרים בגליל טבריה",
       "school_type_raw": "חטיבת ביניים ממ",
       "sector": "התיישבותי",
-      "level": "חטיבת ביניים",
-      "website": "https://nf.amalnet.k12.il/"
+      "level": "חטיבת ביניים"
     },
     {
       "id": "21605",
@@ -1025,8 +1009,7 @@
       "school_name": "מעלות הגולן",
       "school_type_raw": "בית ספר יסודי ממ",
       "sector": "ממלכתי",
-      "level": "יסודי",
-      "website": "https://www.golan.org.il/edu/26/"
+      "level": "יסודי"
     },
     {
       "id": "21469",
@@ -1218,8 +1201,7 @@
       "school_name": "מצודות קרית שמונה",
       "school_type_raw": "בית ספר יסודי ממ",
       "sector": "ממלכתי",
-      "level": "יסודי",
-      "website": "https://sites.google.com/a/mezudot.tzafonet.org.il/home-home/home/about"
+      "level": "יסודי"
     },
     {
       "id": "21220",
@@ -1303,8 +1285,7 @@
       "school_name": "אורט דנציגר קרית שמונה",
       "school_type_raw": "חטיבת ביניים ממ",
       "sector": "התיישבותי",
-      "level": "חטיבת ביניים",
-      "website": "https://danciger.ort.org.il/"
+      "level": "חטיבת ביניים"
     },
     {
       "id": "21228",
@@ -1316,8 +1297,7 @@
       "school_name": "ולדורף הרדוף",
       "school_type_raw": "בית ספר יסודי ממ",
       "sector": "ממלכתי",
-      "level": "יסודי",
-      "website": "https://www.waldorf-harduf.org/"
+      "level": "יסודי"
     },
     {
       "id": "21226",
@@ -1341,8 +1321,7 @@
       "school_name": "שבט סופר",
       "school_type_raw": "בית ספר יסודי ממ ד",
       "sector": "ממלכתי דתי",
-      "level": "יסודי",
-      "website": "https://sites.google.com/tzfonet.org.il/shevet-sofer/%D7%90%D7%95%D7%93%D7%95%D7%AA-%D7%91%D7%99%D7%94%D7%A1"
+      "level": "יסודי"
     },
     {
       "id": "21221",
@@ -1378,8 +1357,7 @@
       "school_name": "אורט מלטון",
       "school_type_raw": "חטיבת ביניים ממ",
       "sector": "התיישבותי",
-      "level": "חטיבת ביניים",
-      "website": "https://melton.ort.org.il/"
+      "level": "חטיבת ביניים"
     },
     {
       "id": "21552",
@@ -1427,8 +1405,7 @@
       "school_name": "מחוזי מחוננים נתניה מטמון",
       "school_type_raw": "",
       "sector": "ממלכתי",
-      "level": "אחר",
-      "website": "https://www.matmonetanya.com/"
+      "level": "אחר"
     },
     {
       "id": "21551",
@@ -1476,8 +1453,7 @@
       "school_name": "מחוננים הרצליה שחפים",
       "school_type_raw": "",
       "sector": "ממלכתי",
-      "level": "אחר",
-      "website": "https://gifted-herzliya.mashov.info/"
+      "level": "אחר"
     },
     {
       "id": "21532",
@@ -1825,8 +1801,7 @@
       "school_name": "מחוננים רמת גן",
       "school_type_raw": "",
       "sector": "ממלכתי",
-      "level": "אחר",
-      "website": "https://www.giftedbareket.com/"
+      "level": "אחר"
     },
     {
       "id": "21281",
@@ -1850,8 +1825,7 @@
       "school_name": "חוה חקלאית קרית אונו",
       "school_type_raw": "",
       "sector": "ממלכתי",
-      "level": "אחר",
-      "website": "https://edu.gov.il/machoz/TelAviv/subjects/havot/Pages/hava_kriat_uno.aspx"
+      "level": "אחר"
     },
     {
       "id": "21375",
@@ -1875,8 +1849,7 @@
       "school_name": "אנתרופוסופי",
       "school_type_raw": "בית ספר יסודי ממ",
       "sector": "ממלכתי",
-      "level": "יסודי",
-      "website": "https://www.antro-tlv.org/"
+      "level": "יסודי"
     },
     {
       "id": "21369",
@@ -1900,8 +1873,7 @@
       "school_name": "ק חינוך בנ ע חולון",
       "school_type_raw": "חטיבת ביניים ממ ד",
       "sector": "ממלכתי דתי",
-      "level": "חטיבת ביניים",
-      "website": "https://harelbh.tik-tak.school/"
+      "level": "חטיבת ביניים"
     },
     {
       "id": "21362",
@@ -1961,8 +1933,7 @@
       "school_name": "א ד גורדון",
       "school_type_raw": "בית ספר יסודי ממ",
       "sector": "ממלכתי",
-      "level": "יסודי",
-      "website": "https://www.adgordon.org/"
+      "level": "יסודי"
     },
     {
       "id": "21338",
@@ -2022,8 +1993,7 @@
       "school_name": "כפר הנוער בן שמן",
       "school_type_raw": "חטיבת ביניים ממ",
       "sector": "ממלכתי",
-      "level": "חטיבת ביניים",
-      "website": "https://www.ben-shemen.org.il/en"
+      "level": "חטיבת ביניים"
     },
     {
       "id": "21626",
@@ -2143,8 +2113,7 @@
       "school_name": "מקוה ישראל דתי",
       "school_type_raw": "חטיבת ביניים ממ ד",
       "sector": "ממלכתי דתי",
-      "level": "חטיבת ביניים",
-      "website": "https://www.mikveisrael.org.il/%D7%91%D7%99%D7%AA-%D7%94%D7%A1%D7%A4%D7%A8-%D7%94%D7%93%D7%AA%D7%99/"
+      "level": "חטיבת ביניים"
     },
     {
       "id": "21236",
@@ -2168,8 +2137,7 @@
       "school_name": "ישיבת אמי ת נחשון",
       "school_type_raw": "חטיבת ביניים ממ ד",
       "sector": "ממלכתי דתי",
-      "level": "חטיבת ביניים",
-      "website": "https://amitnachshon.tik-tak.net/"
+      "level": "חטיבת ביניים"
     },
     {
       "id": "21455",
@@ -2337,8 +2305,7 @@
       "school_name": "מי עד",
       "school_type_raw": "בית ספר ממ",
       "sector": "ממלכתי",
-      "level": "בית ספר",
-      "website": "https://beer-tuvia.org.il/%D7%91%D7%99%D7%AA-%D7%A1%D7%A4%D7%A8-%D7%9E%D7%99-%D7%A2%D7%93/"
+      "level": "בית ספר"
     },
     {
       "id": "21403",
@@ -2662,8 +2629,7 @@
       "school_name": "ארנונה",
       "school_type_raw": "בית ספר יסודי ממ ד",
       "sector": "ממלכתי דתי",
-      "level": "יסודי",
-      "website": "https://arnona.jlm.org.il/"
+      "level": "יסודי"
     },
     {
       "id": "21546",
@@ -2711,8 +2677,7 @@
       "school_name": "מנשה אלישר",
       "school_type_raw": "בית ספר יסודי ממ",
       "sector": "ממלכתי",
-      "level": "יסודי",
-      "website": "https://m-elyashar.manhi.org.il/home/P100.jsp"
+      "level": "יסודי"
     },
     {
       "id": "21616",
@@ -2820,8 +2785,7 @@
       "school_name": "מדרשיית עמליה",
       "school_type_raw": "חטיבת ביניים ממ ד צמודה",
       "sector": "התיישבותי",
-      "level": "חטיבת ביניים",
-      "website": "http://www.ma.amalia.manhi.org.il/BRPortal/br/P102.jsp?arc=1691887"
+      "level": "חטיבת ביניים"
     },
     {
       "id": "21208",
@@ -3001,8 +2965,7 @@
       "school_name": "אקדמיה למוסיקה",
       "school_type_raw": "חטיבת ביניים ממ",
       "sector": "ממלכתי",
-      "level": "חטיבת ביניים",
-      "website": "https://jamdhs.mashov.info/"
+      "level": "חטיבת ביניים"
     },
     {
       "id": "21207",
@@ -3026,8 +2989,7 @@
       "school_name": "סאלד",
       "school_type_raw": "בית ספר יסודי ממ",
       "sector": "ממלכתי",
-      "level": "יסודי",
-      "website": "http://www.sald.org.il/"
+      "level": "יסודי"
     },
     {
       "id": "21563",
