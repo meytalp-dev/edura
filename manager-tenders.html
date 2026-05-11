@@ -76,7 +76,22 @@
   .topbar-inner { max-width: 1320px; margin: 0 auto; display: grid; grid-template-columns: auto 1fr auto auto; align-items: center; gap: 16px; }
   .topbar-logo { font-weight: 900; font-size: 22px; color: var(--ink); letter-spacing: -1px; display: flex; align-items: center; gap: 8px; }
   .topbar-logo .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--pink-deep); }
-  .topbar-tag { font-size: 11px; font-weight: 700; color: var(--pink-deep); background: var(--pink); padding: 4px 10px; border-radius: 999px; }
+
+  /* City picker (same as teachers/index) */
+  .city-picker { display: flex; align-items: center; background: var(--pink-soft); border: 2px solid transparent; border-radius: 999px; padding: 5px 6px 5px 5px; transition: all .15s; cursor: text; max-width: 540px; margin: 0 auto; width: 100%; position: relative; }
+  .city-picker:hover { background: var(--pink); }
+  .city-picker:focus-within { border-color: var(--pink-deep); background: var(--bg); box-shadow: 0 0 0 4px var(--pink); }
+  .city-pin { background: var(--ink); color: var(--bg); width: 38px; height: 38px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .city-pin svg { width: 18px; height: 18px; }
+  .city-input { flex: 1; border: none; outline: none; background: transparent; padding: 0 14px; font-size: 16px; font-weight: 500; color: var(--ink); font-family: inherit; min-width: 0; }
+  .city-input::placeholder { color: var(--ink-mute); font-weight: 400; }
+  .city-go { background: var(--ink); color: var(--bg); width: 38px; height: 38px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: background .15s; cursor: pointer; border: none; font-family: inherit; }
+  .city-go:hover { background: var(--pink-deep); }
+  .city-suggest { position: absolute; top: calc(100% + 6px); left: 0; right: 0; background: var(--bg); border: 1px solid var(--line); border-radius: var(--r-md); box-shadow: var(--shadow-lg); max-height: 280px; overflow-y: auto; z-index: 200; display: none; padding: 6px; }
+  .city-suggest.open { display: block; }
+  .city-suggest-item { width: 100%; text-align: right; padding: 10px 14px; border-radius: 8px; font-size: 14px; color: var(--ink); display: flex; justify-content: space-between; align-items: center; cursor: pointer; background: none; border: none; font-family: inherit; }
+  .city-suggest-item:hover, .city-suggest-item.active { background: var(--bg-2); }
+  .city-suggest-count { font-size: 12px; color: var(--ink-mute); font-weight: 600; }
 
   .menu-toggle { display: flex; width: 40px; height: 40px; border-radius: 8px; align-items: center; justify-content: center; background: var(--bg-2); color: var(--ink); transition: background .15s; }
   .menu-toggle:hover { background: var(--pink-soft); }
@@ -117,14 +132,13 @@
   .drawer-foot a { color: var(--ink-soft); }
 
   /* Hero */
-  .hero { background: linear-gradient(180deg, var(--cream) 0%, var(--bg) 100%); padding: 64px 24px 40px; text-align: center; }
-  .hero-badge { display: inline-block; background: var(--orange-soft); color: var(--orange); font-size: 13px; font-weight: 600; padding: 6px 14px; border-radius: 999px; margin-bottom: 20px; letter-spacing: 0.3px; }
-  .hero h1 { font-size: clamp(32px, 5vw, 46px); font-weight: 800; color: var(--ink); line-height: 1.15; letter-spacing: -1px; margin-bottom: 16px; max-width: 820px; margin-left: auto; margin-right: auto; }
+  .hero { background: var(--bg); padding: 48px 24px 24px; text-align: center; }
+  .hero h1 { font-size: clamp(28px, 4vw, 40px); font-weight: 900; color: var(--ink); line-height: 1.15; letter-spacing: -0.8px; margin-bottom: 14px; max-width: 820px; margin-left: auto; margin-right: auto; }
   .hero h1 .accent { color: var(--pink-deep); }
-  .hero-sub { font-size: clamp(16px, 2vw, 18px); color: var(--ink-soft); max-width: 620px; margin: 0 auto 28px; }
-  .hero-meta { display: inline-flex; gap: 24px; flex-wrap: wrap; justify-content: center; font-size: 14px; color: var(--ink-mute); }
-  .hero-meta strong { color: var(--ink); font-weight: 700; }
-  .hero-meta .sep { color: var(--line); }
+  .hero-sub { font-size: 15px; color: var(--ink-soft); max-width: 620px; margin: 0 auto 16px; line-height: 1.5; }
+  .hero-note { font-size: 12px; color: var(--ink-mute); max-width: 720px; margin: 0 auto; line-height: 1.5; }
+  .hero-note strong { color: var(--ink-soft); font-weight: 700; }
+  .hero-note a { color: var(--pink-deep); font-weight: 600; }
 
   /* ───── FILTERS (synced with teachers.html / index.html) ───── */
   .filters { max-width: 1320px; margin: 0 auto; padding: 24px 24px 0; }
@@ -368,7 +382,12 @@
 <header class="topbar">
   <div class="topbar-inner">
     <a href="index.html" class="topbar-logo">אדורה<span class="dot"></span></a>
-    <div></div>
+    <div class="city-picker">
+      <div class="city-pin"><svg><use href="#i-pin"/></svg></div>
+      <input id="city-input" class="city-input" type="text" placeholder="באיזה אזור / עיר את/ה מחפש/ת מכרז ניהול?" autocomplete="off" />
+      <button class="city-go" id="city-go" aria-label="חפש"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></button>
+      <div class="city-suggest" id="city-suggest"></div>
+    </div>
     <nav class="topbar-nav">
       <a href="index.html" class="nav-link"><svg><use href="#i-briefcase"/></svg> משרות</a>
       <a href="teachers.html" class="nav-link"><svg><use href="#i-users"/></svg> מורים</a>
@@ -403,16 +422,9 @@
 
 
 <section class="hero">
-  <div class="hero-badge" id="round-badge" style="background:var(--sun);color:var(--ink);border:1px solid rgba(0,0,0,.08);">ארכיון · סבב ראשון תשפ"ז הסתיים 25.04.2026</div>
-  <h1>מכרזי <span class="accent">ניהול בתי ספר</span><br/>של משרד החינוך</h1>
-  <p class="hero-sub"><strong>הסבב הראשון לתשפ"ז סגור.</strong> הדף נשמר כארכיון לעיון ולמכרזים שיפתחו בסבבים הבאים. הסבב הבא צפוי בינואר–מרץ — <a href="saved.html#principal-alerts" style="color:var(--green-deep);font-weight:600;">הירשמו להתראה</a> ונעדכן ברגע שייפתח.</p>
-  <div class="hero-meta">
-    <span><strong id="meta-total">—</strong> משרות בארכיון הסבב</span>
-    <span class="sep">·</span>
-    <span>הסבב הראשון נסגר: <strong>25.04.2026</strong></span>
-    <span class="sep">·</span>
-    <span>מקור: <strong>משרד החינוך</strong></span>
-  </div>
+  <h1>מכרזי <span class="accent">ניהול בתי ספר</span> של משרד החינוך</h1>
+  <p class="hero-sub"><strong id="meta-total">—</strong> משרות בארכיון · סינון לפי מגזר, שכבה, מחוז ועיר</p>
+  <p class="hero-note">הסבב הראשון לתשפ"ז נסגר ב-25.04.2026. הדף שמור כארכיון. <a href="saved.html#principal-alerts">הירשמו להתראה</a> לסבב הבא.</p>
 </section>
 
 <section class="filters">
@@ -942,17 +954,21 @@ const esc = escapeHtml;
 
 const searchInput = $('search-input');
 const searchClear = $('search-clear');
-searchInput.addEventListener('input', debounce(() => {
-  STATE.search = searchInput.value.trim();
+const cityInput = $('city-input');
+
+function syncSearch(v) {
+  STATE.search = v.trim();
+  if (searchInput.value !== STATE.search) searchInput.value = STATE.search;
+  if (cityInput.value !== STATE.search) cityInput.value = STATE.search;
   searchClear.classList.toggle('visible', !!STATE.search);
   renderAll();
-}, 150));
-searchClear.addEventListener('click', () => {
-  searchInput.value = '';
-  STATE.search = '';
-  searchClear.classList.remove('visible');
-  renderAll();
-});
+}
+
+searchInput.addEventListener('input', debounce(() => syncSearch(searchInput.value), 150));
+cityInput.addEventListener('input', debounce(() => syncSearch(cityInput.value), 150));
+$('city-go').addEventListener('click', () => syncSearch(cityInput.value));
+cityInput.addEventListener('keydown', e => { if (e.key === 'Enter') syncSearch(cityInput.value); });
+searchClear.addEventListener('click', () => syncSearch(''));
 
 loadTenders();
 </script>
