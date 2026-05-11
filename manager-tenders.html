@@ -126,27 +126,40 @@
   .hero-meta strong { color: var(--ink); font-weight: 700; }
   .hero-meta .sep { color: var(--line); }
 
-  /* Filters */
-  .filters-wrap { max-width: 1320px; margin: 0 auto; padding: 24px; }
-  .filters { background: var(--white); border: 1px solid var(--line); border-radius: var(--radius-lg); padding: 20px; box-shadow: var(--shadow-sm); display: grid; grid-template-columns: 1.4fr repeat(4, 1fr); gap: 12px; align-items: end; }
-  @media (max-width: 1000px) { .filters { grid-template-columns: 1fr 1fr 1fr; } }
-  @media (max-width: 700px) { .filters { grid-template-columns: 1fr 1fr; } }
-  @media (max-width: 480px) { .filters { grid-template-columns: 1fr; } }
-  .filter-group { display: flex; flex-direction: column; gap: 6px; }
-  .filter-label { font-size: 12px; font-weight: 600; color: var(--ink-mute); letter-spacing: 0.3px; }
-  .filter-input, .filter-select { background: var(--bg); border: 1px solid var(--line); border-radius: 10px; padding: 10px 14px; font-size: 14px; color: var(--ink); transition: border-color .15s, background .15s; width: 100%; }
-  .filter-input:focus, .filter-select:focus { outline: none; border-color: var(--green-deep); background: var(--white); }
-  .filter-input { padding-inline-start: 38px; }
-  .filter-input-wrap { position: relative; }
-  .filter-input-wrap svg { position: absolute; inset-inline-start: 12px; top: 50%; transform: translateY(-50%); pointer-events: none; color: var(--ink-mute); }
+  /* ───── FILTERS (synced with teachers.html / index.html) ───── */
+  .filters { max-width: 1320px; margin: 0 auto; padding: 24px 24px 0; }
+  .filter-section { display: flex; align-items: center; gap: 16px; margin-bottom: 14px; }
+  .filter-label { flex-shrink: 0; min-width: 88px; font-size: 13px; font-weight: 700; color: var(--ink-mute); text-transform: uppercase; letter-spacing: 0.5px; }
+  .chips-scroll { display: flex; gap: 6px; overflow-x: auto; scrollbar-width: none; flex: 1; }
+  .chips-scroll::-webkit-scrollbar { display: none; }
+
+  .free-search { display: flex; align-items: center; gap: 8px; background: var(--bg-2); border: 1.5px solid transparent; border-radius: 999px; padding: 6px 14px 6px 6px; margin-top: 6px; transition: all .15s; flex: 1; min-width: 200px; max-width: 360px; }
+  .free-search:hover { background: var(--pink-soft); }
+  .free-search:focus-within { background: var(--bg); border-color: var(--pink-deep); box-shadow: 0 0 0 4px var(--pink); }
+  .free-search svg { width: 16px; height: 16px; color: var(--ink-mute); flex-shrink: 0; margin-inline-start: 8px; }
+  .free-search input { flex: 1; border: none; outline: none; background: transparent; font-size: 13px; color: var(--ink); font-family: inherit; min-width: 0; }
+  .free-search input::placeholder { color: var(--ink-mute); }
+  .free-search-clear { width: 24px; height: 24px; border-radius: 50%; background: var(--ink-mute); color: #fff; display: none; align-items: center; justify-content: center; font-size: 14px; flex-shrink: 0; }
+  .free-search-clear.visible { display: flex; }
+  .free-search-clear:hover { background: var(--pink-deep); }
+
+  .level-chip { flex-shrink: 0; padding: 8px 16px; background: var(--pink-soft); border: 1.5px solid transparent; border-radius: 999px; font-size: 13px; font-weight: 600; color: var(--ink-soft); transition: all .15s; display: inline-flex; align-items: center; gap: 6px; cursor: pointer; font-family: inherit; }
+  .level-chip:hover { background: var(--pink); border-color: var(--pink-2); color: var(--pink-deeper); }
+  .level-chip.active { background: var(--pink-deep); color: #fff; border-color: var(--pink-deep); box-shadow: 0 4px 12px rgba(190,24,93,.25); }
+  .level-chip-count { font-size: 11px; opacity: .75; font-weight: 700; }
+
+  .active-filters { display: flex; align-items: center; gap: 8px; padding: 14px 20px; max-width: 1320px; margin: 8px auto 0; flex-wrap: wrap; background: var(--pink-soft); border-radius: var(--r-md); }
+  .active-filters-count { font-size: 14px; font-weight: 800; color: var(--ink); }
+  .active-pill { display: inline-flex; align-items: center; gap: 6px; padding: 5px 8px 5px 12px; background: var(--pink-deep); color: var(--bg); border-radius: 999px; font-size: 12px; font-weight: 600; }
+  .active-pill button { width: 18px; height: 18px; border-radius: 50%; background: rgba(255,255,255,.22); color: #fff; display: flex; align-items: center; justify-content: center; font-size: 14px; line-height: 1; cursor: pointer; font-family: inherit; border: none; }
+  .active-pill button:hover { background: rgba(255,255,255,.4); }
+  .clear-all-btn { font-size: 12px; font-weight: 700; color: var(--pink-deep); padding: 6px 10px; border-radius: 999px; cursor: pointer; font-family: inherit; background: none; border: none; }
+  .clear-all-btn:hover { background: var(--pink-2); }
 
   /* Results bar */
-  .results-bar { max-width: 1320px; margin: 0 auto; padding: 0 24px 16px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; }
+  .results-bar { max-width: 1320px; margin: 0 auto; padding: 16px 24px 16px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; }
   .results-count { font-size: 14px; color: var(--ink-soft); }
   .results-count strong { color: var(--ink); font-weight: 700; }
-  .clear-filters { color: var(--orange); font-size: 13px; font-weight: 600; padding: 4px 10px; border-radius: 6px; transition: background .15s; }
-  .clear-filters:hover { background: var(--orange-soft); }
-  .clear-filters[hidden] { display: none; }
 
   /* ───── TENDER GRID + CARD (Edura Wolt-style) ───── */
   .tenders {
@@ -348,6 +361,7 @@
     <symbol id="i-pin" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></symbol>
     <symbol id="i-sparkle" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v18M3 12h18M5.6 5.6l12.8 12.8M18.4 5.6 5.6 18.4"/></symbol>
     <symbol id="i-mail" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></symbol>
+    <symbol id="i-search" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></symbol>
   </defs>
 </svg>
 
@@ -401,49 +415,32 @@
   </div>
 </section>
 
-<div class="filters-wrap">
-  <div class="filters">
-    <div class="filter-group">
-      <label class="filter-label" for="search">חיפוש בית ספר / יישוב</label>
-      <div class="filter-input-wrap">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.3-4.3"></path></svg>
-        <input id="search" type="text" class="filter-input" placeholder="לדוגמה: יובלים, ראשון לציון, אורט..." />
+<section class="filters">
+  <div class="filter-section">
+    <div class="filter-label">מגזר</div>
+    <div style="flex:1;min-width:0">
+      <div class="chips-scroll" id="sector-chips"></div>
+      <div class="free-search">
+        <svg><use href="#i-search"/></svg>
+        <input id="search-input" type="text" placeholder="חיפוש בית ספר או יישוב..." autocomplete="off" />
+        <button class="free-search-clear" id="search-clear" type="button">×</button>
       </div>
     </div>
-    <div class="filter-group">
-      <label class="filter-label" for="district">מחוז / אזור</label>
-      <select id="district" class="filter-select"><option value="">כל המחוזות</option></select>
-    </div>
-    <div class="filter-group">
-      <label class="filter-label" for="city">עיר / יישוב</label>
-      <select id="city" class="filter-select"><option value="">כל הערים</option></select>
-    </div>
-    <div class="filter-group">
-      <label class="filter-label" for="sector">מגזר / סוג בית ספר</label>
-      <select id="sector" class="filter-select">
-        <option value="">כל המגזרים</option>
-        <option value="ממלכתי">ממלכתי</option>
-        <option value="ממלכתי דתי">ממלכתי דתי</option>
-        <option value="חרדי">חרדי</option>
-        <option value="התיישבותי">התיישבותי</option>
-      </select>
-    </div>
-    <div class="filter-group">
-      <label class="filter-label" for="level">שכבת גיל</label>
-      <select id="level" class="filter-select">
-        <option value="">כל השכבות</option>
-        <option value="יסודי">יסודי</option>
-        <option value="חטיבת ביניים">חטיבת ביניים</option>
-        <option value="תיכון">תיכון</option>
-        <option value="מרכז מקצועי">מרכז מקצועי / מתי"א</option>
-      </select>
-    </div>
   </div>
-</div>
+  <div class="filter-section">
+    <div class="filter-label">שכבה</div>
+    <div class="chips-scroll" id="level-chips"></div>
+  </div>
+  <div class="filter-section">
+    <div class="filter-label">מחוז</div>
+    <div class="chips-scroll" id="district-chips"></div>
+  </div>
+</section>
+
+<div class="active-filters" id="active-filters" style="display:none"></div>
 
 <div class="results-bar">
   <div class="results-count" id="results-count">טוען מכרזים...</div>
-  <button class="clear-filters" id="clear-filters" hidden>נקה סינונים ✕</button>
 </div>
 
 <main class="tenders" id="tenders">
@@ -720,9 +717,26 @@ function closeDrawer() { document.getElementById('drawer').classList.remove('ope
 <script>
 const $ = (id) => document.getElementById(id);
 const debounce = (fn, ms = 150) => { let t; return (...a) => { clearTimeout(t); t = setTimeout(() => fn(...a), ms); }; };
+const escapeHtml = s => String(s == null ? '' : s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
 
 let allTenders = [];
 let filtered = [];
+let STATE = { sector: 'all', level: 'all', district: 'all', search: '' };
+
+const SECTORS = [
+  { key: 'all', label: 'הכל' },
+  { key: 'ממלכתי', label: 'ממלכתי' },
+  { key: 'ממלכתי דתי', label: 'ממ"ד' },
+  { key: 'חרדי', label: 'חרדי' },
+  { key: 'התיישבותי', label: 'התיישבותי' },
+];
+
+const LEVELS = [
+  { key: 'all', label: 'הכל' },
+  { key: 'יסודי', label: 'יסודי' },
+  { key: 'חטיבת ביניים', label: 'חט"ב' },
+  { key: 'תיכון', label: 'תיכון' },
+];
 
 const SECTOR_CLASS = {
   'ממלכתי': 'tag-sector-mamlachti',
@@ -749,75 +763,109 @@ function pickPhoto(p) {
   return SCHOOL_PHOTOS[h % SCHOOL_PHOTOS.length];
 }
 
+let DISTRICTS = [];
+
 async function loadTenders() {
   try {
     const res = await fetch('principal-positions.json');
     const data = await res.json();
     allTenders = (data.positions || []).filter(p => p.id);
-    populateDistricts();
-    populateCities();
-    applyFilters();
+    DISTRICTS = [{ key: 'all', label: 'הכל' }];
+    const dset = new Set();
+    allTenders.forEach(p => { if (p.district) dset.add(p.district); });
+    [...dset].sort((a,b) => a.localeCompare(b, 'he')).forEach(d => DISTRICTS.push({ key: d, label: d }));
+    renderAll();
     $('meta-total').textContent = allTenders.length;
   } catch (err) {
-    $('tenders').innerHTML = (window.EduraCopy && EduraCopy.pickEmpty(EduraCopy.emptyTendersError)) ||
-      '<div class="empty"><h3>בעיה בטעינת הנתונים</h3><p>נסו לרענן את הדף בעוד רגע</p></div>';
+    $('tenders').innerHTML = '<div class="empty"><h3>בעיה בטעינת הנתונים</h3><p>נסו לרענן את הדף בעוד רגע</p></div>';
     console.error(err);
   }
 }
 
-function populateDistricts() {
-  const dists = new Set();
-  allTenders.forEach(p => { if (p.district) dists.add(p.district); });
-  const sel = $('district');
-  [...dists].sort().forEach(d => {
-    const o = document.createElement('option');
-    o.value = d; o.textContent = d;
-    sel.appendChild(o);
-  });
-}
-
-function populateCities() {
-  const cities = new Set();
-  allTenders.forEach(p => { if (p.city) cities.add(p.city.trim()); });
-  const sel = $('city');
-  const sorted = [...cities].sort((a, b) => a.localeCompare(b, 'he'));
-  sorted.forEach(c => {
-    const o = document.createElement('option');
-    o.value = c; o.textContent = c;
-    sel.appendChild(o);
-  });
-}
-
 function applyFilters() {
-  const q = $('search').value.toLowerCase().trim();
-  const district = $('district').value;
-  const city = $('city').value;
-  const sector = $('sector').value;
-  const level = $('level').value;
-
-  filtered = allTenders.filter(p => {
-    if (district && p.district !== district) return false;
-    if (city && (p.city || '').trim() !== city) return false;
-    if (sector && p.sector !== sector) return false;
-    if (level && p.level !== level) return false;
-    if (q) {
-      const text = ((p.school_name || '') + ' ' + (p.city || '') + ' ' + (p.school_type_raw || '')).toLowerCase();
+  return allTenders.filter(p => {
+    if (STATE.sector !== 'all' && p.sector !== STATE.sector) return false;
+    if (STATE.level !== 'all' && p.level !== STATE.level) return false;
+    if (STATE.district !== 'all' && p.district !== STATE.district) return false;
+    if (STATE.search) {
+      const q = STATE.search.toLowerCase();
+      const text = ((p.school_name || '') + ' ' + (p.city || '') + ' ' + (p.school_type_raw || '') + ' ' + (p.district || '')).toLowerCase();
       if (!text.includes(q)) return false;
     }
     return true;
   });
+}
 
+function renderChipRow(elId, items, stateKey, withCount) {
+  const html = items.map(it => {
+    const isActive = STATE[stateKey] === it.key;
+    let count = '';
+    if (withCount && it.key !== 'all') {
+      const c = allTenders.filter(p => p[stateKey === 'sector' ? 'sector' : (stateKey === 'level' ? 'level' : 'district')] === it.key).length;
+      count = ` <span class="level-chip-count">${c}</span>`;
+    }
+    return `<button class="level-chip${isActive ? ' active' : ''}" data-key="${escapeHtml(it.key)}">${escapeHtml(it.label)}${count}</button>`;
+  }).join('');
+  const el = $(elId);
+  el.innerHTML = html;
+  el.querySelectorAll('.level-chip').forEach(b => b.addEventListener('click', () => {
+    STATE[stateKey] = b.dataset.key;
+    renderAll();
+  }));
+}
+
+function renderActiveFilters() {
+  const pills = [];
+  if (STATE.sector !== 'all') {
+    const s = SECTORS.find(x => x.key === STATE.sector);
+    pills.push({ key: 'sector', label: 'מגזר: ' + (s ? s.label : STATE.sector) });
+  }
+  if (STATE.level !== 'all') {
+    const l = LEVELS.find(x => x.key === STATE.level);
+    pills.push({ key: 'level', label: 'שכבה: ' + (l ? l.label : STATE.level) });
+  }
+  if (STATE.district !== 'all') {
+    pills.push({ key: 'district', label: 'מחוז: ' + STATE.district });
+  }
+  if (STATE.search) {
+    pills.push({ key: 'search', label: 'חיפוש: ' + STATE.search });
+  }
+  const el = $('active-filters');
+  if (!pills.length) { el.style.display = 'none'; el.innerHTML = ''; return; }
+  el.style.display = 'flex';
+  el.innerHTML =
+    `<span class="active-filters-count"><strong>${filtered.length}</strong> מכרזים</span>` +
+    pills.map(p => `<span class="active-pill">${escapeHtml(p.label)}<button data-clear="${p.key}" aria-label="הסר">×</button></span>`).join('') +
+    '<button class="clear-all-btn" id="clear-all">נקה הכל</button>';
+  el.querySelectorAll('[data-clear]').forEach(b => b.addEventListener('click', () => {
+    const k = b.dataset.clear;
+    if (k === 'search') { STATE.search = ''; $('search-input').value = ''; $('search-clear').classList.remove('visible'); }
+    else STATE[k] = 'all';
+    renderAll();
+  }));
+  const ca = $('clear-all');
+  if (ca) ca.addEventListener('click', () => {
+    STATE = { sector: 'all', level: 'all', district: 'all', search: '' };
+    $('search-input').value = '';
+    $('search-clear').classList.remove('visible');
+    renderAll();
+  });
+}
+
+function renderAll() {
+  filtered = applyFilters();
+  renderChipRow('sector-chips', SECTORS, 'sector', true);
+  renderChipRow('level-chips', LEVELS, 'level', true);
+  renderChipRow('district-chips', DISTRICTS, 'district', true);
+  renderActiveFilters();
   render();
 }
 
 function render() {
   const grid = $('tenders');
   const count = $('results-count');
-  const clearBtn = $('clear-filters');
 
   count.innerHTML = `<strong>${filtered.length}</strong> מתוך ${allTenders.length} מכרזים`;
-  const hasFilter = $('search').value || $('district').value || $('city').value || $('sector').value || $('level').value;
-  clearBtn.hidden = !hasFilter;
 
   if (filtered.length === 0) {
     grid.innerHTML = (window.EduraCopy && EduraCopy.pickEmpty(EduraCopy.emptyTenders)) ||
@@ -890,18 +938,20 @@ function render() {
   }).join('');
 }
 
-function esc(s) {
-  return String(s == null ? '' : s)
-    .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
-}
+const esc = escapeHtml;
 
-['search','district','city','sector','level'].forEach(id => {
-  $(id).addEventListener('input', debounce(applyFilters, 100));
-});
-$('clear-filters').addEventListener('click', () => {
-  ['search','district','city','sector','level'].forEach(id => $(id).value = '');
-  applyFilters();
+const searchInput = $('search-input');
+const searchClear = $('search-clear');
+searchInput.addEventListener('input', debounce(() => {
+  STATE.search = searchInput.value.trim();
+  searchClear.classList.toggle('visible', !!STATE.search);
+  renderAll();
+}, 150));
+searchClear.addEventListener('click', () => {
+  searchInput.value = '';
+  STATE.search = '';
+  searchClear.classList.remove('visible');
+  renderAll();
 });
 
 loadTenders();
