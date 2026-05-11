@@ -710,8 +710,9 @@ function render() {
     const sectorClass = SECTOR_CLASS[p.sector] || 'tag-level';
     const sectorTag = p.sector ? `<span class="tag ${sectorClass}">${esc(p.sector)}</span>` : '';
     const levelTag = p.level && p.level !== 'אחר' ? `<span class="tag tag-level">${esc(p.level)}</span>` : '';
-    const districtTag = p.district ? `<span class="tag tag-district">${esc(p.district)}</span>` : '';
-    const cityLine = p.city ? `<div class="tender-loc"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a8 8 0 0 0-8 8c0 5.5 8 12 8 12s8-6.5 8-12a8 8 0 0 0-8-8z"></path><circle cx="12" cy="10" r="3"></circle></svg>${esc(p.city)}</div>` : '';
+    const districtTag = (p.district && p.city) ? `<span class="tag tag-district">${esc(p.district)}</span>` : '';
+    const locText = p.city ? esc(p.city) : (p.district ? `מחוז ${esc(p.district)}` : '');
+    const cityLine = locText ? `<div class="tender-loc"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a8 8 0 0 0-8 8c0 5.5 8 12 8 12s8-6.5 8-12a8 8 0 0 0-8-8z"></path><circle cx="12" cy="10" r="3"></circle></svg>${locText}</div>` : '';
     const vacancy = p.vacancy || '';
     const vacancyClass = vacancy.includes('לחלוטין') ? 'vacancy-permanent' : 'vacancy-temp';
     const vacancyText = vacancy.includes('לחלוטין') ? 'משרה קבועה' : 'לשנה + הארכה';
