@@ -132,8 +132,9 @@
 
   /* Filters */
   .filters-wrap { max-width: 1200px; margin: 0 auto; padding: 24px; }
-  .filters { background: var(--white); border: 1px solid var(--line); border-radius: var(--radius-lg); padding: 20px; box-shadow: var(--shadow-sm); display: grid; grid-template-columns: 1.4fr repeat(3, 1fr); gap: 12px; align-items: end; }
-  @media (max-width: 800px) { .filters { grid-template-columns: 1fr 1fr; } }
+  .filters { background: var(--white); border: 1px solid var(--line); border-radius: var(--radius-lg); padding: 20px; box-shadow: var(--shadow-sm); display: grid; grid-template-columns: 1.4fr repeat(4, 1fr); gap: 12px; align-items: end; }
+  @media (max-width: 1000px) { .filters { grid-template-columns: 1fr 1fr 1fr; } }
+  @media (max-width: 700px) { .filters { grid-template-columns: 1fr 1fr; } }
   @media (max-width: 480px) { .filters { grid-template-columns: 1fr; } }
   .filter-group { display: flex; flex-direction: column; gap: 6px; }
   .filter-label { font-size: 12px; font-weight: 600; color: var(--ink-mute); letter-spacing: 0.3px; }
@@ -188,6 +189,19 @@
   .step h3 { font-size: 16px; font-weight: 700; color: var(--ink); margin-bottom: 8px; line-height: 1.3; }
   .step p { font-size: 14px; color: var(--ink-soft); line-height: 1.6; }
   .step a { color: var(--green-deep); font-weight: 600; border-bottom: 1px solid currentColor; }
+
+  /* Tips section */
+  .tips-section { background: linear-gradient(180deg, var(--orange-soft) 0%, var(--cream) 100%); padding: 64px 24px; border-top: 1px solid var(--line); }
+  .tips-section .section-sub { max-width: 720px; }
+  .tips-source { display: inline-block; background: var(--white); border: 1px solid var(--line); border-radius: 999px; padding: 6px 14px; font-size: 12px; color: var(--ink-soft); margin-bottom: 18px; }
+  .tips-source strong { color: var(--orange); font-weight: 700; }
+  .tips-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; margin-top: 8px; }
+  .tip { background: var(--white); border: 1px solid var(--line); border-radius: var(--radius-lg); padding: 24px 22px; position: relative; transition: border-color .15s, box-shadow .15s, transform .1s; }
+  .tip:hover { border-color: var(--orange); box-shadow: var(--shadow-md); transform: translateY(-2px); }
+  .tip-num { position: absolute; top: -14px; inset-inline-end: 22px; background: var(--orange); color: var(--white); width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 14px; box-shadow: 0 4px 10px rgba(217,119,6,.25); }
+  .tip h3 { font-size: 17px; font-weight: 700; color: var(--ink); margin-bottom: 10px; line-height: 1.3; padding-inline-end: 36px; }
+  .tip p { font-size: 14px; color: var(--ink-soft); line-height: 1.65; }
+  .tip-tag { display: inline-block; font-size: 11px; font-weight: 600; padding: 3px 10px; border-radius: 999px; background: var(--orange-soft); color: var(--orange); margin-top: 12px; letter-spacing: 0.2px; }
 
   /* FAQ */
   .faq-section { background: var(--bg); padding: 64px 24px; border-top: 1px solid var(--line); }
@@ -328,6 +342,10 @@
       <select id="district" class="filter-select"><option value="">כל המחוזות</option></select>
     </div>
     <div class="filter-group">
+      <label class="filter-label" for="city">עיר / יישוב</label>
+      <select id="city" class="filter-select"><option value="">כל הערים</option></select>
+    </div>
+    <div class="filter-group">
       <label class="filter-label" for="sector">מגזר / סוג בית ספר</label>
       <select id="sector" class="filter-select">
         <option value="">כל המגזרים</option>
@@ -396,8 +414,68 @@
       <div class="step">
         <div class="step-num">6</div>
         <h3>עדכון ושינוי</h3>
-        <p>ניתן לעדכן או להסיר את המועמדות בכל עת — עד למועד האחרון להגשה (25.04.2026).</p>
+        <p>ניתן לעדכן או להסיר את המועמדות בכל עת — עד למועד האחרון להגשה של הסבב.</p>
       </div>
+    </div>
+  </div>
+</section>
+
+<!-- ────────── טיפים לגישה למכרז ניהול ────────── -->
+<section class="tips-section" id="tips">
+  <div class="section-inner">
+    <span class="tips-source">מבוסס על: <strong>אבני ראשה</strong> · פורטל עובדי הוראה · מבקר המדינה · מחקרים מקצועיים</span>
+    <h2 class="section-title">7 טיפים לגישה למכרז ניהול</h2>
+    <p class="section-sub">המכרז הוא לא רק מבחן עמידה בתנאי סף. הוועדה מקבלת החלטה תוך 15 דקות לפי <strong>התאמה ספציפית לבית הספר</strong>. אלה הדברים שעושים את ההבדל בין מועמדים מצוינים שנפסלים לבין מועמדים שמתאימים — וזוכים.</p>
+
+    <div class="tips-grid">
+      <article class="tip">
+        <div class="tip-num">1</div>
+        <h3>חקרו את בית הספר לפני שמילאתם את הטופס</h3>
+        <p>אסור להגיש מועמדות "כללית". היכנסו לאתר ביה"ס, לדוחות מיצ"ב, לפייסבוק קהילתי. זהו 2–3 אתגרים ספציפיים — והיו מסוגלים להחזיר אותם בראיון. זה מה שמבדיל בין "מועמד" ל"מועמד שמתאים <em>לכאן</em>".</p>
+        <span class="tip-tag">לפני ההגשה</span>
+      </article>
+
+      <article class="tip">
+        <div class="tip-num">2</div>
+        <h3>בנו חזון פדגוגי ב-3 שכבות, לא בסיסמאות</h3>
+        <p>סיסמה כמו "מצוינות והכלה" לא מספיקה. תנו <strong>ערכים → תהליכים → תוצאות מדידות</strong>: שלב ראשון אופרטיבי ל-90 ימים, אבן דרך לסוף שנה א', ויעד דו-שנתי. הוועדה מחפשת ראייה ניהולית, לא נואם.</p>
+        <span class="tip-tag">החזון שלכם</span>
+      </article>
+
+      <article class="tip">
+        <div class="tip-num">3</div>
+        <h3>סיפור ה"נקודת מפנה" — חובה להחזיק מוכן</h3>
+        <p>כמעט בכל ראיון תישאלו על שינוי פדגוגי שהובלתם. אל תאלתרו. בחרו סיפור אחד עם <strong>קונפליקט אמיתי + החלטה + תוצאה מדידה + תובנה אישית</strong>. תרגלו מול מראה עד שזה זורם תוך 90 שניות.</p>
+        <span class="tip-tag">הראיון</span>
+      </article>
+
+      <article class="tip">
+        <div class="tip-num">4</div>
+        <h3>סימולציה עם עמית/ה, לא רק עם מאמן</h3>
+        <p>מאמן בתשלום רואה אתכם כלקוח. עמית/ה שגם מתכוננ/ת תזרוק את השאלות הקשות באמת: "מה תעשו עם מורה ותיקה שמסרבת לשתף פעולה?". שתי סימולציות לפחות — אחת מקצועית, אחת עם עמית.</p>
+        <span class="tip-tag">הכנה</span>
+      </article>
+
+      <article class="tip">
+        <div class="tip-num">5</div>
+        <h3>תיק עבודות פיזי בראיון — קלף מנצח</h3>
+        <p>הוועדה רואה אתכם 15 דקות בלבד. תיק דק עם 3–4 עמודים: <strong>דף חזון, גרף תוצאות, צילום פרויקט אחד, מפת בעלי עניין</strong>. אסור לקרוא ממנו — להניח על השולחן כעדות, לא כתסריט.</p>
+        <span class="tip-tag">בחדר הראיון</span>
+      </article>
+
+      <article class="tip">
+        <div class="tip-num">6</div>
+        <h3>בחירת מכרז: התאמה לפני יוקרה</h3>
+        <p>מכרז ראשון מומלץ במוסד בגודל ובמורכבות שאתם מכירים — אותו מגזר, אזור, סוג בית ספר. "בית ספר חלום" שלא מתאים לפרופיל שלכם — מבוזבז. ועדה מזהה התאמה תוך 3 דקות הראשונות.</p>
+        <span class="tip-tag">איזה מכרז לבחור</span>
+      </article>
+
+      <article class="tip">
+        <div class="tip-num">7</div>
+        <h3>אם לא נבחרתם — להגיש שוב. וזה מקובל</h3>
+        <p>דחייה במכרז ראשון היא הנורמה, לא החריג. אפשר וצריך להגיש שוב לאותו ביה"ס בסבב הבא, או למוסד אחר באותה שנה. בקשו משוב מיו"ר הוועדה (לפעמים ניתן), זקקו נקודה אחת לשיפור — וצאו לסבב הבא.</p>
+        <span class="tip-tag">אחרי הראיון</span>
+      </article>
     </div>
   </div>
 </section>
@@ -413,7 +491,17 @@
         <summary>מי רשאי להגיש מועמדות למכרז ניהול?</summary>
         <div class="faq-body">
           <p>רק <strong>עובד/ת הוראה המנוהל/ת במאגרי משרד החינוך</strong> רשאי/ת להגיש. לכל משרה מוגדרים תנאי סף נוספים (ותק בהוראה, השכלה, ניסיון בתפקיד ניהולי וכד') שמופיעים בחומר הפרסום של אותה משרה.</p>
+          <p>תנאי הסף הקבועים: <strong>4 שנות ותק בהוראה</strong> בקביעות (5 שנים למי שאינו בקביעות), <strong>תואר אקדמי שני</strong>, תעודת הוראה ורישיון הוראה קבוע.</p>
           <p>חשוב: <strong>תואר אקוויוולנטי לא מוכר</strong> כתואר להגשת מועמדות.</p>
+        </div>
+      </details>
+
+      <details class="faq-item">
+        <summary>חייבים לסיים "אבני ראשה" לפני הגשת המכרז?</summary>
+        <div class="faq-body">
+          <p><strong>תעודת סיום אבני ראשה היא תנאי לכניסה לתפקיד</strong> — לא תמיד להגשת מועמדות. מתשפ"ד המודל החדש הוא <strong>On-the-Job</strong>: פרק קצר באוגוסט לפני הכניסה לתפקיד + ליווי שנתיים תוך כדי תפקיד, כולל מנטור אישי.</p>
+          <p>הרישום לתוכנית נעשה ב<a href="https://avneyrosha.org.il/program/otj-principals-training/" target="_blank" rel="noopener">מכון אבני ראשה</a> בחודשים <strong>ספטמבר–נובמבר</strong>, וכולל שאלון אישיותי מקוון + מרכז הערכה.</p>
+          <p>מי שמכוון לסבב מכרזים — מומלץ להתחיל בתהליך הקבלה לאבני ראשה <strong>במקביל</strong>, כדי שאם תיבחרו, תוכלו להיכנס לתפקיד באוגוסט.</p>
         </div>
       </details>
 
@@ -435,7 +523,7 @@
       <details class="faq-item">
         <summary>אפשר לעדכן או להסיר מועמדות אחרי שהגשתי?</summary>
         <div class="faq-body">
-          <p>כן. ניתן <strong>לעדכן את הטופס או להסיר את המועמדות</strong> דרך המערכת המקוונת בכל עת — כל עוד לא חלף המועד האחרון להגשה (25.04.2026).</p>
+          <p>כן. ניתן <strong>לעדכן את הטופס או להסיר את המועמדות</strong> דרך המערכת המקוונת בכל עת — כל עוד לא חלף המועד האחרון להגשה של אותו סבב.</p>
           <p>גם אם הסרתם מועמדות והתחרטתם — תוכלו להגיש שוב לפני המועד האחרון.</p>
         </div>
       </details>
@@ -548,6 +636,7 @@ async function loadTenders() {
     const data = await res.json();
     allTenders = (data.positions || []).filter(p => p.id);
     populateDistricts();
+    populateCities();
     applyFilters();
     $('meta-total').textContent = allTenders.length;
   } catch (err) {
@@ -568,14 +657,28 @@ function populateDistricts() {
   });
 }
 
+function populateCities() {
+  const cities = new Set();
+  allTenders.forEach(p => { if (p.city) cities.add(p.city.trim()); });
+  const sel = $('city');
+  const sorted = [...cities].sort((a, b) => a.localeCompare(b, 'he'));
+  sorted.forEach(c => {
+    const o = document.createElement('option');
+    o.value = c; o.textContent = c;
+    sel.appendChild(o);
+  });
+}
+
 function applyFilters() {
   const q = $('search').value.toLowerCase().trim();
   const district = $('district').value;
+  const city = $('city').value;
   const sector = $('sector').value;
   const level = $('level').value;
 
   filtered = allTenders.filter(p => {
     if (district && p.district !== district) return false;
+    if (city && (p.city || '').trim() !== city) return false;
     if (sector && p.sector !== sector) return false;
     if (level && p.level !== level) return false;
     if (q) {
@@ -594,7 +697,7 @@ function render() {
   const clearBtn = $('clear-filters');
 
   count.innerHTML = `<strong>${filtered.length}</strong> מתוך ${allTenders.length} מכרזים`;
-  const hasFilter = $('search').value || $('district').value || $('sector').value || $('level').value;
+  const hasFilter = $('search').value || $('district').value || $('city').value || $('sector').value || $('level').value;
   clearBtn.hidden = !hasFilter;
 
   if (filtered.length === 0) {
@@ -635,11 +738,11 @@ function esc(s) {
     .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
 }
 
-['search','district','sector','level'].forEach(id => {
+['search','district','city','sector','level'].forEach(id => {
   $(id).addEventListener('input', debounce(applyFilters, 100));
 });
 $('clear-filters').addEventListener('click', () => {
-  ['search','district','sector','level'].forEach(id => $(id).value = '');
+  ['search','district','city','sector','level'].forEach(id => $(id).value = '');
   applyFilters();
 });
 
