@@ -693,7 +693,8 @@
       "school_type_raw": "בית ספר יסודי ממ\"",
       "sector": "ממלכתי",
       "level": "יסודי",
-      "notes": "מותנה בפתיחת המוסד; פרסום חוזר"
+      "notes": "מותנה בפתיחת המוסד; פרסום חוזר",
+      "website": "https://sites.google.com/a/hanadiv.tzafonet.org.il/hanadiv/"
     },
     {
       "id": "21878",
@@ -2239,7 +2240,8 @@
       "school_type_raw": "מרכז מחוננים חרדי",
       "sector": "חרדי",
       "level": "מרכז מחוננים",
-      "notes": "פרסום חוזר"
+      "notes": "פרסום חוזר",
+      "website": "https://bareketcenter.com/he/"
     },
     {
       "id": "21830",
