@@ -86,7 +86,8 @@
       "school_name": "שדות איילון",
       "school_type_raw": "בית ספר יסודי ממ",
       "sector": "ממלכתי",
-      "level": "יסודי"
+      "level": "יסודי",
+      "website": "https://sadot.tik-tak.net/"
     },
     {
       "id": "21579",
@@ -110,7 +111,8 @@
       "school_name": "לב הפרדס",
       "school_type_raw": "בית ספר יסודי ממ",
       "sector": "ממלכתי",
-      "level": "יסודי"
+      "level": "יסודי",
+      "website": "https://levhapardes.tik-tak.net/"
     },
     {
       "id": "21575",
@@ -122,7 +124,8 @@
       "school_name": "יצחק שדה",
       "school_type_raw": "בית ספר יסודי ממ",
       "sector": "ממלכתי",
-      "level": "יסודי"
+      "level": "יסודי",
+      "website": "http://www.ysadeh.ys.ksedu.co.il/BRPortal/br/P100.jsp"
     },
     {
       "id": "21538",
@@ -170,7 +173,8 @@
       "school_name": "קרית חינוך ע ש גינסבורג",
       "school_type_raw": "חטיבת ביניים ממ",
       "sector": "ממלכתי",
-      "level": "חטיבת ביניים"
+      "level": "חטיבת ביניים",
+      "website": "https://ginsburgcampus.mashov.info/"
     },
     {
       "id": "21526",
@@ -206,7 +210,8 @@
       "school_name": "סימני דרך",
       "school_type_raw": "בית ספר יסודי ממ",
       "sector": "ממלכתי",
-      "level": "יסודי"
+      "level": "יסודי",
+      "website": "https://simaney-derech.mashov.info/"
     },
     {
       "id": "21634",
@@ -218,7 +223,8 @@
       "school_name": "סלעית ע ש עוז",
       "school_type_raw": "בית ספר יסודי ממ",
       "sector": "ממלכתי",
-      "level": "יסודי"
+      "level": "יסודי",
+      "website": "https://salit.tik-tak.school/"
     },
     {
       "id": "21624",
@@ -254,7 +260,8 @@
       "school_name": "חט ב ברזילי קציר א",
       "school_type_raw": "חטיבת ביניים ממ",
       "sector": "ממלכתי",
-      "level": "חטיבת ביניים"
+      "level": "חטיבת ביניים",
+      "website": "https://katzir.org.il/"
     },
     {
       "id": "21594",
@@ -266,7 +273,8 @@
       "school_name": "שרונה",
       "school_type_raw": "חטיבת ביניים ממ",
       "sector": "ממלכתי",
-      "level": "חטיבת ביניים"
+      "level": "חטיבת ביניים",
+      "website": "https://sites.google.com/educ.org.il/sharona/"
     },
     {
       "id": "21593",
@@ -415,7 +423,8 @@
       "school_name": "מרכז הדרכה מחוזי מרכז",
       "school_type_raw": "",
       "sector": "ממלכתי",
-      "level": "אחר"
+      "level": "אחר",
+      "website": "https://pisgapt.tik-tak.school/"
     },
     {
       "id": "21284",
@@ -427,7 +436,8 @@
       "school_name": "ממלכתי טל",
       "school_type_raw": "בית ספר יסודי ממ",
       "sector": "ממלכתי",
-      "level": "יסודי"
+      "level": "יסודי",
+      "website": "https://tal-school.tik-tak.net/"
     },
     {
       "id": "21278",
@@ -720,7 +730,8 @@
       "school_name": "מינהל חברה ונוער",
       "school_type_raw": "",
       "sector": "ממלכתי",
-      "level": "אחר"
+      "level": "אחר",
+      "website": "https://haifa.education.gov.il/supervision-pedagogy/society-youth-administration/"
     },
     {
       "id": "21629",
@@ -781,7 +792,8 @@
       "school_name": "תלמי הדר",
       "school_type_raw": "בית ספר יסודי ממ ד",
       "sector": "ממלכתי דתי",
-      "level": "יסודי"
+      "level": "יסודי",
+      "website": "https://talmey-hadar.tik-tak.net/"
     },
     {
       "id": "21252",
@@ -877,7 +889,8 @@
       "school_name": "נופית",
       "school_type_raw": "בית ספר יסודי ממ",
       "sector": "ממלכתי",
-      "level": "יסודי"
+      "level": "יסודי",
+      "website": "https://nofit.edu-haifa.org.il/"
     },
     {
       "id": "21243",
@@ -950,7 +963,8 @@
       "school_name": "מגשימים",
       "school_type_raw": "בית ספר יסודי ממ",
       "sector": "ממלכתי",
-      "level": "יסודי"
+      "level": "יסודי",
+      "website": "https://shuvuakko.tik-tak.net/"
     },
     {
       "id": "21503",
@@ -975,7 +989,8 @@
       "school_name": "אלון יזרעאל עפולה",
       "school_type_raw": "בית ספר יסודי ממ",
       "sector": "ממלכתי",
-      "level": "יסודי"
+      "level": "יסודי",
+      "website": "https://sites.google.com/a/aliz.tzafonet.org.il/home/"
     },
     {
       "id": "21609",
@@ -1415,7 +1430,8 @@
       "school_name": "מרכז פסג ה חולון",
       "school_type_raw": "",
       "sector": "ממלכתי",
-      "level": "אחר"
+      "level": "אחר",
+      "website": "https://pisga-holon.tik-tak.net/"
     },
     {
       "id": "21553",
@@ -1561,7 +1577,8 @@
       "school_name": "רמת אפעל ע ש א קופלמן",
       "school_type_raw": "בית ספר יסודי ממ",
       "sector": "ממלכתי",
-      "level": "יסודי"
+      "level": "יסודי",
+      "website": "https://ramatefal.tik-tak.net/"
     },
     {
       "id": "21598",
@@ -2119,7 +2136,8 @@
       "school_name": "עמק חפר משותף",
       "school_type_raw": "בית ספר ממ",
       "sector": "ממלכתי",
-      "level": "בית ספר"
+      "level": "בית ספר",
+      "website": "https://emek-hefer.tik-tak.net/"
     },
     {
       "id": "21409",
@@ -2458,7 +2476,8 @@
       "school_name": "מעלות מחוננים",
       "school_type_raw": "",
       "sector": "ממלכתי",
-      "level": "אחר"
+      "level": "אחר",
+      "website": "https://maalotmechunanim.wixsite.com/maalot"
     },
     {
       "id": "21568",
@@ -2506,7 +2525,8 @@
       "school_name": "עתיד שחר בית שמש",
       "school_type_raw": "חטיבת ביניים ממ ד צמודה",
       "sector": "ממלכתי דתי",
-      "level": "חטיבת ביניים"
+      "level": "חטיבת ביניים",
+      "website": "https://atid-shachar.mashov.info/"
     },
     {
       "id": "21478",
@@ -2736,7 +2756,8 @@
       "school_name": "הלל חמ ד ניסויי",
       "school_type_raw": "בית ספר יסודי ממ ד",
       "sector": "ממלכתי דתי",
-      "level": "יסודי"
+      "level": "יסודי",
+      "website": "https://hilenisui.tik-tak.net/"
     },
     {
       "id": "21588",
@@ -2857,7 +2878,8 @@
       "school_name": "גילה ממלכתי תל י",
       "school_type_raw": "בית ספר יסודי ממ",
       "sector": "ממלכתי",
-      "level": "יסודי"
+      "level": "יסודי",
+      "website": "https://taligilo.tik-tak.net/"
     },
     {
       "id": "21198",
@@ -3123,7 +3145,8 @@
       "school_name": "מר מחוננים נחל שורק",
       "school_type_raw": "",
       "sector": "ממלכתי",
-      "level": "אחר"
+      "level": "אחר",
+      "website": "https://bareketcenter.com/he/"
     },
     {
       "id": "21461",
