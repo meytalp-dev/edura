@@ -233,12 +233,37 @@
   .cookies-btn.primary:hover { background: var(--pink-deeper); }
   .cookies-btn.secondary { background: rgba(255,255,255,.12); color: #fff; }
 
+  .mobile-tabs { display: none; }
+  @media (max-width: 768px) {
+    .mobile-tabs {
+      grid-area: tabs;
+      display: flex; gap: 6px;
+      overflow-x: auto;
+      scrollbar-width: none;
+      margin: 0 -12px; padding: 0 12px;
+    }
+    .mobile-tabs::-webkit-scrollbar { display: none; }
+    .mobile-tab {
+      flex-shrink: 0;
+      padding: 7px 13px;
+      background: var(--bg-2);
+      border-radius: 999px;
+      font-size: 12.5px; font-weight: 700;
+      color: var(--ink-soft);
+      display: inline-flex; align-items: center; gap: 5px;
+      transition: background .15s, color .15s;
+    }
+    .mobile-tab svg { width: 13px; height: 13px; }
+    .mobile-tab.active { background: var(--ink); color: var(--bg); }
+    .mobile-tab.bot { background: var(--pink-deep); color: #fff; }
+  }
+
   @media (max-width: 768px) {
     html, body { overflow-x: hidden; }
     .topbar { padding: 10px 12px; }
     .topbar-inner {
       grid-template-columns: auto auto;
-      grid-template-areas: "logo menu" "search search";
+      grid-template-areas: "logo menu" "search search" "tabs tabs";
       gap: 10px;
       justify-content: space-between;
     }
@@ -324,6 +349,12 @@
       <a href="chat.html" class="nav-link primary"><svg><use href="#i-bot"/></svg> בוט חיפוש</a>
     </nav>
     <button class="menu-toggle" id="menu-toggle" aria-label="תפריט"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
+    <nav class="mobile-tabs" aria-label="ניווט ראשי">
+      <a href="index.html" class="mobile-tab"><svg><use href="#i-briefcase"/></svg>משרות</a>
+      <a href="teachers.html" class="mobile-tab active"><svg><use href="#i-users"/></svg>מורים</a>
+      <a href="manager-tenders.html" class="mobile-tab"><svg><use href="#i-key"/></svg>מכרזי ניהול</a>
+      <a href="chat.html" class="mobile-tab bot"><svg><use href="#i-bot"/></svg>בוט חיפוש</a>
+    </nav>
   </div>
 </header>
 
