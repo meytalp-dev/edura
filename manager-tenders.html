@@ -175,11 +175,30 @@
   .results-count { font-size: 14px; color: var(--ink-soft); }
   .results-count strong { color: var(--ink); font-weight: 700; }
 
-  /* Quick jump links — to anchored sections at page end */
-  .quick-jumps { display: flex; gap: 8px; flex-wrap: wrap; }
-  .quick-jump { display: inline-flex; align-items: center; gap: 6px; padding: 8px 14px; background: var(--bg-2); color: var(--ink-soft); border-radius: 999px; font-size: 13px; font-weight: 700; transition: background .15s, color .15s, transform .1s; }
-  .quick-jump:hover { background: var(--ink); color: var(--bg); transform: translateY(-1px); }
-  .quick-jump svg { width: 14px; height: 14px; flex-shrink: 0; }
+  /* Quick jump links — bold pink CTAs to anchored sections at page end */
+  .quick-jumps { display: flex; gap: 10px; flex-wrap: wrap; }
+  .quick-jump {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 11px 18px;
+    background: var(--pink-deep); color: #fff;
+    border-radius: 999px;
+    font-size: 14px; font-weight: 800;
+    box-shadow: 0 4px 14px rgba(190,24,93,.25), 0 1px 3px rgba(190,24,93,.18);
+    transition: transform .15s ease, box-shadow .15s ease, background .15s;
+    border: 1.5px solid var(--pink-deep);
+    letter-spacing: -0.1px;
+  }
+  .quick-jump:hover {
+    background: var(--pink-deeper);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 22px rgba(190,24,93,.32), 0 2px 6px rgba(190,24,93,.2);
+  }
+  .quick-jump:active { transform: translateY(0); }
+  .quick-jump svg { width: 16px; height: 16px; flex-shrink: 0; stroke-width: 2.4; }
+  @media (max-width: 700px) {
+    .quick-jump { font-size: 13px; padding: 10px 14px; }
+    .quick-jump svg { width: 14px; height: 14px; }
+  }
 
   /* ───── TENDER GRID + CARD (Edura Wolt-style) ───── */
   .tenders {
