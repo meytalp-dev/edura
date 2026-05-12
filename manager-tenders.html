@@ -232,11 +232,12 @@
     perspective: 1200px;
     background: transparent;
     border-radius: var(--r-md);
-    transition: transform .2s ease;
+    transition: transform .2s ease, min-height .3s ease;
     cursor: pointer;
     min-height: 340px;
     position: relative;
   }
+  .tender-card.flipped { min-height: 480px; }
   .tender-card:hover { transform: translateY(-3px); }
   .tender-card-inner {
     position: relative;
@@ -259,12 +260,17 @@
     background: var(--bg);
     border: 1px solid var(--line);
     border-radius: var(--r-md);
-    padding: 20px 18px 16px;
+    padding: 18px 16px 14px;
     display: flex; flex-direction: column;
-    gap: 12px;
+    gap: 10px;
     box-shadow: var(--shadow-md);
-    overflow: hidden;
+    overflow-y: auto;
+    overflow-x: hidden;
+    -webkit-overflow-scrolling: touch;
   }
+  .tender-back::-webkit-scrollbar { width: 4px; }
+  .tender-back::-webkit-scrollbar-thumb { background: var(--line); border-radius: 2px; }
+  .tender-back::-webkit-scrollbar-thumb:hover { background: var(--ink-mute); }
   .tender-card:hover .tender-back { box-shadow: var(--shadow-lg); }
 
   .tender-back-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; }
@@ -307,7 +313,7 @@
   .tender-back-vision-text {
     font-size: 12.5px; color: var(--ink-soft); line-height: 1.5;
     font-style: italic;
-    display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical;
+    display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical;
     overflow: hidden;
   }
 
