@@ -513,6 +513,97 @@
     .footer-col:first-child { grid-column: 1 / -1; }
     .site-footer { padding: 32px 16px 16px; }
   }
+
+  /* ───── Access gate (registration required to view tenders) ───── */
+  body.mt-gated #mt-content { display: none; }
+  body:not(.mt-gated) #mt-gate { display: none; }
+
+  .mt-gate-wrap { max-width: 560px; margin: 0 auto; padding: 48px 24px 64px; }
+  .mt-gate-card {
+    background: var(--bg);
+    border: 1px solid var(--line);
+    border-radius: var(--r-lg);
+    box-shadow: var(--shadow-lg);
+    padding: 32px 28px 28px;
+  }
+  .mt-gate-pill {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: var(--pink-soft); color: var(--pink-deep);
+    padding: 6px 14px; border-radius: 999px;
+    font-size: 12px; font-weight: 800; letter-spacing: -.1px;
+    margin-bottom: 14px;
+  }
+  .mt-gate-pill svg { width: 14px; height: 14px; }
+  .mt-gate-card h2 {
+    font-size: clamp(22px, 3.4vw, 28px); font-weight: 900;
+    color: var(--ink); line-height: 1.2; letter-spacing: -.6px;
+    margin: 0 0 10px;
+  }
+  .mt-gate-card h2 .accent { color: var(--pink-deep); }
+  .mt-gate-card .mt-gate-sub {
+    font-size: 14px; color: var(--ink-soft); line-height: 1.6; margin: 0 0 22px;
+  }
+  .mt-gate-form { display: grid; gap: 12px; }
+  .mt-gate-field { display: flex; flex-direction: column; gap: 6px; }
+  .mt-gate-field label { font-size: 13px; font-weight: 700; color: var(--ink-soft); }
+  .mt-gate-field input {
+    width: 100%;
+    padding: 12px 14px;
+    border: 1.5px solid var(--line);
+    border-radius: 10px;
+    font-size: 15px;
+    font-family: inherit;
+    color: var(--ink);
+    background: var(--bg);
+    transition: border-color .15s, box-shadow .15s;
+  }
+  .mt-gate-field input:focus {
+    outline: none;
+    border-color: var(--pink-deep);
+    box-shadow: 0 0 0 4px var(--pink);
+  }
+  .mt-gate-field input:invalid:not(:placeholder-shown) { border-color: var(--coral); }
+  .mt-gate-submit {
+    margin-top: 6px;
+    width: 100%;
+    padding: 14px 18px;
+    background: var(--ink);
+    color: var(--bg);
+    border: none;
+    border-radius: 12px;
+    font-size: 15px;
+    font-weight: 800;
+    font-family: inherit;
+    cursor: pointer;
+    transition: background .15s, transform .1s;
+    display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  }
+  .mt-gate-submit:hover:not(:disabled) { background: var(--pink-deep); }
+  .mt-gate-submit:active:not(:disabled) { transform: scale(.99); }
+  .mt-gate-submit:disabled { opacity: .6; cursor: wait; }
+  .mt-gate-submit svg { width: 16px; height: 16px; }
+  .mt-gate-error {
+    display: none;
+    margin-top: 10px;
+    padding: 10px 14px;
+    background: var(--coral-pale);
+    color: var(--coral);
+    border-radius: 10px;
+    font-size: 13px;
+    font-weight: 600;
+  }
+  .mt-gate-error.show { display: block; }
+  .mt-gate-fine {
+    margin-top: 14px;
+    font-size: 12px;
+    color: var(--ink-mute);
+    line-height: 1.6;
+  }
+  .mt-gate-fine a { color: var(--pink-deep); text-decoration: underline; text-underline-offset: 2px; }
+  @media (max-width: 480px) {
+    .mt-gate-wrap { padding: 28px 16px 48px; }
+    .mt-gate-card { padding: 24px 20px 22px; border-radius: var(--r-md); }
+  }
 </style>
 </head>
 <body>
@@ -572,6 +663,45 @@
   </div>
 </aside>
 
+<!-- ────────── Registration gate — shown until the user registers ────────── -->
+<section id="mt-gate" aria-labelledby="mt-gate-title">
+  <div class="mt-gate-wrap">
+    <div class="mt-gate-card">
+      <div class="mt-gate-pill">
+        <svg><use href="#i-key"/></svg>
+        גישה למאגר מכרזי הניהול
+      </div>
+      <h2 id="mt-gate-title">רגע לפני הכניסה — <span class="accent">השאירו פרטים</span></h2>
+      <p class="mt-gate-sub">187 מכרזי ניהול בתי ספר של משרד החינוך, סבב 2 תשפ"ז. הגישה למאגר אישית — מלאו את הפרטים פעם אחת וניכנס.</p>
+      <form id="mt-gate-form" class="mt-gate-form" novalidate>
+        <div class="mt-gate-field">
+          <label for="mt-name">שם מלא</label>
+          <input id="mt-name" name="name" type="text" autocomplete="name" required placeholder="ישראלה ישראלי" />
+        </div>
+        <div class="mt-gate-field">
+          <label for="mt-phone">מספר טלפון</label>
+          <input id="mt-phone" name="phone" type="tel" autocomplete="tel" inputmode="tel" required placeholder="050-1234567" />
+        </div>
+        <div class="mt-gate-field">
+          <label for="mt-address">כתובת</label>
+          <input id="mt-address" name="address" type="text" autocomplete="street-address" required placeholder="רחוב, עיר" />
+        </div>
+        <div class="mt-gate-field">
+          <label for="mt-email">דוא"ל</label>
+          <input id="mt-email" name="email" type="email" autocomplete="email" required placeholder="name@example.com" />
+        </div>
+        <button class="mt-gate-submit" type="submit" id="mt-submit">
+          <svg><use href="#i-key"/></svg>
+          כניסה למאגר המכרזים
+        </button>
+        <div class="mt-gate-error" id="mt-error" role="alert"></div>
+        <p class="mt-gate-fine">בלחיצה אתם מאשרים שהפרטים יישמרו אצלנו לצורך מתן גישה ועדכונים על מכרזי ניהול. אין שיתוף לצד ג'. <a href="privacy.html">מדיניות פרטיות</a></p>
+      </form>
+    </div>
+  </div>
+</section>
+
+<div id="mt-content">
 
 <section class="hero">
   <div class="hero-status-pill" id="hero-status-pill">
@@ -858,6 +988,8 @@
   </div>
 </section>
 
+</div><!-- /#mt-content -->
+
 <footer class="site-footer">
   <div class="footer-inner">
     <div class="footer-col">
@@ -895,6 +1027,89 @@
 <script>
 function openDrawer() { document.getElementById('drawer').classList.add('open'); document.getElementById('drawer-overlay').classList.add('open'); document.body.style.overflow = 'hidden'; }
 function closeDrawer() { document.getElementById('drawer').classList.remove('open'); document.getElementById('drawer-overlay').classList.remove('open'); document.body.style.overflow = ''; }
+</script>
+
+<script>
+/* ─── Access gate: registration required to view manager tenders ─── */
+(function () {
+  const MT_GATE_KEY = 'edura:mt-access:v1';
+  const MT_SUBMISSIONS_URL = 'https://script.google.com/macros/s/AKfycbwleldcwH8c5k9OZ8EMDIKZ8veRbrtO1M7XwYFWg7HHbEV-SrZkLTElbFRiq4cHPlyarw/exec';
+
+  function isRegistered() {
+    try { return !!JSON.parse(localStorage.getItem(MT_GATE_KEY) || 'null'); } catch (e) { return false; }
+  }
+  function setRegistered(rec) {
+    try { localStorage.setItem(MT_GATE_KEY, JSON.stringify(rec)); } catch (e) {}
+  }
+  function applyGate() {
+    if (isRegistered()) {
+      document.body.classList.remove('mt-gated');
+    } else {
+      document.body.classList.add('mt-gated');
+    }
+  }
+  applyGate();
+
+  document.addEventListener('DOMContentLoaded', function () {
+    const form = document.getElementById('mt-gate-form');
+    if (!form) return;
+    const btn = document.getElementById('mt-submit');
+    const errBox = document.getElementById('mt-error');
+
+    function showError(msg) {
+      errBox.textContent = msg;
+      errBox.classList.add('show');
+    }
+    function clearError() {
+      errBox.textContent = '';
+      errBox.classList.remove('show');
+    }
+
+    form.addEventListener('submit', async function (ev) {
+      ev.preventDefault();
+      clearError();
+
+      const name = form.name.value.trim();
+      const phone = form.phone.value.trim();
+      const address = form.address.value.trim();
+      const email = form.email.value.trim();
+
+      if (!name || name.length < 2) return showError('נא להזין שם מלא');
+      if (!phone || phone.replace(/\D/g, '').length < 9) return showError('מספר טלפון לא תקין');
+      if (!address || address.length < 3) return showError('נא להזין כתובת');
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return showError('דוא"ל לא תקין');
+
+      btn.disabled = true;
+      const origText = btn.innerHTML;
+      btn.innerHTML = 'נכנסים...';
+
+      const payload = {
+        action: 'subscribe_principal',
+        name: name,
+        phone: phone,
+        region: address,
+        email: email,
+        source: 'manager-tenders-gate'
+      };
+
+      try {
+        await fetch(MT_SUBMISSIONS_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+          body: JSON.stringify(payload)
+        });
+      } catch (e) {
+        /* network failure shouldn't block the user — we still save locally */
+      }
+
+      setRegistered({ name, phone, address, email, ts: Date.now() });
+      applyGate();
+      window.scrollTo({ top: 0, behavior: 'instant' });
+      btn.disabled = false;
+      btn.innerHTML = origText;
+    });
+  });
+})();
 </script>
 
 <script>
