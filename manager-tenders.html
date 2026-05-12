@@ -1218,9 +1218,11 @@ const searchClear = $('search-clear');
 const cityInput = $('city-input');
 
 function syncSearch(v) {
+  // Mirror raw value (with internal spaces) between both inputs;
+  // trim ONLY for STATE.search filter — never write trimmed value back to inputs.
+  if (searchInput.value !== v) searchInput.value = v;
+  if (cityInput.value !== v) cityInput.value = v;
   STATE.search = v.trim();
-  if (searchInput.value !== STATE.search) searchInput.value = STATE.search;
-  if (cityInput.value !== STATE.search) cityInput.value = STATE.search;
   searchClear.classList.toggle('visible', !!STATE.search);
   renderAll();
 }
