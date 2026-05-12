@@ -292,7 +292,8 @@
       "level": "יסודי",
       "semel_mosad": "411058",
       "students_count": 300,
-      "lang_instruction": "עברית"
+      "lang_instruction": "עברית",
+      "website": "https://chabadbanotlod.com/"
     },
     {
       "id": "21930",
@@ -308,7 +309,8 @@
       "notes": "פרסום חוזר",
       "semel_mosad": "421107",
       "students_count": 35,
-      "lang_instruction": "עברית"
+      "lang_instruction": "עברית",
+      "website": "https://rimonlud.tik-tak.net/"
     },
     {
       "id": "21915",
@@ -550,7 +552,8 @@
       "level": "יסודי",
       "semel_mosad": "312223",
       "students_count": 243,
-      "lang_instruction": "עברית"
+      "lang_instruction": "עברית",
+      "website": "https://dor.org.il/mmd/ממד-עציון-2/"
     },
     {
       "id": "21966",
@@ -565,7 +568,8 @@
       "level": "חינוך מיוחד",
       "semel_mosad": "320150",
       "students_count": 122,
-      "lang_instruction": "עברית"
+      "lang_instruction": "עברית",
+      "website": "https://ahava-v.org.il/"
     },
     {
       "id": "21952",
@@ -783,7 +787,8 @@
       "level": "חינוך מיוחד",
       "semel_mosad": "325969",
       "students_count": 76,
-      "lang_instruction": "עברית"
+      "lang_instruction": "עברית",
+      "website": "https://ofer.edu-haifa.org.il/"
     },
     {
       "id": "21800",
@@ -1184,7 +1189,8 @@
       "notes": "מותנה בהתפנות המשרה",
       "semel_mosad": "213124",
       "students_count": 407,
-      "lang_instruction": "עברית"
+      "lang_instruction": "עברית",
+      "website": "https://sites.google.com/a/hadekel.tzafonet.org.il/home/home"
     },
     {
       "id": "21876",
@@ -1321,7 +1327,8 @@
       "notes": "מותנה בהתפנות המשרה",
       "semel_mosad": "420141",
       "students_count": 87,
-      "lang_instruction": "עברית"
+      "lang_instruction": "עברית",
+      "website": "https://sites.google.com/tzfonet.org.il/rimonimafula/home"
     },
     {
       "id": "21837",
@@ -1353,7 +1360,8 @@
       "notes": "מותנה בהתפנות המשרה",
       "semel_mosad": "213892",
       "students_count": 533,
-      "lang_instruction": "עברית"
+      "lang_instruction": "עברית",
+      "website": "https://sites.google.com/tzfonet.org.il/schoolirisim/home"
     },
     {
       "id": "21833",
@@ -1369,7 +1377,8 @@
       "notes": "מותנה בהתפנות המשרה",
       "semel_mosad": "213132",
       "students_count": 512,
-      "lang_instruction": "עברית"
+      "lang_instruction": "עברית",
+      "website": "https://sites.google.com/tzafonet.org.il/newavital/home"
     },
     {
       "id": "21795",
@@ -1398,7 +1407,8 @@
       "notes": "מותנה בהתפנות המשרה",
       "semel_mosad": "213413",
       "students_count": 189,
-      "lang_instruction": "עברית"
+      "lang_instruction": "עברית",
+      "website": "https://sites.google.com/a/nizanim.tzafonet.org.il/nizanim/"
     },
     {
       "id": "21768",
@@ -1515,7 +1525,8 @@
       "level": "יסודי",
       "semel_mosad": "510784",
       "students_count": 402,
-      "lang_instruction": "עברית"
+      "lang_instruction": "עברית",
+      "website": "https://arnon.tik-tak.net/"
     },
     {
       "id": "21895",
@@ -1557,7 +1568,8 @@
       "level": "יסודי",
       "semel_mosad": "510420",
       "students_count": 440,
-      "lang_instruction": "עברית"
+      "lang_instruction": "עברית",
+      "website": "http://www.benzvi.herzliya.org.il/BRPortal/br/P100.jsp"
     },
     {
       "id": "21889",
@@ -1687,7 +1699,8 @@
       "school_name": "פלך",
       "school_type_raw": "חטיבת ביניים ממ\"ד",
       "sector": "ממלכתי דתי",
-      "level": "חטיבת ביניים"
+      "level": "חטיבת ביניים",
+      "website": "https://www.pelechtlv.org/"
     },
     {
       "id": "21905",
@@ -1729,7 +1742,8 @@
       "level": "יסודי",
       "semel_mosad": "510743",
       "students_count": 356,
-      "lang_instruction": "עברית"
+      "lang_instruction": "עברית",
+      "website": "https://hamatmid.tik-tak.net/"
     },
     {
       "id": "21894",
@@ -1743,7 +1757,8 @@
       "sector": "ממלכתי",
       "level": "יסודי",
       "semel_mosad": "544429",
-      "lang_instruction": "עברית"
+      "lang_instruction": "עברית",
+      "website": "https://ynavonoy.tik-tak.net/"
     },
     {
       "id": "21892",
@@ -1873,7 +1888,8 @@
       "level": "חטיבת ביניים",
       "semel_mosad": "460154",
       "students_count": 454,
-      "lang_instruction": "עברית"
+      "lang_instruction": "עברית",
+      "website": "https://zhf.tik-tak.net/"
     },
     {
       "id": "21797",
@@ -1885,7 +1901,8 @@
       "school_name": "רמת הדסה",
       "school_type_raw": "חטיבת ביניים ממ\"",
       "sector": "ממלכתי",
-      "level": "חטיבת ביניים"
+      "level": "חטיבת ביניים",
+      "website": "https://www.ramat-hadassah.org.il/index.php/school/school1"
     },
     {
       "id": "21825",
@@ -1898,7 +1915,8 @@
       "school_type_raw": "בית ספר ממ\" לחנ\"מ",
       "sector": "ממלכתי",
       "level": "חינוך מיוחד",
-      "notes": "פרסום חוזר"
+      "notes": "פרסום חוזר",
+      "website": "https://www.hameshutaf.org.il/"
     },
     {
       "id": "21821",
@@ -1929,7 +1947,8 @@
       "level": "חטיבת ביניים",
       "semel_mosad": "440339",
       "students_count": 524,
-      "lang_instruction": "עברית"
+      "lang_instruction": "עברית",
+      "website": "https://ybanechalim.tik-tak.school/"
     },
     {
       "id": "21796",
@@ -1944,7 +1963,8 @@
       "level": "חטיבת ביניים",
       "semel_mosad": "260109",
       "students_count": 843,
-      "lang_instruction": "עברית"
+      "lang_instruction": "עברית",
+      "website": "https://megido.mashov.info/"
     },
     {
       "id": "21875",
@@ -1956,7 +1976,8 @@
       "school_name": "איזורי מקיף עין כרם",
       "school_type_raw": "ביה\"ס שש שנתי ממשלתי",
       "sector": "ממלכתי",
-      "level": "שש שנתי"
+      "level": "שש שנתי",
+      "website": "https://sites.google.com/hityash.org/einkerem-school"
     },
     {
       "id": "21957",
@@ -2478,7 +2499,8 @@
       "level": "יסודי",
       "semel_mosad": "113076",
       "students_count": 197,
-      "lang_instruction": "עברית"
+      "lang_instruction": "עברית",
+      "website": "https://dror.tik-tak.net/"
     },
     {
       "id": "21763",
