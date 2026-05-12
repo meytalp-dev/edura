@@ -97,34 +97,58 @@ function signToken_(type, refId) {
 
 ---
 
+## שני flows מקבילים — משרות ומורים
+
+| ⇣ | משרה (`index.html`) | מורה (`teachers.html`) |
+|---|---|---|
+| **דאטה ציבורי** | `data/jobs-public.json` (11 שדות) | `data/teachers-public.json` (9 שדות) |
+| **דאטה פרטי** | `data/jobs-private.json` (gitignored) | `data/teachers-private.json` (gitignored) |
+| **סקריפט פיצול** | `data/split-jobs-public.py` | `data/split-teachers-public.py` |
+| **שדה מזהה רגיש** | `school` (שם בית ספר) | `name` (שם המורה) |
+| **action POST** | `submit_application` | `submit_teacher_inquiry` |
+| **action GET** | `get_interest` | `get_teacher_inquiry` |
+| **action העברה** | `forward_application` | `forward_teacher_inquiry` |
+| **Sheet** | `applications` | `teacher_inquiries` |
+| **טוקן** | `signToken_('interest', refId)` | `signToken_('teacher-inquiry', refId)` |
+| **דף אדמין** | `admin/forward-interest.html` | `admin/forward-teacher-inquiry.html` |
+| **מקור פרטי לחיפוש** | `jobs-private.json` (לפי `job_id`) | `teachers-private.json` (לפי `teacher_id`) |
+
+---
+
 ## מה נשאר לעשות (todo עתידי)
 
-1. **`data/teachers.json` עדיין נדחף ל-Git עם פרטי מורים מלאים.** צריך לחזור על תהליך הפיצול גם כאן:
-   - יצירת `data/teachers-public.json` (רק שם פרטי, מקצוע, אזור, עיר, scope, notes)
-   - הסתרת מייל/טלפון של מורות מהאתר
-   - הוספת טופס "אני מעוניינ/ת לפגוש את המורה" עם flow זהה
+1. **`saved.html`** טוען פרטי קשר מ-localStorage. שינינו את הסכמה — שמורים חדשים לא יכילו מייל/טלפון, אבל שמורים ישנים אצל משתמשים עדיין שם. אפשרי לנקות עם migration קל ב-load.
 
-2. **`teachers.html` עדיין טוען `teachers.json` ומציג email/phone.** צריך לעדכן.
+2. **תיעוד למיטל** — Quick Start אחרי כל סריקה:
+   ```bash
+   python data/split-jobs-public.py
+   python data/split-teachers-public.py
+   git add data/jobs-public.json data/teachers-public.json
+   git commit -m "data: refresh public listings"
+   git push
+   ```
 
-3. **`saved.html`** טוען פרטי קשר מ-localStorage. כי שינינו את הסכמה — שמורים חדשים לא יכילו מייל/טלפון. אבל שמורים ישנים אצל משתמשים עדיין שם.
+3. **בדיקות אוטומטיות** — pre-commit hook שמונע push של `jobs.json` / `teachers.json` בטעות (גם אם `.gitignore` יוסר בטעות).
 
-4. **תיעוד למיטל** — Quick Start איך להפעיל את ה-flow אחרי כל סריקה: `python data/split-jobs-public.py && git add data/jobs-public.json && git commit -m "..." && git push`.
-
-5. **בדיקות אוטומטיות** — pre-commit hook שמונע push של `jobs.json` בטעות (גם אם `.gitignore` יוסר בטעות).
+4. **`setup()` ב-Apps Script** — לאחר השדרוג, להריץ פעם אחת ב-Sheet "Edura — פניות והרשמות" כדי שייווצר הטאב החדש `teacher_inquiries`.
 
 ---
 
 ## בדיקה ידנית של אבטחה
 
-קלון את הריפו וטען את `data/jobs-public.json` בדפדפן. אם רואה אחד מהשדות הבאים — **כשל**:
-`school`, `contact_name`, `email`, `phone`, `url`, `description`, `snippet`, `title`.
+קלון את הריפו וטען את הקבצים בדפדפן. אם רואה שדה רגיש — **כשל**:
 
 ```bash
+# Jobs:  אסור שיופיעו school, contact_name, email, phone, url, description, snippet, title
 grep -E '"(school|contact_name|email|phone|url|description|snippet|title)"' data/jobs-public.json
-# מצופה: שורות 0
+# מצופה: 0
+
+# Teachers: אסור שיופיעו name, email, phone, url, fb_url, notes, source_name
+grep -E '"(name|email|phone|url|fb_url|notes|source_name)"' data/teachers-public.json
+# מצופה: 0
 ```
 
-תפעיל את האתר מקומית (`python -m http.server 8000`) וב-DevTools → Network → `jobs-public.json` בודק את התגובה.
+תפעיל את האתר מקומית (`python -m http.server 8000`) וב-DevTools → Network תוודאי שהבקשות הן ל-`*-public.json` בלבד.
 
 ---
 

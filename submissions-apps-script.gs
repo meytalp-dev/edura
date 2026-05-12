@@ -28,6 +28,7 @@
  */
 
 const SHEET_APPLICATIONS = 'applications';
+const SHEET_TEACHER_INQUIRIES = 'teacher_inquiries';
 const SHEET_POSTED_JOBS = 'posted_jobs';
 const SHEET_POSTED_TEACHERS = 'posted_teachers';
 const SHEET_ALERTS = 'alerts';
@@ -47,6 +48,9 @@ const JOBS_API_URL = 'https://script.google.com/macros/s/AKfycbxFqT828xAhAAhe9mJ
 const APPLICATIONS_HEADERS = ['timestamp', 'ref_id', 'job_id', 'job_title', 'school',
                               'school_email', 'name', 'email', 'phone', 'message',
                               'cv_drive_id', 'cv_drive_url', 'cv_filename', 'status'];
+const TEACHER_INQUIRIES_HEADERS = ['timestamp', 'ref_id', 'teacher_id', 'teacher_title',
+                                   'school', 'name', 'role', 'email', 'phone', 'message',
+                                   'teacher_email', 'status'];
 const POSTED_JOBS_HEADERS = ['timestamp', 'ref_id', 'school', 'subject', 'role',
                              'region', 'city', 'level', 'sector', 'scope',
                              'description', 'contact_name', 'email', 'phone', 'status'];
@@ -67,6 +71,7 @@ const CV_FOLDER_NAME = 'Edura · קורות חיים';
 function setup() {
   const ss = SpreadsheetApp.getActiveSpreadsheet();
   ensureSheet_(ss, SHEET_APPLICATIONS, APPLICATIONS_HEADERS);
+  ensureSheet_(ss, SHEET_TEACHER_INQUIRIES, TEACHER_INQUIRIES_HEADERS);
   ensureSheet_(ss, SHEET_POSTED_JOBS, POSTED_JOBS_HEADERS);
   ensureSheet_(ss, SHEET_POSTED_TEACHERS, POSTED_TEACHERS_HEADERS);
   ensureSheet_(ss, SHEET_ALERTS, ALERTS_HEADERS);
@@ -126,12 +131,14 @@ function doPost(e) {
       return json_({ ok: true, refId: 'BOT-BLOCKED' });
     }
 
-    if (action === 'submit_application')   return json_(handleApplication_(body));
-    if (action === 'forward_application')  return json_(handleForwardApplication_(body));
-    if (action === 'submit_job')           return json_(handlePostJob_(body));
-    if (action === 'submit_teacher')       return json_(handlePostTeacher_(body));
-    if (action === 'subscribe_alerts')     return json_(handleAlerts_(body));
-    if (action === 'subscribe_principal')  return json_(handlePrincipal_(body));
+    if (action === 'submit_application')        return json_(handleApplication_(body));
+    if (action === 'forward_application')       return json_(handleForwardApplication_(body));
+    if (action === 'submit_teacher_inquiry')    return json_(handleTeacherInquiry_(body));
+    if (action === 'forward_teacher_inquiry')   return json_(handleForwardTeacherInquiry_(body));
+    if (action === 'submit_job')                return json_(handlePostJob_(body));
+    if (action === 'submit_teacher')            return json_(handlePostTeacher_(body));
+    if (action === 'subscribe_alerts')          return json_(handleAlerts_(body));
+    if (action === 'subscribe_principal')       return json_(handlePrincipal_(body));
 
     return json_({ ok: false, error: 'unknown action: ' + action });
   } catch (err) {
@@ -158,11 +165,14 @@ function doGet(e) {
     if (action === 'get_interest') {
       return json_(handleGetInterest_(params));
     }
+    if (action === 'get_teacher_inquiry') {
+      return json_(handleGetTeacherInquiry_(params));
+    }
     return json_({
       ok: true,
       service: 'Edura submissions',
-      actions: ['submit_application', 'forward_application', 'submit_job', 'submit_teacher', 'subscribe_alerts', 'subscribe_principal'],
-      get_actions: ['approved', 'approve', 'reject', 'get_interest']
+      actions: ['submit_application', 'forward_application', 'submit_teacher_inquiry', 'forward_teacher_inquiry', 'submit_job', 'submit_teacher', 'subscribe_alerts', 'subscribe_principal'],
+      get_actions: ['approved', 'approve', 'reject', 'get_interest', 'get_teacher_inquiry']
     });
   } catch (err) {
     return json_({ ok: false, error: String(err) });
@@ -703,6 +713,211 @@ function handleForwardApplication_(b) {
     }
   }
   return { ok: false, error: 'הפנייה לא נמצאה' };
+}
+
+// ════════════════════════════════════════════════════════════════════
+// 1d. submit_teacher_inquiry — בית ספר פונה למורה דרך אדורה
+// ────────────────────────────────────────────────────────────────────
+// כל פנייה מגיעה למייל ניהול בלבד. אדורה מאשרת בעמוד אדמין →
+// handleForwardTeacherInquiry_ שולח את הפנייה למורה.
+// ════════════════════════════════════════════════════════════════════
+function handleTeacherInquiry_(b) {
+  const teacherId = String(b.teacherId || '').trim();
+  const teacherTitle = String(b.teacherTitle || '').trim();
+  const school = String(b.school || '').trim();
+  const name = String(b.name || '').trim();
+  const role = String(b.role || '').trim();
+  const email = String(b.email || '').trim();
+  const phone = formatPhone_(b.phone);
+  const message = String(b.message || '').trim();
+
+  if (!school || !name || !email) return { ok: false, error: 'בית ספר, שם ומייל הם חובה' };
+  if (!isValidEmail_(email)) return { ok: false, error: 'מייל לא תקין' };
+
+  const refId = generateRefId_('TI');
+  const sh = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(SHEET_TEACHER_INQUIRIES);
+  sh.appendRow([new Date(), refId, teacherId, teacherTitle,
+                school, name, role, email, phoneForStorage_(phone), message,
+                '', 'pending-forward']);
+
+  const forwardUrl = forwardTeacherInquiryUrl_(refId);
+  const subject = '[אדורה · ' + refId + '] פנייה חדשה למורה — לאישור';
+  const html = buildPendingTeacherInquiryEmail_({
+    refId, school, name, role, email, phone, message, teacherTitle, teacherId, forwardUrl
+  });
+
+  try {
+    MailApp.sendEmail(ADMIN_EMAIL, subject, htmlToText_(html), {
+      name: 'אדורה · edura.co.il',
+      replyTo: email,
+      htmlBody: html
+    });
+
+    const confHtml = buildConfirmationEmail_({
+      chip: 'קיבלנו את הפנייה',
+      headline: 'תודה — קיבלנו את הפנייה שלכם',
+      greetingName: name,
+      paragraphs: [
+        'הפנייה שלכם למורה (' + (teacherTitle || 'מורה זמינ/ה') + ') הגיעה אלינו ב-אדורה.',
+        'אנחנו עוברות על כל פנייה לפני שמעבירות למורה — ככה אנחנו שומרות גם עליה וגם עליכם.',
+        'אם הפנייה רלוונטית, נעביר את הפרטים שלכם למורה בקרוב, ונעדכן אתכם במייל.'
+      ],
+      refId: refId
+    });
+    MailApp.sendEmail(email, 'אישור פנייה למורה · אדורה (' + refId + ')',
+      htmlToText_(confHtml),
+      { name: 'אדורה · edura.co.il', replyTo: ADMIN_EMAIL, htmlBody: confHtml });
+
+    log_('teacher-inquiry-received', refId + ' · ' + school + ' → teacher ' + teacherId);
+    return { ok: true, refId: refId };
+  } catch (err) {
+    log_('teacher-inquiry-error', refId + ' · ' + String(err));
+    return { ok: false, error: 'שליחת המייל נכשלה. נסו שוב או כתבו ישירות ל-' + ADMIN_EMAIL };
+  }
+}
+
+function forwardTeacherInquiryUrl_(refId) {
+  return 'https://edura.co.il/admin/forward-teacher-inquiry.html?ref=' + encodeURIComponent(refId) +
+         '&token=' + signToken_('teacher-inquiry', refId);
+}
+
+function buildPendingTeacherInquiryEmail_(d) {
+  return '' +
+    '<div dir="rtl" style="font-family:Arial,Helvetica,sans-serif;color:#0B2A4A;line-height:1.6;max-width:600px;">' +
+    '<div style="background:#FEF3C7;padding:14px 20px;border-radius:8px;margin-bottom:20px;">' +
+      '<div style="font-size:11px;color:#92400E;font-weight:700;letter-spacing:0.5px;">פנייה למורה — ממתינה לאישור · ' + escHtml_(d.refId) + '</div>' +
+      '<div style="font-size:18px;font-weight:700;color:#0B2A4A;margin-top:4px;">' + escHtml_(d.teacherTitle || 'מורה זמינ/ה') + '</div>' +
+      '<div style="font-size:13px;color:#6B7B8E;margin-top:4px;">מורה: <code style="background:#fff;padding:2px 6px;border-radius:4px;">' + escHtml_(d.teacherId) + '</code></div>' +
+    '</div>' +
+    '<p>בית ספר/מנהל מעוניין לפנות למורה דרך Edura. הפרטים:</p>' +
+    '<table style="border-collapse:collapse;width:100%;margin:14px 0;">' +
+      '<tr><td style="padding:8px 0;width:120px;color:#475569;">בית ספר/מוסד:</td><td><strong>' + escHtml_(d.school) + '</strong></td></tr>' +
+      '<tr><td style="padding:8px 0;color:#475569;">איש קשר:</td><td>' + escHtml_(d.name) + (d.role ? ' · ' + escHtml_(d.role) : '') + '</td></tr>' +
+      '<tr><td style="padding:8px 0;color:#475569;">מייל:</td><td><a href="mailto:' + escHtml_(d.email) + '" style="color:#0F9285;">' + escHtml_(d.email) + '</a></td></tr>' +
+      (d.phone ? '<tr><td style="padding:8px 0;color:#475569;">טלפון:</td><td><a href="tel:' + escHtml_(d.phone) + '" style="color:#0F9285;">' + escHtml_(d.phone) + '</a></td></tr>' : '') +
+    '</table>' +
+    (d.message ? '<div style="background:#F8FAFC;border-right:3px solid #14B8A6;padding:14px 18px;border-radius:8px;margin:14px 0;"><strong style="display:block;margin-bottom:6px;">הודעה למורה:</strong>' + escHtml_(d.message).replace(/\n/g, '<br>') + '</div>' : '') +
+    '<div style="margin:28px 0;padding:20px;background:#F0FDF4;border-radius:12px;text-align:center;">' +
+      '<div style="font-size:13px;color:#166534;margin-bottom:10px;font-weight:600;">לאישור והעברה למורה:</div>' +
+      '<a href="' + d.forwardUrl + '" style="display:inline-block;background:#15803D;color:#fff;text-decoration:none;padding:12px 28px;border-radius:999px;font-weight:700;">אשרי שליחה למורה ←</a>' +
+      '<div style="font-size:12px;color:#6B7B8E;margin-top:12px;">בעמוד תוודאי את כתובת המורה (מ-teachers-private.json) ותלחצי שלחי.</div>' +
+    '</div>' +
+    '<hr style="border:none;border-top:1px solid #E2E8F0;margin:20px 0;">' +
+    '<p style="font-size:13px;color:#475569;">מספר פנייה: <strong>' + escHtml_(d.refId) + '</strong>. כדי להשיב לבית הספר ישירות, השיבי למייל הזה.</p>' +
+    '</div>';
+}
+
+function handleGetTeacherInquiry_(params) {
+  const refId = String(params.ref || '').trim();
+  const token = String(params.token || '').trim();
+  if (!refId || !token) return { ok: false, error: 'missing ref or token' };
+  if (token !== signToken_('teacher-inquiry', refId)) return { ok: false, error: 'invalid token' };
+
+  const sh = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(SHEET_TEACHER_INQUIRIES);
+  const last = sh.getLastRow();
+  if (last < 2) return { ok: false, error: 'not found' };
+  const data = sh.getRange(2, 1, last - 1, TEACHER_INQUIRIES_HEADERS.length).getValues();
+  const refIdx = TEACHER_INQUIRIES_HEADERS.indexOf('ref_id');
+  for (let i = 0; i < data.length; i++) {
+    if (String(data[i][refIdx]) === refId) {
+      const obj = {};
+      for (let j = 0; j < TEACHER_INQUIRIES_HEADERS.length; j++) {
+        let v = data[i][j];
+        if (v instanceof Date) v = v.toISOString();
+        if (TEACHER_INQUIRIES_HEADERS[j] === 'phone') v = formatPhone_(v);
+        obj[TEACHER_INQUIRIES_HEADERS[j]] = v;
+      }
+      return { ok: true, inquiry: obj };
+    }
+  }
+  return { ok: false, error: 'not found' };
+}
+
+function handleForwardTeacherInquiry_(b) {
+  const refId = String(b.refId || '').trim();
+  const token = String(b.token || '').trim();
+  const teacherEmail = String(b.teacherEmail || '').trim();
+  const adminNote = String(b.adminNote || '').trim();
+
+  if (!refId || !token) return { ok: false, error: 'חסר ref או token' };
+  if (token !== signToken_('teacher-inquiry', refId)) return { ok: false, error: 'טוקן לא תקין' };
+  if (!teacherEmail || !isValidEmail_(teacherEmail)) return { ok: false, error: 'מייל המורה לא תקין' };
+
+  const sh = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(SHEET_TEACHER_INQUIRIES);
+  const last = sh.getLastRow();
+  if (last < 2) return { ok: false, error: 'הפנייה לא נמצאה' };
+
+  const data = sh.getRange(2, 1, last - 1, TEACHER_INQUIRIES_HEADERS.length).getValues();
+  const refIdx = TEACHER_INQUIRIES_HEADERS.indexOf('ref_id');
+  const statusIdx = TEACHER_INQUIRIES_HEADERS.indexOf('status');
+  const teacherEmailIdx = TEACHER_INQUIRIES_HEADERS.indexOf('teacher_email');
+
+  for (let i = 0; i < data.length; i++) {
+    if (String(data[i][refIdx]) === refId) {
+      const rowNum = i + 2;
+      const currStatus = String(data[i][statusIdx] || '').toLowerCase();
+      if (currStatus === 'forwarded') {
+        return { ok: false, error: 'הפנייה כבר הועברה למורה בעבר.' };
+      }
+
+      const school = String(data[i][TEACHER_INQUIRIES_HEADERS.indexOf('school')] || '');
+      const inqName = String(data[i][TEACHER_INQUIRIES_HEADERS.indexOf('name')] || '');
+      const inqRole = String(data[i][TEACHER_INQUIRIES_HEADERS.indexOf('role')] || '');
+      const inqEmail = String(data[i][TEACHER_INQUIRIES_HEADERS.indexOf('email')] || '');
+      const inqPhone = formatPhone_(data[i][TEACHER_INQUIRIES_HEADERS.indexOf('phone')]);
+      const message = String(data[i][TEACHER_INQUIRIES_HEADERS.indexOf('message')] || '');
+      const teacherTitle = String(data[i][TEACHER_INQUIRIES_HEADERS.indexOf('teacher_title')] || '');
+
+      sh.getRange(rowNum, teacherEmailIdx + 1).setValue(teacherEmail);
+      sh.getRange(rowNum, statusIdx + 1).setValue('forwarded');
+
+      const subject = '[אדורה · ' + refId + '] פנייה אלייך מ-' + (school || 'בית ספר');
+      const html = buildTeacherInquiryForwardEmail_({
+        refId: refId, school: school, name: inqName, role: inqRole,
+        email: inqEmail, phone: inqPhone, message: message,
+        teacherTitle: teacherTitle, adminNote: adminNote
+      });
+      const mailOpts = {
+        name: 'אדורה · edura.co.il',
+        replyTo: inqEmail,
+        cc: ADMIN_EMAIL,
+        htmlBody: html
+      };
+
+      try {
+        MailApp.sendEmail(teacherEmail, subject, htmlToText_(html), mailOpts);
+        log_('teacher-inquiry-forwarded', refId + ' · → ' + teacherEmail);
+        return { ok: true, refId: refId, sentTo: teacherEmail };
+      } catch (err) {
+        log_('teacher-forward-error', refId + ' · ' + String(err));
+        sh.getRange(rowNum, statusIdx + 1).setValue('forward-failed');
+        return { ok: false, error: 'שליחת המייל נכשלה: ' + String(err) };
+      }
+    }
+  }
+  return { ok: false, error: 'הפנייה לא נמצאה' };
+}
+
+function buildTeacherInquiryForwardEmail_(d) {
+  return '' +
+    '<div dir="rtl" style="font-family:Arial,Helvetica,sans-serif;color:#0B2A4A;line-height:1.6;max-width:600px;">' +
+    '<div style="background:#CCFBF1;padding:14px 20px;border-radius:8px;margin-bottom:20px;">' +
+      '<div style="font-size:11px;color:#0F9285;font-weight:700;letter-spacing:0.5px;">פנייה אלייך דרך אדורה · ' + escHtml_(d.refId) + '</div>' +
+      '<div style="font-size:18px;font-weight:700;color:#0B2A4A;margin-top:4px;">' + escHtml_(d.school || 'בית ספר') + '</div>' +
+    '</div>' +
+    '<p>שלום,</p>' +
+    '<p>קיבלת פנייה דרך <a href="https://edura.co.il" style="color:#0F9285;">edura.co.il</a> — לוח דרושים ייעודי לחינוך. הפנייה הגיעה אלייך כי הפרופיל שלך מופיע אצלנו.</p>' +
+    '<table style="border-collapse:collapse;width:100%;margin:14px 0;">' +
+      '<tr><td style="padding:8px 0;width:120px;color:#475569;">בית ספר/מוסד:</td><td><strong>' + escHtml_(d.school) + '</strong></td></tr>' +
+      '<tr><td style="padding:8px 0;color:#475569;">איש קשר:</td><td>' + escHtml_(d.name) + (d.role ? ' · ' + escHtml_(d.role) : '') + '</td></tr>' +
+      '<tr><td style="padding:8px 0;color:#475569;">מייל:</td><td><a href="mailto:' + escHtml_(d.email) + '" style="color:#0F9285;">' + escHtml_(d.email) + '</a></td></tr>' +
+      (d.phone ? '<tr><td style="padding:8px 0;color:#475569;">טלפון:</td><td><a href="tel:' + escHtml_(d.phone) + '" style="color:#0F9285;">' + escHtml_(d.phone) + '</a></td></tr>' : '') +
+    '</table>' +
+    (d.message ? '<div style="background:#F8FAFC;border-right:3px solid #14B8A6;padding:14px 18px;border-radius:8px;margin:14px 0;"><strong style="display:block;margin-bottom:6px;">הודעה אישית:</strong>' + escHtml_(d.message).replace(/\n/g, '<br>') + '</div>' : '') +
+    (d.adminNote ? '<div style="background:#FEF3C7;padding:10px 14px;border-radius:8px;margin:14px 0;font-size:13px;"><strong>הערה מאדורה:</strong> ' + escHtml_(d.adminNote) + '</div>' : '') +
+    '<hr style="border:none;border-top:1px solid #E2E8F0;margin:20px 0;">' +
+    '<p style="font-size:13px;color:#475569;">הפנייה הגיעה דרך אדורה. אם תרצי להמשיך — השיבי למייל הזה ותוצרכי ישירות מול בית הספר. מספר פנייה: <strong>' + escHtml_(d.refId) + '</strong>.</p>' +
+    '</div>';
 }
 
 function buildApplicationEmail_(d) {

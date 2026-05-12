@@ -426,6 +426,28 @@
 
 <div class="modal-overlay" id="t-modal" onclick="if(event.target===this)closeTeacherModal()"><div class="modal" id="modal-content"></div></div>
 
+<!-- Teacher inquiry modal — בית ספר רוצה לפנות למורה. עובר דרך אדורה. -->
+<div class="modal-overlay" id="inquiry-modal" onclick="if(event.target===this)closeTeacherInquiry()"><div class="modal" id="inquiry-content"></div></div>
+
+<style>
+  #inquiry-modal .modal { max-width: 560px; padding: 28px 28px 24px; }
+  #inquiry-modal h3 { margin: 0 0 6px; font-size: 22px; color: var(--ink, #0B2A4A); }
+  #inquiry-modal .inq-sub { color: #6B7B8E; font-size: 14px; margin-bottom: 18px; line-height: 1.5; }
+  #inquiry-modal .inq-chip { display: inline-flex; gap: 6px; align-items: center; background: #F1F5F9; color: #0B2A4A; border-radius: 999px; padding: 5px 11px; font-size: 12px; font-weight: 600; margin-bottom: 12px; }
+  #inquiry-modal label { display: block; font-size: 13px; color: #0B2A4A; margin: 10px 0 4px; font-weight: 600; }
+  #inquiry-modal input, #inquiry-modal textarea { width: 100%; box-sizing: border-box; padding: 10px 12px; border: 1.5px solid #E5E9EE; border-radius: 10px; font: inherit; background: #fff; color: #0B2A4A; }
+  #inquiry-modal input:focus, #inquiry-modal textarea:focus { outline: none; border-color: #BE185D; }
+  #inquiry-modal textarea { min-height: 70px; resize: vertical; }
+  #inquiry-modal .inq-actions { display: flex; gap: 10px; margin-top: 18px; }
+  #inquiry-modal .inq-actions button { flex: 1; padding: 12px; border-radius: 10px; font-weight: 700; border: none; cursor: pointer; font-size: 15px; }
+  #inquiry-modal .btn-send { background: #0B2A4A; color: #fff; }
+  #inquiry-modal .btn-send:disabled { opacity: .5; cursor: wait; }
+  #inquiry-modal .btn-cancel { background: #F1F5F9; color: #0B2A4A; }
+  #inquiry-modal .inq-error { color: #C04141; font-size: 13px; margin-top: 10px; }
+  #inquiry-modal .inq-success { padding: 18px; background: #ECFDF5; border-radius: 12px; color: #065F46; line-height: 1.6; }
+  #inquiry-modal .inq-privacy { font-size: 11px; color: #6B7B8E; margin-top: 14px; line-height: 1.5; }
+</style>
+
 <script>
 const SUBJECT_PHOTOS = {
   'מתמטיקה': ['https://images.unsplash.com/photo-1635070041078-e363dbe005cb?w=600&h=400&fit=crop&q=80&auto=format','https://images.unsplash.com/photo-1596495577886-d920f1fb7238?w=600&h=400&fit=crop&q=80&auto=format','https://images.unsplash.com/photo-1453733190371-0a9bedd82893?w=600&h=400&fit=crop&q=80&auto=format'],
@@ -478,7 +500,7 @@ function pickPhoto(t) {
   let pool = SUBJECT_PHOTOS[k];
   if (!pool || !pool.length) pool = GENERIC_PHOTOS;
   let h = 0;
-  const s = (t.city || '') + (t.id || t.name || '');
+  const s = (t.city || '') + (t.id || '');
   for (let i = 0; i < s.length; i++) h = (h * 31 + s.charCodeAt(i)) >>> 0;
   return pool[h % pool.length];
 }
@@ -505,23 +527,19 @@ let STATE = { city: '', subject: 'all', subjectQuery: '', level: 'all' };
 
 const SUBMISSIONS_URL = 'https://script.google.com/macros/s/AKfycbwleldcwH8c5k9OZ8EMDIKZ8veRbrtO1M7XwYFWg7HHbEV-SrZkLTElbFRiq4cHPlyarw/exec';
 
+// Public-only normalization. name/email/phone/url/notes never reach the client.
 function normalizeSubmittedTeacher(r) {
   const ts = r.timestamp || '';
   const dateIso = ts ? String(ts).slice(0, 10) : '';
   return {
     id: r.ref_id,
     source: 'submitted',
-    source_name: 'הגשה ישירה',
-    name: r.name || '',
     subject: r.subject || '',
     level: r.level || '',
     region: r.region || '',
+    sub_area: r.sub_area || '',
     city: r.city || '',
     scope: r.scope || '',
-    notes: r.notes || '',
-    email: r.email || '',
-    phone: r.phone || '',
-    date: dateIso,
     date_iso: dateIso,
     is_submitted: true
   };
@@ -530,19 +548,15 @@ function normalizeSubmittedTeacher(r) {
 async function loadTeachers() {
   try {
     const responses = await Promise.all([
-      fetch('data/teachers.json').then(r => r.json()).catch(() => ({})),
-      fetch('data/fb-teachers.json').then(r => r.ok ? r.json() : null).catch(() => null),
-      fetch('data/fb-teachers-2.json').then(r => r.ok ? r.json() : null).catch(() => null),
+      fetch('data/teachers-public.json').then(r => r.json()).catch(() => ({})),
       fetch(SUBMISSIONS_URL + '?action=approved').then(r => r.ok ? r.json() : null).catch(() => null)
     ]);
     const main = responses[0].teachers || [];
-    const fb1 = (responses[1] && responses[1].teachers) ? responses[1].teachers : [];
-    const fb2 = (responses[2] && responses[2].teachers) ? responses[2].teachers : [];
-    const submitted = (responses[3] && Array.isArray(responses[3].teachers))
-      ? responses[3].teachers.map(normalizeSubmittedTeacher)
+    const submitted = (responses[1] && Array.isArray(responses[1].teachers))
+      ? responses[1].teachers.map(normalizeSubmittedTeacher)
       : [];
-    TEACHERS = [...submitted, ...main, ...fb1, ...fb2].filter(t => t && (t.name || t.id));
-    console.log('[teachers v2] loaded', TEACHERS.length, '(' + submitted.length + ' submitted)');
+    TEACHERS = [...submitted, ...main].filter(t => t && t.id);
+    console.log('[teachers v3 · locked] loaded', TEACHERS.length, '(' + submitted.length + ' submitted)');
     initUI();
   } catch (e) { console.error(e); }
 }
@@ -558,7 +572,8 @@ function jobMatchesQuery(t, q) {
   if (!q) return true;
   const needle = q.trim().toLowerCase();
   if (!needle) return true;
-  const hay = ((t.subject || '') + ' ' + (t.name || '') + ' ' + (t.sub_area || '')).toLowerCase();
+  // No name in search — name is private. Search by subject/area/city/level only.
+  const hay = ((t.subject || '') + ' ' + (t.sub_area || '') + ' ' + (t.city || '') + ' ' + (t.level || '')).toLowerCase();
   return hay.includes(needle);
 }
 function jobMatchesLevel(t, k) {
@@ -629,13 +644,19 @@ function renderActiveFilters() {
   if (ca) ca.addEventListener('click', () => { STATE = { city:'', subject:'all', subjectQuery:'', level:'all' }; document.getElementById('city-input').value=''; document.getElementById('subject-query').value=''; document.getElementById('subject-query-clear').classList.remove('visible'); renderAll(); });
 }
 
+function buildTeacherTitle(t) {
+  // Anonymized — names are private. Title is "מורה ל-X" or "מורה זמין/ה".
+  if (t.subject) return 'מורה ל' + t.subject;
+  return 'מורה זמין/ה';
+}
+
 function renderTeacherCard(t) {
   const photo = pickPhoto(t);
   const city = t.city || (Array.isArray(t.region) ? t.region[0] : t.region) || 'מורה זמין/ה';
   const regionRaw = (Array.isArray(t.region) ? t.region.join(' / ') : t.region) || '';
   const region = (regionRaw && regionRaw !== city) ? 'אזור ' + regionRaw : '';
   const meta = [];
-  if (t.scope) meta.push((t.scope.includes('%') || /^\d+$/.test(String(t.scope))) ? t.scope + '%' : t.scope);
+  if (t.scope) meta.push((String(t.scope).includes('%') || /^\d+$/.test(String(t.scope))) ? t.scope + '%' : t.scope);
   if (t.level) meta.push(t.level);
   return (
     '<article class="t-card" onclick="openTeacherModal(\'' + escapeHtml(t.id) + '\')">' +
@@ -645,7 +666,7 @@ function renderTeacherCard(t) {
         '<div class="t-hero-city"><div class="t-hero-city-name">' + escapeHtml(city) + '</div><div class="t-hero-region">' + escapeHtml(region) + '</div></div>' +
       '</div>' +
       '<div class="t-body">' +
-        '<div class="t-name">' + escapeHtml(t.name || 'מורה') + '</div>' +
+        '<div class="t-name">' + escapeHtml(buildTeacherTitle(t)) + '</div>' +
         (t.subject ? '<div class="t-subject">' + escapeHtml(t.subject) + '</div>' : '') +
         (meta.length ? '<div class="t-meta">' + meta.map(m => escapeHtml(m)).join('<span class="t-meta-dot"></span>') + '</div>' : '') +
       '</div>' +
@@ -678,13 +699,9 @@ function renderRows() {
 }
 function renderAll() { renderSubjectChips(); renderLevelChips(); renderActiveFilters(); renderRows(); }
 
-function buildWaLink(phone, name) {
-  if (!phone) return '';
-  let p = String(phone).replace(/\D/g, '');
-  if (!p) return '';
-  if (p.startsWith('0')) p = '972' + p.slice(1);
-  return 'https://api.whatsapp.com/send?phone=' + p + '&text=' + encodeURIComponent('שלום' + (name ? ' ' + name : '') + ', ראיתי את הפרסום שלך באדורה ויש לי הצעת עבודה');
-}
+// Teacher modal — anonymized listing. Names + contact details are private.
+// School/manager wanting to contact uses the "פנייה דרך אדורה" form →
+// goes to Edura inbox → Edura clicks "אשרי שליחה" → forwarded to teacher.
 
 function openTeacherModal(id) {
   const t = TEACHERS.find(x => String(x.id) === String(id));
@@ -695,48 +712,33 @@ function openTeacherModal(id) {
   const region = (regionRaw && regionRaw !== city) ? 'אזור ' + regionRaw : '';
   const tags = [];
   if (t.subject) tags.push('<span class="modal-tag">' + escapeHtml(t.subject) + '</span>');
-  if (t.scope) tags.push('<span class="modal-tag scope">' + escapeHtml(t.scope) + (t.scope.includes('%') || /^\d+$/.test(String(t.scope)) ? '%' : '') + '</span>');
+  if (t.scope) tags.push('<span class="modal-tag scope">' + escapeHtml(t.scope) + (String(t.scope).includes('%') || /^\d+$/.test(String(t.scope)) ? '%' : '') + '</span>');
   if (t.level) tags.push('<span class="modal-tag level">' + escapeHtml(t.level) + '</span>');
   if (region) tags.push('<span class="modal-tag region">' + escapeHtml(region) + '</span>');
 
   const meta = [];
   if (t.sub_area) meta.push(['אזור משנה', t.sub_area]);
-  if (t.source_name) meta.push(['פורסם דרך', t.source_name]);
-  if (t.date) meta.push(['פורסם', t.date]);
+  if (t.date_iso) meta.push(['פורסם', t.date_iso]);
 
-  const blocked = t.contact_via_platform === true;
-  const wa = !blocked ? buildWaLink(t.phone, t.name) : '';
-  const actions = [];
-  if (wa) actions.push('<a class="contact-btn wa" href="' + escapeHtml(wa) + '" target="_blank"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 2.1.55 4.15 1.6 5.96L2 22l4.25-1.71c1.74.95 3.71 1.45 5.79 1.45 5.46 0 9.91-4.45 9.91-9.91S17.5 2 12.04 2z"/></svg> WhatsApp</a>');
-  if (!blocked && t.phone) actions.push('<a class="contact-btn phone" href="tel:' + escapeHtml(t.phone) + '"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg> ' + escapeHtml(t.phone) + '</a>');
-  if (!blocked && t.email) actions.push('<a class="contact-btn email" href="mailto:' + escapeHtml(t.email) + '?subject=' + encodeURIComponent('הצעת עבודה דרך אדורה') + '"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg> מייל</a>');
-
-  let contactBlock;
-  if (actions.length) {
-    contactBlock = '<div class="modal-contact"><div class="modal-contact-title">יצירת קשר ישירה</div><div class="modal-contact-actions">' + actions.join('') + '</div></div>';
-  } else {
-    const linkUrl = t.fb_url || t.url || '';
-    const isFbPost = !!t.fb_url || linkUrl.includes('facebook.com');
-    const sourceName = t.source_name || (isFbPost ? 'פייסבוק' : 'המקור');
-    if (linkUrl) {
-      const btnLabel = isFbPost ? 'צפייה בפוסט בפייסבוק' : 'צפייה במודעה ב' + sourceName;
-      const btnClass = isFbPost ? 'fb-link' : 'source-link';
-      const btnIcon = isFbPost
-        ? '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M22 12c0-5.52-4.48-10-10-10S2 6.48 2 12c0 4.84 3.44 8.87 8 9.8V15H8v-3h2V9.5C10 7.57 11.57 6 13.5 6H16v3h-2c-.55 0-1 .45-1 1v2h3v3h-3v6.95c5.05-.5 9-4.76 9-9.95z"/></svg>'
-        : '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>';
-      const explain = isFbPost
-        ? 'מודעה זו פורסמה ב' + escapeHtml(sourceName) + '. ליצירת קשר עם המורה — היכנסו לפוסט המקורי וכתבו תגובה או הודעה ישירה.'
-        : 'מודעה זו פורסמה ב' + escapeHtml(sourceName) + '. ליצירת קשר עם המורה — צפו במודעה המקורית.';
-      contactBlock = '<div class="modal-contact"><div class="modal-contact-title">פנייה למורה</div><div style="font-size:13px;color:#2C3D55;margin:6px 0 12px;line-height:1.55">' + explain + '</div><div class="modal-contact-actions"><a class="contact-btn ' + btnClass + '" href="' + escapeHtml(linkUrl) + '" target="_blank" rel="noopener">' + btnIcon + ' ' + btnLabel + '</a></div></div>';
-    } else {
-      contactBlock = '<div class="modal-contact"><div class="modal-contact-title">פנייה דרך אדורה</div><div style="font-size:13px;color:#2C3D55;margin-top:4px">לא נמצאו פרטי קשר ישירים. כתבו אלינו ל-<a href="https://mail.google.com/mail/?view=cm&fs=1&to=meytal@edura.co.il" style="color:#BE185D;font-weight:700" target="_blank" rel="noopener">meytal@edura.co.il</a> ונחבר אתכם.</div></div>';
-    }
-  }
+  const contactBlock =
+    '<div class="modal-contact">' +
+      '<div class="modal-contact-title">מעוניינים לפנות למורה?</div>' +
+      '<div style="font-size:13px;color:#2C3D55;margin:6px 0 14px;line-height:1.55">' +
+        'הפנייה תועבר דרך Edura. אנחנו שומרות על פרטיות המורות — שמות וקשר ישיר לא חשופים. ' +
+        'מלאו את הטופס, אנחנו נוודא שהמשרה רלוונטית, ונעביר את פרטיכם למורה בעצמנו.' +
+      '</div>' +
+      '<div class="modal-contact-actions">' +
+        '<button type="button" class="contact-btn phone" onclick="openTeacherInquiry(\'' + escapeHtml(t.id) + '\')" style="border:none;cursor:pointer">' +
+          '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2 11 13"/><path d="m22 2-7 20-4-9-9-4 20-7z"/></svg>' +
+          'פנייה דרך אדורה' +
+        '</button>' +
+      '</div>' +
+    '</div>';
 
   document.getElementById('modal-content').innerHTML =
     '<div class="modal-hero" style="background-image:url(\'' + photo + '\')"><div class="modal-hero-overlay"></div><button class="modal-close" onclick="closeTeacherModal()">×</button><div class="modal-hero-info"><div class="modal-hero-city">' + escapeHtml(city) + '</div><div class="modal-hero-region">' + escapeHtml(region) + '</div></div></div>' +
     '<div class="modal-body">' +
-      '<h2 class="modal-name">' + escapeHtml(t.name || 'מורה') + '</h2>' +
+      '<h2 class="modal-name">' + escapeHtml(buildTeacherTitle(t)) + '</h2>' +
       (t.subject ? '<div class="modal-subject">' + escapeHtml(t.subject) + '</div>' : '') +
       (tags.length ? '<div class="modal-tags">' + tags.join('') + '</div>' : '') +
       (meta.length ? '<div class="modal-section"><div class="modal-section-label">פרטים נוספים</div><div class="modal-meta-grid">' + meta.map(([k,v]) => '<div class="modal-meta-item"><span class="modal-meta-item-label">' + escapeHtml(k) + '</span><span class="modal-meta-item-value">' + escapeHtml(v) + '</span></div>').join('') + '</div></div>' : '') +
@@ -748,6 +750,138 @@ function openTeacherModal(id) {
 function closeTeacherModal() { document.getElementById('t-modal').classList.remove('open'); document.body.style.overflow = ''; }
 window.openTeacherModal = openTeacherModal;
 window.closeTeacherModal = closeTeacherModal;
+
+// ──────────────────────────────────────────────────
+// Teacher inquiry form — בית ספר/מנהל פונה למורה
+// Sends ONLY: teacherId + inquirer info. Teacher's identity/contact stays private.
+// Apps Script receives → emails Edura → Edura clicks "אשרי שליחה" in admin to forward.
+// ──────────────────────────────────────────────────
+function openTeacherInquiry(teacherId) {
+  const t = TEACHERS.find(x => String(x.id) === String(teacherId));
+  if (!t) return;
+  const subtitleParts = [];
+  if (t.city) subtitleParts.push(t.city);
+  if (t.scope) subtitleParts.push(String(t.scope).includes('%') || /^\d+$/.test(String(t.scope)) ? t.scope + '%' : t.scope);
+  if (t.level) subtitleParts.push(t.level);
+
+  const html =
+    '<div class="inq-chip">' +
+      '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-7.5 8-13a8 8 0 1 0-16 0c0 5.5 8 13 8 13z"/><circle cx="12" cy="9" r="3"/></svg>' +
+      escapeHtml(subtitleParts.join(' · ') || buildTeacherTitle(t)) +
+    '</div>' +
+    '<h3 id="inquiry-title">' + escapeHtml(buildTeacherTitle(t)) + '</h3>' +
+    '<div class="inq-sub">השאירו פרטי בית הספר/המוסד והודעה למורה. אנחנו נעבור על הפנייה, נוודא שהיא רלוונטית, ונעביר את הפרטים שלכם למורה.</div>' +
+    '<form id="inquiry-form" onsubmit="submitTeacherInquiry(event, \'' + escapeHtml(teacherId) + '\')">' +
+      '<label for="inq-school">שם בית הספר / המוסד <span style="color:#C04141">*</span></label>' +
+      '<input id="inq-school" name="school" type="text" required />' +
+      '<label for="inq-name">שם איש קשר <span style="color:#C04141">*</span></label>' +
+      '<input id="inq-name" name="name" type="text" required autocomplete="name" />' +
+      '<label for="inq-role">תפקיד</label>' +
+      '<input id="inq-role" name="role" type="text" placeholder="מנהל/ת, סגן/ית, רכז/ת..." />' +
+      '<label for="inq-email">מייל לחזרה <span style="color:#C04141">*</span></label>' +
+      '<input id="inq-email" name="email" type="email" required autocomplete="email" />' +
+      '<label for="inq-phone">טלפון</label>' +
+      '<input id="inq-phone" name="phone" type="tel" autocomplete="tel" inputmode="tel" />' +
+      '<label for="inq-message">הודעה למורה (אופציונלי)</label>' +
+      '<textarea id="inq-message" name="message" placeholder="פירוט קצר על המשרה — מקצוע, שכבה, היקף, מועד התחלה..."></textarea>' +
+      '<div class="inq-error" id="inquiry-error" style="display:none"></div>' +
+      '<div class="inq-actions">' +
+        '<button type="button" class="btn-cancel" onclick="closeTeacherInquiry()">ביטול</button>' +
+        '<button type="submit" class="btn-send" id="inquiry-submit">שלחו פנייה</button>' +
+      '</div>' +
+      '<div class="inq-privacy">הפרטים שלכם מגיעים אלינו ב-אדורה בלבד. נעבור על הפנייה ונחליט אם להעביר למורה. הפרטים של המורה אינם נחשפים בשום שלב.</div>' +
+    '</form>';
+
+  document.getElementById('inquiry-content').innerHTML = html;
+  document.getElementById('inquiry-modal').classList.add('open');
+  document.body.style.overflow = 'hidden';
+  setTimeout(() => { const f = document.getElementById('inq-school'); if (f) f.focus(); }, 50);
+}
+
+function closeTeacherInquiry() {
+  const m = document.getElementById('inquiry-modal');
+  if (!m) return;
+  m.classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+async function submitTeacherInquiry(event, teacherId) {
+  event.preventDefault();
+  const err = document.getElementById('inquiry-error');
+  const btn = document.getElementById('inquiry-submit');
+  err.style.display = 'none';
+
+  const school = document.getElementById('inq-school').value.trim();
+  const name = document.getElementById('inq-name').value.trim();
+  const role = document.getElementById('inq-role').value.trim();
+  const email = document.getElementById('inq-email').value.trim();
+  const phone = document.getElementById('inq-phone').value.trim();
+  const message = document.getElementById('inq-message').value.trim();
+
+  if (!school || !name || !email) {
+    err.textContent = 'בית ספר, שם איש קשר ומייל הם חובה';
+    err.style.display = 'block';
+    return;
+  }
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    err.textContent = 'מייל לא תקין';
+    err.style.display = 'block';
+    return;
+  }
+
+  const t = TEACHERS.find(x => String(x.id) === String(teacherId)) || {};
+  const ctx = [];
+  if (t.subject) ctx.push(t.subject);
+  if (t.city) ctx.push(t.city);
+  if (t.level) ctx.push(t.level);
+  if (t.scope) ctx.push(String(t.scope).includes('%') || /^\d+$/.test(String(t.scope)) ? t.scope + '%' : t.scope);
+  const teacherTitle = ctx.join(' · ') || buildTeacherTitle(t);
+
+  btn.disabled = true;
+  btn.textContent = 'שולחים...';
+
+  try {
+    const res = await fetch(SUBMISSIONS_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify({
+        action: 'submit_teacher_inquiry',
+        teacherId: teacherId,
+        teacherTitle: teacherTitle,
+        school: school,
+        name: name,
+        role: role,
+        email: email,
+        phone: phone,
+        message: message
+      })
+    });
+    const data = await res.json().catch(() => ({}));
+    if (data && data.ok) {
+      document.getElementById('inquiry-content').innerHTML =
+        '<div class="inq-success">' +
+          '<div style="font-size:18px;font-weight:700;margin-bottom:8px">תודה! קיבלנו את הפנייה</div>' +
+          '<div>הפנייה שלכם הגיעה אלינו ב-אדורה. נעבור על הפרטים, ואם המשרה מתאימה — נעביר ישירות למורה. נחזור אליכם למייל ' + escapeHtml(email) + '.</div>' +
+          '<div style="margin-top:14px"><button class="btn-cancel" style="padding:10px 18px;border:none;border-radius:10px;background:#F1F5F9;color:#0B2A4A;cursor:pointer;font-weight:600" onclick="closeTeacherInquiry()">סגירה</button></div>' +
+        '</div>';
+    } else {
+      err.textContent = (data && data.error) ? data.error : 'משהו השתבש. נסו שוב או כתבו ל-meytal@edura.co.il';
+      err.style.display = 'block';
+      btn.disabled = false;
+      btn.textContent = 'שלחו פנייה';
+    }
+  } catch (e) {
+    err.textContent = 'שליחה נכשלה — בדקו חיבור לאינטרנט';
+    err.style.display = 'block';
+    btn.disabled = false;
+    btn.textContent = 'שלחו פנייה';
+  }
+}
+
+window.openTeacherInquiry = openTeacherInquiry;
+window.closeTeacherInquiry = closeTeacherInquiry;
+window.submitTeacherInquiry = submitTeacherInquiry;
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeTeacherInquiry(); });
 document.addEventListener('keydown', e => { if (e.key === 'Escape') closeTeacherModal(); });
 
 // City picker

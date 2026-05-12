@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>אדורה · אישור והעברה למורה</title>
+<meta name="robots" content="noindex,nofollow">
+<style>
+  :root {
+    --ink: #0B2A4A;
+    --muted: #6B7B8E;
+    --line: #E5E9EE;
+    --bg: #F8FAFC;
+    --bg-2: #F1F5F9;
+    --accent: #14B8A6;
+    --accent-deep: #0F9285;
+    --warning-bg: #FEF3C7;
+    --warning-ink: #92400E;
+    --success-bg: #ECFDF5;
+    --success-ink: #065F46;
+    --danger: #C04141;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: 'Heebo', Arial, sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+    min-height: 100vh;
+    padding: 24px 16px;
+    line-height: 1.5;
+  }
+  .container { max-width: 720px; margin: 0 auto; }
+  header { margin-bottom: 24px; }
+  .brand {
+    font-size: 13px; font-weight: 700; color: var(--accent-deep);
+    letter-spacing: 1px; text-transform: uppercase; margin-bottom: 6px;
+  }
+  h1 { margin: 0 0 6px; font-size: 26px; }
+  .sub { color: var(--muted); font-size: 14px; }
+  .card {
+    background: #fff; border-radius: 18px; padding: 28px;
+    box-shadow: 0 4px 24px rgba(0,0,0,.04); border: 1px solid var(--line);
+    margin-bottom: 18px;
+  }
+  .chip {
+    display: inline-block; padding: 4px 12px; border-radius: 999px;
+    font-size: 11px; font-weight: 700; letter-spacing: 0.5px;
+    background: var(--warning-bg); color: var(--warning-ink); margin-bottom: 12px;
+  }
+  .chip.success { background: var(--success-bg); color: var(--success-ink); }
+  .chip.error { background: #FEE2E2; color: var(--danger); }
+  .row {
+    display: flex; gap: 14px; padding: 10px 0;
+    border-bottom: 1px solid var(--line);
+  }
+  .row:last-child { border-bottom: none; }
+  .row .k { width: 110px; color: var(--muted); font-size: 13px; flex-shrink: 0; }
+  .row .v { flex: 1; font-weight: 600; word-break: break-word; }
+  .row .v a { color: var(--accent-deep); }
+  .message-box {
+    background: var(--bg-2); border-right: 3px solid var(--accent);
+    padding: 14px 18px; border-radius: 10px; margin-top: 12px;
+    white-space: pre-wrap; font-size: 14px;
+  }
+  label { display: block; font-size: 13px; font-weight: 700; margin: 14px 0 6px; }
+  input, textarea {
+    width: 100%; padding: 11px 14px; border: 1.5px solid var(--line);
+    border-radius: 10px; font: inherit; background: #fff; color: var(--ink);
+  }
+  input:focus, textarea:focus { outline: none; border-color: var(--accent); }
+  textarea { min-height: 70px; resize: vertical; }
+  .hint { font-size: 12px; color: var(--muted); margin-top: 4px; }
+  .actions { display: flex; gap: 12px; margin-top: 22px; }
+  button {
+    flex: 1; padding: 14px; border: none; border-radius: 12px;
+    font: inherit; font-weight: 700; cursor: pointer; font-size: 15px;
+  }
+  .btn-send { background: #15803D; color: #fff; }
+  .btn-send:disabled { opacity: .5; cursor: wait; }
+  .btn-cancel { background: var(--bg-2); color: var(--ink); }
+  .loading, .error, .success {
+    padding: 24px; text-align: center; border-radius: 12px;
+  }
+  .error { background: #FEE2E2; color: var(--danger); }
+  .success { background: var(--success-bg); color: var(--success-ink); }
+  code {
+    background: var(--bg-2); padding: 2px 8px; border-radius: 6px;
+    font-size: 12px; font-family: 'SF Mono', Consolas, monospace;
+  }
+  .private-note {
+    background: #EEF2FF; color: #3730A3; padding: 14px 18px;
+    border-radius: 12px; font-size: 13px; margin-top: 18px;
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+  <header>
+    <div class="brand">אדורה · ניהול פנייות למורות</div>
+    <h1>אישור והעברה למורה</h1>
+    <div class="sub">סקרי את פרטי הפנייה, וודאי את כתובת המייל של המורה, ולחצי "שלחי עכשיו".</div>
+  </header>
+
+  <div id="content">
+    <div class="card"><div class="loading">טוענת את פרטי הפנייה...</div></div>
+  </div>
+</div>
+
+<script>
+const SUBMISSIONS_URL = 'https://script.google.com/macros/s/AKfycbwleldcwH8c5k9OZ8EMDIKZ8veRbrtO1M7XwYFWg7HHbEV-SrZkLTElbFRiq4cHPlyarw/exec';
+
+function getParams() {
+  const u = new URL(window.location.href);
+  return {
+    ref: u.searchParams.get('ref') || '',
+    token: u.searchParams.get('token') || ''
+  };
+}
+
+function esc(s) {
+  return String(s == null ? '' : s)
+    .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+}
+
+function showError(msg) {
+  document.getElementById('content').innerHTML =
+    '<div class="card"><div class="chip error">שגיאה</div>' +
+    '<div class="error">' + esc(msg) + '</div></div>';
+}
+
+function showSuccess(teacherEmail, refId) {
+  document.getElementById('content').innerHTML =
+    '<div class="card">' +
+      '<div class="chip success">נשלחה</div>' +
+      '<div class="success">' +
+        '<div style="font-size:18px;font-weight:700;margin-bottom:10px">הפנייה הועברה למורה</div>' +
+        '<div>נשלחה ל-<strong>' + esc(teacherEmail) + '</strong>. עותק נשלח גם אלינו ב-edura. סטטוס: <code>forwarded</code>. ' +
+        'מספר פנייה: <code>' + esc(refId) + '</code></div>' +
+      '</div>' +
+      '<div style="margin-top:18px;text-align:center;"><a href="https://edura.co.il" style="color:var(--accent-deep);text-decoration:none;font-weight:600">חזרה לאדורה ←</a></div>' +
+    '</div>';
+}
+
+function render(inq) {
+  const refId = inq.ref_id;
+  const html =
+    '<div class="card">' +
+      '<div class="chip">ממתינה לאישור · ' + esc(refId) + '</div>' +
+      '<h2 style="margin:0 0 4px;font-size:22px">' + esc(inq.teacher_title || 'מורה זמינ/ה') + '</h2>' +
+      '<div class="sub" style="margin-bottom:14px">מורה: <code>' + esc(inq.teacher_id) + '</code></div>' +
+
+      '<div class="row"><div class="k">בית ספר:</div><div class="v">' + esc(inq.school) + '</div></div>' +
+      '<div class="row"><div class="k">איש קשר:</div><div class="v">' + esc(inq.name) + (inq.role ? ' · ' + esc(inq.role) : '') + '</div></div>' +
+      '<div class="row"><div class="k">מייל:</div><div class="v"><a href="mailto:' + esc(inq.email) + '">' + esc(inq.email) + '</a></div></div>' +
+      (inq.phone ? '<div class="row"><div class="k">טלפון:</div><div class="v"><a href="tel:' + esc(inq.phone) + '">' + esc(inq.phone) + '</a></div></div>' : '') +
+      '<div class="row"><div class="k">סטטוס:</div><div class="v">' + esc(inq.status) + '</div></div>' +
+      (inq.message ? '<div class="message-box">' + esc(inq.message) + '</div>' : '') +
+    '</div>' +
+
+    '<div class="card">' +
+      '<h3 style="margin:0 0 4px;font-size:18px">העברה למורה</h3>' +
+      '<div class="sub" style="margin-bottom:14px">בדקי ב-<code>data/teachers-private.json</code> אצלך מקומית לפי <code>' + esc(inq.teacher_id) + '</code> כדי למצוא את כתובת המורה.</div>' +
+
+      '<label for="teacher-email">מייל המורה *</label>' +
+      '<input id="teacher-email" type="email" placeholder="teacher@example.com" required />' +
+      '<div class="hint">הכתובת שאליה תועבר הפנייה. עותק יישלח גם ל-' + esc('meytal@edura.co.il') + '.</div>' +
+
+      '<label for="admin-note">הערה מאדורה (אופציונלי)</label>' +
+      '<textarea id="admin-note" placeholder="למשל: בית הספר הזה רציני, ראיתי שהמיקום מתאים..."></textarea>' +
+
+      '<div id="form-error" class="hint" style="color:var(--danger);display:none"></div>' +
+
+      '<div class="actions">' +
+        '<button type="button" class="btn-cancel" onclick="window.close()">לא עכשיו</button>' +
+        '<button type="button" class="btn-send" id="btn-send" onclick="doForward()">שלחי למורה</button>' +
+      '</div>' +
+    '</div>' +
+
+    '<div class="private-note">' +
+      '<strong>מה קורה אחרי השליחה:</strong><br>' +
+      '· הפרטים של בית הספר + הודעה אישית נשלחים למורה.<br>' +
+      '· המורה רואה את המייל של בית הספר ויכולה להשיב ישירות אליו.<br>' +
+      '· סטטוס הפנייה משתנה ל-<code>forwarded</code>.<br>' +
+      '· עותק מהמייל יישלח אלייך ל-<code>meytal@edura.co.il</code>.' +
+    '</div>';
+
+  document.getElementById('content').innerHTML = html;
+}
+
+async function loadInquiry() {
+  const { ref, token } = getParams();
+  if (!ref || !token) {
+    showError('חסרים פרמטרים בקישור (ref ו-token). השתמשי בקישור שהגיע במייל.');
+    return;
+  }
+  try {
+    const url = SUBMISSIONS_URL + '?action=get_teacher_inquiry&ref=' + encodeURIComponent(ref) +
+                '&token=' + encodeURIComponent(token);
+    const res = await fetch(url);
+    const data = await res.json();
+    if (!data.ok) {
+      showError(data.error || 'לא הצלחנו לטעון את הפנייה');
+      return;
+    }
+    render(data.inquiry);
+  } catch (e) {
+    showError('שגיאת רשת: ' + String(e));
+  }
+}
+
+async function doForward() {
+  const { ref, token } = getParams();
+  const teacherEmail = document.getElementById('teacher-email').value.trim();
+  const adminNote = document.getElementById('admin-note').value.trim();
+  const err = document.getElementById('form-error');
+  const btn = document.getElementById('btn-send');
+  err.style.display = 'none';
+
+  if (!teacherEmail || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(teacherEmail)) {
+    err.textContent = 'הכניסי כתובת מייל תקינה של המורה';
+    err.style.display = 'block';
+    return;
+  }
+
+  btn.disabled = true;
+  btn.textContent = 'שולחת...';
+
+  try {
+    const res = await fetch(SUBMISSIONS_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify({
+        action: 'forward_teacher_inquiry',
+        refId: ref,
+        token: token,
+        teacherEmail: teacherEmail,
+        adminNote: adminNote
+      })
+    });
+    const data = await res.json();
+    if (data.ok) {
+      showSuccess(teacherEmail, ref);
+    } else {
+      err.textContent = data.error || 'השליחה נכשלה';
+      err.style.display = 'block';
+      btn.disabled = false;
+      btn.textContent = 'שלחי למורה';
+    }
+  } catch (e) {
+    err.textContent = 'שגיאת רשת: ' + String(e);
+    err.style.display = 'block';
+    btn.disabled = false;
+    btn.textContent = 'שלחי למורה';
+  }
+}
+
+window.doForward = doForward;
+loadInquiry();
+</script>
+
+</body>
+</html>
