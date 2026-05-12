@@ -168,11 +168,14 @@ function doGet(e) {
     if (action === 'get_teacher_inquiry') {
       return json_(handleGetTeacherInquiry_(params));
     }
+    if (action === 'lookup_school_email') {
+      return json_(handleLookupSchoolEmail_(params));
+    }
     return json_({
       ok: true,
       service: 'Edura submissions',
       actions: ['submit_application', 'forward_application', 'submit_teacher_inquiry', 'forward_teacher_inquiry', 'submit_job', 'submit_teacher', 'subscribe_alerts', 'subscribe_principal'],
-      get_actions: ['approved', 'approve', 'reject', 'get_interest', 'get_teacher_inquiry']
+      get_actions: ['approved', 'approve', 'reject', 'get_interest', 'get_teacher_inquiry', 'lookup_school_email']
     });
   } catch (err) {
     return json_({ ok: false, error: String(err) });
@@ -636,6 +639,68 @@ function handleGetInterest_(params) {
     }
   }
   return { ok: false, error: 'not found' };
+}
+
+// ════════════════════════════════════════════════════════════════════
+// 1b2. lookup_school_email — שליפה אוטומטית של מייל בית הספר
+// ────────────────────────────────────────────────────────────────────
+// אדמין forward-interest.html קורא לזה כדי למלא מראש את מייל בית הספר.
+// עובד רק למשרות שמנהל הגיש דרך publish-job.html (id מתחיל ב-"JOB-").
+// למשרות סרוקות (itu-/igm-/shatil-) אדורה צריכה להכניס ידנית מ-jobs-private.json
+// ════════════════════════════════════════════════════════════════════
+function handleLookupSchoolEmail_(params) {
+  const refId = String(params.ref || '').trim();
+  const token = String(params.token || '').trim();
+  if (!refId || !token) return { ok: false, error: 'missing ref or token' };
+  if (token !== signToken_('interest', refId)) return { ok: false, error: 'invalid token' };
+
+  // שלב 1: למצוא את job_id מהפניה המקורית
+  const appSh = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(SHEET_APPLICATIONS);
+  const appLast = appSh.getLastRow();
+  if (appLast < 2) return { ok: true, found: false };
+  const appData = appSh.getRange(2, 1, appLast - 1, APPLICATIONS_HEADERS.length).getValues();
+  const refIdx = APPLICATIONS_HEADERS.indexOf('ref_id');
+  const jobIdIdx = APPLICATIONS_HEADERS.indexOf('job_id');
+
+  let jobId = '';
+  for (let i = 0; i < appData.length; i++) {
+    if (String(appData[i][refIdx]) === refId) {
+      jobId = String(appData[i][jobIdIdx] || '').trim();
+      break;
+    }
+  }
+  if (!jobId) return { ok: true, found: false };
+
+  // רק משרות שהוגשו ידנית דרך publish-job.html מתחילות ב-"JOB-"
+  // משרות סרוקות (itu/igm/shatil) לא נמצאות בגיליון הזה
+  if (!/^JOB-/i.test(jobId)) return { ok: true, found: false, jobId: jobId, source: 'scanned' };
+
+  // שלב 2: לחפש את המשרה ב-posted_jobs לפי ref_id
+  const jobSh = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(SHEET_POSTED_JOBS);
+  if (!jobSh) return { ok: true, found: false };
+  const jobLast = jobSh.getLastRow();
+  if (jobLast < 2) return { ok: true, found: false };
+
+  const jobData = jobSh.getRange(2, 1, jobLast - 1, POSTED_JOBS_HEADERS.length).getValues();
+  const jobRefIdx = POSTED_JOBS_HEADERS.indexOf('ref_id');
+  const schoolIdx = POSTED_JOBS_HEADERS.indexOf('school');
+  const emailIdx = POSTED_JOBS_HEADERS.indexOf('email');
+  const contactIdx = POSTED_JOBS_HEADERS.indexOf('contact_name');
+
+  for (let i = 0; i < jobData.length; i++) {
+    if (String(jobData[i][jobRefIdx]) === jobId) {
+      return {
+        ok: true,
+        found: true,
+        jobId: jobId,
+        source: 'submitted',
+        schoolEmail: String(jobData[i][emailIdx] || ''),
+        schoolName: String(jobData[i][schoolIdx] || ''),
+        contactName: String(jobData[i][contactIdx] || '')
+      };
+    }
+  }
+  return { ok: true, found: false, jobId: jobId };
 }
 
 // ════════════════════════════════════════════════════════════════════

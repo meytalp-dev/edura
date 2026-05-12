@@ -240,11 +240,11 @@ function render(interest) {
 
     '<div class="card">' +
       '<h3 style="margin:0 0 4px;font-size:18px">העברה לבית הספר</h3>' +
-      '<div class="sub" style="margin-bottom:14px">בדקי ב-<code>data/jobs-private.json</code> אצלך מקומית לפי <code>' + esc(interest.job_id) + '</code> כדי למצוא את כתובת בית הספר.</div>' +
+      '<div class="sub" style="margin-bottom:14px" id="lookup-status">בודקים אם יש פרטי בית הספר אצלנו...</div>' +
 
       '<label for="school-email">מייל בית הספר *</label>' +
       '<input id="school-email" type="email" placeholder="school@example.org.il" required />' +
-      '<div class="hint">הכתובת שאליה תועבר הפנייה. עותק יישלח גם ל-' + esc('meytal@edura.co.il') + '.</div>' +
+      '<div class="hint" id="email-hint">הכתובת שאליה תועבר הפנייה. עותק יישלח גם ל-' + esc('meytal@edura.co.il') + '.</div>' +
 
       '<label for="school-name">שם בית הספר (לתיעוד)</label>' +
       '<input id="school-name" type="text" placeholder="למשל: חטב אורט רחובות" />' +
@@ -270,6 +270,34 @@ function render(interest) {
 
   document.getElementById('content').innerHTML = html;
   window._interest = interest;
+
+  // נסה למלא אוטומטית את פרטי בית הספר (עובד למשרות שהוגשו ידנית דרך publish-job.html)
+  lookupSchoolEmail(interest.job_id);
+}
+
+async function lookupSchoolEmail(jobId) {
+  const { ref, token } = getParams();
+  const status = document.getElementById('lookup-status');
+  try {
+    const url = SUBMISSIONS_URL + '?action=lookup_school_email&ref=' + encodeURIComponent(ref) +
+                '&token=' + encodeURIComponent(token);
+    const res = await fetch(url);
+    const data = await res.json();
+    if (data.ok && data.found && data.schoolEmail) {
+      // מילוי אוטומטי
+      document.getElementById('school-email').value = data.schoolEmail;
+      document.getElementById('school-name').value = data.schoolName || '';
+      status.innerHTML = '<span style="color:#065F46;font-weight:600">✓ פרטי בית הספר מולאו אוטומטית.</span> ' +
+        'המשרה הוגשה דרך הטופס באתר. בדקי שהפרטים נכונים ולחצי שלחי.';
+    } else if (data.source === 'scanned') {
+      status.innerHTML = '<span style="color:#92400E">המשרה הזו נסרקה אוטומטית ממקור חיצוני (' + esc(jobId) + ').</span> ' +
+        'בדקי ב-<code>data/jobs-private.json</code> אצלך מקומית כדי למצוא את כתובת בית הספר ומלאי ידנית.';
+    } else {
+      status.innerHTML = 'בדקי ב-<code>data/jobs-private.json</code> אצלך מקומית לפי <code>' + esc(jobId) + '</code> כדי למצוא את כתובת בית הספר ומלאי ידנית.';
+    }
+  } catch (e) {
+    status.innerHTML = 'לא הצלחנו לבדוק אוטומטית. מלאי ידנית מ-<code>data/jobs-private.json</code>.';
+  }
 }
 
 async function loadInterest() {
