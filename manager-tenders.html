@@ -1114,8 +1114,9 @@ function render() {
     if (p.school_type_raw) backItems.push({ label: 'סוג מוסד', value: esc(p.school_type_raw), full: true });
     if (p.notes) backItems.push({ label: 'הערות מהפרסום', value: esc(p.notes), full: true });
 
-    // Future enrichment fields (data.gov.il)
+    // Enrichment fields from data.gov.il
     if (p.students_count) backItems.push({ label: 'מספר תלמידים', value: esc(p.students_count) });
+    if (p.lang_instruction) backItems.push({ label: 'שפת הוראה', value: esc(p.lang_instruction) });
     if (p.tipuach_index) backItems.push({ label: 'מדד טיפוח', value: esc(p.tipuach_index) + ' / 10' });
     if (p.semel_mosad) backItems.push({ label: 'סמל מוסד', value: esc(p.semel_mosad) });
     if (p.address) backItems.push({ label: 'כתובת', value: esc(p.address), full: true });
