@@ -1381,7 +1381,8 @@
       "school_name": "צוקי אביב",
       "school_type_raw": "בית ספר יסודי ממ",
       "sector": "ממלכתי",
-      "level": "יסודי"
+      "level": "יסודי",
+      "website": "https://www.tlv-edu.gov.il/sites/zukeyaviv/Pages/default.aspx"
     },
     {
       "id": "21554",
@@ -1517,7 +1518,8 @@
       "school_name": "קמפוס פרס ברוח הייטק היי",
       "school_type_raw": "חטיבת ביניים ממ",
       "sector": "ממלכתי",
-      "level": "חטיבת ביניים"
+      "level": "חטיבת ביניים",
+      "website": "https://www.hadash-holon.org.il/"
     },
     {
       "id": "21612",
@@ -1529,7 +1531,8 @@
       "school_name": "חט ב זלמן ארן",
       "school_type_raw": "חטיבת ביניים ממ",
       "sector": "ממלכתי",
-      "level": "חטיבת ביניים"
+      "level": "חטיבת ביניים",
+      "website": "https://mikib27.wixsite.com/aran"
     },
     {
       "id": "21611",
@@ -1553,7 +1556,8 @@
       "school_name": "ביכורים המכיל",
       "school_type_raw": "בית ספר יסודי ממ",
       "sector": "ממלכתי",
-      "level": "יסודי"
+      "level": "יסודי",
+      "website": "https://bikurimtlv.tik-tak.school/"
     },
     {
       "id": "21601",
@@ -1590,7 +1594,8 @@
       "school_name": "עתיד",
       "school_type_raw": "בית ספר יסודי ממ",
       "sector": "ממלכתי",
-      "level": "יסודי"
+      "level": "יסודי",
+      "website": "https://atid.tik-tak.net/"
     },
     {
       "id": "21586",
@@ -1758,7 +1763,8 @@
       "school_name": "מודיעים מד",
       "school_type_raw": "בית ספר יסודי ממ ד",
       "sector": "ממלכתי דתי",
-      "level": "יסודי"
+      "level": "יסודי",
+      "website": "https://www.tlv-edu.gov.il/sites/modim/Pages/default.aspx"
     },
     {
       "id": "21346",
@@ -1770,7 +1776,8 @@
       "school_name": "רמת החיל",
       "school_type_raw": "בית ספר יסודי ממ",
       "sector": "ממלכתי",
-      "level": "יסודי"
+      "level": "יסודי",
+      "website": "https://sites.google.com/view/ramathachayal/דף-הבית"
     },
     {
       "id": "21344",
@@ -1782,7 +1789,8 @@
       "school_name": "מגן",
       "school_type_raw": "בית ספר יסודי ממ",
       "sector": "ממלכתי",
-      "level": "יסודי"
+      "level": "יסודי",
+      "website": "https://www.tlv-edu.gov.il/sites/Magen/Pages/default.aspx"
     },
     {
       "id": "21341",
@@ -1794,7 +1802,8 @@
       "school_name": "היובל",
       "school_type_raw": "בית ספר יסודי ממ",
       "sector": "ממלכתי",
-      "level": "יסודי"
+      "level": "יסודי",
+      "website": "https://www.tlv-edu.gov.il/sites/hayovel/Pages/default.aspx"
     },
     {
       "id": "21339",
@@ -1942,7 +1951,8 @@
       "school_name": "אורות התורה מד",
       "school_type_raw": "בית ספר יסודי ממ ד",
       "sector": "ממלכתי דתי",
-      "level": "יסודי"
+      "level": "יסודי",
+      "website": "https://orothatora.org.il/"
     },
     {
       "id": "21347",
@@ -1954,7 +1964,8 @@
       "school_name": "דיזנגוף",
       "school_type_raw": "בית ספר יסודי ממ ד",
       "sector": "ממלכתי דתי",
-      "level": "יסודי"
+      "level": "יסודי",
+      "website": "https://www.tlv-edu.gov.il/sites/Dizingof/Pages/default.aspx"
     },
     {
       "id": "21342",
@@ -1966,7 +1977,8 @@
       "school_name": "שרת",
       "school_type_raw": "בית ספר יסודי ממ",
       "sector": "ממלכתי",
-      "level": "יסודי"
+      "level": "יסודי",
+      "website": "https://www.tlv-edu.gov.il/sites/sharetmoshe/Pages/default.aspx"
     },
     {
       "id": "21340",
@@ -1991,7 +2003,8 @@
       "school_name": "יהלם",
       "school_type_raw": "בית ספר יסודי ממ",
       "sector": "ממלכתי",
-      "level": "יסודי"
+      "level": "יסודי",
+      "website": "https://yahalom.tik-tak.net/"
     },
     {
       "id": "21335",
