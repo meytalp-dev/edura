@@ -92,6 +92,23 @@
     background: #EEF2FF; color: #3730A3; padding: 14px 18px;
     border-radius: 12px; font-size: 13px; margin-top: 18px;
   }
+  .private-bar {
+    background: #fff; border: 1.5px solid var(--line); border-radius: 14px;
+    padding: 14px 18px; margin-bottom: 18px;
+    display: flex; justify-content: space-between; align-items: center;
+    gap: 14px; flex-wrap: wrap;
+  }
+  .private-bar.loaded { border-color: #86EFAC; background: #F0FDF4; }
+  .private-bar .pb-label { font-size: 13px; color: var(--muted); }
+  .private-bar .pb-value { font-size: 13px; font-weight: 700; color: var(--ink); }
+  .private-bar.loaded .pb-value { color: #166534; }
+  .private-bar button {
+    flex: none; padding: 8px 16px; font-size: 13px;
+    background: var(--bg-2); color: var(--ink);
+    border: none; border-radius: 8px; cursor: pointer; font-weight: 700;
+  }
+  .private-bar button:hover { background: #E2E8F0; }
+  .private-bar input[type=file] { display: none; }
 </style>
 </head>
 <body>
@@ -102,6 +119,17 @@
     <h1>אישור והעברה למורה</h1>
     <div class="sub">סקרי את פרטי הפנייה, וודאי את כתובת המייל של המורה, ולחצי "שלחי עכשיו".</div>
   </header>
+
+  <div class="private-bar" id="private-bar">
+    <div>
+      <div class="pb-label">קובץ פרטי לחיפוש אוטומטי:</div>
+      <div class="pb-value" id="pb-status">בודקים...</div>
+    </div>
+    <label>
+      <input type="file" id="private-file-input" accept=".json,application/json" />
+      <button type="button" onclick="document.getElementById('private-file-input').click()">טעני teachers-private.json</button>
+    </label>
+  </div>
 
   <div id="content">
     <div class="card"><div class="loading">טוענת את פרטי הפנייה...</div></div>
@@ -162,7 +190,7 @@ function render(inq) {
 
     '<div class="card">' +
       '<h3 style="margin:0 0 4px;font-size:18px">העברה למורה</h3>' +
-      '<div class="sub" style="margin-bottom:14px">בדקי ב-<code>data/teachers-private.json</code> אצלך מקומית לפי <code>' + esc(inq.teacher_id) + '</code> כדי למצוא את כתובת המורה.</div>' +
+      '<div class="sub" style="margin-bottom:14px" id="lookup-status">בודקים אם יש פרטי המורה אצלנו...</div>' +
 
       '<label for="teacher-email">מייל המורה *</label>' +
       '<input id="teacher-email" type="email" placeholder="teacher@example.com" required />' +
@@ -188,7 +216,102 @@ function render(inq) {
     '</div>';
 
   document.getElementById('content').innerHTML = html;
+  window._inquiry = inq;
+  lookupTeacherEmail(inq.teacher_id);
 }
+
+// ──────────────────────────────────────────────────
+// Local private teachers file (stored in localStorage)
+// ──────────────────────────────────────────────────
+const PRIVATE_KEY = 'edura_teachers_private_v1';
+const PRIVATE_META_KEY = 'edura_teachers_private_meta_v1';
+
+function loadLocalPrivate() {
+  try {
+    const raw = localStorage.getItem(PRIVATE_KEY);
+    if (!raw) return null;
+    return JSON.parse(raw);
+  } catch (e) { return null; }
+}
+
+function loadLocalPrivateMeta() {
+  try {
+    const raw = localStorage.getItem(PRIVATE_META_KEY);
+    if (!raw) return null;
+    return JSON.parse(raw);
+  } catch (e) { return null; }
+}
+
+function updatePrivateBarUI() {
+  const bar = document.getElementById('private-bar');
+  const status = document.getElementById('pb-status');
+  const meta = loadLocalPrivateMeta();
+  if (meta) {
+    bar.classList.add('loaded');
+    const d = new Date(meta.loadedAt);
+    const dStr = d.toLocaleDateString('he-IL') + ' ' + d.toLocaleTimeString('he-IL', {hour:'2-digit',minute:'2-digit'});
+    status.textContent = '✓ נטען · ' + meta.total + ' מורות · ' + dStr;
+  } else {
+    bar.classList.remove('loaded');
+    status.textContent = 'לא נטען — חיפוש לא יעבוד אוטומטית';
+  }
+}
+
+function lookupInLocalPrivate(teacherId) {
+  const data = loadLocalPrivate();
+  if (!data || !data.teachers) return null;
+  return data.teachers.find(t => String(t.id) === String(teacherId)) || null;
+}
+
+document.getElementById('private-file-input').addEventListener('change', function (e) {
+  const f = e.target.files[0];
+  if (!f) return;
+  const reader = new FileReader();
+  reader.onload = function () {
+    try {
+      const parsed = JSON.parse(reader.result);
+      if (!parsed.teachers || !Array.isArray(parsed.teachers)) {
+        alert('הקובץ לא בפורמט הנכון — מצופה שדה "teachers" מסוג מערך.');
+        return;
+      }
+      localStorage.setItem(PRIVATE_KEY, reader.result);
+      localStorage.setItem(PRIVATE_META_KEY, JSON.stringify({
+        total: parsed.teachers.length,
+        loadedAt: new Date().toISOString(),
+        filename: f.name
+      }));
+      updatePrivateBarUI();
+      if (window._inquiry) lookupTeacherEmail(window._inquiry.teacher_id);
+    } catch (err) {
+      alert('שגיאה בקריאת הקובץ: ' + String(err));
+    }
+  };
+  reader.readAsText(f);
+});
+
+function lookupTeacherEmail(teacherId) {
+  const status = document.getElementById('lookup-status');
+  if (!status) return;
+
+  const localTeacher = lookupInLocalPrivate(teacherId);
+  if (localTeacher && localTeacher.email) {
+    document.getElementById('teacher-email').value = localTeacher.email;
+    const note = document.getElementById('admin-note');
+    if (note && !note.value && localTeacher.name) {
+      note.placeholder = 'מורה במקור: ' + localTeacher.name;
+    }
+    status.innerHTML = '<span style="color:#065F46;font-weight:600">✓ נמצאה ב-teachers-private.json מקומי.</span> ' +
+      'מורה: <strong>' + esc(localTeacher.name || '') + '</strong>' +
+      (localTeacher.subject ? ' · ' + esc(localTeacher.subject) : '') +
+      '. בדקי שהפרטים נכונים ולחצי שלחי.';
+  } else if (loadLocalPrivate()) {
+    status.innerHTML = '<span style="color:#92400E">לא נמצאה ב-teachers-private.json המקומי</span> (' + esc(teacherId) + '). ייתכן שצריך לרענן את הקובץ.';
+  } else {
+    status.innerHTML = 'טעני את <code>teachers-private.json</code> דרך הכפתור למעלה כדי למלא אוטומטית.';
+  }
+}
+
+updatePrivateBarUI();
 
 async function loadInquiry() {
   const { ref, token } = getParams();

@@ -165,6 +165,35 @@
     margin-top: 18px;
   }
   .private-note strong { font-weight: 700; }
+  .private-bar {
+    background: #fff;
+    border: 1.5px solid var(--line);
+    border-radius: 14px;
+    padding: 14px 18px;
+    margin-bottom: 18px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 14px;
+    flex-wrap: wrap;
+  }
+  .private-bar.loaded { border-color: #86EFAC; background: #F0FDF4; }
+  .private-bar .pb-label { font-size: 13px; color: var(--muted); }
+  .private-bar .pb-value { font-size: 13px; font-weight: 700; color: var(--ink); }
+  .private-bar.loaded .pb-value { color: #166534; }
+  .private-bar button {
+    flex: none;
+    padding: 8px 16px;
+    font-size: 13px;
+    background: var(--bg-2);
+    color: var(--ink);
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 700;
+  }
+  .private-bar button:hover { background: #E2E8F0; }
+  .private-bar input[type=file] { display: none; }
 </style>
 </head>
 <body>
@@ -175,6 +204,17 @@
     <h1>אישור והעברה לבית הספר</h1>
     <div class="sub">סקרי את פרטי הפנייה, וודאי את כתובת המייל של בית הספר, ולחצי "שלחי עכשיו".</div>
   </header>
+
+  <div class="private-bar" id="private-bar">
+    <div>
+      <div class="pb-label">קובץ פרטי לחיפוש אוטומטי:</div>
+      <div class="pb-value" id="pb-status">בודקים...</div>
+    </div>
+    <label>
+      <input type="file" id="private-file-input" accept=".json,application/json" />
+      <button type="button" onclick="document.getElementById('private-file-input').click()">טעני jobs-private.json</button>
+    </label>
+  </div>
 
   <div id="content">
     <div class="card">
@@ -275,30 +315,128 @@ function render(interest) {
   lookupSchoolEmail(interest.job_id);
 }
 
+// ──────────────────────────────────────────────────
+// Local private jobs file (stored in localStorage)
+// Keeps jobs-private.json client-side. Never leaves the browser.
+// ──────────────────────────────────────────────────
+const PRIVATE_KEY = 'edura_jobs_private_v1';
+const PRIVATE_META_KEY = 'edura_jobs_private_meta_v1';
+
+function loadLocalPrivate() {
+  try {
+    const raw = localStorage.getItem(PRIVATE_KEY);
+    if (!raw) return null;
+    return JSON.parse(raw);
+  } catch (e) { return null; }
+}
+
+function loadLocalPrivateMeta() {
+  try {
+    const raw = localStorage.getItem(PRIVATE_META_KEY);
+    if (!raw) return null;
+    return JSON.parse(raw);
+  } catch (e) { return null; }
+}
+
+function updatePrivateBarUI() {
+  const bar = document.getElementById('private-bar');
+  const status = document.getElementById('pb-status');
+  const meta = loadLocalPrivateMeta();
+  if (meta) {
+    bar.classList.add('loaded');
+    const d = new Date(meta.loadedAt);
+    const dStr = d.toLocaleDateString('he-IL') + ' ' + d.toLocaleTimeString('he-IL', {hour:'2-digit',minute:'2-digit'});
+    status.textContent = '✓ נטען · ' + meta.total + ' משרות · ' + dStr;
+  } else {
+    bar.classList.remove('loaded');
+    status.textContent = 'לא נטען — חיפוש למשרות סרוקות לא יעבוד אוטומטית';
+  }
+}
+
+function lookupInLocalPrivate(jobId) {
+  const data = loadLocalPrivate();
+  if (!data || !data.jobs) return null;
+  const job = data.jobs.find(j => String(j.id) === String(jobId));
+  return job || null;
+}
+
+document.getElementById('private-file-input').addEventListener('change', function (e) {
+  const f = e.target.files[0];
+  if (!f) return;
+  const reader = new FileReader();
+  reader.onload = function () {
+    try {
+      const parsed = JSON.parse(reader.result);
+      if (!parsed.jobs || !Array.isArray(parsed.jobs)) {
+        alert('הקובץ לא בפורמט הנכון — מצופה שדה "jobs" מסוג מערך.');
+        return;
+      }
+      localStorage.setItem(PRIVATE_KEY, reader.result);
+      localStorage.setItem(PRIVATE_META_KEY, JSON.stringify({
+        total: parsed.jobs.length,
+        loadedAt: new Date().toISOString(),
+        filename: f.name
+      }));
+      updatePrivateBarUI();
+      // אם יש פנייה טעונה — נסי שוב לחפש אוטומטית
+      if (window._interest) {
+        lookupSchoolEmail(window._interest.job_id);
+      }
+    } catch (err) {
+      alert('שגיאה בקריאת הקובץ: ' + String(err));
+    }
+  };
+  reader.readAsText(f);
+});
+
 async function lookupSchoolEmail(jobId) {
-  const { ref, token } = getParams();
   const status = document.getElementById('lookup-status');
+  if (!status) return;
+
+  // ניסיון 1: חיפוש בקובץ הפרטי המקומי (עובד לכל סוגי המשרות)
+  const localJob = lookupInLocalPrivate(jobId);
+  if (localJob && localJob.email) {
+    document.getElementById('school-email').value = localJob.email;
+    document.getElementById('school-name').value = localJob.school || '';
+    const note = document.getElementById('admin-note');
+    if (note && !note.value && localJob.contact_name) {
+      note.placeholder = 'איש קשר במקור: ' + localJob.contact_name;
+    }
+    status.innerHTML = '<span style="color:#065F46;font-weight:600">✓ נמצא ב-jobs-private.json מקומי.</span> ' +
+      'בית הספר: <strong>' + esc(localJob.school || '') + '</strong>' +
+      (localJob.contact_name ? ' · איש קשר: <strong>' + esc(localJob.contact_name) + '</strong>' : '') +
+      '. בדקי שהפרטים נכונים ולחצי שלחי.';
+    return;
+  }
+
+  // ניסיון 2: חיפוש ב-Apps Script (עובד רק למשרות שהוגשו דרך publish-job.html)
+  const { ref, token } = getParams();
   try {
     const url = SUBMISSIONS_URL + '?action=lookup_school_email&ref=' + encodeURIComponent(ref) +
                 '&token=' + encodeURIComponent(token);
     const res = await fetch(url);
     const data = await res.json();
     if (data.ok && data.found && data.schoolEmail) {
-      // מילוי אוטומטי
       document.getElementById('school-email').value = data.schoolEmail;
       document.getElementById('school-name').value = data.schoolName || '';
       status.innerHTML = '<span style="color:#065F46;font-weight:600">✓ פרטי בית הספר מולאו אוטומטית.</span> ' +
         'המשרה הוגשה דרך הטופס באתר. בדקי שהפרטים נכונים ולחצי שלחי.';
     } else if (data.source === 'scanned') {
-      status.innerHTML = '<span style="color:#92400E">המשרה הזו נסרקה אוטומטית ממקור חיצוני (' + esc(jobId) + ').</span> ' +
-        'בדקי ב-<code>data/jobs-private.json</code> אצלך מקומית כדי למצוא את כתובת בית הספר ומלאי ידנית.';
+      const hasLocal = !!loadLocalPrivate();
+      status.innerHTML = '<span style="color:#92400E">המשרה הזו נסרקה ממקור חיצוני (' + esc(jobId) + ').</span> ' +
+        (hasLocal
+          ? 'לא נמצאה ב-jobs-private.json המקומי. ייתכן שצריך לרענן את הקובץ.'
+          : 'טעני את <code>jobs-private.json</code> דרך הכפתור למעלה כדי למלא אוטומטית.');
     } else {
-      status.innerHTML = 'בדקי ב-<code>data/jobs-private.json</code> אצלך מקומית לפי <code>' + esc(jobId) + '</code> כדי למצוא את כתובת בית הספר ומלאי ידנית.';
+      status.innerHTML = 'לא נמצאו פרטים אוטומטית. מלאי ידנית או טעני קובץ פרטי.';
     }
   } catch (e) {
     status.innerHTML = 'לא הצלחנו לבדוק אוטומטית. מלאי ידנית מ-<code>data/jobs-private.json</code>.';
   }
 }
+
+// אתחול UI של הקובץ הפרטי
+updatePrivateBarUI();
 
 async function loadInterest() {
   const { ref, token } = getParams();
