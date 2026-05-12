@@ -289,6 +289,28 @@
   .tender-back-item.full { grid-column: 1 / -1; }
   .tender-back-item.full .tender-back-value { white-space: normal; }
 
+  /* Description / vision callout */
+  .tender-back-vision {
+    background: linear-gradient(135deg, var(--pink-soft), var(--cream));
+    border: 1px solid var(--pink-2);
+    border-radius: 12px;
+    padding: 12px 14px;
+    position: relative;
+  }
+  .tender-back-vision-label {
+    font-size: 10px; font-weight: 800; color: var(--pink-deep);
+    text-transform: uppercase; letter-spacing: 0.5px;
+    display: inline-flex; align-items: center; gap: 5px;
+    margin-bottom: 6px;
+  }
+  .tender-back-vision-label svg { width: 12px; height: 12px; }
+  .tender-back-vision-text {
+    font-size: 12.5px; color: var(--ink-soft); line-height: 1.5;
+    font-style: italic;
+    display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
   .tender-back-actions {
     margin-top: auto;
     display: flex; flex-direction: column;
@@ -1157,6 +1179,13 @@ function render() {
               <div class="tender-back-title">${heroName}</div>
               <div class="tender-back-id">#${esc(p.id)}</div>
             </div>
+            ${p.description ? `<div class="tender-back-vision">
+              <div class="tender-back-vision-label">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l2.39 7.36H22l-6.18 4.5L18.18 22 12 17.27 5.82 22l2.36-8.14L2 9.36h7.61z"/></svg>
+                חזון בית הספר
+              </div>
+              <div class="tender-back-vision-text">${esc(p.description)}</div>
+            </div>` : ''}
             <div class="tender-back-grid">
               ${backGridHtml}
             </div>
