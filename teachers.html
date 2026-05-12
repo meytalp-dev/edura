@@ -234,10 +234,23 @@
   .cookies-btn.secondary { background: rgba(255,255,255,.12); color: #fff; }
 
   @media (max-width: 768px) {
+    html, body { overflow-x: hidden; }
     .topbar { padding: 10px 12px; }
-    .topbar-inner { grid-template-columns: auto 1fr auto; gap: 10px; }
+    .topbar-inner {
+      grid-template-columns: auto auto;
+      grid-template-areas: "logo menu" "search search";
+      gap: 10px;
+      justify-content: space-between;
+    }
+    .topbar-logo { grid-area: logo; font-size: 20px; }
+    .city-picker { grid-area: search; max-width: 100%; padding: 4px 5px 4px 4px; }
+    .city-pin { width: 32px; height: 32px; }
+    .city-pin svg { width: 16px; height: 16px; }
+    .city-input { font-size: 15px; padding: 0 10px; }
+    .city-go { width: 32px; height: 32px; }
+    .city-go svg { width: 16px; height: 16px; }
     .topbar-nav { display: none; }
-    .menu-toggle { display: flex; }
+    .menu-toggle { grid-area: menu; display: flex; }
     .row-title { font-size: 19px; }
     .t-card { width: 248px; }
     .t-hero { height: 150px; }

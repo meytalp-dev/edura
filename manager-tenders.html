@@ -111,7 +111,33 @@
   }
   @media (min-width: 901px) { .menu-toggle { display: none; } }
   @media (max-width: 768px) {
+    html, body { overflow-x: hidden; }
     input, select, textarea { font-size: 16px !important; }
+    .topbar { padding: 10px 12px; }
+    .topbar-inner {
+      grid-template-columns: auto auto;
+      grid-template-areas: "logo menu" "search search";
+      gap: 10px;
+      justify-content: space-between;
+    }
+    .topbar-logo { grid-area: logo; font-size: 20px; }
+    .city-picker { grid-area: search; max-width: 100%; padding: 4px 5px 4px 4px; }
+    .city-pin { width: 32px; height: 32px; }
+    .city-pin svg { width: 16px; height: 16px; }
+    .city-input { font-size: 15px !important; padding: 0 10px; }
+    .city-go { width: 32px; height: 32px; }
+    .city-go svg { width: 16px; height: 16px; }
+    .menu-toggle { grid-area: menu; display: flex; }
+    .hero { padding: 28px 16px 20px; }
+    .hero h1 { font-size: 24px; margin: 12px auto 12px; }
+    .hero-sub { font-size: 14px; }
+    .hero-note { font-size: 11px; }
+    .filters { padding: 16px 12px 0; }
+    .filter-section { gap: 8px; flex-direction: column; align-items: stretch; }
+    .filter-label { min-width: 0; padding: 0 4px; }
+    .free-search { max-width: none; min-width: 0; }
+    .results-bar { padding: 12px 12px 12px; }
+    .active-filters { margin: 8px 12px 0; }
   }
 
   /* Drawer (mobile menu) */
