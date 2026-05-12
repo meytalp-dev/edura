@@ -355,7 +355,7 @@ let selectedRegion = '';
 
 async function load() {
   try {
-    const res = await fetch('data/jobs.json');
+    const res = await fetch('data/jobs-public.json');
     const data = await res.json();
     allJobs = data.jobs || [];
     normalizeAllJobs();

@@ -3,6 +3,10 @@ data/raw/
 data/teachers-private.json
 data/*-private.json
 
+# Full job data with school+contact details — never commit (only public split is shipped)
+data/jobs.json
+data/jobs-pending.json
+
 # Working drafts
 design-preview-atlas.html
 

@@ -127,6 +127,7 @@ function doPost(e) {
     }
 
     if (action === 'submit_application')   return json_(handleApplication_(body));
+    if (action === 'forward_application')  return json_(handleForwardApplication_(body));
     if (action === 'submit_job')           return json_(handlePostJob_(body));
     if (action === 'submit_teacher')       return json_(handlePostTeacher_(body));
     if (action === 'subscribe_alerts')     return json_(handleAlerts_(body));
@@ -154,11 +155,14 @@ function doGet(e) {
     if (action === 'approved') {
       return json_(getApprovedListings_());
     }
+    if (action === 'get_interest') {
+      return json_(handleGetInterest_(params));
+    }
     return json_({
       ok: true,
       service: 'Edura submissions',
-      actions: ['submit_application', 'submit_job', 'submit_teacher', 'subscribe_alerts', 'subscribe_principal'],
-      get_actions: ['approved', 'approve', 'reject']
+      actions: ['submit_application', 'forward_application', 'submit_job', 'submit_teacher', 'subscribe_alerts', 'subscribe_principal'],
+      get_actions: ['approved', 'approve', 'reject', 'get_interest']
     });
   } catch (err) {
     return json_({ ok: false, error: String(err) });
@@ -423,15 +427,20 @@ function htmlPage_(title, msg, success) {
 
 // ════════════════════════════════════════════════════════════════════
 // approved listing — מחזיר רק רשומות status='approved' לתצוגה באתר
+// ⚠️ שדות רגישים (school, contact_name, email, phone, description) מוסרים
+//    לפני החזרה ללקוח. הם נשמרים בגיליון ומשמשים את forward_application.
 // ════════════════════════════════════════════════════════════════════
+const PUBLIC_JOB_FIELDS = ['timestamp', 'ref_id', 'subject', 'role', 'region', 'city', 'level', 'sector', 'scope'];
+const PUBLIC_TEACHER_FIELDS = ['timestamp', 'ref_id', 'name', 'subject', 'level', 'region', 'city', 'scope', 'notes'];
+
 function getApprovedListings_() {
   const ss = SpreadsheetApp.getActiveSpreadsheet();
-  const jobs = readApproved_(ss, SHEET_POSTED_JOBS, POSTED_JOBS_HEADERS);
-  const teachers = readApproved_(ss, SHEET_POSTED_TEACHERS, POSTED_TEACHERS_HEADERS);
+  const jobs = readApproved_(ss, SHEET_POSTED_JOBS, POSTED_JOBS_HEADERS, PUBLIC_JOB_FIELDS);
+  const teachers = readApproved_(ss, SHEET_POSTED_TEACHERS, POSTED_TEACHERS_HEADERS, PUBLIC_TEACHER_FIELDS);
   return { ok: true, jobs: jobs, teachers: teachers, updated: new Date().toISOString() };
 }
 
-function readApproved_(ss, sheetName, headers) {
+function readApproved_(ss, sheetName, headers, publicFields) {
   const sh = ss.getSheetByName(sheetName);
   if (!sh) return [];
   const last = sh.getLastRow();
@@ -443,10 +452,12 @@ function readApproved_(ss, sheetName, headers) {
     if (String(row[statusIdx] || '').toLowerCase() !== 'approved') return;
     const obj = {};
     for (let i = 0; i < headers.length; i++) {
+      const field = headers[i];
+      // skip private fields if a whitelist was provided
+      if (publicFields && publicFields.indexOf(field) === -1) continue;
       let v = row[i];
       if (v instanceof Date) v = v.toISOString();
-      if (headers[i] === 'phone') v = formatPhone_(v);
-      obj[headers[i]] = v;
+      obj[field] = v;
     }
     out.push(obj);
   });
@@ -468,7 +479,10 @@ function phoneForStorage_(p) {
 }
 
 // ════════════════════════════════════════════════════════════════════
-// 1. submit_application — מורה שולח מועמדות
+// 1. submit_application — מתעניינ/ת ממלא טופס "אני מעוניין/ת"
+// ────────────────────────────────────────────────────────────────────
+// אדורה מקבלת את הפנייה למייל ניהול. שום פנייה לא מגיעה ישירות לבית
+// הספר — אדורה לוחצת על הקישור במייל ("אשרי שליחה") → handleForwardApplication_
 // ════════════════════════════════════════════════════════════════════
 function handleApplication_(b) {
   const name = String(b.name || '').trim();
@@ -477,8 +491,8 @@ function handleApplication_(b) {
   const message = String(b.message || '').trim();
   const jobId = String(b.jobId || '').trim();
   const jobTitle = String(b.jobTitle || '').trim();
-  const school = String(b.school || '').trim();
-  const schoolEmail = String(b.schoolEmail || '').trim();
+  // schoolEmail מהלקוח מתעלמים ממנו בכוונה — האתר הציבורי לא מחזיק אותו.
+  // את כתובת בית הספר אדורה ממלאת ידנית מתוך jobs-private.json בעמוד forward-interest.
   const cvBase64 = String(b.cvBase64 || '');
   const cvFilename = String(b.cvFilename || '').trim();
   const cvMime = String(b.cvMime || 'application/pdf').trim();
@@ -489,13 +503,11 @@ function handleApplication_(b) {
   const refId = generateRefId_('APP');
   let cvUrl = '', cvId = '';
 
-  // העלאת קובץ ל-Drive
   if (cvBase64 && cvFilename) {
     try {
       const folder = getOrCreateCvFolder_();
       const blob = Utilities.newBlob(Utilities.base64Decode(cvBase64), cvMime, refId + '_' + cvFilename);
       const file = folder.createFile(blob);
-      // שיתוף עם הרשאת קריאה לכל מי שיש לו לינק
       file.setSharing(DriveApp.Access.ANYONE_WITH_LINK, DriveApp.Permission.VIEW);
       cvId = file.getId();
       cvUrl = file.getUrl();
@@ -504,16 +516,16 @@ function handleApplication_(b) {
     }
   }
 
-  // שמירה ל-Sheet
+  // שמירה ל-Sheet — סטטוס מתחיל ב-"pending-forward" (ממתינה לאישור אדורה)
   const sh = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(SHEET_APPLICATIONS);
-  sh.appendRow([new Date(), refId, jobId, jobTitle, school, schoolEmail,
-                name, email, phoneForStorage_(phone), message, cvId, cvUrl, cvFilename, 'sent']);
+  sh.appendRow([new Date(), refId, jobId, jobTitle, '', '',
+                name, email, phoneForStorage_(phone), message, cvId, cvUrl, cvFilename, 'pending-forward']);
 
-  // שליחת מייל לבית הספר (אם יש מייל) או למיטל
-  const targetEmail = schoolEmail || ADMIN_EMAIL;
-  const subject = '[אדורה · ' + refId + '] פנייה למשרת ' + (jobTitle || 'הוראה');
-  const html = buildApplicationEmail_({
-    refId, name, email, phone, message, jobTitle, school, cvUrl, cvFilename
+  // התראה לאדורה בלבד עם קישור "אשרי שליחה"
+  const forwardUrl = forwardInterestUrl_(refId);
+  const subject = '[אדורה · ' + refId + '] פנייה חדשה לאישור — ' + (jobTitle || 'משרת הוראה');
+  const html = buildPendingInterestEmail_({
+    refId, name, email, phone, message, jobTitle, cvUrl, cvFilename, jobId, forwardUrl
   });
 
   const mailOpts = {
@@ -521,41 +533,176 @@ function handleApplication_(b) {
     replyTo: email,
     htmlBody: html
   };
-
-  // צירוף קובץ ב-attachment אם הצליח לעלות
   if (cvId) {
-    try {
-      mailOpts.attachments = [DriveApp.getFileById(cvId).getBlob()];
-    } catch (e) {}
+    try { mailOpts.attachments = [DriveApp.getFileById(cvId).getBlob()]; } catch (e) {}
   }
 
   try {
-    MailApp.sendEmail(targetEmail, subject, htmlToText_(html), mailOpts);
+    MailApp.sendEmail(ADMIN_EMAIL, subject, htmlToText_(html), mailOpts);
 
-    // Confirmation למורה
+    // Confirmation למתעניינ/ת
     const appConfHtml = buildConfirmationEmail_({
-      chip: 'הפנייה נשלחה',
-      headline: 'הפנייה שלך נשלחה — בהצלחה!',
+      chip: 'קיבלנו את הפנייה',
+      headline: 'תודה — קיבלנו את הפנייה שלך',
       greetingName: name,
       paragraphs: [
-        'הפנייה שלך למשרה "' + (jobTitle || school || 'הוראה') + '" נשלחה בהצלחה.',
-        schoolEmail
-          ? 'הפנייה הועברה ישירות לבית הספר. הם יחזרו אלייך למייל הזה.'
-          : 'הפנייה הגיעה אלינו ב-אדורה. אם תהיה התקדמות — נעדכן אותך.',
-        'בהצלחה!'
+        'הפנייה שלך למשרה (' + (jobTitle || 'הוראה') + ') הגיעה אלינו ב-אדורה.',
+        'אנחנו עוברות על כל פנייה לפני שמעבירות לבית הספר — ככה אנחנו שומרות עלייך, ועליהם, מספאם.',
+        'אם המשרה רלוונטית, נעביר את הפרטים שלך לבית הספר בקרוב, ונעדכן אותך כאן במייל.'
       ],
       refId: refId
     });
-    MailApp.sendEmail(email, 'אישור פנייה למשרה · אדורה (' + refId + ')',
+    MailApp.sendEmail(email, 'אישור פנייה · אדורה (' + refId + ')',
       htmlToText_(appConfHtml),
       { name: 'אדורה · edura.co.il', replyTo: ADMIN_EMAIL, htmlBody: appConfHtml });
 
-    log_('application-sent', refId + ' · ' + email + ' → ' + targetEmail);
-    return { ok: true, refId: refId, sentTo: targetEmail };
+    log_('application-received', refId + ' · ' + email + ' · jobId=' + jobId);
+    return { ok: true, refId: refId };
   } catch (err) {
     log_('application-error', refId + ' · ' + String(err));
     return { ok: false, error: 'שליחת המייל נכשלה. נסי שוב או כתבי ישירות ל-' + ADMIN_EMAIL };
   }
+}
+
+function forwardInterestUrl_(refId) {
+  // הקישור עצמו לעמוד אדמין שאדורה פותחת. הטוקן מאמת שמי שלוחץ הוא בעלת הקישור.
+  return 'https://edura.co.il/admin/forward-interest.html?ref=' + encodeURIComponent(refId) +
+         '&token=' + signToken_('interest', refId);
+}
+
+function buildPendingInterestEmail_(d) {
+  const cvBlock = d.cvUrl
+    ? '<p style="margin:14px 0"><strong>קורות חיים:</strong> <a href="' + d.cvUrl + '">' + escHtml_(d.cvFilename) + '</a></p>'
+    : '';
+  return '' +
+    '<div dir="rtl" style="font-family:Arial,Helvetica,sans-serif;color:#0B2A4A;line-height:1.6;max-width:600px;">' +
+    '<div style="background:#FEF3C7;padding:14px 20px;border-radius:8px;margin-bottom:20px;">' +
+      '<div style="font-size:11px;color:#92400E;font-weight:700;letter-spacing:0.5px;">פנייה ממתינה לאישור · ' + escHtml_(d.refId) + '</div>' +
+      '<div style="font-size:18px;font-weight:700;color:#0B2A4A;margin-top:4px;">' + escHtml_(d.jobTitle || 'משרת הוראה') + '</div>' +
+      '<div style="font-size:13px;color:#6B7B8E;margin-top:4px;">משרה: <code style="background:#fff;padding:2px 6px;border-radius:4px;">' + escHtml_(d.jobId) + '</code></div>' +
+    '</div>' +
+    '<p>פנייה חדשה הגיעה דרך אדורה. הפרטים של המתעניינ/ת:</p>' +
+    '<table style="border-collapse:collapse;width:100%;margin:14px 0;">' +
+      '<tr><td style="padding:8px 0;width:90px;color:#475569;">שם:</td><td><strong>' + escHtml_(d.name) + '</strong></td></tr>' +
+      '<tr><td style="padding:8px 0;color:#475569;">מייל:</td><td><a href="mailto:' + escHtml_(d.email) + '" style="color:#0F9285;">' + escHtml_(d.email) + '</a></td></tr>' +
+      (d.phone ? '<tr><td style="padding:8px 0;color:#475569;">טלפון:</td><td><a href="tel:' + escHtml_(d.phone) + '" style="color:#0F9285;">' + escHtml_(d.phone) + '</a></td></tr>' : '') +
+    '</table>' +
+    (d.message ? '<div style="background:#F8FAFC;border-right:3px solid #14B8A6;padding:14px 18px;border-radius:8px;margin:14px 0;"><strong style="display:block;margin-bottom:6px;">הודעה אישית:</strong>' + escHtml_(d.message).replace(/\n/g, '<br>') + '</div>' : '') +
+    cvBlock +
+    '<div style="margin:28px 0;padding:20px;background:#F0FDF4;border-radius:12px;text-align:center;">' +
+      '<div style="font-size:13px;color:#166534;margin-bottom:10px;font-weight:600;">לאישור והעברה לבית הספר:</div>' +
+      '<a href="' + d.forwardUrl + '" style="display:inline-block;background:#15803D;color:#fff;text-decoration:none;padding:12px 28px;border-radius:999px;font-weight:700;">אשרי שליחה לבית הספר ←</a>' +
+      '<div style="font-size:12px;color:#6B7B8E;margin-top:12px;">בעמוד תפתח טיוטה — תוודאי את כתובת בית הספר ותלחצי שלחי.</div>' +
+    '</div>' +
+    '<hr style="border:none;border-top:1px solid #E2E8F0;margin:20px 0;">' +
+    '<p style="font-size:13px;color:#475569;">מספר פנייה: <strong>' + escHtml_(d.refId) + '</strong>. כדי להשיב למתעניינ/ת ישירות, השיבי למייל הזה.</p>' +
+    '</div>';
+}
+
+// ════════════════════════════════════════════════════════════════════
+// 1b. get_interest — אדמין טוען פרטי פנייה ממתינה לאישור
+// ════════════════════════════════════════════════════════════════════
+function handleGetInterest_(params) {
+  const refId = String(params.ref || '').trim();
+  const token = String(params.token || '').trim();
+  if (!refId || !token) return { ok: false, error: 'missing ref or token' };
+  if (token !== signToken_('interest', refId)) return { ok: false, error: 'invalid token' };
+
+  const sh = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(SHEET_APPLICATIONS);
+  const last = sh.getLastRow();
+  if (last < 2) return { ok: false, error: 'not found' };
+  const data = sh.getRange(2, 1, last - 1, APPLICATIONS_HEADERS.length).getValues();
+  const refIdx = APPLICATIONS_HEADERS.indexOf('ref_id');
+  for (let i = 0; i < data.length; i++) {
+    if (String(data[i][refIdx]) === refId) {
+      const obj = {};
+      for (let j = 0; j < APPLICATIONS_HEADERS.length; j++) {
+        let v = data[i][j];
+        if (v instanceof Date) v = v.toISOString();
+        if (APPLICATIONS_HEADERS[j] === 'phone') v = formatPhone_(v);
+        obj[APPLICATIONS_HEADERS[j]] = v;
+      }
+      return { ok: true, interest: obj };
+    }
+  }
+  return { ok: false, error: 'not found' };
+}
+
+// ════════════════════════════════════════════════════════════════════
+// 1c. forward_application — אדורה מאשרת ומעבירה לבית הספר
+// ════════════════════════════════════════════════════════════════════
+function handleForwardApplication_(b) {
+  const refId = String(b.refId || '').trim();
+  const token = String(b.token || '').trim();
+  const schoolEmail = String(b.schoolEmail || '').trim();
+  const schoolName = String(b.schoolName || '').trim();
+  const adminNote = String(b.adminNote || '').trim();
+
+  if (!refId || !token) return { ok: false, error: 'חסר ref או token' };
+  if (token !== signToken_('interest', refId)) return { ok: false, error: 'טוקן לא תקין' };
+  if (!schoolEmail || !isValidEmail_(schoolEmail)) return { ok: false, error: 'מייל בית הספר לא תקין' };
+
+  const sh = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(SHEET_APPLICATIONS);
+  const last = sh.getLastRow();
+  if (last < 2) return { ok: false, error: 'הפנייה לא נמצאה' };
+
+  const data = sh.getRange(2, 1, last - 1, APPLICATIONS_HEADERS.length).getValues();
+  const refIdx = APPLICATIONS_HEADERS.indexOf('ref_id');
+  const statusIdx = APPLICATIONS_HEADERS.indexOf('status');
+  const schoolIdx = APPLICATIONS_HEADERS.indexOf('school');
+  const schoolEmailIdx = APPLICATIONS_HEADERS.indexOf('school_email');
+
+  for (let i = 0; i < data.length; i++) {
+    if (String(data[i][refIdx]) === refId) {
+      const rowNum = i + 2;
+      const currStatus = String(data[i][statusIdx] || '').toLowerCase();
+      if (currStatus === 'forwarded') {
+        return { ok: false, error: 'הפנייה כבר הועברה לבית הספר בעבר.' };
+      }
+
+      const name = String(data[i][APPLICATIONS_HEADERS.indexOf('name')] || '');
+      const email = String(data[i][APPLICATIONS_HEADERS.indexOf('email')] || '');
+      const phone = formatPhone_(data[i][APPLICATIONS_HEADERS.indexOf('phone')]);
+      const message = String(data[i][APPLICATIONS_HEADERS.indexOf('message')] || '');
+      const jobTitle = String(data[i][APPLICATIONS_HEADERS.indexOf('job_title')] || '');
+      const cvUrl = String(data[i][APPLICATIONS_HEADERS.indexOf('cv_drive_url')] || '');
+      const cvId = String(data[i][APPLICATIONS_HEADERS.indexOf('cv_drive_id')] || '');
+      const cvFilename = String(data[i][APPLICATIONS_HEADERS.indexOf('cv_filename')] || '');
+
+      // עדכון השורה: כעת יש school + school_email + status=forwarded
+      sh.getRange(rowNum, schoolIdx + 1).setValue(schoolName);
+      sh.getRange(rowNum, schoolEmailIdx + 1).setValue(schoolEmail);
+      sh.getRange(rowNum, statusIdx + 1).setValue('forwarded');
+
+      // שליחת המייל לבית הספר עם CC לאדורה
+      const subject = '[אדורה · ' + refId + '] פנייה למשרת ' + (jobTitle || 'הוראה');
+      const html = buildApplicationEmail_({
+        refId: refId, name: name, email: email, phone: phone,
+        message: message + (adminNote ? '\n\n[הערה מאדורה: ' + adminNote + ']' : ''),
+        jobTitle: jobTitle, school: schoolName, cvUrl: cvUrl, cvFilename: cvFilename
+      });
+      const mailOpts = {
+        name: 'אדורה · edura.co.il',
+        replyTo: email,
+        cc: ADMIN_EMAIL,
+        htmlBody: html
+      };
+      if (cvId) {
+        try { mailOpts.attachments = [DriveApp.getFileById(cvId).getBlob()]; } catch (e) {}
+      }
+
+      try {
+        MailApp.sendEmail(schoolEmail, subject, htmlToText_(html), mailOpts);
+        log_('application-forwarded', refId + ' · → ' + schoolEmail);
+        return { ok: true, refId: refId, sentTo: schoolEmail };
+      } catch (err) {
+        log_('forward-error', refId + ' · ' + String(err));
+        sh.getRange(rowNum, statusIdx + 1).setValue('forward-failed');
+        return { ok: false, error: 'שליחת המייל נכשלה: ' + String(err) };
+      }
+    }
+  }
+  return { ok: false, error: 'הפנייה לא נמצאה' };
 }
 
 function buildApplicationEmail_(d) {
