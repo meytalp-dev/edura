@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>אדורה · מכרזי ניהול בתי ספר תשפ"ז</title>
-<meta name="description" content="כל מכרזי ניהול בתי הספר של משרד החינוך לתשפ&quot;ז. סינון לפי מחוז, מגזר ושכבת גיל. הסבר על הליך ההגשה ושאלות נפוצות." />
+<title>אדורה · מכרזי ניהול בתי ספר תשפ"ז — סבב 2 פתוח עד 16.05.2026</title>
+<meta name="description" content="187 מכרזי ניהול בתי הספר — סבב 2 תשפ&quot;ז של משרד החינוך, פתוח עד 16.05.2026. סינון לפי מחוז, מגזר ושכבת גיל. טיפים, FAQ, תהליך הגשה." />
 <meta property="og:title" content="אדורה · מכרזי ניהול בתי ספר תשפ&quot;ז" />
 <meta property="og:description" content="כל מכרזי ניהול בתי הספר במקום אחד, עם סינון חכם והסבר מלא על תהליך ההגשה." />
 <meta property="og:type" content="website" />
@@ -132,13 +132,33 @@
   .drawer-foot a { color: var(--ink-soft); }
 
   /* Hero */
-  .hero { background: var(--bg); padding: 48px 24px 24px; text-align: center; }
-  .hero h1 { font-size: clamp(28px, 4vw, 40px); font-weight: 900; color: var(--ink); line-height: 1.15; letter-spacing: -0.8px; margin-bottom: 14px; max-width: 820px; margin-left: auto; margin-right: auto; }
+  .hero { background: var(--bg); padding: 40px 24px 28px; text-align: center; }
+  .hero h1 { font-size: clamp(28px, 4vw, 40px); font-weight: 900; color: var(--ink); line-height: 1.15; letter-spacing: -0.8px; margin: 16px auto 14px; max-width: 820px; }
   .hero h1 .accent { color: var(--pink-deep); }
   .hero-sub { font-size: 15px; color: var(--ink-soft); max-width: 620px; margin: 0 auto 16px; line-height: 1.5; }
-  .hero-note { font-size: 12px; color: var(--ink-mute); max-width: 720px; margin: 0 auto; line-height: 1.5; }
-  .hero-note strong { color: var(--ink-soft); font-weight: 700; }
-  .hero-note a { color: var(--pink-deep); font-weight: 600; }
+  .hero-sub strong { color: var(--ink); font-weight: 800; font-size: 18px; }
+  .hero-note { font-size: 12px; color: var(--ink-mute); max-width: 720px; margin: 0 auto; line-height: 1.6; }
+  .hero-note a { color: var(--pink-deep); font-weight: 600; text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 3px; }
+
+  /* Live status pill — round 2 open */
+  .hero-status-pill {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: linear-gradient(135deg, #10B981, #059669);
+    color: #fff;
+    padding: 8px 16px;
+    border-radius: 999px;
+    font-size: 13px; font-weight: 800;
+    box-shadow: 0 4px 14px rgba(16,185,129,.28);
+    letter-spacing: -0.1px;
+  }
+  .hero-status-dot { width: 8px; height: 8px; border-radius: 50%; background: #fff; box-shadow: 0 0 0 0 rgba(255,255,255,.8); animation: pulse 1.6s infinite; }
+  @keyframes pulse {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(255,255,255,.8); }
+    50% { box-shadow: 0 0 0 6px rgba(255,255,255,0); }
+  }
+  .hero-countdown { background: rgba(255,255,255,.22); padding: 2px 9px; border-radius: 999px; font-size: 12px; }
+  .hero-status-pill.urgent { background: linear-gradient(135deg, #FF5F5F, #DC2626); box-shadow: 0 4px 14px rgba(220,38,38,.32); }
+  .hero-status-pill.closed { background: var(--ink-mute); box-shadow: none; }
 
   /* ───── FILTERS (synced with teachers.html / index.html) ───── */
   .filters { max-width: 1320px; margin: 0 auto; padding: 24px 24px 0; }
@@ -528,9 +548,14 @@
 
 
 <section class="hero">
+  <div class="hero-status-pill" id="hero-status-pill">
+    <span class="hero-status-dot"></span>
+    <span>סבב 2 פתוח · נסגר ב-16.05.2026</span>
+    <span class="hero-countdown" id="hero-countdown"></span>
+  </div>
   <h1>מכרזי <span class="accent">ניהול בתי ספר</span> של משרד החינוך</h1>
-  <p class="hero-sub"><strong id="meta-total">—</strong> משרות בארכיון · סינון לפי מגזר, שכבה, מחוז ועיר</p>
-  <p class="hero-note">הסבב הראשון לתשפ"ז נסגר ב-25.04.2026. הדף שמור כארכיון. <a href="saved.html#principal-alerts">הירשמו להתראה</a> לסבב הבא.</p>
+  <p class="hero-sub"><strong id="meta-total">—</strong> משרות בסבב 2 תשפ"ז · סינון לפי מגזר, שכבה, מחוז ועיר</p>
+  <p class="hero-note">המקור הקובע: <a href="https://meyda.education.gov.il/files/PortalOvdeyHoraa/POH/principals/principal-position-tashpaz-2.pdf" target="_blank" rel="noopener">PDF הפרסום הרשמי של משרד החינוך</a> · להגשה: <a href="https://poh.education.gov.il/administrative/training-management-supervision/appoint-managers/" target="_blank" rel="noopener">פורטל עובדי הוראה</a></p>
 </section>
 
 <section class="filters">
@@ -800,10 +825,10 @@
 <!-- ────────── CTA ────────── -->
 <section class="cta-section">
   <div class="cta-card">
-    <h3>הסבב הראשון נסגר. רוצים להיות מעודכנים בסבב הבא?</h3>
-    <p>סבב ההגשה הבא של מכרזי ניהול בית ספר נפתח בדרך כלל ינואר-מרץ. השאירו מייל ונעדכן אתכם ברגע שייפתח, עם רשימת המכרזים הרלוונטיים לאזור שלכם.</p>
-    <a href="saved.html#principal-alerts" class="btn">הירשמו להתראה לסבב הבא ←</a>
-    <div style="margin-top:14px;font-size:13px;opacity:.75;">למעקב אחרי הסבב הנוכחי דרך פורטל ההגשה הרשמי: <a href="https://poh.education.gov.il/administrative/training-management-supervision/appoint-managers/" target="_blank" rel="noopener" style="color:var(--green-pale);text-decoration:underline;">פורטל עובדי הוראה</a></div>
+    <h3>סבב 2 פתוח עד 16.05.2026 — להגשה דרך פורטל עובדי הוראה</h3>
+    <p>187 משרות ניהול ברחבי הארץ. ההגשה מקוונת בלבד דרך מערכת מינוי מנהלים, לאחר הזדהות.</p>
+    <a href="https://poh.education.gov.il/administrative/training-management-supervision/appoint-managers/" target="_blank" rel="noopener" class="btn">להגשה בפורטל עובדי הוראה ←</a>
+    <div style="margin-top:14px;font-size:13px;opacity:.75;">המקור הקובע: <a href="https://meyda.education.gov.il/files/PortalOvdeyHoraa/POH/principals/principal-position-tashpaz-2.pdf" target="_blank" rel="noopener" style="color:var(--green-pale);text-decoration:underline;">PDF הפרסום הרשמי של משרד החינוך</a></div>
   </div>
 </section>
 
@@ -908,9 +933,36 @@ async function loadTenders() {
     [...dset].sort((a,b) => a.localeCompare(b, 'he')).forEach(d => DISTRICTS.push({ key: d, label: d }));
     renderAll();
     $('meta-total').textContent = allTenders.length;
+    updateCountdown(data.deadline);
   } catch (err) {
     $('tenders').innerHTML = '<div class="empty"><h3>בעיה בטעינת הנתונים</h3><p>נסו לרענן את הדף בעוד רגע</p></div>';
     console.error(err);
+  }
+}
+
+function updateCountdown(deadlineStr) {
+  if (!deadlineStr) return;
+  // deadlineStr format: "16.05.2026" → end of day
+  const m = deadlineStr.match(/^(\d{2})\.(\d{2})\.(\d{4})$/);
+  if (!m) return;
+  const deadline = new Date(`${m[3]}-${m[2]}-${m[1]}T23:59:59`);
+  const now = new Date();
+  const days = Math.ceil((deadline - now) / (1000 * 60 * 60 * 24));
+  const pill = $('hero-status-pill');
+  const cd = $('hero-countdown');
+  if (!pill || !cd) return;
+  if (days < 0) {
+    pill.classList.add('closed');
+    pill.querySelector('span:nth-child(2)').textContent = `סבב 2 נסגר ב-${deadlineStr}`;
+    cd.style.display = 'none';
+  } else if (days === 0) {
+    pill.classList.add('urgent');
+    cd.textContent = 'נסגר היום';
+  } else if (days <= 3) {
+    pill.classList.add('urgent');
+    cd.textContent = `נשארו ${days} ימים`;
+  } else {
+    cd.textContent = `נשארו ${days} ימים`;
   }
 }
 
@@ -1060,6 +1112,7 @@ function render() {
     if (p.classes) backItems.push({ label: 'מספר כיתות', value: esc(p.classes) });
     backItems.push({ label: 'סטטוס משרה', value: isPermanent ? 'קבועה' : 'שנה + הארכה' });
     if (p.school_type_raw) backItems.push({ label: 'סוג מוסד', value: esc(p.school_type_raw), full: true });
+    if (p.notes) backItems.push({ label: 'הערות מהפרסום', value: esc(p.notes), full: true });
 
     // Future enrichment fields (data.gov.il)
     if (p.students_count) backItems.push({ label: 'מספר תלמידים', value: esc(p.students_count) });
