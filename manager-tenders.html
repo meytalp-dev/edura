@@ -209,14 +209,95 @@
     gap: 28px 16px;
   }
   .tender-card {
+    perspective: 1200px;
     background: transparent;
     border-radius: var(--r-md);
     transition: transform .2s ease;
-    display: flex; flex-direction: column;
-    cursor: default;
+    cursor: pointer;
+    min-height: 340px;
+    position: relative;
   }
   .tender-card:hover { transform: translateY(-3px); }
-  .tender-card:hover .tender-hero { box-shadow: var(--shadow-lg); }
+  .tender-card-inner {
+    position: relative;
+    width: 100%; height: 100%;
+    transform-style: preserve-3d;
+    transition: transform .6s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  .tender-card.flipped .tender-card-inner { transform: rotateY(180deg); }
+  .tender-front, .tender-back {
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+    width: 100%;
+  }
+  .tender-front { display: flex; flex-direction: column; }
+  .tender-card:hover .tender-front .tender-hero { box-shadow: var(--shadow-lg); }
+  .tender-back {
+    position: absolute;
+    inset: 0;
+    transform: rotateY(180deg);
+    background: var(--bg);
+    border: 1px solid var(--line);
+    border-radius: var(--r-md);
+    padding: 20px 18px 16px;
+    display: flex; flex-direction: column;
+    gap: 12px;
+    box-shadow: var(--shadow-md);
+    overflow: hidden;
+  }
+  .tender-card:hover .tender-back { box-shadow: var(--shadow-lg); }
+
+  .tender-back-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; }
+  .tender-back-title { font-size: 16px; font-weight: 900; color: var(--ink); line-height: 1.25; flex: 1; }
+  .tender-back-id { font-size: 11px; font-weight: 700; color: var(--ink-mute); padding: 3px 9px; background: var(--bg-2); border-radius: 999px; flex-shrink: 0; }
+
+  .tender-back-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+  .tender-back-item {
+    background: var(--bg-2);
+    border-radius: 10px;
+    padding: 9px 11px;
+    display: flex; flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+  }
+  .tender-back-label { font-size: 9px; color: var(--ink-mute); font-weight: 700; text-transform: uppercase; letter-spacing: 0.3px; }
+  .tender-back-value { font-size: 13px; color: var(--ink); font-weight: 700; line-height: 1.2; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .tender-back-item.full { grid-column: 1 / -1; }
+  .tender-back-item.full .tender-back-value { white-space: normal; }
+
+  .tender-back-actions {
+    margin-top: auto;
+    display: flex; flex-direction: column;
+    gap: 6px;
+  }
+  .tender-back-cta {
+    display: inline-flex; align-items: center; justify-content: center;
+    gap: 6px; padding: 10px 14px;
+    background: var(--pink-deep); color: #fff;
+    border-radius: 999px;
+    font-size: 13px; font-weight: 800;
+    transition: background .15s, transform .1s;
+    border: none; cursor: pointer; font-family: inherit;
+    text-decoration: none;
+  }
+  .tender-back-cta:hover { background: var(--pink-deeper); transform: translateY(-1px); }
+  .tender-back-cta.dark { background: var(--ink); }
+  .tender-back-cta.dark:hover { background: var(--teal); }
+  .tender-back-cta.outline { background: transparent; color: var(--ink-soft); border: 1.5px solid var(--line); padding: 8px 14px; font-size: 12px; }
+  .tender-back-cta.outline:hover { border-color: var(--ink); color: var(--ink); background: var(--bg-2); transform: none; }
+  .tender-back-cta svg { width: 13px; height: 13px; flex-shrink: 0; }
+
+  .flip-hint {
+    margin-top: 6px;
+    font-size: 11px; color: var(--ink-mute); font-weight: 600;
+    display: inline-flex; align-items: center; gap: 4px;
+    align-self: flex-start;
+  }
+  .flip-hint svg { width: 12px; height: 12px; }
 
   .tender-hero {
     height: 178px;
@@ -954,39 +1035,97 @@ function render() {
       ? `<div class="tender-meta-row">${metaParts.join('<span class="tender-dot"></span>')}</div>`
       : '';
 
-    let schoolLink = '';
+    // Back-face: school site link (or google fallback)
+    let backSchoolLink = '';
     if (p.website) {
-      schoolLink = `<a href="${esc(p.website)}" target="_blank" rel="noopener" class="tender-school-link official" aria-label="לאתר בית הספר ${heroName}">
+      backSchoolLink = `<a href="${esc(p.website)}" target="_blank" rel="noopener" class="tender-back-cta dark" onclick="event.stopPropagation()">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
         לאתר בית הספר
       </a>`;
     } else if (p.school_name) {
-      const q = encodeURIComponent(`${p.school_name} ${p.city || ''} בית ספר`.trim());
-      schoolLink = `<a href="https://www.google.com/search?q=${q}" target="_blank" rel="noopener" class="tender-school-link" aria-label="חיפוש מידע על ${heroName}">
+      const q = encodeURIComponent(`${p.school_name} ${p.city || p.district || ''} בית ספר`.trim());
+      backSchoolLink = `<a href="https://www.google.com/search?q=${q}" target="_blank" rel="noopener" class="tender-back-cta outline" onclick="event.stopPropagation()">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
-        חיפוש מידע
+        חיפוש מידע על ביה"ס
       </a>`;
     }
 
+    // Build back-face details grid from available fields
+    const backItems = [];
+    if (p.district) backItems.push({ label: 'מחוז', value: esc(p.district) });
+    if (p.city) backItems.push({ label: 'עיר / יישוב', value: esc(p.city) });
+    if (p.sector) backItems.push({ label: 'מגזר', value: esc(p.sector) });
+    if (p.level && p.level !== 'אחר') backItems.push({ label: 'שכבה', value: esc(p.level) });
+    if (p.complexity) backItems.push({ label: 'מורכבות', value: esc(p.complexity) + ' / 8+' });
+    if (p.classes) backItems.push({ label: 'מספר כיתות', value: esc(p.classes) });
+    backItems.push({ label: 'סטטוס משרה', value: isPermanent ? 'קבועה' : 'שנה + הארכה' });
+    if (p.school_type_raw) backItems.push({ label: 'סוג מוסד', value: esc(p.school_type_raw), full: true });
+
+    // Future enrichment fields (data.gov.il)
+    if (p.students_count) backItems.push({ label: 'מספר תלמידים', value: esc(p.students_count) });
+    if (p.tipuach_index) backItems.push({ label: 'מדד טיפוח', value: esc(p.tipuach_index) + ' / 10' });
+    if (p.semel_mosad) backItems.push({ label: 'סמל מוסד', value: esc(p.semel_mosad) });
+    if (p.address) backItems.push({ label: 'כתובת', value: esc(p.address), full: true });
+
+    const backGridHtml = backItems.map(it =>
+      `<div class="tender-back-item${it.full ? ' full' : ''}"><div class="tender-back-label">${it.label}</div><div class="tender-back-value">${it.value}</div></div>`
+    ).join('');
+
+    const portalLink = `<a href="https://poh.education.gov.il/administrative/training-management-supervision/appoint-managers/" target="_blank" rel="noopener" class="tender-back-cta" onclick="event.stopPropagation()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><polyline points="12 5 19 12 12 19"/></svg>
+      להגשת מועמדות בפורטל עו"ה
+    </a>`;
+
     return `
-      <article class="tender-card">
-        <div class="tender-hero" style="background-image:url('${photo}')">
-          <div class="tender-hero-overlay"></div>
-          <div class="tender-badge ${badgeClass}">${badgeIcon}${badgeText}</div>
-          <div class="tender-id-badge">#${esc(p.id)}</div>
-          <div class="tender-hero-content">
-            <div class="tender-hero-name">${heroName}</div>
-            ${heroLoc}
+      <article class="tender-card" data-id="${esc(p.id)}">
+        <div class="tender-card-inner">
+          <div class="tender-front">
+            <div class="tender-hero" style="background-image:url('${photo}')">
+              <div class="tender-hero-overlay"></div>
+              <div class="tender-badge ${badgeClass}">${badgeIcon}${badgeText}</div>
+              <div class="tender-id-badge">#${esc(p.id)}</div>
+              <div class="tender-hero-content">
+                <div class="tender-hero-name">${heroName}</div>
+                ${heroLoc}
+              </div>
+            </div>
+            <div class="tender-body">
+              <div class="tender-tags">${sectorTag}${levelTag}</div>
+              ${metaHtml}
+              <div class="flip-hint">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+                לחצו לפרטים נוספים
+              </div>
+            </div>
           </div>
-        </div>
-        <div class="tender-body">
-          <div class="tender-tags">${sectorTag}${levelTag}</div>
-          ${metaHtml}
-          ${schoolLink}
+          <div class="tender-back">
+            <div class="tender-back-header">
+              <div class="tender-back-title">${heroName}</div>
+              <div class="tender-back-id">#${esc(p.id)}</div>
+            </div>
+            <div class="tender-back-grid">
+              ${backGridHtml}
+            </div>
+            <div class="tender-back-actions">
+              ${portalLink}
+              ${backSchoolLink}
+              <button class="tender-back-cta outline" type="button" onclick="event.stopPropagation();this.closest('.tender-card').classList.remove('flipped')">
+                ↺ חזרה
+              </button>
+            </div>
+          </div>
         </div>
       </article>
     `;
   }).join('');
+
+  // Click-to-flip
+  grid.querySelectorAll('.tender-card').forEach(card => {
+    card.addEventListener('click', e => {
+      if (e.target.closest('a, button')) return;
+      card.classList.toggle('flipped');
+    });
+  });
 }
 
 const esc = escapeHtml;
