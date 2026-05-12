@@ -709,8 +709,8 @@
           <input id="mt-phone" name="phone" type="tel" autocomplete="tel" inputmode="tel" required placeholder="050-1234567" />
         </div>
         <div class="mt-gate-field">
-          <label for="mt-address">כתובת</label>
-          <input id="mt-address" name="address" type="text" autocomplete="street-address" required placeholder="רחוב, עיר" />
+          <label for="mt-address">עיר ומחוז</label>
+          <input id="mt-address" name="address" type="text" autocomplete="address-level2" required placeholder="לדוגמה: ירושלים · מחוז ירושלים" />
         </div>
         <div class="mt-gate-field">
           <label for="mt-email">דוא"ל</label>
@@ -1102,7 +1102,7 @@ function closeDrawer() { document.getElementById('drawer').classList.remove('ope
 
       if (!name || name.length < 2) return showError('נא להזין שם מלא');
       if (!phone || phone.replace(/\D/g, '').length < 9) return showError('מספר טלפון לא תקין');
-      if (!address || address.length < 3) return showError('נא להזין כתובת');
+      if (!address || address.length < 2) return showError('נא להזין עיר ומחוז');
       if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return showError('דוא"ל לא תקין');
 
       btn.disabled = true;
