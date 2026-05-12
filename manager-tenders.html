@@ -175,6 +175,12 @@
   .results-count { font-size: 14px; color: var(--ink-soft); }
   .results-count strong { color: var(--ink); font-weight: 700; }
 
+  /* Quick jump links — to anchored sections at page end */
+  .quick-jumps { display: flex; gap: 8px; flex-wrap: wrap; }
+  .quick-jump { display: inline-flex; align-items: center; gap: 6px; padding: 8px 14px; background: var(--bg-2); color: var(--ink-soft); border-radius: 999px; font-size: 13px; font-weight: 700; transition: background .15s, color .15s, transform .1s; }
+  .quick-jump:hover { background: var(--ink); color: var(--bg); transform: translateY(-1px); }
+  .quick-jump svg { width: 14px; height: 14px; flex-shrink: 0; }
+
   /* ───── TENDER GRID + CARD (Edura Wolt-style) ───── */
   .tenders {
     max-width: 1320px; margin: 0 auto;
@@ -453,6 +459,20 @@
 
 <div class="results-bar">
   <div class="results-count" id="results-count">טוען מכרזים...</div>
+  <div class="quick-jumps" aria-label="קישורים מהירים לסעיפי עזרה בעמוד">
+    <a href="#tips" class="quick-jump" title="7 טיפים לגישה למכרז ניהול">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6"/><path d="M10 22h4"/><path d="M12 2a7 7 0 0 0-4 12.7c.7.6 1 1.2 1 2.3v1h6v-1c0-1.1.3-1.7 1-2.3A7 7 0 0 0 12 2z"/></svg>
+      טיפים לגישה
+    </a>
+    <a href="#faq" class="quick-jump" title="שאלות ותשובות נפוצות">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+      שאלות נפוצות
+    </a>
+    <a href="#process" class="quick-jump" title="איך מגישים מועמדות">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="9" y1="13" x2="15" y2="13"/><line x1="9" y1="17" x2="13" y2="17"/></svg>
+      תהליך הגשה
+    </a>
+  </div>
 </div>
 
 <main class="tenders" id="tenders">
