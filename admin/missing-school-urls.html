@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>אדורה · מילוי URLs לבתי ספר חסרים</title>
+<meta name="robots" content="noindex">
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --teal: #009DE0; --teal-deep: #0077B5; --teal-pale: #E0F4FB;
+    --pink: #FCE7F3; --pink-soft: #FDF2F8; --pink-deep: #BE185D;
+    --sun: #FFD466; --coral: #FF5F5F;
+    --ink: #0E1B2C; --ink-soft: #2C3D55; --ink-mute: #6B7B8E;
+    --line: #E8EAED; --line-soft: #F4F5F7;
+    --bg: #FFFFFF; --bg-2: #F7F8FA;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Heebo', sans-serif; background: var(--bg-2); color: var(--ink); line-height: 1.5; padding: 24px; }
+  .wrap { max-width: 1280px; margin: 0 auto; }
+  header { background: var(--bg); border-radius: 16px; padding: 24px 28px; margin-bottom: 20px; border: 1px solid var(--line); }
+  h1 { font-size: 26px; font-weight: 900; margin-bottom: 6px; letter-spacing: -0.5px; }
+  .sub { color: var(--ink-soft); font-size: 14px; margin-bottom: 16px; }
+  .actions { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+  .btn { padding: 10px 18px; border-radius: 999px; font-size: 14px; font-weight: 700; cursor: pointer; border: none; font-family: inherit; transition: all .15s; display: inline-flex; align-items: center; gap: 6px; }
+  .btn-primary { background: var(--ink); color: #fff; }
+  .btn-primary:hover { background: var(--pink-deep); }
+  .btn-secondary { background: var(--bg-2); color: var(--ink); border: 1.5px solid var(--line); }
+  .btn-secondary:hover { background: var(--line-soft); }
+  .btn-success { background: #10B981; color: #fff; }
+  .stats { display: flex; gap: 20px; flex-wrap: wrap; padding: 14px 18px; background: var(--teal-pale); border-radius: 12px; margin-bottom: 14px; font-size: 13px; }
+  .stats strong { color: var(--teal-deep); font-weight: 800; font-size: 16px; }
+
+  .district-block { background: var(--bg); border-radius: 16px; margin-bottom: 16px; overflow: hidden; border: 1px solid var(--line); }
+  .district-head { padding: 16px 24px; background: linear-gradient(135deg, var(--pink-soft), var(--bg)); display: flex; justify-content: space-between; align-items: center; cursor: pointer; user-select: none; border-bottom: 1px solid var(--line); }
+  .district-head h2 { font-size: 18px; font-weight: 900; color: var(--ink); display: flex; align-items: center; gap: 10px; }
+  .district-pill { background: var(--pink-deep); color: #fff; padding: 3px 11px; border-radius: 999px; font-size: 12px; font-weight: 700; }
+  .district-progress { font-size: 13px; color: var(--ink-mute); font-weight: 600; }
+  .district-progress strong { color: var(--ink); }
+  .district-toggle { font-size: 22px; color: var(--ink-mute); transition: transform .2s; }
+  .district-block.open .district-toggle { transform: rotate(180deg); }
+  .district-body { padding: 16px 20px; display: none; }
+  .district-block.open .district-body { display: block; }
+
+  .school { display: grid; grid-template-columns: 80px 1fr 2fr 110px; gap: 12px; padding: 12px; background: var(--bg-2); border-radius: 10px; margin-bottom: 8px; align-items: center; transition: background .15s; }
+  .school:hover { background: var(--teal-pale); }
+  .school.filled { background: #ECFDF5; }
+  .school-id { font-size: 11px; font-weight: 700; color: var(--ink-mute); font-family: monospace; }
+  .school-info { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+  .school-name { font-weight: 700; font-size: 14px; color: var(--ink); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .school-meta { font-size: 11px; color: var(--ink-mute); display: flex; gap: 6px; flex-wrap: wrap; }
+  .school-meta span { background: var(--bg); padding: 1px 7px; border-radius: 6px; }
+  .school-input { padding: 8px 12px; border-radius: 8px; border: 1.5px solid var(--line); font-size: 13px; font-family: inherit; background: var(--bg); width: 100%; min-width: 0; }
+  .school-input:focus { outline: none; border-color: var(--teal); box-shadow: 0 0 0 3px var(--teal-pale); }
+  .school-search { font-size: 12px; font-weight: 600; color: var(--teal-deep); padding: 7px 12px; border-radius: 8px; background: var(--teal-pale); text-decoration: none; text-align: center; transition: all .15s; }
+  .school-search:hover { background: var(--teal); color: #fff; }
+  @media (max-width: 768px) {
+    .school { grid-template-columns: 1fr; }
+    .school-search { width: auto; }
+  }
+
+  #toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: var(--ink); color: #fff; padding: 14px 22px; border-radius: 999px; font-weight: 600; box-shadow: 0 10px 30px rgba(0,0,0,.2); display: none; z-index: 100; }
+  #toast.show { display: block; animation: slideUp .3s; }
+  @keyframes slideUp { from { transform: translate(-50%, 20px); opacity: 0; } to { transform: translate(-50%, 0); opacity: 1; } }
+
+  .empty { text-align: center; padding: 40px; color: var(--ink-mute); }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <header>
+    <h1>השלמת URLs לבתי ספר חסרים</h1>
+    <p class="sub">170 בתי ספר עם שם אבל בלי קישור לאתר. הוסיפי URL ידנית וייצאי JSON מעודכן בסוף.</p>
+    <div class="stats">
+      <span><strong id="stat-total">170</strong> חסרים סך הכל</span>
+      <span><strong id="stat-filled">0</strong> מולאו בסשן זה</span>
+      <span><strong id="stat-saved">0</strong> שמורים מקומית (localStorage)</span>
+    </div>
+    <div class="actions">
+      <button class="btn btn-primary" onclick="exportJSON()">📥 ייצוא JSON מעודכן</button>
+      <button class="btn btn-secondary" onclick="copyToClipboard()">📋 העתק רק את ה-URLs</button>
+      <button class="btn btn-secondary" onclick="expandAll()">פתחי הכל</button>
+      <button class="btn btn-secondary" onclick="collapseAll()">סגרי הכל</button>
+      <button class="btn btn-secondary" onclick="if(confirm('למחוק את כל מה ששמרת?')) { localStorage.removeItem('missing-urls'); location.reload(); }">איפוס</button>
+    </div>
+  </header>
+
+  <div id="districts"></div>
+</div>
+
+<div id="toast"></div>
+
+<script>
+const DISTRICT_ORDER = ['תל אביב', 'מרכז', 'מנח"י', 'ירושלים', 'חיפה', 'צפון', 'דרום', 'חרדי', 'התיישבותי'];
+const SAVED = JSON.parse(localStorage.getItem('missing-urls') || '{}');
+
+function esc(s) { return String(s == null ? '' : s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+function searchURL(p) {
+  const q = encodeURIComponent(`"בית ספר ${p.school_name}" ${p.city || ''} ${p.district || ''} ${p.sector || ''} site:edu.il OR site:tik-tak.school OR site:mashov.info`);
+  return `https://www.google.com/search?q=${q}`;
+}
+
+function toast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2000);
+}
+
+function updateStats() {
+  const filled = Object.keys(SAVED).filter(k => SAVED[k]).length;
+  document.getElementById('stat-filled').textContent = filled;
+  document.getElementById('stat-saved').textContent = filled;
+}
+
+function saveURL(id, value) {
+  if (value.trim()) {
+    SAVED[id] = value.trim();
+  } else {
+    delete SAVED[id];
+  }
+  localStorage.setItem('missing-urls', JSON.stringify(SAVED));
+  updateStats();
+}
+
+function exportJSON() {
+  fetch('../principal-positions.json')
+    .then(r => r.json())
+    .then(data => {
+      let added = 0;
+      data.positions.forEach(p => {
+        if (SAVED[p.id]) {
+          p.website = SAVED[p.id];
+          added++;
+        }
+      });
+      const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'principal-positions.json';
+      a.click();
+      URL.revokeObjectURL(url);
+      toast(`✅ קובץ הורד עם ${added} URLs נוספים`);
+    });
+}
+
+function copyToClipboard() {
+  const lines = Object.entries(SAVED).map(([id, url]) => `${id}\t${url}`);
+  navigator.clipboard.writeText(lines.join('\n'));
+  toast(`📋 הועתק ${lines.length} שורות`);
+}
+
+function expandAll() { document.querySelectorAll('.district-block').forEach(b => b.classList.add('open')); }
+function collapseAll() { document.querySelectorAll('.district-block').forEach(b => b.classList.remove('open')); }
+
+fetch('missing-urls-data.json')
+  .then(r => r.json())
+  .then(data => {
+    const container = document.getElementById('districts');
+    document.getElementById('stat-total').textContent = data.total_missing;
+    const html = DISTRICT_ORDER.filter(d => data.by_district[d]).map((d, idx) => {
+      const schools = data.by_district[d];
+      const schoolsHtml = schools.map(p => {
+        const savedUrl = SAVED[p.id] || '';
+        return `
+          <div class="school${savedUrl ? ' filled' : ''}" data-id="${esc(p.id)}">
+            <div class="school-id">#${esc(p.id)}</div>
+            <div class="school-info">
+              <div class="school-name">${esc(p.school_name)}</div>
+              <div class="school-meta">
+                ${p.city ? `<span>📍 ${esc(p.city)}</span>` : ''}
+                <span>${esc(p.sector || '')}</span>
+                <span>${esc(p.level || '')}</span>
+                <span style="font-size:10px;color:#6B7B8E">${esc(p.school_type_raw || '')}</span>
+              </div>
+            </div>
+            <input type="url" class="school-input" placeholder="https://..." value="${esc(savedUrl)}" data-id="${esc(p.id)}" />
+            <a href="${searchURL(p)}" target="_blank" class="school-search">🔎 חיפוש בגוגל</a>
+          </div>
+        `;
+      }).join('');
+      return `
+        <div class="district-block${idx === 0 ? ' open' : ''}" data-district="${esc(d)}">
+          <div class="district-head" onclick="this.parentElement.classList.toggle('open')">
+            <h2>${esc(d)} <span class="district-pill">${schools.length}</span></h2>
+            <div class="district-progress">
+              <strong class="prog-${idx}">0</strong> / ${schools.length} מולאו
+            </div>
+            <span class="district-toggle">▼</span>
+          </div>
+          <div class="district-body">
+            ${schoolsHtml}
+          </div>
+        </div>
+      `;
+    }).join('');
+    container.innerHTML = html;
+
+    // Attach input listeners
+    container.querySelectorAll('.school-input').forEach(inp => {
+      inp.addEventListener('input', e => {
+        const id = e.target.dataset.id;
+        saveURL(id, e.target.value);
+        e.target.closest('.school').classList.toggle('filled', !!e.target.value.trim());
+        updateDistrictProgress();
+      });
+    });
+    updateStats();
+    updateDistrictProgress();
+  });
+
+function updateDistrictProgress() {
+  document.querySelectorAll('.district-block').forEach(block => {
+    const filled = block.querySelectorAll('.school.filled').length;
+    const prog = block.querySelector('.district-progress strong');
+    if (prog) prog.textContent = filled;
+  });
+}
+</script>
+
+</body>
+</html>
