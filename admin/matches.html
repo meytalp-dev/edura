@@ -242,6 +242,11 @@
 </header>
 
 <!-- באנר "מהסריקה האחרונה" — מתעדכן רק אם data/scan-fresh.json קיים -->
+<div class="scan-banner" id="data-mode-banner" hidden style="background:#fff3e0;border-color:#ffb74d;color:#7c4a00">
+  <span style="font-size:18px">⚠️</span>
+  <span><strong>מצב מוגבל (קריאה בלבד):</strong> את רואה את האתר החי, ללא שמות/מיילים/טלפונים של מורות ומשרות (lockdown 12.5). הריצי מקומית עם <code>python -m http.server 8000</code> בתיקיית edura ופתחי <code>http://localhost:8000/admin/matches.html</code> כדי לפעול עם פרטים מלאים (שליחת מיילים/WhatsApp).</span>
+</div>
+
 <div class="scan-banner" id="scan-banner" hidden>
   <span style="font-size:18px">🆕</span>
   <span><strong>מהסריקה האחרונה:</strong> <span id="scan-banner-text">…</span></span>
@@ -340,16 +345,35 @@ function nfb(t, i, sn) {
   };
 }
 
+// טען קודם את הקובץ המלא (זמין רק מקומית — מכיל name/email/phone),
+// אם חסר (באתר החי, אחרי lockdown 12.5.2026) — נופל לציבורי שבו רק שדות מאצ'ינג
+async function fetchDataFile(name) {
+  try {
+    const r = await fetch('../data/' + name + '.json');
+    if (r.ok) return { data: await r.json(), full: true };
+  } catch (e) {}
+  try {
+    const r = await fetch('../data/' + name + '-public.json');
+    if (r.ok) return { data: await r.json(), full: false };
+  } catch (e) {}
+  return { data: null, full: false };
+}
+
+let DATA_MODE_FULL = true; // becomes false if public-only files loaded
+
 async function loadAll() {
   try {
-    const [jobs, teachers, fb1, fb2, sub, scan] = await Promise.all([
-      fetch('../data/jobs.json').then(r => r.json()),
-      fetch('../data/teachers.json').then(r => r.json()),
+    const [jobsRes, teachersRes, fb1, fb2, sub, scan] = await Promise.all([
+      fetchDataFile('jobs'),
+      fetchDataFile('teachers'),
       fetch('../data/fb-teachers.json').then(r => r.ok ? r.json() : null).catch(() => null),
       fetch('../data/fb-teachers-2.json').then(r => r.ok ? r.json() : null).catch(() => null),
       fetch(SUBMISSIONS_URL + '?action=approved').then(r => r.ok ? r.json() : null).catch(() => null),
       fetch('../data/scan-fresh.json').then(r => r.ok ? r.json() : null).catch(() => null)
     ]);
+    const jobs = jobsRes.data || { jobs: [] };
+    const teachers = teachersRes.data || { teachers: [] };
+    DATA_MODE_FULL = jobsRes.full && teachersRes.full;
     const submitted = sub && sub.ok ? sub : { jobs: [], teachers: [] };
     ALL_JOBS = [
       ...(submitted.jobs || []).map(nsj),
@@ -926,6 +950,7 @@ document.getElementById('btn-export-rejects').addEventListener('click', () => {
   const ok = await loadAll();
   if (!ok) return;
   ALL_MATCHES = buildMatches();
+  if (!DATA_MODE_FULL) document.getElementById('data-mode-banner').hidden = false;
   renderScanBanner();
   // Populate filter dropdowns from actual data
   fillSelect('f-region', ['ירושלים','מרכז','שפלה','צפון','דרום']);
