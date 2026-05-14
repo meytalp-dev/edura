@@ -396,6 +396,23 @@ async function loadAll() {
         new_matches_count: scan.diff.new_matches_count || 0
       };
     }
+    // הגשות ישירות מהאתר ב-14 ימים אחרונים — לסמן כ"חדש"
+    // (scan-fresh.json לא יודע עליהן, כי הוא מבוסס על סריקה של igm/itu/shatil)
+    const cutoff = new Date(Date.now() - 14 * 86400e3).toISOString().slice(0, 10);
+    let freshJobs = 0, freshTeachers = 0;
+    for (const j of (submitted.jobs || [])) {
+      const d = String(j.timestamp || '').slice(0, 10);
+      if (d >= cutoff && j.ref_id) { NEW_JOB_IDS.add(j.ref_id); freshJobs++; }
+    }
+    for (const t of (submitted.teachers || [])) {
+      const d = String(t.timestamp || '').slice(0, 10);
+      if (d >= cutoff && t.ref_id) { NEW_TEACHER_IDS.add(t.ref_id); freshTeachers++; }
+    }
+    if (freshJobs || freshTeachers) {
+      SCAN_META = SCAN_META || { scanned_at: new Date().toISOString(), new_jobs_count: 0, new_teachers_count: 0, new_matches_count: 0 };
+      SCAN_META.new_jobs_count = (SCAN_META.new_jobs_count || 0) + freshJobs;
+      SCAN_META.new_teachers_count = (SCAN_META.new_teachers_count || 0) + freshTeachers;
+    }
     return true;
   } catch (e) {
     console.error(e);
