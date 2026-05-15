@@ -164,9 +164,31 @@
     return best;
   }
 
+  // Canonicalize Hebrew city names — מאחד וריאציות שכיחות:
+  //   קרית/קריית, תל אביב/תל אביב-יפו/ת"א, רמת-גן/רמת גן, באר שבע/באר-שבע
+  function canonicalCity(c) {
+    let s = normalizeText(c);
+    if (!s) return '';
+    // English → Hebrew (מורות זרות כותבות לפעמים באנגלית)
+    const enToHe = {
+      'haifa': 'חיפה', 'tel aviv': 'תל אביב', 'jerusalem': 'ירושלים',
+      'herzliya': 'הרצליה', 'beer sheva': 'באר שבע', 'beersheba': 'באר שבע',
+      'rishon lezion': 'ראשון לציון', 'petah tikva': 'פתח תקווה',
+      'netanya': 'נתניה', 'rehovot': 'רחובות', 'ramat gan': 'רמת גן'
+    };
+    if (enToHe[s]) s = enToHe[s];
+    // הסרת מקפים פנימיים (רמת-גן → רמת גן, תל אביב-יפו → תל אביב יפו)
+    s = s.replace(/[\-‒–—]/g, ' ').replace(/\s+/g, ' ').trim();
+    // הסרת " יפו" אחרי "תל אביב"
+    s = s.replace(/^תל אביב יפו$/, 'תל אביב');
+    // קרית → קריית (וריאציה הכי נפוצה — רק כתחילית של מילה)
+    s = (' ' + s + ' ').replace(/ קרית /g, ' קריית ').trim();
+    return s;
+  }
+
   function citySame(cA, cB) {
-    const a = normalizeText(cA);
-    const b = normalizeText(cB);
+    const a = canonicalCity(cA);
+    const b = canonicalCity(cB);
     if (!a || !b) return false;
     return a === b;
   }
