@@ -973,6 +973,11 @@ document.getElementById('btn-export-rejects').addEventListener('click', () => {
   fillSelect('f-region', ['ירושלים','מרכז','שפלה','צפון','דרום']);
   fillSelect('f-subject', ALL_JOBS.map(j => j.subject).concat(ALL_TEACHERS.map(t => t.subject)));
   fillSelect('f-level', ALL_JOBS.map(j => j.level).concat(ALL_TEACHERS.map(t => t.level)));
+  // תמיכה ב-?only-new=1 — להציג מיד רק את ההתאמות החדשות
+  if (new URLSearchParams(location.search).get('only-new') === '1') {
+    const cb = document.getElementById('f-only-new');
+    if (cb) cb.checked = true;
+  }
   render();
 })();
 </script>
