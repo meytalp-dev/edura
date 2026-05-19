@@ -1046,30 +1046,6 @@
   <div class="modal" id="modal-content"></div>
 </div>
 
-<!-- Interest form modal (אני מעוניין/ת → goes through Edura, never directly to school) -->
-<div class="modal-overlay" id="interest-modal" onclick="if(event.target===this)closeInterestForm()" role="dialog" aria-labelledby="interest-title">
-  <div class="modal" id="interest-content"></div>
-</div>
-
-<style>
-  #interest-modal .modal { max-width: 560px; padding: 28px 28px 24px; }
-  #interest-modal h3 { margin: 0 0 6px; font-size: 22px; color: var(--ink); }
-  #interest-modal .interest-sub { color: var(--muted); font-size: 14px; margin-bottom: 18px; line-height: 1.5; }
-  #interest-modal .interest-chip { display: inline-flex; gap: 6px; align-items: center; background: var(--bg-2); color: var(--ink); border-radius: 999px; padding: 5px 11px; font-size: 12px; font-weight: 600; margin-bottom: 12px; }
-  #interest-modal label { display: block; font-size: 13px; color: var(--ink); margin: 10px 0 4px; font-weight: 600; }
-  #interest-modal input, #interest-modal textarea { width: 100%; box-sizing: border-box; padding: 10px 12px; border: 1.5px solid var(--line); border-radius: 10px; font: inherit; background: #fff; color: var(--ink); }
-  #interest-modal input:focus, #interest-modal textarea:focus { outline: none; border-color: var(--accent); }
-  #interest-modal textarea { min-height: 70px; resize: vertical; }
-  #interest-modal .interest-actions { display: flex; gap: 10px; margin-top: 18px; }
-  #interest-modal .interest-actions button { flex: 1; padding: 12px; border-radius: 10px; font-weight: 700; border: none; cursor: pointer; font-size: 15px; }
-  #interest-modal .interest-actions .btn-send { background: var(--ink); color: #fff; }
-  #interest-modal .interest-actions .btn-send:disabled { opacity: .5; cursor: wait; }
-  #interest-modal .interest-actions .btn-cancel { background: var(--bg-2); color: var(--ink); }
-  #interest-modal .interest-error { color: #C04141; font-size: 13px; margin-top: 10px; }
-  #interest-modal .interest-success { padding: 18px; background: #ECFDF5; border-radius: 12px; color: #065F46; line-height: 1.6; }
-  #interest-modal .interest-privacy { font-size: 11px; color: var(--muted); margin-top: 14px; line-height: 1.5; }
-</style>
-
 <script>
 // ──────────────────────────────────────────────────
 // CURATED Unsplash photos — by SUBJECT (3 per subject for diversity)
@@ -1237,10 +1213,12 @@ const SUBMISSIONS_URL = 'https://script.google.com/macros/s/AKfycbwleldcwH8c5k9O
 function normalizeSubmittedJob(r) {
   const ts = r.timestamp || '';
   const dateIso = ts ? String(ts).slice(0, 10) : '';
-  // Public-only fields. school/email/phone/contact_name/description never reach the browser.
   return {
     id: r.ref_id,
     source: 'submitted',
+    source_name: 'הגשה ישירה',
+    title: (r.subject ? r.subject + ' · ' : '') + (r.school || ''),
+    school: r.school || '',
     subject: r.subject || '',
     role: r.role || '',
     region: r.region || '',
@@ -1249,7 +1227,13 @@ function normalizeSubmittedJob(r) {
     level: r.level || '',
     sector: r.sector || '',
     scope: r.scope || '',
+    description: r.description || '',
+    email: r.email || '',
+    phone: r.phone || '',
+    contact_name: r.contact_name || '',
+    date: dateIso,
     date_iso: dateIso,
+    url: '',
     is_submitted: true
   };
 }
@@ -1412,7 +1396,7 @@ function renderActiveFilters() {
 }
 
 function buildJobTitle(job) {
-  // Title is derived only from public fields — never from school name.
+  if (job.title) return job.title;
   const role = job.role || '';
   const subject = job.subject || '';
   if (role && subject && !role.includes(subject)) return role + ' ל' + subject;
@@ -1422,7 +1406,7 @@ function buildJobTitle(job) {
 }
 
 function renderJobCard(job, badge) {
-  const city = job.city || 'לא צוינה עיר';
+  const city = job.city || job.school || 'לא צוינה עיר';
   const regionLabel = (job.region && job.region !== city) ? 'אזור ' + job.region : '';
   const photo = pickPhoto(job);
   const title = buildJobTitle(job);
@@ -1430,7 +1414,7 @@ function renderJobCard(job, badge) {
   const metaParts = [];
   if (job.scope) metaParts.push('<strong>' + escapeHtml(job.scope) + '</strong>');
   if (job.level) metaParts.push(escapeHtml(job.level));
-  if (job.sector) metaParts.push(escapeHtml(job.sector));
+  if (job.subject) metaParts.push(escapeHtml(job.subject));
   const metaHtml = metaParts.join('<span class="job-meta-dot"></span>');
 
   const badgeHtml = badge
@@ -1452,6 +1436,7 @@ function renderJobCard(job, badge) {
       '</div>' +
       '<div class="job-body">' +
         '<div class="job-title">' + escapeHtml(title) + '</div>' +
+        (job.school ? '<div class="job-school">' + escapeHtml(job.school) + '</div>' : '') +
         (metaHtml ? '<div class="job-meta">' + metaHtml + '</div>' : '') +
       '</div>' +
     '</article>'
@@ -1463,8 +1448,8 @@ function renderRows() {
   const today = new Date('2026-05-05');
   const sevenDaysAgo = new Date(today.getTime() - 7*24*60*60*1000);
 
-  // HOT — duplicated across sources. Without school we group by city+subject+level+sub_area.
-  const sig = j => (j.city || '') + '|' + (j.subject || '') + '|' + (j.level || '') + '|' + (j.sub_area || '');
+  // HOT — duplicated across sources.
+  const sig = j => (j.school || '') + '|' + (j.subject || '') + '|' + (j.city || '');
   const groups = {};
   pool.forEach(j => { const k = sig(j); (groups[k] = groups[k] || []).push(j); });
   const hot = Object.values(groups)
@@ -1563,18 +1548,24 @@ document.getElementById('city-go').addEventListener('click', () => {
 // ──────────────────────────────────────────────────
 // Job detail modal
 // ──────────────────────────────────────────────────
-// School/contact/phone/email/URL are intentionally NOT loaded into the browser.
-// Interested users submit the "אני מעוניין/ת" form → goes to Edura inbox →
-// Edura clicks "אשרי שליחה" in admin/forward-interest.html → forwarded to school.
+function buildWaLink(phone, jobTitle) {
+  if (!phone) return '';
+  let p = String(phone).replace(/\D/g, '');
+  if (!p) return '';
+  if (p.startsWith('0')) p = '972' + p.slice(1);
+  const msg = 'שלום, ראיתי את המודעה דרך אדורה: ' + (jobTitle || '');
+  return 'https://api.whatsapp.com/send?phone=' + p + '&text=' + encodeURIComponent(msg);
+}
 
 function openJobModal(jobId) {
   const job = JOBS.find(j => String(j.id) === String(jobId));
   if (!job) return;
 
   const photo = pickPhoto(job);
-  const city = job.city || 'לא צוינה עיר';
+  const city = job.city || job.school || 'לא צוינה עיר';
   const regionLabel = (job.region && job.region !== city) ? 'אזור ' + job.region : '';
   const title = buildJobTitle(job);
+  const desc = job.description || job.snippet || '';
 
   const tags = [];
   if (job.subject) tags.push('<span class="modal-tag">' + escapeHtml(job.subject) + '</span>');
@@ -1586,22 +1577,47 @@ function openJobModal(jobId) {
   if (job.role) meta.push(['תפקיד', job.role]);
   if (job.sub_area) meta.push(['תחום', job.sub_area]);
   if (job.region) meta.push(['אזור', job.region]);
-  if (job.date_iso) meta.push(['פורסם', job.date_iso]);
+  if (job.date) meta.push(['פורסם', job.date]);
 
-  // Interest CTA — every job uses the same flow. No public phone/email/url.
-  const contactBlock =
+  const wa = buildWaLink(job.phone, title);
+  const contactActions = [];
+  if (wa) contactActions.push(
+    '<a class="contact-btn wa" href="' + escapeHtml(wa) + '" target="_blank" rel="noopener">' +
+      '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 2.1.55 4.15 1.6 5.96L2 22l4.25-1.71c1.74.95 3.71 1.45 5.79 1.45 5.46 0 9.91-4.45 9.91-9.91S17.5 2 12.04 2zM17.47 14.38c-.3-.15-1.77-.87-2.04-.97-.27-.1-.47-.15-.67.15-.2.3-.77.97-.94 1.17-.17.2-.35.22-.65.07-.3-.15-1.26-.46-2.4-1.48-.89-.79-1.49-1.77-1.66-2.07-.17-.3-.02-.46.13-.61.13-.13.3-.35.45-.52.15-.17.2-.3.3-.5.1-.2.05-.37-.02-.52-.07-.15-.67-1.62-.92-2.22-.24-.58-.49-.5-.67-.51l-.57-.01c-.2 0-.52.07-.79.37-.27.3-1.04 1.02-1.04 2.49s1.07 2.89 1.22 3.09c.15.2 2.1 3.21 5.09 4.5.71.31 1.27.49 1.7.63.71.23 1.36.19 1.87.12.57-.09 1.77-.72 2.02-1.42.25-.7.25-1.29.17-1.42-.07-.12-.27-.2-.57-.35z"/></svg>' +
+      'WhatsApp' +
+    '</a>'
+  );
+  if (job.phone) contactActions.push(
+    '<a class="contact-btn phone" href="tel:' + escapeHtml(job.phone) + '">' +
+      '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>' +
+      escapeHtml(job.phone) +
+    '</a>'
+  );
+  if (job.email) contactActions.push(
+    '<a class="contact-btn email" href="mailto:' + escapeHtml(job.email) + '?subject=' + encodeURIComponent('פנייה למשרה: ' + title) + '">' +
+      '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>' +
+      'מייל' +
+    '</a>'
+  );
+  if (job.url) contactActions.push(
+    '<a class="contact-btn source-link" href="' + escapeHtml(job.url) + '" target="_blank" rel="noopener">' +
+      '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>' +
+      'למודעה המקורית' +
+    '</a>'
+  );
+
+  const contactBlock = contactActions.length ? (
     '<div class="modal-contact">' +
-      '<div class="modal-contact-title">מעוניינ/ת במשרה?</div>' +
-      '<div class="modal-contact-name" style="margin-bottom:14px">' +
-        'הפנייה שלך תועבר דרכנו לבית הספר. ככה אנחנו שומרות עליך — ועליהם — מספאם.' +
-      '</div>' +
-      '<div class="modal-contact-actions">' +
-        '<button type="button" class="contact-btn phone" onclick="openInterestForm(\'' + escapeHtml(job.id) + '\')" style="border:none;cursor:pointer">' +
-          '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2 11 13"/><path d="m22 2-7 20-4-9-9-4 20-7z"/></svg>' +
-          'אני מעוניינ/ת — שלחו לי פרטים' +
-        '</button>' +
-      '</div>' +
-    '</div>';
+      '<div class="modal-contact-title">יצירת קשר</div>' +
+      (job.contact_name ? '<div class="modal-contact-name">איש/אשת קשר: ' + escapeHtml(job.contact_name) + '</div>' : '') +
+      '<div class="modal-contact-actions">' + contactActions.join('') + '</div>' +
+    '</div>'
+  ) : (
+    '<div class="modal-contact">' +
+      '<div class="modal-contact-title">פרטי יצירת קשר לא זמינים</div>' +
+      '<div class="modal-contact-name">לפנייה בנושא המשרה — ראו את המודעה המקורית בהמשך</div>' +
+    '</div>'
+  );
 
   const html =
     '<div class="modal-hero" style="background-image:url(\'' + photo + '\')">' +
@@ -1614,7 +1630,14 @@ function openJobModal(jobId) {
     '</div>' +
     '<div class="modal-body">' +
       '<h2 class="modal-title" id="modal-title">' + escapeHtml(title) + '</h2>' +
+      (job.school ? '<div class="modal-school"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 9 12 5 2 9l10 4 10-4z"/><path d="M6 11v5c0 2 3 3 6 3s6-1 6-3v-5"/></svg>' + escapeHtml(job.school) + '</div>' : '') +
       (tags.length ? '<div class="modal-tags">' + tags.join('') + '</div>' : '') +
+      (desc ? (
+        '<div class="modal-section">' +
+          '<div class="modal-section-label">תיאור המשרה</div>' +
+          '<div class="modal-description">' + escapeHtml(desc) + '</div>' +
+        '</div>'
+      ) : '') +
       (meta.length ? (
         '<div class="modal-section">' +
           '<div class="modal-section-label">פרטים נוספים</div>' +
@@ -1636,141 +1659,7 @@ function closeJobModal() {
 }
 window.openJobModal = openJobModal;
 window.closeJobModal = closeJobModal;
-document.addEventListener('keydown', e => {
-  if (e.key === 'Escape') {
-    closeJobModal();
-    closeInterestForm();
-  }
-});
-
-// ──────────────────────────────────────────────────
-// Interest form — "אני מעוניין/ת"
-// Sends ONLY: jobId + applicant info. School/contact details stay private at Edura.
-// Apps Script receives → emails Edura → Edura clicks "אשרי שליחה" in admin to forward.
-// ──────────────────────────────────────────────────
-function openInterestForm(jobId) {
-  const job = JOBS.find(j => String(j.id) === String(jobId));
-  if (!job) return;
-  const title = buildJobTitle(job);
-  const city = job.city || '';
-  const subtitleParts = [];
-  if (city) subtitleParts.push(city);
-  if (job.scope) subtitleParts.push(job.scope);
-  if (job.level) subtitleParts.push(job.level);
-
-  const html =
-    '<div class="interest-chip">' +
-      '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-7.5 8-13a8 8 0 1 0-16 0c0 5.5 8 13 8 13z"/><circle cx="12" cy="9" r="3"/></svg>' +
-      escapeHtml(subtitleParts.join(' · ') || 'משרת הוראה') +
-    '</div>' +
-    '<h3 id="interest-title">' + escapeHtml(title) + '</h3>' +
-    '<div class="interest-sub">השאירו פרטים ונעביר את הפנייה לבית הספר. אדורה משמשת מתווכת — שום פרט שלכם לא נשלח עד שאנחנו מאשרות.</div>' +
-    '<form id="interest-form" onsubmit="submitInterest(event, \'' + escapeHtml(jobId) + '\')">' +
-      '<label for="int-name">שם מלא <span style="color:#C04141">*</span></label>' +
-      '<input id="int-name" name="name" type="text" required autocomplete="name" />' +
-      '<label for="int-email">מייל <span style="color:#C04141">*</span></label>' +
-      '<input id="int-email" name="email" type="email" required autocomplete="email" />' +
-      '<label for="int-phone">טלפון</label>' +
-      '<input id="int-phone" name="phone" type="tel" autocomplete="tel" inputmode="tel" />' +
-      '<label for="int-message">כמה מילים על עצמך (לא חובה)</label>' +
-      '<textarea id="int-message" name="message" placeholder="ניסיון, מקצועות, זמינות..."></textarea>' +
-      '<div class="interest-error" id="interest-error" style="display:none"></div>' +
-      '<div class="interest-actions">' +
-        '<button type="button" class="btn-cancel" onclick="closeInterestForm()">ביטול</button>' +
-        '<button type="submit" class="btn-send" id="interest-submit">שלחו פנייה</button>' +
-      '</div>' +
-      '<div class="interest-privacy">הפרטים שלכם מגיעים אלינו ב-אדורה בלבד. נוודא שהמשרה רלוונטית, ונעביר את הפנייה לבית הספר בעצמנו. לא תועברו לרשימות תפוצה.</div>' +
-    '</form>';
-
-  document.getElementById('interest-content').innerHTML = html;
-  document.getElementById('interest-modal').classList.add('open');
-  document.body.style.overflow = 'hidden';
-  setTimeout(() => { const f = document.getElementById('int-name'); if (f) f.focus(); }, 50);
-}
-
-function closeInterestForm() {
-  const m = document.getElementById('interest-modal');
-  if (!m) return;
-  m.classList.remove('open');
-  document.body.style.overflow = '';
-}
-
-async function submitInterest(event, jobId) {
-  event.preventDefault();
-  const err = document.getElementById('interest-error');
-  const btn = document.getElementById('interest-submit');
-  err.style.display = 'none';
-
-  const name = document.getElementById('int-name').value.trim();
-  const email = document.getElementById('int-email').value.trim();
-  const phone = document.getElementById('int-phone').value.trim();
-  const message = document.getElementById('int-message').value.trim();
-
-  if (!name || !email) {
-    err.textContent = 'שם ומייל הם חובה';
-    err.style.display = 'block';
-    return;
-  }
-  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-    err.textContent = 'מייל לא תקין';
-    err.style.display = 'block';
-    return;
-  }
-
-  const job = JOBS.find(j => String(j.id) === String(jobId)) || {};
-  // Build a short public-only context label for the email Edura will receive.
-  // We never send school/contact details from the client — Edura looks them up.
-  const ctx = [];
-  if (job.subject) ctx.push(job.subject);
-  if (job.role) ctx.push(job.role);
-  if (job.city) ctx.push(job.city);
-  if (job.level) ctx.push(job.level);
-  if (job.scope) ctx.push(job.scope);
-  const jobTitle = ctx.join(' · ') || 'משרת הוראה';
-
-  btn.disabled = true;
-  btn.textContent = 'שולחים...';
-
-  try {
-    const res = await fetch(SUBMISSIONS_URL, {
-      method: 'POST',
-      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-      body: JSON.stringify({
-        action: 'submit_application',
-        jobId: jobId,
-        jobTitle: jobTitle,
-        name: name,
-        email: email,
-        phone: phone,
-        message: message
-        // NOTE: no school, no schoolEmail — Edura looks these up server-side.
-      })
-    });
-    const data = await res.json().catch(() => ({}));
-    if (data && data.ok) {
-      document.getElementById('interest-content').innerHTML =
-        '<div class="interest-success">' +
-          '<div style="font-size:18px;font-weight:700;margin-bottom:8px">תודה! קיבלנו את הפנייה</div>' +
-          '<div>הפרטים שלך הגיעו אלינו ב-אדורה. נעבור עליהם, ואם המשרה רלוונטית — נעביר ישירות לבית הספר. נחזור אלייך למייל ' + escapeHtml(email) + '.</div>' +
-          '<div style="margin-top:14px"><button class="btn-cancel" style="padding:10px 18px;border:none;border-radius:10px;background:var(--bg-2);color:var(--ink);cursor:pointer;font-weight:600" onclick="closeInterestForm()">סגירה</button></div>' +
-        '</div>';
-    } else {
-      err.textContent = (data && data.error) ? data.error : 'משהו השתבש. נסו שוב או כתבו ל-meytal@edura.co.il';
-      err.style.display = 'block';
-      btn.disabled = false;
-      btn.textContent = 'שלחו פנייה';
-    }
-  } catch (e) {
-    err.textContent = 'שליחה נכשלה — בדקי חיבור לאינטרנט';
-    err.style.display = 'block';
-    btn.disabled = false;
-    btn.textContent = 'שלחו פנייה';
-  }
-}
-
-window.openInterestForm = openInterestForm;
-window.closeInterestForm = closeInterestForm;
-window.submitInterest = submitInterest;
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeJobModal(); });
 
 // Mobile drawer
 function openDrawer() {

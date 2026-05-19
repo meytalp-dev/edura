@@ -2,12 +2,11 @@
 """
 Edura — מפצל את jobs.json לשני קבצים:
 
-  1. jobs-public.json   — מתפרסם ב-GitHub Pages. רק שדות לא-רגישים.
-  2. jobs-private.json  — מקומי בלבד (gitignored). גיבוי מלא של כל הפרטים.
+  1. jobs-public.json   — מתפרסם ב-GitHub Pages. כולל את כל פרטי המשרה.
+  2. jobs-private.json  — מקומי בלבד (gitignored). גיבוי מלא בפורמט המקורי.
 
-הסיבה: אסור ששם בית הספר, איש קשר, מייל, טלפון או URL ייחשפו באתר.
-המתעניינים נשלחים דרך טופס "אני מעוניין/ת" → המייל מגיע לאדורה →
-אדורה לוחצת "אשרי שליחה" → המערכת מעבירה לבית הספר.
+הערה היסטורית: בעבר (12.5.2026) הופעל "לוקדאון" שהסתיר שמות בתי ספר ופרטי קשר.
+הלוקדאון בוטל ב-19.5.2026 לבקשת מיטל — האתר הוא המקום הציבורי לטיפול בפניות.
 
 הרצה:
     python data/split-jobs-public.py
@@ -18,10 +17,19 @@ import os
 import sys
 from pathlib import Path
 
-# שדות שמותר לפרסם באתר
+# שדות שעוברים לקובץ הציבורי — כל המידע על המשרה, כולל שם בית הספר ופרטי קשר
 PUBLIC_FIELDS = [
     "id",
-    "source",        # itu / igm / shatil / fb — לסטטיסטיקה, לא חושף בית ספר
+    "source",
+    "source_name",
+    "school",
+    "title",
+    "snippet",
+    "description",
+    "contact_name",
+    "email",
+    "phone",
+    "url",
     "city",
     "subject",
     "role",
@@ -30,22 +38,12 @@ PUBLIC_FIELDS = [
     "region",
     "sub_area",
     "scope",
-    "date_iso",      # תאריך פרסום
+    "date",
+    "date_iso",
 ]
 
-# שדות שיורדים מהציבורי (נשמרים רק ב-private)
-PRIVATE_FIELDS = [
-    "source_name",   # "הסתדרות המורים" וכו' — לא רגיש אבל לא נחוץ באתר
-    "school",
-    "title",         # חלק מהכותרות מכילות שם בית ספר
-    "snippet",       # חלק מהsnippets מכילים שם בית ספר
-    "description",   # תיאור מלא — לא לציבור (חוזר ל"מבחן עין" של מתעניין רציני)
-    "contact_name",
-    "email",
-    "phone",
-    "url",           # קישור למקור — חושף בית ספר
-    "date",          # פורמט מקורי, date_iso מספיק לציבורי
-]
+# (נשמר לתיעוד — אחרי ביטול הלוקדאון אין יותר שדות פרטיים)
+PRIVATE_FIELDS = []
 
 
 def split_jobs(input_path: Path, public_path: Path, private_path: Path) -> None:

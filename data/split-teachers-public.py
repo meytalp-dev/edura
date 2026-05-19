@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
 """
-Edura — מפצל את teachers.json + fb-teachers.json + fb-teachers-2.json לציבורי+פרטי.
+Edura — מאחד את teachers.json + fb-teachers.json + fb-teachers-2.json לקובץ אחד.
 
-  1. teachers-public.json    — נדחף ל-GitHub Pages. רק שדות לא-רגישים.
-                                כל 3 המקורות מאוחדים ל-array אחד.
-  2. teachers-private.json   — מקומי בלבד (gitignored). גיבוי מלא עם name/email/phone/url.
+  1. teachers-public.json    — נדחף ל-GitHub Pages. כולל את כל פרטי המורה
+                                ושלוש המקורות מאוחדים ל-array אחד.
+  2. teachers-private.json   — מקומי בלבד (gitignored). גיבוי זהה ל-public.
 
-הסיבה: שם המורה + פרטי הקשר שלו הם PII. מנהלים שמעוניינים יוצרים קשר
-דרך טופס "פנייה דרך אדורה" — Edura מאשרת ומעבירה למורה.
+הערה היסטורית: בעבר (12.5.2026) הופעל "לוקדאון" שהסתיר שמות מורים ופרטי קשר.
+הלוקדאון בוטל ב-19.5.2026 לבקשת מיטל — האתר הוא המקום הציבורי לטיפול בפניות.
 
 הרצה:
     python data/split-teachers-public.py
@@ -17,31 +17,30 @@ import json
 import sys
 from pathlib import Path
 
-# שדות שמותר לפרסם באתר. שם המורה לא ברשימה במכוון.
+# שדות שעוברים לקובץ הציבורי — כל המידע על המורה, כולל שם ופרטי קשר
 PUBLIC_FIELDS = [
     "id",
     "source",
-    "subject",
-    "level",
-    "region",
-    "sub_area",
-    "city",
-    "scope",
-    "date_iso",
-]
-
-# שדות שיורדים מהציבורי (נשמרים רק ב-private)
-PRIVATE_FIELDS = [
     "source_name",
     "name",
     "email",
     "phone",
     "url",
     "fb_url",
+    "subject",
+    "level",
+    "region",
+    "sub_area",
+    "city",
+    "scope",
     "date",
+    "date_iso",
     "contact_via_platform",
-    "notes",            # הערות אישיות של המורה
+    "notes",
 ]
+
+# (נשמר לתיעוד — אחרי ביטול הלוקדאון אין יותר שדות פרטיים)
+PRIVATE_FIELDS = []
 
 
 def load_json(path: Path):

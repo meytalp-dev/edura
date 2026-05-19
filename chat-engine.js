@@ -117,27 +117,29 @@ window.EDURA_SUBMISSIONS_URL = 'https://script.google.com/macros/s/AKfycbwleldcw
 
   // משרות שאישרת ידנית דרך לינק במייל — מגיעות מ-Apps Script.
   // נורמליזציה זהה לזו ב-index.html כדי שהבוט יראה את אותן רשומות.
-  // Public-only normalization. school/email/phone/contact_name/url never reach the client.
   function normalizeSubmittedJob(r) {
     const ts = r.timestamp || '';
     const dateIso = ts ? String(ts).slice(0, 10) : '';
-    const role = r.role || '';
-    const subject = r.subject || '';
-    const title = role && subject ? role + ' ל' + subject : (role || (subject ? 'מורה ל' + subject : 'משרת הוראה'));
     return {
       id: r.ref_id,
       source: 'submitted',
       source_name: 'הגשה ישירה',
-      title: title,
-      subject: subject,
-      role: role,
+      title: (r.subject ? r.subject + ' · ' : '') + (r.school || ''),
+      school: r.school || '',
+      subject: r.subject || '',
+      role: r.role || '',
       region: r.region || '',
       city: r.city || '',
       level: r.level || '',
       sector: r.sector || '',
       scope: r.scope || '',
+      description: r.description || '',
+      email: r.email || '',
+      phone: r.phone || '',
+      contact_name: r.contact_name || '',
       date: dateIso,
       date_iso: dateIso,
+      url: '',
       is_submitted: true
     };
   }
@@ -155,6 +157,8 @@ window.EDURA_SUBMISSIONS_URL = 'https://script.google.com/macros/s/AKfycbwleldcw
       city: r.city || '',
       scope: r.scope || '',
       notes: r.notes || '',
+      email: r.email || '',
+      phone: r.phone || '',
       date: dateIso,
       date_iso: dateIso,
       is_submitted: true
@@ -554,12 +558,13 @@ window.EDURA_SUBMISSIONS_URL = 'https://script.google.com/macros/s/AKfycbwleldcw
     saveJob(job) {
       try {
         const saved = JSON.parse(localStorage.getItem(SAVED_KEY) || '[]');
-        const key = job.id || (job.subject + '|' + job.city);
+        const key = job.id || (job.school + job.email);
         if (!saved.find(s => s.id === key)) {
           saved.unshift({
             id: key,
-            title: job.title || (job.subject ? 'מורה ל' + job.subject : 'משרת הוראה'),
-            city: job.city || '',
+            title: job.school || job.title || '',
+            email: job.email || '',
+            phone: job.phone || '',
             sourceName: job.source_name || job.source || '',
             savedAt: Date.now()
           });
@@ -623,10 +628,6 @@ window.EDURA_SUBMISSIONS_URL = 'https://script.google.com/macros/s/AKfycbwleldcw
     }
 
     jobCard(j) {
-      // ⚠️ Public-data only. school/email/phone/contact_name/url/description never
-      // load into the chat client. Interest flow goes through edura.co.il + the
-      // "אני מעוניין/ת" form on index.html. We link out so the chat doesn't
-      // duplicate the form modal.
       const card = document.createElement('div');
       card.className = 'ec-msg ec-msg-bot';
       const isTeacher = this.flow === 'teacher';
@@ -641,22 +642,44 @@ window.EDURA_SUBMISSIONS_URL = 'https://script.google.com/macros/s/AKfycbwleldcw
       const sector = j.sector ? '<span class="ec-tag">' + esc(j.sector) + '</span>' : '';
       const scope = j.scope ? '<span class="ec-tag">' + esc(j.scope) + '</span>' : '';
       const dateStr = j.date ? '<span class="ec-job-date">' + esc(j.date) + '</span>' : '';
-      // כותרת: למורה — שם. למשרה — תפקיד+מקצוע (לא בית ספר!).
-      const cardTitle = isTeacher
-        ? (j.name || 'מורה אנונימי/ת')
-        : (j.title || (j.role && j.subject ? j.role + ' ל' + j.subject : (j.subject ? 'מורה ל' + j.subject : 'משרת הוראה')));
+      // עדיפות ל-description (טקסט מלא), נופלים ל-snippet
+      const bodyText = j.description || j.snippet || '';
+      // כותרת: למורה — שם המורה. למשרה — בית הספר.
+      const cardTitle = isTeacher ? (j.name || 'מורה אנונימי/ת') : (j.school || j.title || '');
       const subjLabel = isTeacher && j.subject ? 'מורה ל' + j.subject : '';
 
+      // CTAs — מציג כל אמצעי קשר זמין ככפתור נפרד, עם הכתובת/מספר על הכפתור.
+      // ככה ברור למשתמשת מה כל כפתור עושה ואיזה פרטי קשר באמת קיימים במשרה.
       const ctas = [];
-      if (isTeacher) {
-        // מורה מציג את עצמו — פנייה דרך אדורה
-        ctas.push('<a class="ec-job-cta" href="https://edura.co.il/#contact" target="_blank" rel="noopener">פנייה דרך אדורה</a>');
-      } else {
-        // משרה — מפנים את המתעניין/ת לטופס "אני מעוניין/ת" באתר עם המזהה של המשרה
-        const interestUrl = '/?interest=' + encodeURIComponent(j.id || '');
-        ctas.push('<a class="ec-job-cta" href="' + interestUrl + '">אני מעוניינ/ת ←</a>');
+      if (j.email) {
+        const isT = this.flow === 'teacher';
+        const subjText = isT
+          ? 'פנייה דרך אדורה לגבי משרת הוראה'
+          : 'פנייה דרך אדורה — ' + (j.school || j.title || '');
+        const intro = 'אדורה — לוח המשרות שמתאים לך\n\n';
+        const bodyText2 = isT
+          ? intro + 'שלום' + (j.name ? ' ' + j.name.split(' ')[0] : '') + ',\n\nראיתי את הפרופיל שלך באדורה ואשמח לדבר איתך על משרה אצלנו.\n\n'
+          : intro + 'שלום' + (j.contact_name ? ' ' + j.contact_name : '') + ',\n\nראיתי את המשרה שלכם באתר אדורה ואשמח להציג מועמדות.\n\n';
+        const gmailUrl = 'https://mail.google.com/mail/?view=cm&fs=1&to=' + encodeURIComponent(j.email) +
+                         '&su=' + encodeURIComponent(subjText) +
+                         '&body=' + encodeURIComponent(bodyText2);
+        const ctaLabel = isT ? 'פנו אליו/ה' : 'שלחו מייל';
+        ctas.push('<a class="ec-job-cta" href="' + gmailUrl + '" target="_blank" rel="noopener">' + ctaLabel + '</a>');
+      }
+      if (j.phone) {
+        const cleanPhone = String(j.phone).replace(/\D/g,'');
+        ctas.push('<a class="ec-job-cta ec-job-cta-tel" href="tel:' + esc(cleanPhone) + '">חייגו ' + esc(j.phone) + '</a>');
+      }
+      // קישור למקור — מוצג תמיד כשיש URL (גם אם יש מייל/טלפון). חשוב למשתמש שרוצה לראות מודעה מלאה.
+      if (j.url) {
+        ctas.push('<a class="ec-job-cta ec-job-cta-link" href="' + esc(j.url) + '" target="_blank" rel="noopener">פרטים נוספים ←</a>');
+      }
+      if (ctas.length === 0) {
+        ctas.push('<span class="ec-job-cta" style="opacity:.5;cursor:default">פרטי קשר חסרים</span>');
       }
 
+      const contact = !isTeacher && j.contact_name ? '<div class="ec-job-contact">איש קשר: ' + esc(j.contact_name) + '</div>' : '';
+      const emailLine = j.email ? '<div class="ec-job-contact">מייל: <a href="mailto:' + esc(j.email) + '">' + esc(j.email) + '</a></div>' : '';
       const teacherSubtitle = isTeacher && subjLabel ? '<div class="ec-job-source">' + esc(subjLabel) + '</div>' : '';
 
       card.innerHTML =
@@ -665,6 +688,8 @@ window.EDURA_SUBMISSIONS_URL = 'https://script.google.com/macros/s/AKfycbwleldcw
           '<h4 class="ec-job-title">' + esc(cardTitle) + '</h4>' +
           teacherSubtitle +
           '<div class="ec-job-tags">' + region + role + subj + lvl + sector + scope + '</div>' +
+          (bodyText ? '<p class="ec-job-snippet">' + esc(String(bodyText).slice(0, 280)) + (bodyText.length > 280 ? '…' : '') + '</p>' : '') +
+          contact + emailLine +
           '<div class="ec-job-actions">' +
             ctas.join('') +
             '<button class="ec-job-save" type="button">שמור</button>' +
