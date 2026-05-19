@@ -440,11 +440,15 @@ function htmlPage_(title, msg, success) {
 
 // ════════════════════════════════════════════════════════════════════
 // approved listing — מחזיר רק רשומות status='approved' לתצוגה באתר
-// ⚠️ שדות רגישים (school, contact_name, email, phone, description) מוסרים
-//    לפני החזרה ללקוח. הם נשמרים בגיליון ומשמשים את forward_application.
+// הערה (19.5.2026): הלוקדאון בוטל לבקשת מיטל. כל השדות כולל פרטי קשר
+//   מועברים ללקוח כדי שמשתמשים יוכלו ליצור קשר ישיר עם בית הספר/המורה.
+//   שדה 'status' היחיד שמוסתר (שדה ניהולי פנימי).
 // ════════════════════════════════════════════════════════════════════
-const PUBLIC_JOB_FIELDS = ['timestamp', 'ref_id', 'subject', 'role', 'region', 'city', 'level', 'sector', 'scope'];
-const PUBLIC_TEACHER_FIELDS = ['timestamp', 'ref_id', 'name', 'subject', 'level', 'region', 'city', 'scope', 'notes'];
+const PUBLIC_JOB_FIELDS = ['timestamp', 'ref_id', 'school', 'subject', 'role',
+                           'region', 'city', 'level', 'sector', 'scope',
+                           'description', 'contact_name', 'email', 'phone'];
+const PUBLIC_TEACHER_FIELDS = ['timestamp', 'ref_id', 'name', 'subject', 'level',
+                               'region', 'city', 'scope', 'notes', 'email', 'phone'];
 
 function getApprovedListings_() {
   const ss = SpreadsheetApp.getActiveSpreadsheet();
