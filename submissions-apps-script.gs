@@ -56,7 +56,7 @@ const POSTED_JOBS_HEADERS = ['timestamp', 'ref_id', 'school', 'subject', 'role',
                              'description', 'contact_name', 'email', 'phone', 'status'];
 const POSTED_TEACHERS_HEADERS = ['timestamp', 'ref_id', 'name', 'subject', 'level',
                                  'region', 'city', 'scope', 'notes',
-                                 'email', 'phone', 'status'];
+                                 'email', 'phone', 'status', 'email_opt', 'last_sent'];
 const ALERTS_HEADERS = ['timestamp', 'email', 'name', 'region', 'level', 'subject',
                         'role', 'scope', 'active', 'last_sent'];
 const PRINCIPAL_ALERTS_HEADERS = ['timestamp', 'email', 'name', 'region', 'phone', 'active', 'last_sent'];
@@ -159,6 +159,9 @@ function doGet(e) {
     if (action === 'reject') {
       return handleApproveByLink_(Object.assign({}, params, { decision: 'reject' }));
     }
+    if (action === 'unsubscribe') {
+      return handleUnsubscribe_(params);
+    }
     if (action === 'approved') {
       return json_(getApprovedListings_());
     }
@@ -175,7 +178,7 @@ function doGet(e) {
       ok: true,
       service: 'Edura submissions',
       actions: ['submit_application', 'forward_application', 'submit_teacher_inquiry', 'forward_teacher_inquiry', 'submit_job', 'submit_teacher', 'subscribe_alerts', 'subscribe_principal'],
-      get_actions: ['approved', 'approve', 'reject', 'get_interest', 'get_teacher_inquiry', 'lookup_school_email']
+      get_actions: ['approved', 'approve', 'reject', 'unsubscribe', 'get_interest', 'get_teacher_inquiry', 'lookup_school_email']
     });
   } catch (err) {
     return json_({ ok: false, error: String(err) });
@@ -347,33 +350,28 @@ function notifyMatchingTeachersForJob_(jobRow, refId) {
     const status = String(row[idx('status')] || '').toLowerCase();
     if (status !== 'approved') return;
 
+    // opt-in מפורש — שולחים רק למורות שאישרו במפורש לקבל מיילים
+    const eOpt = String(row[idx('email_opt')] || '').toLowerCase();
+    if (eOpt !== 'yes') return;
+
+    const tRefId   = String(row[idx('ref_id')] || '').trim();
     const tSubject = String(row[idx('subject')] || '').trim();
     const tCity    = String(row[idx('city')] || '').trim();
     const tRegion  = String(row[idx('region')] || '').trim();
     const tLevel   = String(row[idx('level')] || '').trim();
+    const tScope   = String(row[idx('scope')] || '').trim();
     const tEmail   = String(row[idx('email')] || '').trim();
     const tName    = String(row[idx('name')] || '').trim();
 
     if (!tEmail) return;
 
-    // Subject — required match (substring either way)
-    const subjectMatch = !!(tSubject && (
-      jSubject.indexOf(tSubject) !== -1 ||
-      tSubject.indexOf(jSubject) !== -1
-    ));
-    if (!subjectMatch) return;
-
-    // Location — same city OR same region OR teacher = "כל הארץ"
-    const locationMatch = (
-      (jCity && tCity && jCity === tCity) ||
-      (jRegion && tRegion && jRegion === tRegion) ||
-      (tRegion && tRegion.indexOf('כל הארץ') !== -1) ||
-      !tCity && !tRegion // teacher didn't specify — match all
+    // ניקוד באמצעות EduraMatch_ — אותו מנוע של admin/matches.html.
+    // עיר זהה = 100 · מקצוע 50 · שכבה 25 · היקף 15 · אזור 8. סף 35.
+    const matchScore = EduraMatch_.score(
+      { subject: tSubject, level: tLevel, city: tCity, region: tRegion, scope: tScope },
+      { subject: jSubject, level: jLevel, city: jCity, region: jRegion, scope: jScope }
     );
-    if (!locationMatch) return;
-
-    // Level — if teacher specified, must match
-    if (tLevel && jLevel && tLevel !== jLevel) return;
+    if (matchScore < EduraMatch_.MIN_SCORE) return;
 
     const html = '<div dir="rtl" style="font-family:Arial,Helvetica,sans-serif;color:#000;line-height:1.6;max-width:600px;background:#FDF2F8;padding:24px;">' +
       '<div style="background:#FFF;border-radius:18px;padding:28px 24px;border:1px solid #FCE7F3;">' +
@@ -389,7 +387,9 @@ function notifyMatchingTeachersForJob_(jobRow, refId) {
         '</table>' +
         (jDesc ? '<p style="background:#FDF2F8;padding:12px 14px;border-radius:10px;font-size:13.5px;color:#1A1A1A;margin:0 0 16px;">' + escHtml_(jDesc) + '</p>' : '') +
         '<a href="https://edura.co.il" style="display:inline-block;background:#EC4899;color:#FFF;text-decoration:none;padding:12px 24px;border-radius:999px;font-weight:700;">לפנייה ישירה לבית הספר →</a>' +
-        '<p style="margin:18px 0 0;font-size:11.5px;color:#4A4A4A;line-height:1.5;">קיבלת מייל זה כי נרשמת למאגר המורים של אדורה. רוצה להפסיק התראות? כתבו ל-meytal@edura.co.il</p>' +
+        '<p style="margin:18px 0 0;font-size:11.5px;color:#4A4A4A;line-height:1.5;">קיבלת מייל זה כי נרשמת למאגר המורים של אדורה. ' +
+          (tRefId ? '<a href="' + unsubscribeLink_(tRefId) + '" style="color:#9D174D;">להסרה מהתראות</a>' : 'להסרה: כתבו ל-meytal@edura.co.il') +
+        '</p>' +
       '</div>' +
       '<p style="text-align:center;font-size:12px;color:#4A4A4A;margin:18px 0 0;">— אדורה · edura.co.il</p>' +
     '</div>';
@@ -415,6 +415,48 @@ function approveLink_(type, refId, decision) {
   const token = signToken_(type, refId);
   return baseUrl + '?action=' + (decision || 'approve') + '&type=' + encodeURIComponent(type) +
          '&ref=' + encodeURIComponent(refId) + '&token=' + token;
+}
+
+// קישור הסרה למייל היומי — חתום ב-token כדי שאי-אפשר יהיה לזייף ולהסיר מורות אחרות
+function unsubscribeLink_(refId) {
+  const baseUrl = ScriptApp.getService().getUrl();
+  const token = signToken_('unsub', refId);
+  return baseUrl + '?action=unsubscribe&ref=' + encodeURIComponent(refId) + '&token=' + token;
+}
+
+// טיפול בלחיצה על קישור הסרה. משנה email_opt ל-'no' לרשומה הספציפית.
+function handleUnsubscribe_(params) {
+  const refId = String(params.ref || '').trim();
+  const token = String(params.token || '').trim();
+  if (!refId || !token) {
+    return htmlPage_('שגיאה', 'קישור לא תקין. אם זה לא עובד, השיבי במייל ל-meytal@edura.co.il ונסיר ידנית.', false);
+  }
+  if (token !== signToken_('unsub', refId)) {
+    return htmlPage_('שגיאת אימות', 'הקישור לא חתום נכון. אם זה ישן — בטח כבר הוסרת.', false);
+  }
+  const sh = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(SHEET_POSTED_TEACHERS);
+  if (!sh) return htmlPage_('שגיאה', 'גיליון לא נמצא.', false);
+  const last = sh.getLastRow();
+  if (last < 2) return htmlPage_('לא נמצא', 'אין רשומות בגיליון.', false);
+
+  const refCol     = POSTED_TEACHERS_HEADERS.indexOf('ref_id')    + 1;
+  const optCol     = POSTED_TEACHERS_HEADERS.indexOf('email_opt') + 1;
+  const data = sh.getRange(2, 1, last - 1, POSTED_TEACHERS_HEADERS.length).getValues();
+
+  for (let i = 0; i < data.length; i++) {
+    if (String(data[i][refCol - 1]) === refId) {
+      const currOpt = String(data[i][optCol - 1] || '').toLowerCase();
+      if (currOpt === 'no') {
+        return htmlPage_('כבר הוסר', 'הרשומה ' + refId + ' כבר מוסרת מהתראות.', true);
+      }
+      sh.getRange(i + 2, optCol).setValue('no');
+      log_('unsubscribe', refId);
+      return htmlPage_('הוסרת בהצלחה',
+        'לא נשלח לך יותר מיילים יומיים. הרשומה שלך במאגר נשמרת — בתי ספר עדיין יוכלו לפנות אליך ישירות. ' +
+        'לחזרה להתראות: השיבי במייל ל-meytal@edura.co.il.', true);
+    }
+  }
+  return htmlPage_('לא נמצא', 'לא נמצאה רשומה עם מזהה ' + refId, false);
 }
 
 function htmlPage_(title, msg, success) {
@@ -1105,6 +1147,9 @@ function handlePostTeacher_(b) {
   const notes = String(b.notes || '').trim();
   const email = String(b.email || '').trim();
   const phone = formatPhone_(b.phone);
+  // opt-in מפורש לקבלת התראות יומיות במייל. ברירת מחדל 'no' אם לא צוין —
+  // חוק התקשורת (תיקון 40) מחייב הסכמה אקטיבית
+  const emailOpt = String(b.email_opt || 'no').toLowerCase() === 'yes' ? 'yes' : 'no';
 
   if (!name || !subject || !email) {
     return { ok: false, error: 'שם, מקצוע ומייל הם חובה' };
@@ -1114,7 +1159,7 @@ function handlePostTeacher_(b) {
   const refId = generateRefId_('TCH');
   const sh = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(SHEET_POSTED_TEACHERS);
   sh.appendRow([new Date(), refId, name, subject, level, region, city,
-                scope, notes, email, phoneForStorage_(phone), 'pending']);
+                scope, notes, email, phoneForStorage_(phone), 'pending', emailOpt, '']);
 
   const approveUrl = approveLink_('teacher', refId, 'approve');
   const rejectUrl = approveLink_('teacher', refId, 'reject');
@@ -1362,19 +1407,33 @@ function sendDailyAlertsToPostedTeachers_(fresh) {
   const subs = data.map(function (row, i) {
     return {
       rowIdx: i + 2,
-      email:   String(row[idx('email')]   || '').trim(),
-      name:    String(row[idx('name')]    || '').trim(),
-      subject: String(row[idx('subject')] || '').trim(),
-      level:   String(row[idx('level')]   || '').trim(),
-      region:  String(row[idx('region')]  || '').trim(),
-      city:    String(row[idx('city')]    || '').trim(),
-      scope:   String(row[idx('scope')]   || '').trim(),
-      status:  String(row[idx('status')]  || '').toLowerCase()
+      refId:    String(row[idx('ref_id')]    || '').trim(),
+      email:    String(row[idx('email')]     || '').trim(),
+      name:     String(row[idx('name')]      || '').trim(),
+      subject:  String(row[idx('subject')]   || '').trim(),
+      level:    String(row[idx('level')]     || '').trim(),
+      region:   String(row[idx('region')]    || '').trim(),
+      city:     String(row[idx('city')]      || '').trim(),
+      scope:    String(row[idx('scope')]     || '').trim(),
+      status:   String(row[idx('status')]    || '').toLowerCase(),
+      emailOpt: String(row[idx('email_opt')] || '').toLowerCase(),
+      lastSent: row[idx('last_sent')] || ''
     };
-  }).filter(function (s) { return s.status === 'approved' && s.email; });
+  }).filter(function (s) {
+    // 4 תנאים: מאושרת + יש מייל + opt-in מפורש + לא נשלח היום
+    if (s.status !== 'approved' || !s.email) return false;
+    if (s.emailOpt !== 'yes') return false;
+    if (s.lastSent) {
+      var lastDay = Utilities.formatDate(new Date(s.lastSent), 'Asia/Jerusalem', 'yyyy-MM-dd');
+      var today   = Utilities.formatDate(new Date(),         'Asia/Jerusalem', 'yyyy-MM-dd');
+      if (lastDay === today) return false;
+    }
+    return true;
+  });
 
   if (subs.length === 0 || !fresh || fresh.length === 0) return;
 
+  const lastSentCol = POSTED_TEACHERS_HEADERS.indexOf('last_sent') + 1;
   let sent = 0;
   subs.forEach(function (sub) {
     const matches = filterJobsForPostedTeacher_(fresh, sub);
@@ -1383,34 +1442,162 @@ function sendDailyAlertsToPostedTeachers_(fresh) {
       const html = buildAlertsEmail_(sub, matches);
       MailApp.sendEmail(sub.email, 'אדורה · ' + matches.length + ' משרות חדשות בשבילך',
         htmlToText_(html), { name: 'אדורה · edura.co.il', replyTo: ADMIN_EMAIL, htmlBody: html });
+      sh.getRange(sub.rowIdx, lastSentCol).setValue(new Date());
       sent++;
     } catch (e) { log_('pt-alert-send-error', sub.email + ' · ' + String(e)); }
   });
-  log_('pt-alerts-daily', 'Sent ' + sent + ' to posted_teachers · ' + subs.length + ' approved');
+  log_('pt-alerts-daily', 'Sent ' + sent + ' to posted_teachers · ' + subs.length + ' eligible');
 }
 
+// ════════════════════════════════════════════════════════════════════
+// EduraMatch_ — port של matching.js לשרת.
+// אותו אלגוריתם שרץ בעמוד admin/matches.html. סף 35, ניקוד עיר/מקצוע/שכבה.
+// ════════════════════════════════════════════════════════════════════
+var EduraMatch_ = (function () {
+  var W = { CITY_SAME: 100, SUBJECT_EXACT: 50, SUBJECT_PARTIAL: 30,
+            LEVEL_MATCH: 25, SCOPE_MATCH: 15, REGION_SAME: 8, REGION_NEIGHBOR: 4 };
+  var MIN_SCORE = 35;
+
+  var SUBJECT_SYNONYMS = [
+    ['מתמטיקה', 'מתימטיקה', 'חשבון'],
+    ['פיזיקה', 'פיסיקה'],
+    ['תנ"ך', 'תנך', 'תנ"ך/תושב"ע', 'תושב"ע', 'תושבע'],
+    ['מדעים', 'מדע וטכנולוגיה', 'מדע ותכנולוגיה'],
+    ['מדעי המחשב', 'מחשבים', 'תקשוב'],
+    ['חינוך מיוחד', 'חנ"מ', 'חנמ', 'מורת שילוב', 'מורה שילוב',
+      'הוראה מתקנת', 'הוראה משלבת', 'לקויות למידה', 'הוראה מותאמת'],
+    ['יועצ/ת חינוכי/ת', 'יועץ/ת', 'יועץ', 'יועצת', 'ייעוץ', 'ייעוץ חינוכי'],
+    ['חינוך גופני', 'חנ"ג'],
+    ['מחנך/ת', 'מחנך/מחנכת', 'מחנכת', 'מחנך', 'מורה מחנכת'],
+    ['גיל הרך', 'גיל רך', 'כיתות צעירות', 'גן חובה', 'גנון']
+  ];
+  var LEVEL_SYNONYMS = [
+    ['יסודי', 'בית ספר יסודי', 'יסודית'],
+    ['חטיבת ביניים', 'חט"ב', 'חטב', 'חטיבה'],
+    ['תיכון', 'על-יסודי', 'על יסודי', 'תיכונית'],
+    ['גן', 'גני ילדים', 'גן ילדים', 'גנים'],
+    ['חינוך מיוחד', 'חנ"מ', 'חנמ']
+  ];
+  var GENERIC_SUBJECTS = { 'מורה': 1, 'מורים': 1, 'כללי': 1, 'אחר': 1, '': 1 };
+  var REGION_NEIGHBORS = {
+    'מרכז': ['שפלה'], 'שפלה': ['מרכז', 'דרום'],
+    'דרום': ['שפלה'], 'ירושלים': ['שפלה']
+  };
+
+  function norm(s) { return String(s || '').trim().toLowerCase().replace(/\s+/g, ' '); }
+  function buildKey(groups) {
+    var m = {};
+    groups.forEach(function (g) { var c = g[0]; g.forEach(function (s) { m[norm(s)] = c; }); });
+    return m;
+  }
+  var subjKey = buildKey(SUBJECT_SYNONYMS);
+  var lvlKey = buildKey(LEVEL_SYNONYMS);
+
+  function canonSubject(s) { var n = norm(s); return n && (subjKey[n] || n); }
+  function canonLevel(s)   { var n = norm(s); return n && (lvlKey[n] || n); }
+  function isGeneric(s)    { return !!GENERIC_SUBJECTS[norm(s)]; }
+  function stripParens(s)  { return String(s || '').replace(/\([^)]*\)/g, ' ').replace(/\s+/g, ' ').trim(); }
+  function splitParts(s) {
+    return String(s || '').split(/[\/,]/).map(stripParens).filter(function (x) { return x && x.length > 2; });
+  }
+
+  function canonCity(c) {
+    var s = norm(c); if (!s) return '';
+    var en = { 'haifa':'חיפה','tel aviv':'תל אביב','jerusalem':'ירושלים',
+               'beer sheva':'באר שבע','beersheba':'באר שבע','ramat gan':'רמת גן' };
+    if (en[s]) s = en[s];
+    s = s.replace(/[\-‒–—]/g, ' ').replace(/\s+/g, ' ').trim();
+    s = s.replace(/^תל אביב יפו$/, 'תל אביב');
+    s = (' ' + s + ' ').replace(/ קרית /g, ' קריית ').trim();
+    return s;
+  }
+  function citySame(a, b) { var x = canonCity(a), y = canonCity(b); return !!x && !!y && x === y; }
+
+  function canonScope(s) {
+    var n = norm(s); if (!n) return '';
+    if (/מלא/.test(n) || /\b100\s*%/.test(n)) return 'full';
+    if (/חלק/.test(n) || /ימי/.test(n) || /%|אחוז/.test(n) || /\d/.test(n)) return 'partial';
+    return '';
+  }
+  function scopeMatch(a, b) { var x = canonScope(a), y = canonScope(b); return !!x && !!y && x === y; }
+
+  function singleSubjScore(a, b) {
+    if (isGeneric(a) || isGeneric(b)) return 0;
+    var ca = canonSubject(a), cb = canonSubject(b);
+    if (!ca || !cb) return 0;
+    if (ca === cb) return 60;
+    if (ca.length >= 4 && cb.length >= 4 && (ca.indexOf(cb) !== -1 || cb.indexOf(ca) !== -1)) return 40;
+    return 0;
+  }
+  function subjectScore(a, b) {
+    var pa = splitParts(a), pb = splitParts(b);
+    if (!pa.length || !pb.length) return singleSubjScore(a, b);
+    var best = 0;
+    for (var i = 0; i < pa.length; i++)
+      for (var j = 0; j < pb.length; j++) {
+        var s = singleSubjScore(pa[i], pb[j]);
+        if (s > best) best = s;
+      }
+    return best;
+  }
+  function levelOverlap(a, b) {
+    var pa = splitParts(a).map(canonLevel).filter(Boolean);
+    var pb = splitParts(b).map(canonLevel).filter(Boolean);
+    if (!pa.length || !pb.length) return null;
+    for (var i = 0; i < pa.length; i++)
+      for (var j = 0; j < pb.length; j++)
+        if (pa[i] === pb[j]) return true;
+    return false;
+  }
+  function asArr(x) {
+    if (Array.isArray(x)) return x.map(function (v) { return String(v || '').trim(); }).filter(Boolean);
+    var s = String(x || '').trim();
+    return s ? [s] : [];
+  }
+  function regionBonus(a, b) {
+    var arrA = asArr(a), arrB = asArr(b);
+    if (!arrA.length || !arrB.length) return 0;
+    for (var i = 0; i < arrA.length; i++) if (arrB.indexOf(arrA[i]) !== -1) return W.REGION_SAME;
+    for (var k = 0; k < arrA.length; k++) {
+      var ne = REGION_NEIGHBORS[arrA[k]] || [];
+      for (var m = 0; m < ne.length; m++) if (arrB.indexOf(ne[m]) !== -1) return W.REGION_NEIGHBOR;
+    }
+    return 0;
+  }
+
+  function score(teacher, job) {
+    var subj = subjectScore(teacher.subject, job.subject);
+    if (subj === 0) return 0;
+    var lvl = levelOverlap(teacher.level, job.level);
+    if (lvl === false) return 0;
+
+    var sc = 0;
+    var same = citySame(teacher.city, job.city);
+    if (same) sc += W.CITY_SAME;
+    sc += (subj === 60) ? W.SUBJECT_EXACT : W.SUBJECT_PARTIAL;
+    if (lvl === true) sc += W.LEVEL_MATCH;
+    if (scopeMatch(teacher.scope, job.scope)) sc += W.SCOPE_MATCH;
+    if (!same) sc += regionBonus(teacher.region, job.region);
+    return sc;
+  }
+
+  return { score: score, MIN_SCORE: MIN_SCORE };
+})();
+
+// סינון משרות למורה בודדת — משתמש ב-EduraMatch_ ומחזיר עד 10 משרות מובילות
 function filterJobsForPostedTeacher_(jobs, sub) {
-  return jobs.filter(function (j) {
-    // Subject — substring match either way
-    if (sub.subject) {
-      const sj = String(j.subject || '') + ' ' + (Array.isArray(j.subjects) ? j.subjects.join(' ') : '') + ' ' + String(j.title || '');
-      if (sj.indexOf(sub.subject) === -1 && (j.subject ? sub.subject.indexOf(j.subject) === -1 : true)) return false;
-    }
-    // Location — city OR region OR teacher = "כל הארץ" OR no location specified
-    const jCity = String(j.city || '');
-    const jRegion = String(j.region || '');
-    const tWideOpen = sub.region && sub.region.indexOf('כל הארץ') !== -1;
-    const noLocSpec = !sub.city && !sub.region;
-    const cityMatch = sub.city && jCity && (jCity.indexOf(sub.city) !== -1 || sub.city.indexOf(jCity) !== -1);
-    const regionMatch = sub.region && jRegion && (jRegion.indexOf(sub.region) !== -1 || sub.region.indexOf(jRegion) !== -1);
-    if (!(tWideOpen || noLocSpec || cityMatch || regionMatch)) return false;
-    // Level — if teacher specified, must appear in job
-    if (sub.level) {
-      const lv = String(j.level || '') + ' ' + (Array.isArray(j.levels) ? j.levels.join(' ') : '') + ' ' + String(j.title || '');
-      if (lv.indexOf(sub.level) === -1) return false;
-    }
-    return true;
-  }).slice(0, 10);
+  // נורמליזציה: jobs מגיעים ממקור חיצוני, יש להם subjects[] ו-levels[] כמערכים
+  var scored = jobs.map(function (j) {
+    var teacher = { subject: sub.subject, level: sub.level, city: sub.city, region: sub.region, scope: sub.scope };
+    // משרה: מאחדים subject/subjects ו-level/levels למחרוזת אחת לצורך התאמה
+    var jSubj = String(j.subject || '') + (Array.isArray(j.subjects) ? ' / ' + j.subjects.join(' / ') : '');
+    var jLvl  = String(j.level || '')   + (Array.isArray(j.levels)   ? ' / ' + j.levels.join(' / ')   : '');
+    var job = { subject: jSubj, level: jLvl, city: j.city || '', region: j.region || '', scope: j.scope || '' };
+    return { job: j, score: EduraMatch_.score(teacher, job) };
+  }).filter(function (x) { return x.score >= EduraMatch_.MIN_SCORE; });
+
+  scored.sort(function (a, b) { return b.score - a.score; });
+  return scored.slice(0, 10).map(function (x) { return x.job; });
 }
 
 function filterJobsForSub_(jobs, sub) {
@@ -1439,11 +1626,17 @@ function buildAlertsEmail_(sub, jobs) {
     '</div>';
   }).join('');
 
+  // קישור הסרה חתום — רק אם יש ל-sub שדה refId (POSTED_TEACHERS).
+  // ל-ALERTS legacy אין refId, אז נופלים על mailto.
+  const unsubHtml = sub.refId
+    ? '<a href="' + unsubscribeLink_(sub.refId) + '" style="color:#0F9285;">להסרה מהתראות יומיות</a>'
+    : '<a href="mailto:meytal@edura.co.il?subject=הסרה%20מהתראות" style="color:#0F9285;">להסרה — השיבי במייל</a>';
+
   return '<div dir="rtl" style="font-family:Arial,Helvetica,sans-serif;color:#0B2A4A;line-height:1.6;max-width:600px;background:#F8FAFC;padding:24px;">' +
     '<h2 style="font-size:20px;color:#0B2A4A;margin:0 0 6px;">בוקר טוב' + (sub.name ? ' ' + escHtml_(sub.name) : '') + '</h2>' +
     '<p style="color:#475569;margin:0 0 18px;">' + jobs.length + ' משרות חדשות שמתאימות לקריטריונים שלך:</p>' +
     items +
-    '<p style="font-size:12px;color:#475569;margin-top:24px;">להסרה: השיבו "הסר" למייל הזה. · <a href="https://edura.co.il" style="color:#0F9285;">edura.co.il</a></p>' +
+    '<p style="font-size:12px;color:#475569;margin-top:24px;">' + unsubHtml + ' · <a href="https://edura.co.il" style="color:#0F9285;">edura.co.il</a></p>' +
   '</div>';
 }
 

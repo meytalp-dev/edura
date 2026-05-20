@@ -2066,6 +2066,10 @@
     { id: 'email',   type: 'email', q: 'לאן לשלוח לך התראות על משרות?', placeholder: 'name@example.com', required: true, autocomplete: 'email', errorMsg: 'נראה שיש טעות במייל. לנסות שוב?' },
     { id: 'phone',   type: 'tel',   q: 'מספר טלפון? (אופציונלי — בתי הספר יוכלו להתקשר ישירות)', placeholder: '050-1234567', skip: true, autocomplete: 'tel', errorMsg: 'מספר לא תקין. אפשר רק ספרות.' },
     { id: 'notes',   type: 'textarea', q: 'משהו נוסף שכדאי לבית הספר לדעת? (ניסיון, העדפות...)', placeholder: 'אופציונלי', skip: true, skipLabel: 'דלגו, אין לי מה להוסיף' },
+    { id: 'email_opt', type: 'chips',
+      q: 'רוצה לקבל מייל יומי כשנוספות משרות שמתאימות לך? (אדורה תשלח רק כשיש חדש, ואפשר לבטל בכל מייל)',
+      options: ['כן, שלחו לי עדכון יומי', 'לא תודה, אכנס בעצמי'],
+      required: true },
     { id: 'consent', type: 'consent',
       q: 'אני מסכימ/ה שאדורה תשמור את הפרטים ותציג לי משרות מתאימות, ושבית ספר רלוונטי יוכל לפנות אליי.',
       cta: 'אישור ושליחה' },
@@ -2290,6 +2294,10 @@
       const payload = { action: action, hp: '' };
       Object.assign(payload, state);
       delete payload.consent;
+      // המרה: chip בעברית → yes/no פשוט לשמירה בגיליון
+      if (payload.email_opt) {
+        payload.email_opt = String(payload.email_opt).startsWith('כן') ? 'yes' : 'no';
+      }
 
       try {
         const res = await fetch(SUBMISSIONS_URL, {
