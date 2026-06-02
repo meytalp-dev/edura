@@ -13,10 +13,13 @@
 <meta property="og:locale" content="he_IL" />
 <meta property="og:type" content="website" />
 <link rel="canonical" href="https://edura.co.il/" />
+<link rel="icon" type="image/png" href="assets/brand/edura-icon.png" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link rel="preconnect" href="https://images.unsplash.com" />
-<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="assets/css/tokens.css" />
+<link rel="stylesheet" href="assets/css/base.css" />
 <style>
   :root {
     --teal: #009DE0;
@@ -27,12 +30,12 @@
     --cream: #FFF7E8;
     --sun: #FFD466;
     /* Brand pink — dominant on landing page, ACCENT here */
-    --pink: #FCE7F3;
-    --pink-2: #FBCFE8;
-    --pink-soft: #FDF2F8;
-    --pink-deep: #BE185D;
-    --pink-deeper: #9D174D;
-    --ink: #0E1B2C;
+    --pink: #FFE4F2;
+    --pink-2: #FFC7E5;
+    --pink-soft: #FFF2F8;
+    --pink-deep: #E6007E;
+    --pink-deeper: #C00069;
+    --ink: #0F1B2D;
     --ink-soft: #2C3D55;
     --ink-mute: #6B7B8E;
     --line: #E8EAED;
@@ -50,7 +53,7 @@
   html, body { margin: 0; padding: 0; }
   html { overflow-x: hidden; }
   body {
-    font-family: 'Heebo', -apple-system, BlinkMacSystemFont, sans-serif;
+    font-family: 'Rubik', -apple-system, BlinkMacSystemFont, sans-serif;
     background: var(--bg);
     color: var(--ink);
     -webkit-font-smoothing: antialiased;
@@ -61,24 +64,333 @@
   button { font-family: inherit; cursor: pointer; border: none; background: none; padding: 0; }
   svg { display: block; }
 
+  .home-gateway {
+    display: none;
+  }
+
+  .edura-hero {
+    max-width: 1320px;
+    margin: 0 auto;
+    padding: 24px 24px 4px;
+  }
+
+  .edura-hero-panel {
+    border: 1px solid rgba(230, 0, 126, .10);
+    border-radius: 8px;
+    background:
+      radial-gradient(circle at 88% 8%, rgba(230, 0, 126, .045), transparent 26%),
+      #fff;
+    padding: 30px;
+    box-shadow: 0 8px 22px rgba(15, 27, 45, .035);
+  }
+
+  .edura-hero-copy {
+    max-width: 780px;
+    margin: 0 auto 24px;
+    text-align: center;
+  }
+
+  .edura-hero-kicker {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin: 0 0 10px;
+    color: var(--pink-deep);
+    font-size: 12px;
+    font-weight: 700;
+  }
+
+  .logo-live-dot {
+    position: absolute;
+    z-index: 4;
+    left: 8px;
+    top: 7px;
+    width: 13px;
+    height: 13px;
+    border-radius: 999px;
+    background: var(--pink-deep);
+    opacity: 0;
+    pointer-events: none;
+    animation: logoDotSettle .5s ease-out 1.3s forwards;
+  }
+
+  @keyframes logoDotSettle {
+    0% { opacity: 0; transform: scale(.6); }
+    45% { opacity: 1; transform: scale(1.35); }
+    100% { opacity: 0; transform: scale(1); }
+  }
+
+  .edura-hero-kicker::after {
+    content: "";
+    width: 8px;
+    height: 8px;
+    border-radius: 999px;
+    background: var(--pink-deep);
+  }
+
+  .edura-hero-title {
+    margin: 0;
+    color: var(--ink);
+    font-size: clamp(30px, 4vw, 50px);
+    line-height: 1.12;
+    letter-spacing: 0;
+    font-weight: 700;
+  }
+
+  .edura-hero-title .hero-title-line {
+    display: block;
+    color: var(--pink-deep);
+  }
+
+  .title-flight-dot {
+    display: inline-block;
+    width: .18em;
+    height: .18em;
+    margin-inline-start: .12em;
+    border-radius: 999px;
+    background: var(--pink-deep);
+    vertical-align: .03em;
+    transform-origin: center;
+    will-change: transform, opacity;
+  }
+
+  .edura-hero-sub {
+    margin: 16px auto 0;
+    max-width: 660px;
+    color: var(--ink-soft);
+    font-size: 15.5px;
+    font-weight: 400;
+    line-height: 1.65;
+  }
+
+  .edura-match-start {
+    max-width: 560px;
+    margin: 0 auto 10px;
+    padding: 12px;
+    border: 1px solid rgba(15, 27, 45, .08);
+    border-radius: 8px;
+    background: rgba(255, 255, 255, .94);
+    box-shadow: 0 6px 16px rgba(15, 27, 45, .025);
+  }
+
+  .edura-match-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 10px;
+  }
+
+  .edura-match-head strong {
+    color: var(--ink);
+    font-size: 14px;
+    font-weight: 600;
+  }
+
+  .edura-match-pill {
+    padding: 4px 10px;
+    border: 1px solid var(--pink-deep);
+    border-radius: 999px;
+    color: var(--ink);
+    font-size: 11.5px;
+    font-weight: 600;
+  }
+
+  .edura-match-options {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 6px;
+    margin-bottom: 8px;
+  }
+
+  .edura-match-option {
+    min-height: 36px;
+    padding: 7px 9px;
+    border: 1px solid rgba(15, 27, 45, .08);
+    border-radius: 8px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    color: var(--ink);
+    background: rgba(255, 255, 255, .78);
+    font-size: 12px;
+    font-weight: 600;
+    font-family: inherit;
+    cursor: pointer;
+  }
+
+  .edura-match-option-label,
+  .edura-match-cta-label {
+    display: inline-block;
+    min-width: 0;
+  }
+
+
+  .edura-match-option.active {
+    border-color: var(--pink-deep);
+    background: #fff;
+    box-shadow: 0 4px 12px rgba(230, 0, 126, .06);
+  }
+
+  .edura-match-option svg {
+    width: 15px;
+    height: 15px;
+    color: var(--pink-deep);
+  }
+
+  .edura-match-fields {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 6px;
+    margin-bottom: 10px;
+  }
+
+  .edura-match-field {
+    min-height: 36px;
+    border: 1px solid rgba(15, 27, 45, .08);
+    border-radius: 8px;
+    background: #F8F9FB;
+    color: var(--ink-mute);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 0 12px;
+    font-size: 12px;
+    font-weight: 500;
+  }
+
+  .edura-match-field svg {
+    width: 15px;
+    height: 15px;
+    color: var(--pink-deep);
+  }
+
+  .edura-match-field input {
+    width: 100%;
+    min-width: 0;
+    border: 0;
+    outline: 0;
+    background: transparent;
+    color: var(--ink);
+    font: inherit;
+  }
+
+  .edura-match-field input::placeholder {
+    color: var(--ink-mute);
+  }
+
+  .edura-match-actions {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0;
+    align-items: center;
+  }
+
+  .edura-match-cta {
+    min-height: 40px;
+    width: min(100%, 390px);
+    margin: 0 auto;
+    border-radius: 8px;
+    background: var(--pink-deep);
+    color: #fff;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    font-size: 13.5px;
+    font-weight: 700;
+    font-family: inherit;
+    cursor: pointer;
+    box-shadow: 0 8px 18px rgba(230, 0, 126, .12);
+  }
+
+  .edura-match-cta[disabled] {
+    opacity: .55;
+    cursor: not-allowed;
+  }
+
+  .edura-match-cta svg {
+    width: 16px;
+    height: 16px;
+    transform: rotate(180deg);
+  }
+
+  .edura-match-note {
+    display: none;
+    color: var(--ink-mute);
+    font-size: 11.5px;
+    font-weight: 600;
+  }
+
+  .edura-hero-actions {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 8px;
+  }
+
+  .edura-hero-action {
+    min-height: 60px;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 12px;
+    color: var(--ink);
+    background: #fff;
+  }
+
+  .edura-hero-action strong {
+    display: block;
+    font-size: 13px;
+    font-weight: 700;
+  }
+
+  .edura-hero-action span {
+    display: block;
+    margin-top: 3px;
+    color: var(--ink-mute);
+    font-size: 11px;
+    font-weight: 500;
+  }
+
+  .edura-hero-action svg {
+    width: 20px;
+    height: 20px;
+    color: var(--pink-deep);
+  }
+
+  .edura-smile {
+    width: 48px;
+    height: 48px;
+    color: var(--ink);
+    overflow: visible;
+  }
+
   /* ───── TOP BAR ───── */
   .topbar {
     position: sticky; top: 0; z-index: 100;
-    background: var(--bg);
+    background: rgba(255,255,255,.94);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
     border-bottom: 1px solid var(--line-soft);
-    padding: 12px 24px;
+    padding: 14px 24px;
   }
   .topbar-inner {
     max-width: 1320px; margin: 0 auto;
-    display: grid;
-    grid-template-columns: auto 1fr auto;
-    align-items: center; gap: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
   }
   .topbar-logo {
+    position: relative;
     font-weight: 900; font-size: 22px;
     color: var(--ink); letter-spacing: -1px;
     display: flex; align-items: center; gap: 8px;
   }
+  .topbar-logo .brand-logo-img { width: 260px; max-height: 86px; }
   .topbar-logo .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--pink-deep); }
   .topbar-logo .tag {
     font-size: 10px; font-weight: 700; color: var(--pink-deep);
@@ -170,22 +482,470 @@
   .nav-link.primary { background: var(--ink); color: var(--bg); }
   .nav-link.primary:hover { background: var(--teal); }
 
+  .match-journey {
+    max-width: 1040px;
+    margin: 0 auto;
+    padding: 12px 24px 18px;
+  }
+  .match-journey-panel {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 8px;
+    align-items: start;
+    padding: 16px 18px 14px;
+    background: rgba(255,255,255,.86);
+    border: 1px solid rgba(15, 27, 45, .06);
+    border-radius: 8px;
+    box-shadow: none;
+  }
+  .match-step {
+    position: relative;
+    min-width: 0;
+    min-height: 0;
+    border-radius: 0;
+    border: 0;
+    background: transparent;
+    padding: 0 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 8px;
+  }
+  .match-step:not(:last-child)::after {
+    content: "";
+    position: absolute;
+    left: -8px;
+    top: 26px;
+    width: 5px;
+    height: 5px;
+    border-radius: 999px;
+    background: var(--pink-deep);
+    opacity: .65;
+  }
+  .match-step:not(:last-child)::before {
+    display: none;
+  }
+  .match-step-visual {
+    width: 52px;
+    height: 52px;
+    border-radius: 999px;
+    background: #fff;
+    border: 1px solid rgba(230, 0, 126, .14);
+    display: grid;
+    place-items: center;
+    flex: 0 0 52px;
+    overflow: hidden;
+    box-shadow: 0 6px 14px rgba(15,27,45,.04);
+  }
+  .match-step-visual img {
+    width: 42px;
+    height: 42px;
+    object-fit: contain;
+    display: block;
+  }
+  .match-score-mini {
+    color: var(--pink-deep);
+    font-size: 15px;
+    font-weight: 900;
+    line-height: 1;
+  }
+  .match-step-copy strong {
+    display: block;
+    margin-bottom: 2px;
+    color: var(--ink);
+    font-size: 13px;
+    line-height: 1.2;
+    font-weight: 700;
+  }
+  .match-step-copy span {
+    display: block;
+    color: var(--ink-mute);
+    font-size: 11.5px;
+    font-weight: 500;
+    line-height: 1.35;
+  }
+
+  .home-search {
+    max-width: 1320px;
+    margin: 0 auto;
+    padding: 18px 24px 0;
+    display: none;
+    justify-content: center;
+  }
+  .home-search .city-picker {
+    max-width: 720px;
+  }
+
   /* ───── FILTERS BAR ───── */
+  .home-gateway {
+    max-width: 1320px;
+    margin: 0 auto;
+    padding: 28px 24px 6px;
+    overflow: hidden;
+  }
+  .home-gateway-panel {
+    position: relative;
+    padding: 38px 38px 28px;
+    background: #fff;
+    border: 1px solid rgba(232,234,237,.9);
+    border-radius: 8px;
+    box-shadow: 0 18px 42px rgba(14,27,44,.07);
+    overflow: hidden;
+  }
+  .home-gateway-panel::before {
+    content: "";
+    position: absolute;
+    inset: 0 0 auto;
+    height: 4px;
+    background: linear-gradient(90deg, var(--pink-deep), var(--teal), var(--ink));
+    pointer-events: none;
+  }
+  .home-gateway-copy {
+    position: relative;
+    z-index: 1;
+    min-width: 0;
+  }
+  .home-gateway-layout {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    grid-template-columns: minmax(0, .98fr) minmax(320px, .72fr);
+    gap: 32px;
+    align-items: center;
+  }
+  .edura-brand-mark {
+    position: absolute;
+    inset-inline-start: 36px;
+    top: 32px;
+    z-index: 1;
+    width: 58px;
+    height: 58px;
+    display: grid;
+    place-items: center;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    background: #fff;
+    box-shadow: var(--shadow-sm);
+  }
+  .edura-brand-mark img {
+    display: none;
+  }
+  .edura-brand-mark .edura-smile {
+    width: 46px;
+    height: 46px;
+  }
+  .home-gateway-kicker {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin: 0 0 12px;
+    color: var(--pink-deep);
+    font-size: 13px;
+    font-weight: 800;
+  }
+  .home-gateway-kicker::before {
+    content: "";
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--pink-deep);
+  }
+  .home-gateway-title {
+    margin: 0;
+    color: var(--ink);
+    font-size: clamp(34px, 4.8vw, 58px);
+    line-height: .98;
+    letter-spacing: 0;
+    font-weight: 900;
+  }
+  .home-gateway-title span {
+    display: block;
+  }
+  .home-gateway-sub {
+    margin: 18px 0 0;
+    max-width: 690px;
+    color: var(--ink-soft);
+    font-size: clamp(17px, 1.8vw, 21px);
+    font-weight: 600;
+    line-height: 1.55;
+  }
+  .match-lab {
+    position: relative;
+    isolation: isolate;
+    padding: 18px;
+    background: linear-gradient(180deg, #fff 0%, #fbfcff 100%);
+    color: var(--ink);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    box-shadow: 0 24px 46px rgba(15,27,45,.10);
+    overflow: hidden;
+  }
+  .match-lab::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(circle at 0 18%, rgba(230,0,126,.10) 0 82px, transparent 83px),
+      linear-gradient(135deg, rgba(230,0,126,.05), transparent 42%, rgba(0,157,224,.05));
+    pointer-events: none;
+  }
+  .match-lab > * {
+    position: relative;
+    z-index: 1;
+  }
+  .match-lab-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+  .match-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    color: var(--ink);
+    font-size: 19px;
+    font-weight: 900;
+  }
+  .match-label::before {
+    content: none;
+  }
+  .match-label .edura-smile {
+    width: 34px;
+    height: 34px;
+    flex: 0 0 auto;
+  }
+  .match-score {
+    min-width: 86px;
+    padding: 13px 18px;
+    text-align: center;
+    color: var(--ink);
+    background: #fff;
+    border: 2px solid var(--pink-deep);
+    border-radius: 999px;
+    box-shadow: 0 10px 24px rgba(230,0,126,.12);
+    font-size: 25px;
+    font-weight: 900;
+  }
+  .match-card {
+    min-height: 230px;
+    padding: 28px 24px;
+    background: #fff;
+    color: var(--ink);
+    border-radius: 8px;
+    border: 1px solid var(--line);
+    box-shadow: 0 16px 34px rgba(15,27,45,.08);
+    text-align: center;
+  }
+  .match-card-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    margin-bottom: 26px;
+    padding: 9px 18px;
+    color: var(--pink-deep);
+    background: #fff;
+    border: 1px solid var(--pink-deep);
+    border-radius: 999px;
+    font-size: 15px;
+    font-weight: 900;
+  }
+  .match-card-eyebrow::before {
+    content: "";
+    width: 9px;
+    height: 9px;
+    border-radius: 999px;
+    background: var(--pink-deep);
+  }
+  .match-title {
+    margin: 0;
+    color: var(--ink);
+    font-size: clamp(28px, 3.2vw, 42px);
+    line-height: 1.12;
+    letter-spacing: 0;
+    font-weight: 900;
+  }
+  .match-meta {
+    margin: 18px 0 0;
+    color: var(--ink-mute);
+    font-size: 19px;
+    font-weight: 800;
+  }
+  .match-tags {
+    justify-content: center;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 24px;
+  }
+  .match-tags span {
+    position: relative;
+    padding: 10px 18px;
+    color: var(--ink);
+    background: #fff;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    font-size: 15px;
+    font-weight: 800;
+  }
+  .match-tags span::before {
+    content: "";
+    display: inline-block;
+    width: 6px;
+    height: 6px;
+    margin-inline-end: 8px;
+    border-radius: 999px;
+    background: var(--pink-deep);
+    vertical-align: middle;
+  }
+  .match-controls {
+    display: grid;
+    grid-template-columns: 74px 1fr;
+    gap: 14px;
+    margin-top: 18px;
+  }
+  .match-skip,
+  .match-show {
+    height: 62px;
+    border-radius: 8px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 900;
+    transition: transform .15s, background .15s;
+  }
+  .match-skip {
+    color: var(--ink);
+    border: 1px solid var(--line);
+    background: #fff;
+    font-size: 28px;
+  }
+  .match-show {
+    gap: 12px;
+    color: #fff;
+    background: var(--pink-deep);
+    box-shadow: 0 16px 30px rgba(230,0,126,.22);
+    font-size: 19px;
+  }
+  .match-skip:hover,
+  .match-show:hover {
+    transform: translateY(-1px);
+  }
+  .match-show svg {
+    width: 24px;
+    height: 24px;
+    transform: rotate(180deg);
+  }
+  .home-actions {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 10px;
+    margin-top: 24px;
+    min-width: 0;
+  }
+  .home-action {
+    width: 100%;
+    min-width: 0;
+    min-height: 88px;
+    display: flex;
+    align-items: center;
+    gap: 13px;
+    padding: 14px;
+    color: var(--ink);
+    background: #fff;
+    border: 1px solid rgba(232,234,237,.92);
+    border-radius: 8px;
+    box-shadow: none;
+    transition: transform .15s, border-color .15s, box-shadow .15s, background .15s;
+  }
+  .home-action:hover {
+    transform: translateY(-2px);
+    background: #fff;
+    border-color: rgba(190,24,93,.34);
+    box-shadow: 0 12px 26px rgba(14,27,44,.08);
+  }
+  .home-action.primary {
+    background: #fff;
+    border-color: rgba(230,0,126,.38);
+    box-shadow: inset 0 0 0 1px rgba(230,0,126,.08);
+    color: var(--ink);
+  }
+  .home-action.primary:hover {
+    background: #fff;
+    border-color: var(--pink-deep);
+  }
+  .home-action-icon {
+    position: relative;
+    width: 42px;
+    height: 42px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--ink);
+    background: #fff;
+    border: 1px solid var(--pink-2);
+    border-radius: 8px;
+    flex: 0 0 auto;
+  }
+  .home-action.primary .home-action-icon {
+    color: var(--ink);
+    background: #fff;
+    border-color: var(--pink-2);
+  }
+  .home-action-icon::after {
+    content: "";
+    position: absolute;
+    inset-inline-end: -2px;
+    top: -2px;
+    width: 8px;
+    height: 8px;
+    border-radius: 999px;
+    background: var(--teal);
+    border: 2px solid #fff;
+  }
+  .home-action-icon svg {
+    width: 21px;
+    height: 21px;
+  }
+  .home-action-title {
+    display: block;
+    font-size: 17px;
+    font-weight: 900;
+    line-height: 1.2;
+    letter-spacing: 0;
+  }
+  .home-action-text {
+    display: block;
+    margin-top: 4px;
+    color: var(--ink-mute);
+    font-size: 13px;
+    font-weight: 600;
+    line-height: 1.35;
+  }
+  .home-action.primary .home-action-text {
+    color: var(--ink-mute);
+  }
+
   .filters {
     max-width: 1320px; margin: 0 auto;
     padding: 24px 24px 0;
   }
   .filter-section {
-    display: flex; align-items: center; gap: 16px;
-    margin-bottom: 14px;
+    display: flex; align-items: flex-start; gap: 12px;
+    margin-bottom: 10px;
   }
   .filter-label {
-    flex-shrink: 0; min-width: 88px;
-    font-size: 13px; font-weight: 700; color: var(--ink-mute);
+    flex-shrink: 0; min-width: 72px;
+    font-size: 12px; font-weight: 600; color: var(--ink-mute);
     text-transform: uppercase; letter-spacing: 0.5px;
   }
   .chips-scroll {
-    display: flex; gap: 6px; overflow-x: auto;
+    display: flex; gap: 6px; overflow: visible;
+    flex-wrap: wrap;
     scrollbar-width: none;
     flex: 1;
   }
@@ -193,33 +953,55 @@
 
   /* Subject chips (round Wolt-style) */
   .cat-chip {
+    position: relative;
     flex-shrink: 0;
-    display: flex; flex-direction: column; align-items: center; gap: 8px;
-    padding: 6px 8px 8px;
-    border-radius: var(--r);
-    transition: background .15s;
-    min-width: 84px;
+    display: inline-flex; flex-direction: row; align-items: center; gap: 5px;
+    min-height: 30px;
+    min-width: 0;
+    padding: 5px 11px;
+    border: 1px solid rgba(15, 27, 45, .08);
+    border-radius: 999px;
+    background: #fff;
+    transition: background .15s, color .15s, border-color .15s, box-shadow .15s;
     color: var(--ink-soft);
   }
   .cat-chip:hover { background: var(--bg-2); }
-  .cat-chip.active { color: var(--ink); }
+  .cat-chip.active {
+    color: #fff;
+    background: var(--ink);
+    border-color: var(--ink);
+    box-shadow: 0 6px 14px rgba(15,27,45,.12);
+  }
+  .cat-chip.active::after {
+    content: "";
+    width: 6px;
+    height: 6px;
+    border-radius: 999px;
+    background: var(--pink-deep);
+    margin-inline-start: 2px;
+  }
   .cat-chip-icon {
-    width: 60px; height: 60px;
-    background: var(--bg-2); border-radius: 50%;
-    display: flex; align-items: center; justify-content: center;
-    transition: background .15s, transform .15s, box-shadow .15s, color .15s;
+    display: none;
+    width: 17px; height: 17px;
+    background: transparent; border-radius: 0;
+    align-items: center; justify-content: center;
+    transition: color .15s;
   }
-  .cat-chip:hover .cat-chip-icon { transform: scale(1.05); }
+  .cat-chip:hover .cat-chip-icon { transform: none; }
   .cat-chip.active .cat-chip-icon {
-    background: var(--ink); color: var(--bg);
-    box-shadow: 0 4px 12px rgba(14,27,44,.18);
+    background: transparent; color: #fff;
+    box-shadow: none;
   }
-  .cat-chip-icon svg { width: 26px; height: 26px; }
-  .cat-chip-label { font-size: 13px; font-weight: 600; line-height: 1.1; text-align: center; }
+  .cat-chip.active .cat-chip-icon::after {
+    display: none;
+  }
+  .cat-chip-icon svg { width: 17px; height: 17px; }
+  .cat-chip-label { font-size: 12px; font-weight: 500; line-height: 1.1; text-align: center; white-space: nowrap; }
+  .cat-chip.active .cat-chip-label { font-weight: 700; }
 
   /* Free-text subject search (sits under chips) */
   .free-search {
-    display: flex; align-items: center; gap: 8px;
+    display: none; align-items: center; gap: 8px;
     background: var(--bg-2);
     border: 1.5px solid transparent;
     border-radius: 999px;
@@ -253,21 +1035,22 @@
   /* Level chips (pill style with pink accent) */
   .level-chip {
     flex-shrink: 0;
-    padding: 8px 16px;
-    background: var(--pink-soft);
-    border: 1.5px solid transparent;
+    min-height: 30px;
+    padding: 5px 11px;
+    background: #fff;
+    border: 1px solid rgba(15, 27, 45, .08);
     border-radius: 999px;
-    font-size: 13px; font-weight: 600;
+    font-size: 12px; font-weight: 500;
     color: var(--ink-soft);
     transition: all .15s;
     display: inline-flex; align-items: center; gap: 6px;
   }
-  .level-chip:hover { background: var(--pink); border-color: var(--pink-2); color: var(--pink-deeper); }
+  .level-chip:hover { background: var(--pink-soft); border-color: rgba(230,0,126,.18); color: var(--ink); }
   .level-chip.active {
-    background: var(--pink-deep); color: #fff; border-color: var(--pink-deep);
-    box-shadow: 0 4px 12px rgba(190,24,93,.25);
+    background: var(--ink); color: #fff; border-color: var(--ink);
+    box-shadow: 0 6px 14px rgba(15,27,45,.12);
   }
-  .level-chip-count { font-size: 11px; opacity: .75; font-weight: 700; }
+  .level-chip-count { font-size: 10.5px; opacity: .75; font-weight: 600; }
 
   /* Active filters bar — pink-tinted */
   .active-filters {
@@ -340,6 +1123,9 @@
   }
   .row-arrow:hover { background: var(--ink); color: var(--bg); }
   .row-arrow svg { width: 16px; height: 16px; }
+  .row-arrow {
+    display: none !important;
+  }
   .row-scroll {
     display: flex; gap: 16px; overflow-x: auto;
     scroll-snap-type: x mandatory;
@@ -352,103 +1138,124 @@
   /* ───── JOB CARD (Wolt-style) ───── */
   .job-card {
     flex-shrink: 0;
-    width: 296px;
-    background: transparent;
-    border-radius: var(--r-md);
-    transition: transform .2s ease;
+    width: 204px;
+    background: #fff;
+    border: 1px solid rgba(15, 27, 45, .08);
+    border-radius: 8px;
+    padding: 10px;
+    transition: border-color .15s ease, box-shadow .15s ease, transform .15s ease;
     scroll-snap-align: start;
     cursor: pointer;
     position: relative;
     display: flex; flex-direction: column;
+    box-shadow: 0 4px 12px rgba(15,27,45,.035);
   }
-  .job-card:hover { transform: translateY(-3px); }
-  .job-card:hover .job-hero { box-shadow: var(--shadow-lg); }
+  .job-card:hover {
+    transform: translateY(-1px);
+    border-color: rgba(230,0,126,.28);
+    box-shadow: 0 8px 18px rgba(15,27,45,.07);
+  }
+  .job-card:hover .job-hero { box-shadow: none; }
 
   .job-hero {
-    height: 178px;
-    border-radius: var(--r-md);
+    height: auto;
+    min-height: 30px;
+    border-radius: 0;
     position: relative;
-    overflow: hidden;
-    transition: box-shadow .2s ease;
-    background-color: var(--bg-2);
-    background-size: cover;
-    background-position: center;
+    overflow: visible;
+    transition: none;
+    background: transparent !important;
+    background-image: none !important;
+    display: flex;
+    align-items: center;
+    padding-inline-end: 34px;
   }
   .job-hero-overlay {
-    position: absolute; inset: 0;
-    background: linear-gradient(180deg, rgba(0,0,0,0) 35%, rgba(0,0,0,.55) 100%);
-    pointer-events: none;
+    display: none;
   }
   .job-hero-city {
-    position: absolute; bottom: 12px; right: 14px; left: 14px;
-    color: #fff; z-index: 2;
+    position: static;
+    color: var(--pink-deep); z-index: 2;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    min-width: 0;
+  }
+  .job-hero-city::before {
+    content: "";
+    width: 7px;
+    height: 7px;
+    border-radius: 999px;
+    background: var(--pink-deep);
+    flex: 0 0 7px;
   }
   .job-hero-city-name {
-    font-size: 24px; font-weight: 900; letter-spacing: -0.6px;
-    line-height: 1.1; text-shadow: 0 2px 8px rgba(0,0,0,.4);
+    font-size: 12px; font-weight: 800; letter-spacing: 0;
+    line-height: 1.1; text-shadow: none;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
   .job-hero-city-region {
-    font-size: 11px; font-weight: 700; opacity: .95; margin-top: 2px;
-    text-transform: uppercase; letter-spacing: 0.6px;
-    text-shadow: 0 1px 4px rgba(0,0,0,.5);
+    display: none;
   }
 
   .job-save {
-    position: absolute; top: 12px; right: 12px;
-    width: 36px; height: 36px; border-radius: 50%;
-    background: rgba(255,255,255,.95);
+    position: absolute; top: 0; right: auto; left: 0;
+    width: 28px; height: 28px; border-radius: 50%;
+    background: var(--bg-2);
     display: flex; align-items: center; justify-content: center;
     z-index: 3;
-    backdrop-filter: blur(6px);
+    backdrop-filter: none;
     transition: transform .15s, background .15s;
     box-shadow: var(--shadow-sm);
   }
-  .job-save:hover { transform: scale(1.08); background: #fff; }
-  .job-save svg { width: 18px; height: 18px; color: var(--ink-soft); transition: color .2s, fill .2s; }
+  .job-save:hover { transform: scale(1.04); background: var(--pink-soft); }
+  .job-save svg { width: 14px; height: 14px; color: var(--ink); transition: color .2s, fill .2s; }
   .job-save.saved svg { fill: var(--pink-deep); color: var(--pink-deep); }
 
   .job-badge {
-    position: absolute; top: 12px; left: 12px;
-    background: rgba(255,255,255,.95); color: var(--ink);
-    padding: 5px 10px 5px 8px;
+    position: absolute; top: 9px; left: 42px;
+    background: var(--ink); color: #fff;
+    padding: 4px 8px;
     border-radius: 999px;
-    font-size: 11px; font-weight: 800;
-    box-shadow: var(--shadow-sm);
+    font-size: 10px; font-weight: 800;
+    box-shadow: none;
     display: inline-flex; align-items: center; gap: 4px;
     z-index: 3;
-    backdrop-filter: blur(6px);
+    backdrop-filter: none;
   }
-  .job-badge svg { width: 12px; height: 12px; }
-  .job-badge.hot { background: var(--coral); color: #fff; }
-  .job-badge.fresh { background: var(--sun); color: var(--ink); }
+  .job-badge svg { width: 10px; height: 10px; }
+  .job-badge.hot,
+  .job-badge.fresh { background: var(--ink); color: #fff; }
 
   .job-body {
-    padding: 12px 4px 0;
+    padding: 9px 0 0;
     display: flex; flex-direction: column; gap: 4px;
   }
   .job-title {
-    font-size: 16px; font-weight: 700; color: var(--ink);
-    line-height: 1.3; letter-spacing: -0.2px;
+    font-size: 13.5px; font-weight: 800; color: var(--ink);
+    line-height: 1.25; letter-spacing: 0;
     overflow: hidden; text-overflow: ellipsis;
     display: -webkit-box;
-    -webkit-line-clamp: 1; -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2; -webkit-box-orient: vertical;
   }
   .job-school {
-    font-size: 13px; color: var(--ink-mute); font-weight: 500;
+    font-size: 11.5px; color: var(--ink-mute); font-weight: 600;
     overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
   }
   .job-meta {
-    font-size: 13px; color: var(--ink-soft); font-weight: 500;
-    margin-top: 4px;
+    font-size: 11px; color: var(--ink-soft); font-weight: 600;
+    margin-top: 5px;
     display: flex; align-items: center; gap: 4px; flex-wrap: wrap;
   }
   .job-meta-dot { width: 3px; height: 3px; border-radius: 50%; background: var(--ink-mute); display: inline-block; }
-  .job-meta strong { color: var(--ink); font-weight: 700; }
+  .job-meta strong { color: var(--pink-deep); font-weight: 800; }
 
   /* Skeleton */
-  .skeleton-card { flex-shrink: 0; width: 296px; }
+  .skeleton-card { flex-shrink: 0; width: 204px; }
   .skeleton-hero {
-    height: 178px; border-radius: var(--r-md);
+    height: 74px; border-radius: 8px;
     background: linear-gradient(90deg, #F4F5F7 25%, #E8EAED 50%, #F4F5F7 75%);
     background-size: 200% 100%; animation: shimmer 1.4s infinite;
   }
@@ -653,7 +1460,8 @@
   .drawer-overlay.open { display: block; }
   .drawer {
     position: fixed; top: 0; right: -300px; bottom: 0;
-    width: 280px; background: var(--bg);
+    width: 280px; background: var(--ink);
+    color: #fff;
     z-index: 201;
     transition: right .25s ease;
     display: flex; flex-direction: column;
@@ -663,11 +1471,11 @@
   .drawer-head {
     padding: 16px 20px;
     display: flex; align-items: center; justify-content: space-between;
-    border-bottom: 1px solid var(--line-soft);
+    border-bottom: 1px solid rgba(255,255,255,.12);
   }
   .drawer-close {
     width: 36px; height: 36px; border-radius: 50%;
-    background: var(--bg-2); color: var(--ink);
+    background: rgba(255,255,255,.1); color: #fff;
     display: flex; align-items: center; justify-content: center;
     font-size: 22px; line-height: 1;
   }
@@ -677,20 +1485,14 @@
   }
   .drawer-nav a {
     padding: 12px 16px; border-radius: 10px;
-    font-size: 15px; font-weight: 600; color: var(--ink);
+    font-size: 15px; font-weight: 700; color: #fff;
     display: flex; align-items: center; gap: 12px;
   }
-  .drawer-nav a:hover { background: var(--bg-2); }
-  .drawer-nav a.primary { background: var(--ink); color: var(--bg); margin-top: 8px; }
-  .drawer-nav a.primary:hover { background: var(--pink-deep); }
+  .drawer-nav a:hover { background: rgba(255,255,255,.08); color: var(--pink-deep); }
+  .drawer-nav a.primary { background: var(--pink-deep); color: #fff; margin-top: 8px; }
+  .drawer-nav a.primary:hover { background: #fff; color: var(--ink); }
   .drawer-nav a svg { width: 18px; height: 18px; }
-  .drawer-foot {
-    padding: 14px 20px;
-    border-top: 1px solid var(--line-soft);
-    font-size: 12px; color: var(--ink-mute);
-    display: flex; flex-direction: column; gap: 6px;
-  }
-  .drawer-foot a { color: var(--ink-soft); }
+  .drawer-foot { display: none; }
 
   /* Mobile tabs strip — quick access to main sections */
   .mobile-tabs { display: none; }
@@ -721,86 +1523,266 @@
   @media (max-width: 768px) {
     .topbar { padding: 10px 12px; }
     .topbar-inner {
-      grid-template-columns: auto auto;
-      grid-template-areas: "logo menu" "search search" "tabs tabs";
+      display: flex;
       gap: 10px;
       justify-content: space-between;
     }
-    .topbar-logo { grid-area: logo; font-size: 20px; }
-    .city-picker { grid-area: search; max-width: 100%; padding: 4px 5px 4px 4px; }
+    .topbar-logo { font-size: 20px; }
+    .topbar-logo .brand-logo-img { width: 174px; max-height: 62px; }
+    .edura-hero {
+      padding: 10px 8px 0;
+    }
+    .edura-hero-panel {
+      padding: 22px 10px 18px;
+      border-color: rgba(230, 0, 126, .14);
+      overflow: hidden;
+    }
+    .edura-hero-copy {
+      margin-bottom: 18px;
+    }
+    .edura-hero-kicker {
+      font-size: 11.5px;
+      margin-bottom: 12px;
+    }
+    .edura-hero-title {
+      max-width: 330px;
+      margin-inline: auto;
+      font-size: clamp(30px, 9.4vw, 38px);
+      line-height: 1.14;
+    }
+    .edura-hero-sub {
+      max-width: 310px;
+      margin-top: 16px;
+      font-size: 16px;
+      line-height: 1.7;
+    }
+    .edura-match-start {
+      max-width: 100%;
+      padding: 9px;
+      margin-top: 2px;
+      box-shadow: 0 6px 18px rgba(15, 27, 45, .035);
+    }
+    .edura-match-head {
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+    .edura-match-head strong {
+      font-size: 13.5px;
+    }
+    .edura-match-pill {
+      padding: 4px 9px;
+      font-size: 11px;
+    }
+    .edura-match-start {
+      direction: rtl;
+    }
+    .edura-match-head {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      align-items: center;
+      text-align: right;
+    }
+    .edura-match-options {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 5px;
+    }
+    .edura-match-option {
+      min-height: 34px;
+      min-width: 0;
+      padding: 7px 6px;
+      gap: 0;
+      font-size: 12px;
+      line-height: 1.2;
+      text-align: center;
+    }
+    .edura-match-option svg {
+      display: none;
+    }
+    .edura-match-fields {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 5px;
+      margin-bottom: 8px;
+    }
+    .edura-match-field {
+      min-height: 34px;
+      min-width: 0;
+      padding: 0 8px;
+      gap: 4px;
+      font-size: 11.5px;
+      text-align: center;
+      justify-content: center;
+    }
+    .edura-match-field input {
+      text-align: center;
+    }
+    .edura-match-field svg {
+      width: 13px;
+      height: 13px;
+    }
+    .edura-match-cta {
+      min-height: 38px;
+      width: 100%;
+      font-size: 13px;
+      white-space: nowrap;
+    }
+    .home-search { padding: 14px 12px 0; }
+    .match-journey { padding: 0 12px 4px; }
+    .match-journey-panel {
+      grid-template-columns: 1fr;
+      gap: 7px;
+      padding: 10px;
+    }
+    .match-step {
+      min-height: 76px;
+      padding: 9px;
+      gap: 9px;
+    }
+    .match-step:not(:last-child)::after {
+      left: 50%;
+      right: auto;
+      top: auto;
+      bottom: -7px;
+      width: 1.5px;
+      height: 7px;
+    }
+    .match-step:not(:last-child)::before {
+      left: calc(50% - 4px);
+      top: auto;
+      bottom: -10px;
+      transform: rotate(-135deg);
+    }
+    .match-step-visual {
+      width: 42px;
+      height: 42px;
+    }
+    .match-step-visual img {
+      width: 36px;
+      height: 36px;
+    }
+    .match-step-copy strong {
+      font-size: 13px;
+    }
+    .match-step-copy span {
+      font-size: 11.5px;
+    }
+    .city-picker { max-width: 100%; padding: 4px 5px 4px 4px; }
     .city-pin { width: 32px; height: 32px; }
     .city-pin svg { width: 16px; height: 16px; }
     .city-input { font-size: 15px; padding: 0 10px; }
     .city-go { width: 32px; height: 32px; }
     .city-go svg { width: 16px; height: 16px; }
     .topbar-nav { display: none; }
-    .menu-toggle { grid-area: menu; display: flex; }
+    .menu-toggle { display: flex; }
     .row-title { font-size: 19px; }
     .job-card { width: 248px; }
     .job-hero { height: 150px; }
     .job-hero-city-name { font-size: 20px; }
+    .home-gateway { padding: 16px 12px 0; }
+    .home-gateway-panel {
+      padding: 22px 18px 18px;
+    }
+    .edura-brand-mark {
+      width: 42px;
+      height: 42px;
+      inset-inline-start: 20px;
+      top: 22px;
+    }
+    .edura-brand-mark img {
+      width: 28px;
+      height: 28px;
+    }
+    .home-gateway-title { font-size: 36px; }
+    .home-gateway-sub { font-size: 15px; margin-top: 12px; }
+    .home-actions { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .home-action {
+      min-height: 84px;
+      padding: 13px;
+      gap: 10px;
+    }
+    .home-action-icon { width: 38px; height: 38px; }
+    .home-action-title { font-size: 15px; }
+    .home-action-text { font-size: 12.5px; }
     .filters { padding: 16px 12px 0; }
     .filter-section { gap: 8px; flex-direction: column; align-items: stretch; }
     .filter-label { min-width: 0; padding: 0 4px; }
-    .cat-chip { min-width: 76px; }
-    .cat-chip-icon { width: 56px; height: 56px; }
-    .cat-chip-icon svg { width: 24px; height: 24px; }
+    .cat-chip { min-width: 0; }
+    .cat-chip-icon { display: none; }
+    .cat-chip-icon svg { width: 17px; height: 17px; }
     .discovery { padding: 0 12px 40px; }
     .free-search { max-width: none; }
     .active-filters { margin: 8px 12px 0; padding: 12px 14px; }
     .v2-note { margin: 40px 12px 16px; padding: 18px 16px; }
   }
+  @media (max-width: 520px) {
+    .home-actions { grid-template-columns: 1fr; }
+    .home-action { min-height: 74px; }
+  }
 
   /* ───── FOOTER ───── */
   .site-footer {
-    background: var(--bg-2);
-    border-top: 1px solid var(--line);
+    background: var(--pink-deep);
+    border-top: 0;
     padding: 40px 24px 20px;
     margin-top: 40px;
+    color: #fff;
   }
   .footer-inner {
     max-width: 1320px; margin: 0 auto;
-    display: grid; gap: 32px;
-    grid-template-columns: 1.4fr 1fr 1fr 1fr;
+    display: grid; gap: 40px;
+    grid-template-columns: minmax(260px, 1.4fr) minmax(180px, .6fr);
+    align-items: start;
   }
   .footer-col h4 {
-    font-size: 13px; font-weight: 800; color: var(--ink);
+    font-size: 13px; font-weight: 800; color: #fff;
     margin: 0 0 12px; letter-spacing: 0.3px;
     text-transform: uppercase;
   }
+  .footer-col h4.is-hidden {
+    display: none;
+  }
   .footer-col ul { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 8px; }
   .footer-col a {
-    font-size: 14px; color: var(--ink-soft); font-weight: 500;
+    font-size: 14px; color: rgba(255,255,255,.78); font-weight: 500;
     transition: color .15s;
   }
-  .footer-col a:hover { color: var(--pink-deep); }
+  .footer-col a:hover { color: #fff; }
   .footer-brand {
-    font-size: 22px; font-weight: 900; color: var(--ink);
+    font-size: 22px; font-weight: 900; color: #fff;
     letter-spacing: -0.8px; display: flex; align-items: center; gap: 8px;
     margin-bottom: 12px;
   }
   .footer-brand .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--pink-deep); }
-  .footer-tagline { font-size: 13px; color: var(--ink-mute); line-height: 1.6; max-width: 280px; }
+  .footer-brand .brand-logo-img {
+    width: 230px;
+    max-height: 86px;
+  }
+  .footer-tagline { font-size: 13px; color: rgba(255,255,255,.78); line-height: 1.6; max-width: 280px; }
   .footer-bottom {
     max-width: 1320px; margin: 32px auto 0;
-    padding-top: 20px; border-top: 1px solid var(--line);
+    padding-top: 20px; border-top: 1px solid rgba(255,255,255,.22);
     display: flex; justify-content: space-between; align-items: center; gap: 16px;
     flex-wrap: wrap;
-    font-size: 12px; color: var(--ink-mute);
+    font-size: 12px; color: rgba(255,255,255,.72);
   }
   .footer-socials { display: flex; gap: 8px; }
   .footer-socials a {
     width: 34px; height: 34px; border-radius: 50%;
-    background: var(--bg); border: 1px solid var(--line);
+    background: rgba(255,255,255,.12); border: 1px solid rgba(255,255,255,.25);
     display: flex; align-items: center; justify-content: center;
-    color: var(--ink-soft); transition: all .15s;
+    color: #fff; transition: all .15s;
   }
-  .footer-socials a:hover { background: var(--pink-deep); color: #fff; border-color: var(--pink-deep); }
+  .footer-socials a:hover { background: #fff; color: var(--pink-deep); border-color: #fff; }
   .footer-socials svg { width: 16px; height: 16px; }
   @media (max-width: 768px) {
-    .footer-inner { grid-template-columns: 1fr 1fr; gap: 24px; }
-    .footer-col:first-child { grid-column: 1 / -1; }
-    .site-footer { padding: 32px 16px 16px; }
+    .footer-inner { grid-template-columns: 1fr; gap: 18px; text-align: center; }
+    .site-footer { padding: 24px 16px 14px; margin-top: 24px; }
+    .footer-brand { justify-content: center; margin-bottom: 6px; }
+    .footer-brand .brand-logo-img { width: 190px; max-height: 72px; }
+    .footer-tagline { max-width: 340px; margin: 0 auto; font-size: 12.5px; line-height: 1.55; }
+    .footer-col ul { gap: 6px; }
+    .footer-col a { font-size: 13.5px; }
+    .footer-bottom { margin-top: 18px; padding-top: 12px; justify-content: center; }
   }
 
   /* ───── COOKIES BANNER ───── */
@@ -828,6 +1810,619 @@
   .cookies-btn.primary:hover { background: var(--pink-deeper); }
   .cookies-btn.secondary { background: rgba(255,255,255,.12); color: #fff; }
   .cookies-btn.secondary:hover { background: rgba(255,255,255,.2); }
+  /* Edura match flow overrides */
+  .filters,
+  .active-filters {
+    display: none !important;
+  }
+  .discovery {
+    padding-top: 18px;
+  }
+  .job-card {
+    width: 184px !important;
+    min-height: 118px;
+    padding: 10px !important;
+    border-radius: 8px !important;
+    border: 1px solid rgba(15,27,45,.1) !important;
+    background: #fff !important;
+    box-shadow: 0 4px 12px rgba(15,27,45,.04) !important;
+  }
+  .job-hero {
+    min-height: 28px !important;
+    height: auto !important;
+    background: transparent !important;
+    background-image: none !important;
+    border-radius: 0 !important;
+    padding-inline-end: 32px !important;
+  }
+  .job-hero-overlay,
+  .job-hero-city-region {
+    display: none !important;
+  }
+  .job-hero-city {
+    position: static !important;
+    color: var(--pink-deep) !important;
+    text-shadow: none !important;
+  }
+  .job-hero-city-name {
+    color: var(--pink-deep) !important;
+    font-size: 12px !important;
+    font-weight: 800 !important;
+    text-shadow: none !important;
+    letter-spacing: 0 !important;
+  }
+  .job-save {
+    top: 0 !important;
+    left: 0 !important;
+    right: auto !important;
+    width: 26px !important;
+    height: 26px !important;
+    background: var(--bg-2) !important;
+    box-shadow: none !important;
+  }
+  .job-save svg {
+    width: 13px !important;
+    height: 13px !important;
+    color: var(--ink) !important;
+  }
+  .job-badge,
+  .job-badge.hot,
+  .job-badge.fresh {
+    top: 8px !important;
+    left: 34px !important;
+    padding: 3px 7px !important;
+    background: var(--ink) !important;
+    color: #fff !important;
+    font-size: 10px !important;
+    box-shadow: none !important;
+  }
+  .job-title {
+    font-size: 13px !important;
+    line-height: 1.25 !important;
+    font-weight: 800 !important;
+    letter-spacing: 0 !important;
+    -webkit-line-clamp: 2 !important;
+  }
+  .job-school {
+    font-size: 11.5px !important;
+    color: var(--ink-mute) !important;
+  }
+  .job-meta {
+    font-size: 11px !important;
+    color: var(--ink-soft) !important;
+  }
+  .job-meta strong {
+    color: var(--pink-deep) !important;
+  }
+  .modal {
+    max-width: 520px !important;
+    border-radius: 8px !important;
+  }
+  .modal-hero {
+    height: 76px !important;
+    background: #fff !important;
+    background-image: none !important;
+    border-bottom: 1px solid rgba(15,27,45,.08);
+    display: flex;
+    align-items: center;
+    padding: 16px 22px;
+  }
+  .modal-hero-overlay {
+    display: none !important;
+  }
+  .modal-close {
+    top: 12px !important;
+    left: 12px !important;
+    width: 30px !important;
+    height: 30px !important;
+    background: var(--bg-2) !important;
+    box-shadow: none !important;
+  }
+  .modal-hero-info {
+    position: static !important;
+    color: var(--pink-deep) !important;
+    padding-inline-start: 44px;
+  }
+  .modal-hero-city {
+    color: var(--pink-deep) !important;
+    font-size: 16px !important;
+    font-weight: 900 !important;
+    text-shadow: none !important;
+    letter-spacing: 0 !important;
+  }
+  .modal-hero-region {
+    color: var(--ink-mute) !important;
+    font-size: 11px !important;
+    text-shadow: none !important;
+    letter-spacing: 0 !important;
+  }
+  .modal-body {
+    padding: 18px 22px !important;
+  }
+  .modal-title {
+    font-size: 19px !important;
+    font-weight: 900 !important;
+    letter-spacing: 0 !important;
+  }
+  .modal-tags {
+    margin: 12px 0 14px !important;
+  }
+  .modal-tag,
+  .modal-tag.scope,
+  .modal-tag.level,
+  .modal-tag.sector {
+    background: var(--pink-soft) !important;
+    color: var(--pink-deep) !important;
+    border: 1px solid rgba(230,0,126,.14);
+    font-size: 11px !important;
+  }
+  .modal-description,
+  .modal-meta-item {
+    background: #fff !important;
+    border: 1px solid rgba(15,27,45,.08);
+    border-radius: 8px !important;
+  }
+  .modal-contact {
+    background: var(--pink-soft) !important;
+    border: 1px solid rgba(230,0,126,.12);
+    border-radius: 8px !important;
+    padding: 14px !important;
+  }
+  .contact-btn,
+  .contact-btn.wa,
+  .contact-btn.phone,
+  .contact-btn.email,
+  .contact-btn.source-link {
+    border-radius: 8px !important;
+    background: var(--ink) !important;
+    color: #fff !important;
+    border: 0 !important;
+  }
+  .contact-btn.email {
+    background: #fff !important;
+    color: var(--ink) !important;
+    border: 1px solid rgba(15,27,45,.12) !important;
+  }
+  /* Current Edura interaction layer */
+  .topbar {
+    min-height: 86px;
+  }
+  .topbar-inner {
+    min-height: 72px;
+  }
+  .menu-toggle {
+    display: none;
+  }
+  .topbar-nav {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    margin-inline-start: auto;
+  }
+  .nav-link {
+    position: relative;
+    border: 0;
+    background: transparent;
+    color: var(--ink);
+    box-shadow: none;
+    padding: 10px 0;
+    border-radius: 0;
+    font-size: 15px;
+    font-weight: 800;
+    white-space: nowrap;
+    line-height: 1;
+  }
+  .nav-link.primary {
+    background: transparent;
+    color: var(--ink);
+    border-color: transparent;
+  }
+  .nav-link::after {
+    content: "";
+    position: absolute;
+    right: 0;
+    left: 0;
+    bottom: -8px;
+    height: 2px;
+    border-radius: 999px;
+    background: var(--pink-deep);
+    transform: scaleX(0);
+    transform-origin: right;
+    transition: transform .18s ease;
+  }
+  .nav-link:hover {
+    background: transparent;
+    color: var(--pink-deep);
+  }
+  .nav-link:hover::after,
+  .nav-link.primary::after {
+    transform: scaleX(1);
+  }
+  .nav-link svg {
+    display: none;
+  }
+  .edura-hero-kicker #today-date {
+    color: var(--ink);
+    font-weight: 800;
+  }
+  .match-journey {
+    width: 100%;
+    max-width: 1120px;
+    margin: 22px auto 24px;
+    padding: 0;
+  }
+  .match-journey-panel {
+    gap: 10px !important;
+    padding: 14px !important;
+    background: rgba(255,255,255,.94) !important;
+    box-shadow: 0 24px 60px rgba(15,27,45,.07) !important;
+  }
+  .match-step {
+    border-radius: 8px !important;
+    border: 1px solid transparent !important;
+    padding: 12px 10px !important;
+    transition: transform .24s cubic-bezier(.2,.8,.2,1), background .24s, box-shadow .24s, border-color .24s;
+  }
+  .match-step:hover {
+    transform: translateY(-8px) scale(1.02);
+    background: var(--ink) !important;
+    border-color: rgba(15,27,45,.18) !important;
+    box-shadow: 0 22px 46px rgba(15,27,45,.2);
+  }
+  .match-step:hover .match-step-visual {
+    transform: scale(1.1) rotate(-3deg);
+    border-color: rgba(230,0,126,.55);
+    box-shadow: 0 12px 28px rgba(230,0,126,.18);
+  }
+  .match-step:hover .match-step-copy strong,
+  .match-step:hover .match-step-copy span {
+    color: #fff;
+  }
+  .match-step-visual {
+    transition: transform .24s cubic-bezier(.2,.8,.2,1), border-color .24s, box-shadow .24s;
+  }
+  @keyframes eduraMatchStepIn {
+    from {
+      opacity: 0;
+      transform: translateX(34px) scale(.94);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0) scale(1);
+    }
+  }
+  @keyframes eduraMatchPulse {
+    0%, 100% {
+      transform: scale(1);
+      box-shadow: 0 10px 28px rgba(230,0,126,.08);
+    }
+    45% {
+      transform: scale(1.15);
+      box-shadow: 0 18px 38px rgba(230,0,126,.18);
+    }
+  }
+  .match-journey-panel .match-step {
+    opacity: 0;
+    animation: eduraMatchStepIn .58s cubic-bezier(.2,.8,.2,1) forwards;
+  }
+  .match-journey-panel .match-step:nth-child(1) { animation-delay: .05s; }
+  .match-journey-panel .match-step:nth-child(2) { animation-delay: .16s; }
+  .match-journey-panel .match-step:nth-child(3) { animation-delay: .27s; }
+  .match-journey-panel .match-step:nth-child(4) { animation-delay: .38s; }
+  .match-journey-panel .match-step:nth-child(5) { animation-delay: .49s; }
+  .match-journey-panel .match-step:nth-child(5) .match-step-visual {
+    animation: eduraMatchPulse 1.9s ease-in-out .95s both;
+  }
+  .row-expand {
+    margin: 10px auto 0;
+    padding: 8px 14px 9px;
+    border-radius: 999px;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: transparent;
+    color: var(--ink-soft);
+    border: 1px solid rgba(15,27,45,.08);
+    font-size: 12px;
+    font-weight: 800;
+    transition: background .18s, color .18s, transform .18s;
+  }
+  .row-expand strong {
+    display: inline-grid;
+    place-items: center;
+    width: 18px;
+    height: 18px;
+    border-radius: 999px;
+    background: var(--bg-2);
+    color: var(--ink);
+    font-size: 14px;
+    line-height: 1;
+    transition: transform .18s, background .18s, color .18s;
+  }
+  .row-expand:hover {
+    background: var(--pink-soft);
+    color: var(--pink-deep);
+  }
+  .row.expanded .row-expand {
+    color: var(--pink-deep);
+  }
+  .row.expanded .row-expand strong {
+    transform: rotate(180deg);
+    background: var(--pink-deep);
+    color: #fff;
+  }
+  .row.expanded .row-scroll {
+    display: grid !important;
+    grid-template-columns: repeat(auto-fill, minmax(188px, 188px));
+    justify-content: start;
+    overflow: visible !important;
+    scroll-snap-type: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+  .job-card {
+    flex: 0 0 188px !important;
+    width: 188px !important;
+    height: 142px !important;
+    min-height: 142px !important;
+    overflow: hidden;
+    isolation: isolate;
+  }
+  .job-card::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: var(--ink);
+    opacity: 0;
+    transition: opacity .2s ease;
+    z-index: 8;
+  }
+  .job-card:hover::after {
+    opacity: .97;
+  }
+  .job-card-back {
+    position: absolute;
+    inset: 10px;
+    z-index: 9;
+    color: #fff;
+    opacity: 0;
+    transform: rotateY(18deg) translateY(8px);
+    pointer-events: none;
+    transition: opacity .2s ease, transform .24s cubic-bezier(.2,.8,.2,1);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 10px;
+  }
+  .job-card:hover .job-card-back {
+    opacity: 1;
+    transform: rotateY(0) translateY(0);
+    pointer-events: auto;
+  }
+  .job-card-back-title {
+    font-size: 12px;
+    font-weight: 900;
+    line-height: 1.25;
+  }
+  .job-card-actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6px;
+  }
+  .job-card-actions a,
+  .job-card-actions button {
+    border-radius: 8px;
+    padding: 7px 6px;
+    font: inherit;
+    font-size: 10.5px;
+    font-weight: 900;
+    text-align: center;
+    background: rgba(255,255,255,.1);
+    color: #fff;
+  }
+  .job-card-actions .primary-action {
+    grid-column: 1 / -1;
+    background: var(--pink-deep);
+  }
+  .job-title,
+  .job-school,
+  .job-meta {
+    overflow: hidden;
+  }
+  @media (max-width: 768px) {
+    .topbar-nav { display: none !important; }
+    .menu-toggle { display: flex !important; }
+    .match-journey { margin: 14px auto 16px; }
+    .match-journey-panel {
+      grid-template-columns: 1fr !important;
+    }
+    .match-step:not(:last-child)::after {
+      display: none;
+    }
+    .job-card {
+      flex-basis: 188px !important;
+      width: 188px !important;
+    }
+  }
+  .topbar-nav {
+    gap: 30px;
+  }
+  .nav-link {
+    padding: 8px 0;
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--ink-soft);
+    letter-spacing: 0;
+    transition: color .18s ease, transform .18s ease;
+  }
+  .nav-link.primary {
+    color: var(--ink);
+  }
+  .nav-link::after {
+    right: 50%;
+    left: auto;
+    width: 22px;
+    bottom: -9px;
+    height: 2px;
+    transform: translateX(50%) scaleX(0);
+    transform-origin: center;
+  }
+  .nav-link::before {
+    content: "";
+    position: absolute;
+    top: 50%;
+    right: -12px;
+    width: 6px;
+    height: 6px;
+    border-radius: 999px;
+    background: var(--pink-deep);
+    opacity: 0;
+    transform: translateY(-50%) scale(.4);
+    transition: opacity .18s ease, transform .18s ease;
+  }
+  .nav-link:hover {
+    color: var(--ink);
+    transform: translateY(-1px);
+  }
+  .nav-link:hover::after,
+  .nav-link.primary::after {
+    transform: translateX(50%) scaleX(1);
+  }
+  .nav-link:hover::before,
+  .nav-link.primary::before {
+    opacity: 1;
+    transform: translateY(-50%) scale(1);
+  }
+  /* Final responsive polish */
+  .jobs-toolbar {
+    margin: 0 0 18px;
+    display: flex;
+    justify-content: flex-end;
+  }
+  .jobs-search {
+    width: min(100%, 460px);
+    min-height: 42px;
+    border: 1px solid rgba(15,27,45,.1);
+    border-radius: 999px;
+    background: #fff;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 0 16px;
+    box-shadow: 0 6px 18px rgba(15,27,45,.035);
+  }
+  .jobs-search svg {
+    width: 17px;
+    height: 17px;
+    color: var(--pink-deep);
+    flex: 0 0 auto;
+  }
+  .jobs-search input {
+    width: 100%;
+    min-width: 0;
+    border: 0;
+    outline: 0;
+    background: transparent;
+    color: var(--ink);
+    font: inherit;
+    font-size: 13px;
+    font-weight: 700;
+  }
+  .jobs-search input::placeholder {
+    color: var(--ink-mute);
+    font-weight: 600;
+  }
+  @keyframes eduraMatchDotGlow {
+    0%, 100% { transform: scale(1); opacity: .72; }
+    45% { transform: scale(1.42); opacity: 1; }
+  }
+  .match-journey-panel .match-step:nth-child(5) .match-step-visual {
+    animation: eduraMatchPulse 2.1s ease-in-out .95s both infinite !important;
+  }
+  .match-step:not(:last-child)::after {
+    animation: eduraMatchDotGlow 1.8s ease-in-out infinite;
+  }
+  .site-footer {
+    background:
+      linear-gradient(118deg, var(--pink-deep) 0 61%, var(--ink) 61% 100%) !important;
+  }
+  @media (min-width: 769px) {
+    .row-scroll,
+    .row.expanded .row-scroll {
+      display: grid !important;
+      grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+      gap: 16px !important;
+      justify-content: stretch !important;
+      overflow: visible !important;
+      scroll-snap-type: none !important;
+      margin: 0 !important;
+      padding: 0 0 8px !important;
+    }
+    .row-scroll .job-card,
+    .row.expanded .row-scroll .job-card {
+      width: 100% !important;
+      min-width: 0 !important;
+      flex: initial !important;
+    }
+  }
+  @media (max-width: 768px) {
+    .edura-match-start {
+      padding: 14px 12px 16px !important;
+      border-radius: 10px !important;
+    }
+    .edura-match-head {
+      grid-template-columns: 1fr auto !important;
+      margin-bottom: 12px !important;
+    }
+    .edura-match-head strong {
+      font-size: 15px !important;
+    }
+    .edura-match-options,
+    .edura-match-fields {
+      grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+      gap: 8px !important;
+    }
+    .edura-match-option {
+      min-height: 46px !important;
+      font-size: 13px !important;
+      border-radius: 8px !important;
+    }
+    .edura-match-field {
+      min-height: 42px !important;
+      border-radius: 8px !important;
+      font-size: 12.5px !important;
+    }
+    .edura-match-cta {
+      min-height: 50px !important;
+      border-radius: 8px !important;
+      font-size: 14.5px !important;
+    }
+    .jobs-toolbar {
+      justify-content: stretch;
+      margin-bottom: 14px;
+    }
+    .jobs-search {
+      width: 100%;
+      min-height: 40px;
+      padding: 0 14px;
+    }
+    .row-head {
+      justify-content: flex-start;
+      padding-inline: 2px;
+    }
+    .row-scroll {
+      margin: 0 -12px !important;
+      padding: 0 12px 8px !important;
+    }
+    .row-scroll .job-card {
+      width: 238px !important;
+      flex: 0 0 238px !important;
+    }
+    .site-footer {
+      background:
+        linear-gradient(150deg, var(--pink-deep) 0 72%, var(--ink) 72% 100%) !important;
+    }
+  }
 </style>
 </head>
 <body>
@@ -848,6 +2443,34 @@
     <symbol id="i-key" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="7.5" cy="15.5" r="5.5"/><path d="m21 2-9.6 9.6"/><path d="m15.5 7.5 3 3L22 7l-3-3"/></symbol>
     <symbol id="i-briefcase" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></symbol>
 
+    <symbol id="brand-smile" viewBox="0 0 64 64" fill="none">
+      <circle cx="18" cy="13" r="7" fill="#E6007E"/>
+      <path d="M12 38c8 13 28 15 39 1" stroke="#E6007E" stroke-width="11" stroke-linecap="round"/>
+      <path d="M43 39c5 4 11 3 15-3" stroke="#0F1B2D" stroke-width="9" stroke-linecap="round"/>
+    </symbol>
+    <symbol id="brand-i-publish" viewBox="0 0 48 48" fill="none">
+      <rect x="12" y="9" width="24" height="31" rx="4" stroke="currentColor" stroke-width="3"/>
+      <path d="M18 18h12M18 25h12M18 32h8" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
+      <circle cx="34" cy="14" r="5" fill="#E6007E"/>
+      <path d="M32 14.5l2 2 4-5" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+    </symbol>
+    <symbol id="brand-i-work" viewBox="0 0 48 48" fill="none">
+      <rect x="8" y="17" width="32" height="25" rx="5" stroke="currentColor" stroke-width="3"/>
+      <path d="M18 17v-4a4 4 0 0 1 4-4h8a4 4 0 0 1 4 4v4M8 27h40" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
+      <path d="M20 34c3 4 9 4 12 0" stroke="#E6007E" stroke-width="3" stroke-linecap="round"/>
+    </symbol>
+    <symbol id="brand-i-management" viewBox="0 0 48 48" fill="none">
+      <circle cx="18" cy="29" r="10" stroke="currentColor" stroke-width="3"/>
+      <path d="M26 21 39 8M33 14l5 5M31 16l-4-4" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+      <circle cx="17" cy="28" r="4" fill="#E6007E"/>
+    </symbol>
+    <symbol id="brand-i-teachers" viewBox="0 0 48 48" fill="none">
+      <circle cx="18" cy="17" r="7" stroke="currentColor" stroke-width="3"/>
+      <circle cx="33" cy="20" r="6" stroke="currentColor" stroke-width="3"/>
+      <path d="M7 39c1.6-7 7-11 14-11 4 0 7.5 1.4 10 4M27 37c2-4 5.5-6 10-6 3 0 5.6 1 7 3" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
+      <path d="M15 19c2 2.5 6 2.5 8 0" stroke="#E6007E" stroke-width="3" stroke-linecap="round"/>
+    </symbol>
+
     <!-- Subject icons -->
     <symbol id="cat-all" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></symbol>
     <symbol id="cat-math" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="9" x2="11" y2="9"/><line x1="4" y1="15" x2="11" y2="15"/><line x1="14" y1="6" x2="20" y2="12"/><line x1="20" y1="6" x2="14" y2="12"/><line x1="14" y1="18" x2="20" y2="18"/><line x1="17" y1="15" x2="17" y2="21"/></symbol>
@@ -867,29 +2490,15 @@
 
 <header class="topbar">
   <div class="topbar-inner">
-    <a href="/" class="topbar-logo">אדורה<span class="dot"></span></a>
-    <div class="city-picker">
-      <div class="city-pin"><svg><use href="#i-pin"/></svg></div>
-      <input id="city-input" class="city-input" type="text" placeholder="באיזו עיר את/ה מחפש/ת משרה?" autocomplete="off" />
-      <button class="city-go" id="city-go" aria-label="חפש"><svg><use href="#i-arrow"/></svg></button>
-      <div class="city-suggest" id="city-suggest"></div>
-    </div>
-    <nav class="topbar-nav">
-      <a href="index.html" class="nav-link active"><svg><use href="#i-briefcase"/></svg> משרות</a>
-      <a href="teachers.html" class="nav-link"><svg><use href="#i-users"/></svg> מורים</a>
-      <a href="manager-tenders.html" class="nav-link"><svg><use href="#i-key"/></svg> מכרזי ניהול</a>
-      <a href="https://mail.google.com/mail/?view=cm&fs=1&to=meytal@edura.co.il&su=פידבק על Edura" class="nav-link" title="נשמח לשמוע אתכם — פידבק על המערכת" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg> פידבק</a>
-      <a href="chat.html" class="nav-link primary"><svg><use href="#i-bot"/></svg> בוט חיפוש</a>
+    <a href="/" class="topbar-logo" aria-label="אדורה"><span class="logo-live-dot" aria-hidden="true"></span><img class="brand-logo-img" src="assets/brand/edura-logo-header-dotless.png" data-full-logo="assets/brand/edura-logo-header.png" alt="אדורה" /></a>
+    <nav class="topbar-nav" aria-label="ניווט ראשי">
+      <a class="nav-link" href="publish-job.html#teacher"><svg><use href="#i-briefcase"/></svg> חיפוש משרה</a>
+      <a class="nav-link" href="publish-job.html#school"><svg><use href="#i-users"/></svg> חיפוש מורים</a>
+      <a class="nav-link" href="about.html?v=impact">מי אנחנו</a>
     </nav>
     <button class="menu-toggle" id="menu-toggle" aria-label="תפריט">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
     </button>
-    <nav class="mobile-tabs" aria-label="ניווט ראשי">
-      <a href="index.html" class="mobile-tab active"><svg><use href="#i-briefcase"/></svg>משרות</a>
-      <a href="teachers.html" class="mobile-tab"><svg><use href="#i-users"/></svg>מורים</a>
-      <a href="manager-tenders.html" class="mobile-tab"><svg><use href="#i-key"/></svg>מכרזי ניהול</a>
-      <a href="chat.html" class="mobile-tab bot"><svg><use href="#i-bot"/></svg>בוט חיפוש</a>
-    </nav>
   </div>
 </header>
 
@@ -901,25 +2510,163 @@
     <button class="drawer-close" onclick="closeDrawer()" aria-label="סגור">×</button>
   </div>
   <nav class="drawer-nav">
-    <a href="index.html"><svg><use href="#i-briefcase"/></svg> כל המשרות</a>
-    <a href="teachers.html"><svg><use href="#i-users"/></svg> מאגר מורים</a>
-    <a href="manager-tenders.html"><svg><use href="#i-key"/></svg> מכרזי ניהול</a>
-    <a href="saved.html"><svg><use href="#i-heart"/></svg> שמורות שלי</a>
-    <a href="publish-job.html"><svg><use href="#i-sparkle"/></svg> פרסום משרה</a>
-    <a href="cv-builder.html"><svg><use href="#i-target"/></svg> בניית קורות חיים</a>
-    <a href="about.html"><svg><use href="#i-pin"/></svg> על אדורה</a>
-    <a href="https://mail.google.com/mail/?view=cm&fs=1&to=meytal@edura.co.il&su=פידבק על Edura" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg> שלחו לי פידבק על המערכת</a>
-    <a href="chat.html" class="primary"><svg><use href="#i-bot"/></svg> בוט חיפוש חכם</a>
+    <a href="publish-job.html#teacher"><svg><use href="#i-briefcase"/></svg> חיפוש משרה</a>
+    <a href="publish-job.html#school"><svg><use href="#i-users"/></svg> חיפוש מורים</a>
+    <a href="about.html?v=impact"><svg><use href="#i-target"/></svg> מי אנחנו</a>
   </nav>
-  <div class="drawer-foot">
-    <a href="privacy.html">פרטיות ואבטחה</a>
-    <a href="accessibility.html">נגישות</a>
-    <a href="https://mail.google.com/mail/?view=cm&fs=1&to=meytal@edura.co.il" target="_blank" rel="noopener">צור קשר</a>
-    <span>© 2026 אדורה · edura.co.il</span>
-  </div>
 </aside>
 
-<section class="filters">
+<section class="edura-hero" aria-labelledby="edura-hero-title">
+  <div class="edura-hero-panel">
+    <div class="edura-hero-copy">
+      <p class="edura-hero-kicker">לוח משרות מעודכן <span id="today-date"></span></p>
+      <h1 class="edura-hero-title" id="edura-hero-title">לא מחפשים משרה.<span class="hero-title-line">מוצאים מאץ׳ נכון.<span class="title-flight-dot" aria-hidden="true"></span></span></h1>
+      <p class="edura-hero-sub">אדורה מחברת בין אנשי חינוך למשרות שמתאימות באמת לפי אזור, תפקיד, ניסיון, גיל, תחום חינוכי ומה שחשוב לכם.</p>
+    </div>
+
+    <section class="match-journey" aria-label="איך המאצ׳ עובד">
+      <div class="match-journey-panel">
+        <div class="match-step">
+          <div class="match-step-visual" aria-hidden="true">
+            <img src="assets/brand/match-steps/step-1-dot.png" alt="" />
+          </div>
+          <div class="match-step-copy">
+            <strong>בוחרים מה מחפשים</strong>
+            <span>משרה חדשה או אנשי חינוך מתאימים</span>
+          </div>
+        </div>
+
+        <div class="match-step">
+          <div class="match-step-visual" aria-hidden="true">
+            <img src="assets/brand/match-steps/step-2-search.png" alt="" />
+          </div>
+          <div class="match-step-copy">
+            <strong>מוסיפים פרטים</strong>
+            <span>אזור, תחום, תפקיד ומה שחשוב לכם</span>
+          </div>
+        </div>
+
+        <div class="match-step">
+          <div class="match-step-visual" aria-hidden="true">
+            <img src="assets/brand/match-steps/step-4-match.png" alt="" />
+          </div>
+          <div class="match-step-copy">
+            <strong>אדורה עושה מאץ׳</strong>
+            <span>המערכת מחברת בין הצורך להזדמנות הנכונה</span>
+          </div>
+        </div>
+
+        <div class="match-step">
+          <div class="match-step-visual" aria-hidden="true">
+            <img src="assets/brand/match-steps/step-5-happy.png" alt="" />
+          </div>
+          <div class="match-step-copy">
+            <strong>מדייקים התאמה</strong>
+            <span>רואים רק משרות ואנשי חינוך רלוונטיים</span>
+          </div>
+        </div>
+
+        <div class="match-step">
+          <div class="match-step-visual" aria-hidden="true">
+            <span class="match-score-mini">90%</span>
+          </div>
+          <div class="match-step-copy">
+            <strong>מקבלים מאץ׳</strong>
+            <span>ממשיכים להזדמנות שמתאימה לכם באמת</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="edura-match-start" id="edura-match-start" aria-label="התחלת מאץ׳">
+      <div class="edura-match-head">
+        <strong>מה מחפשים היום?</strong>
+        <span class="edura-match-pill">מאץ׳ חכם</span>
+      </div>
+      <div class="edura-match-options" role="group" aria-label="בחירת מסלול מאץ׳">
+        <button class="edura-match-option active" type="button" data-match-mode="teacher"><svg><use href="#i-briefcase"/></svg><span class="edura-match-option-label">מאץ׳ משרות</span></button>
+        <button class="edura-match-option" type="button" data-match-mode="school"><svg><use href="#i-users"/></svg><span class="edura-match-option-label">מאץ׳ מורים</span></button>
+      </div>
+      <div class="edura-match-fields">
+        <label class="edura-match-field"><svg><use href="#i-pin"/></svg><input id="home-match-city" type="text" placeholder="עיר או אזור" autocomplete="address-level2" /></label>
+        <label class="edura-match-field"><svg><use href="#i-target"/></svg><input id="home-match-subject" type="text" placeholder="מקצוע, תפקיד או תחום" autocomplete="off" /></label>
+      </div>
+      <div class="edura-match-actions">
+        <button class="edura-match-cta" id="home-match-start" type="button"><span class="edura-match-cta-label">יאללה אדורה מאץ׳</span><svg><use href="#i-arrow"/></svg></button>
+        <span class="edura-match-note">בלי הרשמה בשלב הראשון</span>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<section class="home-gateway" aria-labelledby="home-gateway-title">
+  <div class="home-gateway-panel">
+    <span class="edura-brand-mark" aria-hidden="true"><span class="brand-smile"><span></span></span></span>
+    <div class="home-gateway-layout">
+      <div class="home-gateway-copy">
+        <p class="home-gateway-kicker">Edura Match</p>
+        <h1 class="home-gateway-title" id="home-gateway-title"><span>לא מחפשים משרה.</span><span>עושים מאץ׳.</span></h1>
+        <p class="home-gateway-sub">אדורה לומדת מה חשוב לך ומעלה קודם את המשרות שהכי מתאימות לעיר, למקצוע ולשלב הבא שלך בחינוך.</p>
+      </div>
+      <aside class="match-lab" aria-label="התאמת משרה">
+        <div class="match-lab-head">
+          <span class="match-label"><span class="brand-smile"><span></span></span>ההתאמה הראשונה שלך</span>
+          <strong class="match-score" id="match-score">94%</strong>
+        </div>
+        <article class="match-card" id="match-card">
+          <span class="match-card-eyebrow">מאץ׳ חם</span>
+          <h2 class="match-title" id="match-title">משרה שמתאימה למה שחיפשת</h2>
+          <p class="match-meta" id="match-meta">עיר, מקצוע ושכבת גיל מתחברים להתאמה אחת ברורה.</p>
+          <div class="match-tags" id="match-tags">
+            <span>עיר</span><span>מקצוע</span><span>שכבת גיל</span>
+          </div>
+        </article>
+        <div class="match-controls">
+          <button class="match-skip" id="match-skip" type="button" aria-label="דלג">×</button>
+          <button class="match-show" id="match-show" type="button">
+            להראות לי התאמות
+            <svg><use href="#i-arrow"/></svg>
+          </button>
+        </div>
+      </aside>
+    </div>
+    <div class="home-actions" aria-label="מסלולי פעולה">
+      <a class="home-action" href="publish-job.html#school">
+        <span class="home-action-icon"><svg><use href="#i-sparkle"/></svg></span>
+        <span>
+          <span class="home-action-title">לפרסם משרה</span>
+          <span class="home-action-text">בית ספר, רשת או פרופיל מורה</span>
+        </span>
+      </a>
+      <a class="home-action primary" href="#job-search">
+        <span class="home-action-icon"><svg><use href="#i-briefcase"/></svg></span>
+        <span>
+          <span class="home-action-title">למצוא עבודה</span>
+          <span class="home-action-text">משרות לפי עיר, מקצוע ושכבת גיל</span>
+        </span>
+      </a>
+      <a class="home-action" href="teachers.html">
+        <span class="home-action-icon"><svg><use href="#i-users"/></svg></span>
+        <span>
+          <span class="home-action-title">למצוא מורים</span>
+          <span class="home-action-text">מאגר מורים שמחפשים בית ספר</span>
+        </span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<section class="home-search" aria-label="חיפוש לפי עיר">
+  <div class="city-picker">
+    <div class="city-pin"><svg><use href="#i-pin"/></svg></div>
+    <input id="city-input" class="city-input" type="text" placeholder="באיזו עיר את/ה מחפש/ת משרה?" autocomplete="off" />
+    <button class="city-go" id="city-go" aria-label="חפש"><svg><use href="#i-arrow"/></svg></button>
+    <div class="city-suggest" id="city-suggest"></div>
+  </div>
+</section>
+
+<section class="filters" id="job-search">
   <div class="filter-section">
     <div class="filter-label">מקצוע</div>
     <div style="flex:1; min-width:0">
@@ -940,44 +2687,53 @@
 <div class="active-filters" id="active-filters"></div>
 
 <main class="discovery" id="discovery">
+  <div class="jobs-toolbar" aria-label="חיפוש משרות">
+    <label class="jobs-search">
+      <svg><use href="#i-search"/></svg>
+      <input id="jobs-free-search" type="search" placeholder="חיפוש לפי עיר, אזור, משרה או מקצוע" autocomplete="off" />
+    </label>
+  </div>
 
   <div class="row" id="row-hot-wrap">
     <div class="row-head">
       <div class="row-title">
         <span class="row-icon" style="background:#FFEBEB;color:#FF5F5F"><svg><use href="#i-flame"/></svg></span>
-        הכי חמות
+        משרות מאץ׳ באדורה
       </div>
       <div class="row-actions">
         <button class="row-arrow" data-row="row-hot" aria-label="הבא"><svg><use href="#i-arrow-right"/></svg></button>
       </div>
     </div>
     <div class="row-scroll" id="row-hot"></div>
+    <button class="row-expand" data-expand="row-hot-wrap" aria-label="צפייה בכל המשרות"><span>צפייה בכל המשרות</span><strong>⌄</strong></button>
   </div>
 
   <div class="row" id="row-fresh-wrap">
     <div class="row-head">
       <div class="row-title">
         <span class="row-icon" style="background:#FCE7F3;color:#BE185D"><svg><use href="#i-clock"/></svg></span>
-        נוספו השבוע
+        משרות מאץ׳ באדורה
       </div>
       <div class="row-actions">
         <button class="row-arrow" data-row="row-fresh" aria-label="הבא"><svg><use href="#i-arrow-right"/></svg></button>
       </div>
     </div>
     <div class="row-scroll" id="row-fresh"></div>
+    <button class="row-expand" data-expand="row-fresh-wrap" aria-label="צפייה בכל המשרות"><span>צפייה בכל המשרות</span><strong>⌄</strong></button>
   </div>
 
   <div class="row" id="row-all-wrap">
     <div class="row-head">
       <div class="row-title">
         <span class="row-icon" style="background:#E0F4FB;color:#0077B5"><svg><use href="#i-target"/></svg></span>
-        <span id="row-all-title">כל המשרות</span>
+        <span id="row-all-title">משרות מאץ׳ באדורה</span>
       </div>
       <div class="row-actions">
         <button class="row-arrow" data-row="row-all" aria-label="הבא"><svg><use href="#i-arrow-right"/></svg></button>
       </div>
     </div>
     <div class="row-scroll" id="row-all"></div>
+    <button class="row-expand" data-expand="row-all-wrap" aria-label="צפייה בכל המשרות"><span>צפייה בכל המשרות</span><strong>⌄</strong></button>
   </div>
 
 </main>
@@ -986,54 +2742,27 @@
 <footer class="site-footer">
   <div class="footer-inner">
     <div class="footer-col">
-      <div class="footer-brand">אדורה<span class="dot"></span></div>
-      <p class="footer-tagline">לוח המשרות הגדול בישראל לחינוך — מאות משרות מכל הזרמים, המגזרים והאזורים, מתעדכן יומי. הרשמה חינם.</p>
+      <div class="footer-brand"><img class="brand-logo-img" src="assets/brand/edura-logo-footer-white.png" alt="אדורה" /></div>
+      <p class="footer-tagline">אדורה מבית אימפקט מרכזת משרות חינוך ומאגר מורים במקום אחד.</p>
     </div>
     <div class="footer-col">
-      <h4>גלו</h4>
+      <h4 class="is-hidden">תפריט</h4>
       <ul>
-        <li><a href="index.html">כל המשרות</a></li>
-        <li><a href="teachers.html">מאגר מורים</a></li>
-      <li><a href="manager-tenders.html">מכרזי ניהול</a></li>
-        <li><a href="saved.html">שמורות שלי</a></li>
-        <li><a href="chat.html">בוט חיפוש</a></li>
-      </ul>
-    </div>
-    <div class="footer-col">
-      <h4>פרסום</h4>
-      <ul>
-        <li><a href="publish-job.html">פרסום משרה</a></li>
-        <li><a href="publish-job.html#teacher">פרופיל מורה</a></li>
-        <li><a href="cv-builder.html">בניית קורות חיים</a></li>
-      </ul>
-    </div>
-    <div class="footer-col">
-      <h4>אודות</h4>
-      <ul>
-        <li><a href="about.html">על אדורה</a></li>
-        <li><a href="privacy.html">פרטיות ואבטחה</a></li>
-        <li><a href="accessibility.html">הצהרת נגישות</a></li>
-        <li><a href="https://mail.google.com/mail/?view=cm&fs=1&to=meytal@edura.co.il" target="_blank" rel="noopener">יצירת קשר</a></li>
+        <li><a href="publish-job.html#teacher">חיפוש משרה</a></li>
+        <li><a href="publish-job.html#school">חיפוש מורים</a></li>
+        <li><a href="about.html?v=impact">מי אנחנו</a></li>
       </ul>
     </div>
   </div>
   <div class="footer-bottom">
-    <span>© 2026 אדורה · נבנה באהבה למורים ולמנהלים</span>
-    <div class="footer-socials">
-      <a href="https://mail.google.com/mail/?view=cm&fs=1&to=meytal@edura.co.il" aria-label="מייל" target="_blank" rel="noopener">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
-      </a>
-      <a href="https://api.whatsapp.com/send?phone=972536256653" target="_blank" rel="noopener" aria-label="WhatsApp">
-        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 2.1.55 4.15 1.6 5.96L2 22l4.25-1.71c1.74.95 3.71 1.45 5.79 1.45 5.46 0 9.91-4.45 9.91-9.91S17.5 2 12.04 2z"/></svg>
-      </a>
-    </div>
+    <span>© 2026 אדורה מבית אימפקט</span>
   </div>
 </footer>
 
 <!-- ───── COOKIES BANNER ───── -->
 <div class="cookies-banner" id="cookies-banner" role="dialog" aria-label="שימוש בקוקיז">
   <div class="cookies-banner-text">
-    אנחנו משתמשים בקוקיז בסיסיים לתפעול האתר ולשמירת ההעדפות שלך (סינונים, משרות שמורות). אין שיתוף עם צד שלישי. פרטים מלאים ב<a href="privacy.html">מדיניות הפרטיות</a>.
+    האתר משתמש בקוקיז חיוניים לשיפור חוויית השימוש, שמירת העדפות ותפעול תקין. המשך שימוש באתר מהווה הסכמה למדיניות הפרטיות והקוקיז.
   </div>
   <div class="cookies-banner-actions">
     <button class="cookies-btn primary" onclick="acceptCookies()">הבנתי</button>
@@ -1046,6 +2775,8 @@
   <div class="modal" id="modal-content"></div>
 </div>
 
+<script src="assets/js/config.js"></script>
+<script src="assets/js/data-loader.js"></script>
 <script>
 // ──────────────────────────────────────────────────
 // CURATED Unsplash photos — by SUBJECT (3 per subject for diversity)
@@ -1208,8 +2939,6 @@ function citiesMatch(a, b) {
 let JOBS = [];
 let STATE = { city: '', subject: 'all', subjectQuery: '', level: 'all' };
 
-const SUBMISSIONS_URL = 'https://script.google.com/macros/s/AKfycbwleldcwH8c5k9OZ8EMDIKZ8veRbrtO1M7XwYFWg7HHbEV-SrZkLTElbFRiq4cHPlyarw/exec';
-
 function normalizeSubmittedJob(r) {
   const ts = r.timestamp || '';
   const dateIso = ts ? String(ts).slice(0, 10) : '';
@@ -1241,8 +2970,8 @@ function normalizeSubmittedJob(r) {
 async function loadJobs() {
   try {
     const [resJobs, resApproved] = await Promise.all([
-      fetch('data/jobs-public.json').then(r => r.json()),
-      fetch(SUBMISSIONS_URL + '?action=approved').then(r => r.ok ? r.json() : null).catch(() => null)
+      EduraData.getJobs(),
+      EduraData.getApprovedSubmissions()
     ]);
     const submitted = (resApproved && Array.isArray(resApproved.jobs))
       ? resApproved.jobs.map(normalizeSubmittedJob)
@@ -1268,7 +2997,7 @@ function jobMatchesSubjectQuery(job, q) {
   if (!q) return true;
   const needle = q.trim().toLowerCase();
   if (!needle) return true;
-  const hay = ((job.subject || '') + ' ' + (job.title || '') + ' ' + (job.role || '') + ' ' + (job.sub_area || '')).toLowerCase();
+  const hay = ((job.subject || '') + ' ' + (job.title || '') + ' ' + (job.role || '') + ' ' + (job.sub_area || '') + ' ' + (job.city || '') + ' ' + (job.region || '') + ' ' + (job.school || '')).toLowerCase();
   return hay.includes(needle);
 }
 function jobMatchesLevel(job, lvlKey) {
@@ -1405,6 +3134,38 @@ function buildJobTitle(job) {
   return 'משרת הוראה';
 }
 
+let MATCH_PREVIEW_INDEX = 0;
+function renderMatchPreview() {
+  const titleEl = document.getElementById('match-title');
+  const metaEl = document.getElementById('match-meta');
+  const tagsEl = document.getElementById('match-tags');
+  const scoreEl = document.getElementById('match-score');
+  if (!titleEl || !metaEl || !tagsEl || !scoreEl) return;
+
+  const filtered = applyFilters();
+  const pool = filtered.length ? filtered : JOBS;
+  if (!pool.length) {
+    titleEl.textContent = 'עוד רגע יהיו כאן התאמות';
+    metaEl.textContent = 'כשהמשרות ייטענו, אדורה תציג כאן דוגמת מאץ׳ מהמאגרים.';
+    tagsEl.innerHTML = '<span>מורה</span><span>משרה</span><span>בית ספר</span>';
+    scoreEl.textContent = '...';
+    return;
+  }
+
+  const job = pool[MATCH_PREVIEW_INDEX % pool.length];
+  const title = [job.subject || buildJobTitle(job), job.school || job.city].filter(Boolean).join(' · ');
+  const meta = [job.city, job.role, job.scope].filter(Boolean).join(' · ');
+  const tags = [job.subject, job.level, job.region || job.sub_area].filter(Boolean).slice(0, 3);
+  const score = 90 + ((MATCH_PREVIEW_INDEX * 3) % 8);
+
+  titleEl.textContent = title;
+  metaEl.textContent = meta || 'התאמה מתוך מאגר המשרות של אדורה';
+  tagsEl.innerHTML = (tags.length ? tags : ['משרה', 'חינוך', 'התאמה'])
+    .map(t => '<span>' + escapeHtml(t) + '</span>')
+    .join('');
+  scoreEl.textContent = score + '%';
+}
+
 function renderJobCard(job, badge) {
   const city = job.city || job.school || 'לא צוינה עיר';
   const regionLabel = (job.region && job.region !== city) ? 'אזור ' + job.region : '';
@@ -1420,6 +3181,16 @@ function renderJobCard(job, badge) {
   const badgeHtml = badge
     ? '<div class="job-badge ' + badge.cls + '"><svg><use href="#' + badge.icon + '"/></svg>' + escapeHtml(badge.label) + '</div>'
     : '';
+  const wa = buildWaLink(job.phone, title);
+  const quickActions =
+    '<div class="job-card-back">' +
+      '<div class="job-card-back-title">' + escapeHtml(title) + '</div>' +
+      '<div class="job-card-actions">' +
+        '<button class="primary-action" type="button" onclick="event.stopPropagation();openJobModal(\'' + escapeHtml(job.id) + '\')">פרטים</button>' +
+        (wa ? '<a href="' + escapeHtml(wa) + '" target="_blank" rel="noopener" onclick="event.stopPropagation()">וואטסאפ</a>' : '') +
+        (job.email ? '<a href="mailto:' + escapeHtml(job.email) + '?subject=' + encodeURIComponent('פנייה למשרה: ' + title) + '" onclick="event.stopPropagation()">מייל</a>' : '') +
+      '</div>' +
+    '</div>';
 
   return (
     '<article class="job-card" onclick="openJobModal(\'' + escapeHtml(job.id) + '\')">' +
@@ -1439,6 +3210,7 @@ function renderJobCard(job, badge) {
         (job.school ? '<div class="job-school">' + escapeHtml(job.school) + '</div>' : '') +
         (metaHtml ? '<div class="job-meta">' + metaHtml + '</div>' : '') +
       '</div>' +
+      quickActions +
     '</article>'
   );
 }
@@ -1462,7 +3234,9 @@ function renderRows() {
     .sort((a,b) => (b.date_iso || '').localeCompare(a.date_iso || ''))
     .slice(0, 16);
 
-  const all = pool.slice(0, 24);
+  const allWrap = document.getElementById('row-all-wrap');
+  const allLimit = allWrap && allWrap.classList.contains('expanded') ? Math.min(pool.length, 12) : 4;
+  const all = pool.slice(0, allLimit);
 
   const setRow = (id, items, badge, emptyMsg) => {
     document.getElementById(id).innerHTML = items.length
@@ -1474,17 +3248,25 @@ function renderRows() {
   setRow('row-fresh', fresh, { cls:'fresh', icon:'i-sparkle', label:'חדש' }, 'אין מודעות חדשות מהשבוע');
   setRow('row-all', all, null, 'לא נמצאו משרות');
 
-  document.getElementById('row-all-title').textContent = 'כל המשרות';
+  document.getElementById('row-all-title').textContent = 'משרות מאץ׳ באדורה';
 
-  // hide hot/fresh sections if empty
-  document.getElementById('row-hot-wrap').style.display = hot.length ? '' : 'none';
-  document.getElementById('row-fresh-wrap').style.display = fresh.length ? '' : 'none';
+  // בעמוד הבית נשארת שורת משרות אחת. המאץ׳ הוא הסיפור, לא קטלוגים.
+  document.getElementById('row-hot-wrap').style.display = 'none';
+  document.getElementById('row-fresh-wrap').style.display = 'none';
+
+  const expand = document.querySelector('[data-expand="row-all-wrap"]');
+  if (expand) {
+    const isOpen = allWrap && allWrap.classList.contains('expanded');
+    const label = expand.querySelector('span');
+    if (label) label.textContent = isOpen ? 'הצג פחות' : 'עוד משרות באדורה';
+  }
 }
 
 function renderAll() {
   renderSubjectChips();
   renderLevelChips();
   renderActiveFilters();
+  renderMatchPreview();
   renderRows();
 }
 
@@ -1691,21 +3473,32 @@ window.acceptCookies = acceptCookies;
 // Subject free-text search
 const subjectQueryInput = document.getElementById('subject-query');
 const subjectQueryClear = document.getElementById('subject-query-clear');
+const jobsFreeSearch = document.getElementById('jobs-free-search');
 let subjectQueryDebounce;
-subjectQueryInput.addEventListener('input', () => {
-  clearTimeout(subjectQueryDebounce);
-  subjectQueryClear.classList.toggle('visible', !!subjectQueryInput.value);
-  subjectQueryDebounce = setTimeout(() => {
-    STATE.subjectQuery = subjectQueryInput.value.trim();
-    renderAll();
-  }, 220);
-});
-subjectQueryClear.addEventListener('click', () => {
-  subjectQueryInput.value = '';
-  STATE.subjectQuery = '';
-  subjectQueryClear.classList.remove('visible');
+function setFreeSearchValue(value, source) {
+  STATE.subjectQuery = (value || '').trim();
+  if (source !== 'subject' && subjectQueryInput) subjectQueryInput.value = value || '';
+  if (source !== 'jobs' && jobsFreeSearch) jobsFreeSearch.value = value || '';
+  if (subjectQueryClear) subjectQueryClear.classList.toggle('visible', !!STATE.subjectQuery);
   renderAll();
-});
+}
+if (subjectQueryInput && subjectQueryClear) {
+  subjectQueryInput.addEventListener('input', () => {
+    clearTimeout(subjectQueryDebounce);
+    subjectQueryClear.classList.toggle('visible', !!subjectQueryInput.value);
+    subjectQueryDebounce = setTimeout(() => setFreeSearchValue(subjectQueryInput.value, 'subject'), 220);
+  });
+  subjectQueryClear.addEventListener('click', () => {
+    setFreeSearchValue('', 'subject');
+  });
+}
+if (jobsFreeSearch) {
+  let jobsSearchDebounce;
+  jobsFreeSearch.addEventListener('input', () => {
+    clearTimeout(jobsSearchDebounce);
+    jobsSearchDebounce = setTimeout(() => setFreeSearchValue(jobsFreeSearch.value, 'jobs'), 140);
+  });
+}
 
 // Row arrows
 document.querySelectorAll('.row-arrow').forEach(btn => {
@@ -1716,14 +3509,94 @@ document.querySelectorAll('.row-arrow').forEach(btn => {
   });
 });
 
+document.querySelectorAll('.row-expand').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const row = document.getElementById(btn.dataset.expand);
+    if (!row) return;
+    row.classList.toggle('expanded');
+    btn.setAttribute('aria-label', row.classList.contains('expanded') ? 'סגור' : 'פתח הכל');
+    renderRows();
+  });
+});
+
 // ──────────────────────────────────────────────────
 // Init
 // ──────────────────────────────────────────────────
+const matchSkip = document.getElementById('match-skip');
+if (matchSkip) {
+  matchSkip.addEventListener('click', () => {
+    MATCH_PREVIEW_INDEX++;
+    renderMatchPreview();
+  });
+}
+const matchShow = document.getElementById('match-show');
+if (matchShow) {
+  matchShow.addEventListener('click', () => {
+    const target = document.getElementById('job-search');
+    if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
+}
+
+function initHomeMatchBox() {
+  const box = document.getElementById('edura-match-start');
+  if (!box) return;
+  const modeButtons = Array.from(box.querySelectorAll('[data-match-mode]'));
+  const cityInput = document.getElementById('home-match-city');
+  const subjectInput = document.getElementById('home-match-subject');
+  const startBtn = document.getElementById('home-match-start');
+  let mode = 'teacher';
+
+  function setMode(nextMode) {
+    mode = nextMode || 'teacher';
+    modeButtons.forEach(btn => {
+      btn.classList.toggle('active', btn.dataset.matchMode === mode);
+      btn.setAttribute('aria-pressed', btn.dataset.matchMode === mode ? 'true' : 'false');
+    });
+    const label = startBtn && startBtn.querySelector('.edura-match-cta-label');
+    if (label) label.textContent = mode === 'teacher' ? 'יאללה אדורה מאץ׳ משרות' : 'יאללה אדורה מאץ׳ מורים';
+  }
+
+  modeButtons.forEach(btn => btn.addEventListener('click', () => setMode(btn.dataset.matchMode)));
+  if (startBtn) {
+    startBtn.addEventListener('click', () => {
+      const payload = {
+        mode,
+        city: (cityInput && cityInput.value || '').trim(),
+        subject: (subjectInput && subjectInput.value || '').trim()
+      };
+      try { sessionStorage.setItem('eduraMatchSeed', JSON.stringify(payload)); } catch (e) {}
+      window.location.href = 'publish-job.html#' + (mode === 'school' ? 'school' : 'teacher');
+    });
+  }
+  setMode(mode);
+}
+
 function showSkeletons() {
   const sk = Array(5).fill('<div class="skeleton-card"><div class="skeleton-hero"></div><div class="skeleton-line w-3-4"></div><div class="skeleton-line w-1-2"></div></div>').join('');
   ['row-hot','row-fresh','row-all'].forEach(id => document.getElementById(id).innerHTML = sk);
 }
+function setDynamicHeaderDate() {
+  const el = document.getElementById('today-date');
+  if (!el) return;
+  el.textContent = '· ' + new Intl.DateTimeFormat('he-IL', {
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric'
+  }).format(new Date());
+}
+function scheduleHeaderDateRefresh() {
+  const now = new Date();
+  const nextMidnight = new Date(now);
+  nextMidnight.setHours(24, 0, 5, 0);
+  window.setTimeout(() => {
+    setDynamicHeaderDate();
+    scheduleHeaderDateRefresh();
+  }, nextMidnight.getTime() - now.getTime());
+}
 function initUI() {
+  setDynamicHeaderDate();
+  scheduleHeaderDateRefresh();
+  initHomeMatchBox();
   CITY_LIST = buildCityList();
   renderAll();
   // Deep-link: ?job=ID פותח את המודאל של המשרה אוטומטית.
@@ -1740,6 +3613,38 @@ function initUI() {
 
 showSkeletons();
 loadJobs();
+</script>
+
+<script>
+window.addEventListener('load', () => {
+  const dot = document.querySelector('.title-flight-dot');
+  const target = document.querySelector('.logo-live-dot');
+  const logo = document.querySelector('.topbar-logo .brand-logo-img');
+  if (!dot || !target || !dot.animate) return;
+
+  const dotBox = dot.getBoundingClientRect();
+  const targetBox = target.getBoundingClientRect();
+  const dx = (targetBox.left + targetBox.width / 2) - (dotBox.left + dotBox.width / 2);
+  const dy = (targetBox.top + targetBox.height / 2) - (dotBox.top + dotBox.height / 2);
+
+  const flight = dot.animate([
+    { transform: 'translate(0, 0) scale(1)', opacity: 1 },
+    { transform: `translate(${dx * .62}px, ${dy * .42}px) scale(.9)`, opacity: 1, offset: .45 },
+    { transform: `translate(${dx}px, ${dy}px) scale(.62)`, opacity: 1, offset: .82 },
+    { transform: `translate(${dx}px, ${dy}px) scale(.62)`, opacity: 0 }
+  ], {
+    duration: 1300,
+    delay: 420,
+    easing: 'cubic-bezier(.2,.9,.2,1)',
+    fill: 'forwards'
+  });
+
+  flight.addEventListener('finish', () => {
+    if (logo && logo.dataset.fullLogo) {
+      logo.src = logo.dataset.fullLogo;
+    }
+  });
+});
 </script>
 
 </body>

@@ -3,784 +3,248 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>על אדורה · המשרה הבאה שלך בחינוך</title>
-<meta name="description" content="אדורה היא לוח דרושים ייעודי למורים. נבנה על ידי מיטל פלג, מנהלת בית ספר. שקיפות מלאה: לא מוכרים נתונים, לא שולחים ספאם." />
-<meta property="og:title" content="על אדורה · המשרה הבאה שלך בחינוך" />
-<meta property="og:description" content="אדורה היא לוח דרושים ייעודי למורים. נבנה על ידי מיטל פלג, מנהלת בית ספר." />
-<meta property="og:type" content="website" />
-<meta property="og:locale" content="he_IL" />
-<meta property="og:url" content="https://edura.co.il/about.html" />
-<meta property="og:site_name" content="אדורה" />
-<link rel="canonical" href="https://edura.co.il/about.html" />
+<title>מי אנחנו · אדורה</title>
+<meta name="description" content="אדורה מבית אימפקט היא מערכת מאץ׳ חכמה לעולם החינוך, שמחברת בין אנשי חינוך, משרות ומוסדות." />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
 <style>
   :root {
-    --teal: #009DE0;
-    --teal-deep: #0077B5;
-    --teal-pale: #E0F4FB;
-    --pink: #FCE7F3;
-    --pink-2: #FBCFE8;
-    --pink-soft: #FDF2F8;
-    --pink-deep: #BE185D;
-    --pink-deeper: #9D174D;
-    --ink: #0E1B2C;
-    --ink-soft: #2C3D55;
-    --ink-mute: #6B7B8E;
+    --pink: #E6007E;
+    --pink-soft: #FFF3FA;
+    --ink: #0F1B2D;
+    --mute: #6B7B8E;
     --line: #E8EAED;
-    --line-soft: #F4F5F7;
-    --bg: #FFFFFF;
-    --bg-2: #F7F8FA;
-    --error: #DC2626;
-    --error-soft: #FEE2E2;
-    --success: #059669;
-    --success-soft: #D1FAE5;
-    --shadow-sm: 0 1px 2px rgba(14,27,44,.04);
-    --shadow: 0 4px 12px rgba(14,27,44,.06);
-    --shadow-lg: 0 12px 28px rgba(14,27,44,.10);
-    --r: 12px;
-    --r-md: 16px;
-    --r-lg: 20px;
+    --bg: #fff;
   }
   * { box-sizing: border-box; }
   html, body { margin: 0; padding: 0; }
-  html { scroll-behavior: smooth; }
   body {
     font-family: 'Heebo', -apple-system, BlinkMacSystemFont, sans-serif;
     background: var(--bg);
     color: var(--ink);
     -webkit-font-smoothing: antialiased;
-    line-height: 1.7;
   }
   a { color: inherit; text-decoration: none; }
-  button { font-family: inherit; cursor: pointer; border: none; background: none; padding: 0; }
-  svg { display: block; }
-  :where(button, a):focus-visible { outline: 3px solid var(--pink-deep); outline-offset: 2px; border-radius: 6px; }
-  @keyframes fadeIn { from { opacity: 0 } to { opacity: 1 } }
-  @keyframes slideUp { from { opacity: 0; transform: translateY(20px) } to { opacity: 1; transform: translateY(0) } }
-
-  /* ───── TOP BAR ───── */
   .topbar {
-    position: sticky; top: 0; z-index: 100;
-    background: var(--bg);
-    border-bottom: 1px solid var(--line-soft);
-    padding: 12px 24px;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background: rgba(255,255,255,.94);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--line);
+    padding: 16px 28px;
   }
   .topbar-inner {
-    max-width: 1320px; margin: 0 auto;
-    display: flex; align-items: center; justify-content: space-between;
-    gap: 24px;
-  }
-  .topbar-logo {
-    font-weight: 900; font-size: 22px;
-    color: var(--ink); letter-spacing: -1px;
-    display: flex; align-items: center; gap: 8px;
-  }
-  .topbar-logo .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--pink-deep); }
-  .topbar-logo .tag {
-    font-size: 10px; font-weight: 700; color: var(--pink-deep);
-    background: var(--pink); padding: 3px 8px; border-radius: 999px;
-    margin-inline-start: 4px; letter-spacing: 0.3px;
-  }
-  .topbar-nav { display: flex; gap: 2px; align-items: center; }
-  .nav-link {
-    padding: 9px 14px; border-radius: 8px;
-    font-size: 14px; font-weight: 600; color: var(--ink-soft);
-    transition: background .15s, color .15s;
-    display: inline-flex; align-items: center; gap: 6px;
-  }
-  .nav-link svg { width: 16px; height: 16px; }
-  .nav-link:hover { background: var(--bg-2); color: var(--ink); }
-  .nav-link.primary { background: var(--ink); color: var(--bg); }
-  .nav-link.primary:hover { background: var(--teal); }
-  .menu-toggle {
+    max-width: 1180px;
+    margin: 0 auto;
     display: flex;
-    width: 40px; height: 40px; border-radius: 8px;
-    align-items: center; justify-content: center;
-    background: var(--bg-2); color: var(--ink);
-    transition: background .15s;
+    align-items: center;
+    justify-content: space-between;
+    gap: 22px;
   }
-  .menu-toggle:hover { background: var(--pink-soft); }
-  .menu-toggle svg { width: 22px; height: 22px; }
-
-  /* Mobile drawer */
-  .drawer-overlay {
-    position: fixed; inset: 0;
-    background: rgba(14,27,44,.45);
-    backdrop-filter: blur(2px);
-    z-index: 200;
-    display: none;
-    animation: fadeIn .2s;
+  .logo img {
+    width: 240px;
+    max-height: 82px;
+    display: block;
   }
-  .drawer-overlay.open { display: block; }
-  .drawer {
-    position: fixed; top: 0; right: -300px; bottom: 0;
-    width: 280px; background: var(--bg);
-    z-index: 201;
-    transition: right .25s ease;
-    display: flex; flex-direction: column;
-    box-shadow: -8px 0 24px rgba(14,27,44,.18);
+  .nav {
+    display: flex;
+    align-items: center;
+    gap: 28px;
+    font-weight: 800;
+    color: var(--ink);
   }
-  .drawer.open { right: 0; }
-  .drawer-head {
-    padding: 16px 20px;
-    display: flex; align-items: center; justify-content: space-between;
-    border-bottom: 1px solid var(--line-soft);
+  .nav a {
+    position: relative;
+    padding: 8px 0;
   }
-  .drawer-close {
-    width: 36px; height: 36px; border-radius: 50%;
-    background: var(--bg-2); color: var(--ink);
-    display: flex; align-items: center; justify-content: center;
-    font-size: 22px; line-height: 1;
+  .nav a::after {
+    content: "";
+    position: absolute;
+    right: 0;
+    left: 0;
+    bottom: 0;
+    height: 2px;
+    border-radius: 999px;
+    background: var(--pink);
+    transform: scaleX(0);
+    transform-origin: right;
+    transition: transform .18s ease;
   }
-  .drawer-nav {
-    padding: 16px 12px; display: flex; flex-direction: column; gap: 2px;
-    flex: 1;
+  .nav a:hover::after,
+  .nav a.active::after { transform: scaleX(1); }
+  main {
+    max-width: 1180px;
+    margin: 0 auto;
+    padding: 72px 28px 90px;
   }
-  .drawer-nav a {
-    padding: 12px 16px; border-radius: 10px;
-    font-size: 15px; font-weight: 600; color: var(--ink);
-    display: flex; align-items: center; gap: 12px;
-  }
-  .drawer-nav a:hover { background: var(--bg-2); }
-  .drawer-nav a.primary { background: var(--ink); color: var(--bg); margin-top: 8px; }
-  .drawer-nav a.primary:hover { background: var(--pink-deep); }
-  .drawer-nav a svg { width: 18px; height: 18px; }
-  .drawer-foot {
-    padding: 14px 20px;
-    border-top: 1px solid var(--line-soft);
-    font-size: 12px; color: var(--ink-mute);
-    display: flex; flex-direction: column; gap: 6px;
-  }
-  .drawer-foot a { color: var(--ink-soft); }
-
-  /* ───── HERO ───── */
   .hero {
-    background: linear-gradient(180deg, var(--pink-soft) 0%, var(--bg) 100%);
-    padding: 56px 24px 40px; text-align: center;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(260px, 390px);
+    gap: 54px;
+    align-items: center;
   }
-  .hero-badge {
-    display: inline-flex; align-items: center; gap: 6px;
-    background: var(--pink); color: var(--pink-deep);
-    font-size: 13px; font-weight: 700; padding: 6px 14px; border-radius: 999px;
-    margin-bottom: 16px; letter-spacing: 0.3px;
+  .kicker {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    color: var(--pink);
+    font-size: 18px;
+    font-weight: 900;
+    margin: 0 0 18px;
   }
-  .hero-badge .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--pink-deep); }
-  .hero h1 {
-    font-size: clamp(28px, 4vw, 40px); font-weight: 900;
-    color: var(--ink); line-height: 1.2; letter-spacing: -1px;
-    max-width: 720px; margin: 0 auto 12px;
+  .kicker::before {
+    content: "";
+    width: 10px;
+    height: 10px;
+    border-radius: 999px;
+    background: var(--pink);
   }
-  .hero h1 .accent { color: var(--pink-deep); }
-  .hero-sub {
-    font-size: clamp(15px, 1.6vw, 17px); color: var(--ink-soft);
-    max-width: 640px; margin: 0 auto;
+  h1 {
+    margin: 0;
+    font-size: clamp(42px, 6vw, 76px);
+    line-height: 1.05;
+    letter-spacing: 0;
   }
-
-  /* ───── CONTENT ───── */
-  .wrap { max-width: 820px; margin: 0 auto; padding: 48px 24px 80px; }
-
-  .section { margin-bottom: 40px; }
-  .section h2 {
-    font-size: clamp(20px, 2.5vw, 24px); font-weight: 900;
-    color: var(--ink); margin: 0 0 16px; letter-spacing: -0.5px;
-    display: flex; align-items: center; gap: 12px;
+  h1 span { color: var(--pink); display: block; }
+  .lead {
+    margin: 24px 0 0;
+    color: #34445B;
+    font-size: clamp(20px, 2vw, 27px);
+    line-height: 1.65;
+    font-weight: 500;
   }
-  .section h2 .num {
-    display: inline-flex; align-items: center; justify-content: center;
-    width: 32px; height: 32px; border-radius: 999px;
-    background: var(--pink-deep); color: #fff;
-    font-size: 14px; font-weight: 800;
-    flex-shrink: 0;
+  .brand-card {
+    background: var(--pink);
+    border-radius: 10px;
+    padding: 34px;
+    min-height: 270px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    box-shadow: 0 24px 70px rgba(230,0,126,.22);
   }
-  .section h3 { font-size: 17px; font-weight: 800; color: var(--ink); margin: 22px 0 8px; }
-  .section p { font-size: 16px; color: var(--ink-soft); margin: 0 0 12px; }
-  .section p strong { color: var(--ink); }
-  .section ul { padding-inline-start: 22px; margin: 0 0 12px; }
-  .section ul li { font-size: 16px; color: var(--ink-soft); margin-bottom: 8px; }
-  .section ul li::marker { color: var(--pink-deep); }
-  .section a.link { color: var(--pink-deep); font-weight: 700; text-decoration: underline; text-underline-offset: 2px; }
-  .section a.link:hover { color: var(--pink-deeper); }
-  code { background: var(--bg-2); color: var(--pink-deep); padding: 2px 7px; border-radius: 6px; font-family: 'Courier New', monospace; font-size: 14px; }
-
-  .card {
-    background: var(--bg); border: 1px solid var(--line); border-radius: var(--r-lg);
-    padding: 22px 26px; box-shadow: var(--shadow-sm); margin-bottom: 12px;
+  .brand-card img {
+    width: 100%;
+    max-width: 300px;
+    display: block;
   }
-  .card .label { font-size: 12px; color: var(--pink-deep); font-weight: 800; margin-bottom: 6px; letter-spacing: 0.5px; text-transform: uppercase; }
-  .card .name { font-size: 16px; font-weight: 800; color: var(--ink); margin-bottom: 8px; }
-  .card .body { font-size: 14px; color: var(--ink-soft); line-height: 1.7; }
-
-  .promise {
-    background: var(--bg); border: 1px solid var(--line);
-    border-radius: var(--r-md); padding: 16px 18px;
-    margin-bottom: 10px;
-    border-right: 4px solid transparent;
+  .brand-card p {
+    margin: 28px 0 0;
+    color: #fff;
+    font-size: 21px;
+    line-height: 1.5;
+    font-weight: 700;
   }
-  .promise.do { border-right-color: var(--success); }
-  .promise.dont { border-right-color: var(--error); }
-  .promise-icon {
-    display: inline-flex; align-items: center; gap: 8px;
-    font-weight: 800; font-size: 15px; margin-bottom: 6px;
+  .content {
+    margin-top: 62px;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
   }
-  .promise.do .promise-icon { color: var(--success); }
-  .promise.dont .promise-icon { color: var(--error); }
-  .promise p { font-size: 14px; color: var(--ink-soft); margin: 0; line-height: 1.6; }
-
-  .updated {
-    font-size: 13px; color: var(--ink-mute);
-    margin-top: 32px; padding-top: 20px; border-top: 1px solid var(--line); text-align: center;
+  .about-card {
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 26px 28px;
+    background: #fff;
+    box-shadow: 0 8px 22px rgba(15,27,45,.035);
   }
-
-  /* ───── FOOTER ───── */
-  .site-footer {
-    background: var(--bg-2);
-    border-top: 1px solid var(--line);
-    padding: 40px 24px 20px;
-    margin-top: 40px;
+  .about-card.wide {
+    grid-column: 1 / -1;
+    background: linear-gradient(135deg, #fff, var(--pink-soft));
+    border-color: rgba(230,0,126,.18);
   }
-  .footer-inner {
-    max-width: 1320px; margin: 0 auto;
-    display: grid; gap: 32px;
-    grid-template-columns: 1.4fr 1fr 1fr 1fr;
+  .about-card h2 {
+    margin: 0 0 10px;
+    font-size: 25px;
+    line-height: 1.2;
   }
-  .footer-col h4 {
-    font-size: 13px; font-weight: 800; color: var(--ink);
-    margin: 0 0 12px; letter-spacing: 0.3px;
-    text-transform: uppercase;
+  .about-card p {
+    margin: 0;
+    color: #34445B;
+    font-size: 19px;
+    line-height: 1.75;
+    font-weight: 500;
   }
-  .footer-col ul { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 8px; }
-  .footer-col a {
-    font-size: 14px; color: var(--ink-soft); font-weight: 500;
-    transition: color .15s;
+  .closing {
+    margin-top: 26px;
+    padding: 32px;
+    border-radius: 10px;
+    background: var(--ink);
+    color: #fff;
+    font-size: clamp(28px, 3.5vw, 44px);
+    line-height: 1.25;
+    font-weight: 900;
+    text-align: center;
   }
-  .footer-col a:hover { color: var(--pink-deep); }
-  .footer-brand {
-    font-size: 22px; font-weight: 900; color: var(--ink);
-    letter-spacing: -0.8px; display: flex; align-items: center; gap: 8px;
-    margin-bottom: 12px;
-  }
-  .footer-brand .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--pink-deep); }
-  .footer-tagline { font-size: 13px; color: var(--ink-mute); line-height: 1.6; max-width: 280px; }
-  .footer-bottom {
-    max-width: 1320px; margin: 32px auto 0;
-    padding-top: 20px; border-top: 1px solid var(--line);
-    display: flex; justify-content: space-between; align-items: center; gap: 16px;
-    flex-wrap: wrap;
-    font-size: 12px; color: var(--ink-mute);
-  }
-  .footer-socials { display: flex; gap: 8px; }
-  .footer-socials a {
-    width: 34px; height: 34px; border-radius: 50%;
-    background: var(--bg); border: 1px solid var(--line);
-    display: flex; align-items: center; justify-content: center;
-    color: var(--ink-soft); transition: all .15s;
-  }
-  .footer-socials a:hover { background: var(--pink-deep); color: #fff; border-color: var(--pink-deep); }
-  .footer-socials svg { width: 16px; height: 16px; }
-
-  /* ───── COOKIES BANNER ───── */
-  .cookies-banner {
-    position: fixed; bottom: 16px; left: 16px; right: 16px;
-    max-width: 540px; margin: 0 auto;
-    background: var(--ink); color: #fff;
-    border-radius: var(--r-md); padding: 16px 18px;
-    box-shadow: 0 12px 28px rgba(14,27,44,.3);
-    display: none;
-    z-index: 400;
-    font-size: 13px; line-height: 1.5;
-    animation: slideUp .3s cubic-bezier(.2,.8,.3,1);
-  }
-  .cookies-banner.visible { display: block; }
-  .cookies-banner-text { margin-bottom: 12px; }
-  .cookies-banner-text a { color: var(--pink-2); text-decoration: underline; text-underline-offset: 2px; }
-  .cookies-banner-actions { display: flex; gap: 8px; flex-wrap: wrap; }
-  .cookies-btn {
-    padding: 8px 16px; border-radius: 999px;
-    font-size: 13px; font-weight: 700;
-    transition: background .15s;
-  }
-  .cookies-btn.primary { background: var(--pink-deep); color: #fff; }
-  .cookies-btn.primary:hover { background: var(--pink-deeper); }
-  .cookies-btn.secondary { background: rgba(255,255,255,.12); color: #fff; }
-  .cookies-btn.secondary:hover { background: rgba(255,255,255,.2); }
-
-  /* ───── ABOUT-SPECIFIC ADDITIONS ───── */
-  /* Founder card */
-  .founder-card {
-    background: var(--bg); border: 1px solid var(--line); border-radius: var(--r-lg);
-    padding: 28px 32px; box-shadow: var(--shadow-sm);
-    display: grid; grid-template-columns: auto 1fr; gap: 24px; align-items: start;
-    margin-bottom: 16px;
-  }
-  .founder-photo {
-    width: 96px; height: 96px; border-radius: 50%;
-    background: linear-gradient(135deg, var(--pink) 0%, var(--pink-soft) 100%);
-    display: flex; align-items: center; justify-content: center;
-    font-size: 32px; font-weight: 900; color: var(--pink-deep);
-    border: 3px solid var(--bg); box-shadow: var(--shadow);
-    flex-shrink: 0;
-  }
-  .founder-name { font-size: 20px; font-weight: 900; color: var(--ink); margin-bottom: 4px; letter-spacing: -0.3px; }
-  .founder-role { font-size: 14px; color: var(--pink-deep); font-weight: 700; margin-bottom: 14px; }
-  .founder-quote {
-    font-size: 16px; color: var(--ink-soft); line-height: 1.7;
-    border-right: 3px solid var(--pink-deep); padding-inline-start: 16px;
-    font-style: italic; margin: 0;
-  }
-
-  /* Sources grid */
-  .sources-grid {
-    display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-    gap: 12px; margin-top: 18px;
-  }
-  .source-pill {
-    background: var(--bg); border: 1px solid var(--line);
-    border-radius: var(--r); padding: 14px 16px;
-    font-size: 14px; color: var(--ink-soft);
-    display: flex; align-items: center; gap: 10px;
-    transition: border-color .15s, transform .1s, box-shadow .15s;
-  }
-  .source-pill:hover { border-color: var(--pink-deep); transform: translateY(-1px); box-shadow: var(--shadow-sm); }
-  .source-pill .dot {
-    width: 8px; height: 8px; border-radius: 50%; background: var(--pink-deep); flex-shrink: 0;
-  }
-  .source-pill strong { color: var(--ink); font-weight: 800; display: block; }
-  .source-pill .source-meta { font-size: 12px; color: var(--ink-mute); margin-top: 2px; display: block; }
-
-  /* How-it-works steps */
-  .steps {
-    display: grid; gap: 14px; margin-top: 18px;
-  }
-  .step {
-    background: var(--bg); border: 1px solid var(--line); border-radius: var(--r-lg);
-    padding: 20px 22px;
-    display: grid; grid-template-columns: auto 1fr; gap: 18px; align-items: start;
-    transition: border-color .15s, box-shadow .15s;
-  }
-  .step:hover { border-color: var(--pink-deep); box-shadow: var(--shadow-sm); }
-  .step-num {
-    width: 40px; height: 40px; border-radius: 50%;
-    background: var(--pink-soft); color: var(--pink-deep);
-    display: flex; align-items: center; justify-content: center;
-    font-size: 16px; font-weight: 900;
-    flex-shrink: 0;
-  }
-  .step-title { font-size: 16px; font-weight: 800; color: var(--ink); margin: 0 0 6px; }
-  .step-text { font-size: 14px; color: var(--ink-soft); margin: 0; line-height: 1.6; }
-
-  /* Contact grid */
-  .contact-grid {
-    display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-    gap: 12px; margin-top: 18px;
-  }
-  .contact-link {
-    background: var(--bg); border: 1px solid var(--line);
-    border-radius: var(--r); padding: 18px 20px;
-    display: flex; align-items: center; gap: 14px;
-    transition: border-color .15s, transform .1s, box-shadow .15s;
-  }
-  .contact-link:hover { border-color: var(--pink-deep); transform: translateY(-1px); box-shadow: var(--shadow-sm); }
-  .contact-icon {
-    width: 40px; height: 40px; border-radius: 10px;
-    background: var(--pink-soft); color: var(--pink-deep);
-    display: flex; align-items: center; justify-content: center; flex-shrink: 0;
-  }
-  .contact-link .label { font-size: 12px; color: var(--ink-mute); margin-bottom: 2px; }
-  .contact-link .value { font-size: 14px; color: var(--ink); font-weight: 800; }
-
-  /* Closing CTA */
-  .cta-box {
-    background: linear-gradient(180deg, var(--pink-soft) 0%, var(--bg) 100%);
-    border: 1px solid var(--pink-2); border-radius: var(--r-lg);
-    padding: 32px 28px; text-align: center;
-    margin-top: 32px;
-  }
-  .cta-box h3 {
-    font-size: 22px; font-weight: 900; color: var(--ink);
-    margin: 0 0 8px; letter-spacing: -0.5px;
-  }
-  .cta-box p {
-    font-size: 15px; color: var(--ink-soft); margin: 0 0 18px;
-    max-width: 480px; margin-inline: auto;
-  }
-  .cta-actions { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
-  .cta-btn {
-    display: inline-flex; align-items: center; gap: 6px;
-    padding: 12px 22px; border-radius: 999px;
-    font-size: 14px; font-weight: 700;
-    transition: background .15s, transform .1s, box-shadow .15s;
-  }
-  .cta-btn.primary { background: var(--pink-deep); color: #fff; }
-  .cta-btn.primary:hover { background: var(--pink-deeper); transform: translateY(-1px); box-shadow: var(--shadow); }
-  .cta-btn.secondary { background: var(--bg); color: var(--ink); border: 1px solid var(--line); }
-  .cta-btn.secondary:hover { border-color: var(--pink-deep); color: var(--pink-deep); }
-  .cta-btn svg { width: 16px; height: 16px; }
-
-  @media (max-width: 768px) {
-    .topbar { padding: 10px 12px; }
-    .topbar-nav { display: none; }
-    .menu-toggle { display: flex; }
-    .hero { padding: 40px 16px 28px; }
-    .wrap { padding: 32px 16px 60px; }
-    .section h2 { font-size: 20px; }
-    .footer-inner { grid-template-columns: 1fr 1fr; gap: 24px; }
-    .footer-col:first-child { grid-column: 1 / -1; }
-    .site-footer { padding: 32px 16px 16px; }
-    .founder-card { grid-template-columns: 1fr; padding: 22px 20px; gap: 16px; }
-    .founder-photo { width: 80px; height: 80px; font-size: 28px; }
+  .closing span { color: var(--pink); }
+  @media (max-width: 760px) {
+    .topbar { padding: 12px 16px; }
+    .topbar-inner { align-items: flex-start; gap: 14px; }
+    .logo img { width: 178px; }
+    .nav { gap: 16px; font-size: 14px; flex-wrap: wrap; justify-content: flex-end; }
+    main { padding: 42px 18px 58px; }
+    .hero { grid-template-columns: 1fr; gap: 28px; }
+    .brand-card { padding: 24px; min-height: 210px; }
+    .brand-card img { max-width: 230px; }
+    .brand-card p { font-size: 17px; }
+    .content { grid-template-columns: 1fr; margin-top: 32px; }
+    .about-card { padding: 22px 20px; }
+    .about-card p { font-size: 17px; }
   }
 </style>
 </head>
 <body>
-
-<!-- ICONS -->
-<svg xmlns="http://www.w3.org/2000/svg" style="display:none">
-  <defs>
-    <symbol id="i-pin" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></symbol>
-    <symbol id="i-heart" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></symbol>
-    <symbol id="i-target" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></symbol>
-    <symbol id="i-sparkle" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v18M3 12h18M5.6 5.6l12.8 12.8M18.4 5.6 5.6 18.4"/></symbol>
-    <symbol id="i-bot" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="10" rx="2"/><circle cx="12" cy="5" r="2"/><path d="M12 7v4"/></symbol>
-    <symbol id="i-users" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></symbol>
-    <symbol id="i-key" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="7.5" cy="15.5" r="5.5"/><path d="m21 2-9.6 9.6"/><path d="m15.5 7.5 3 3L22 7l-3-3"/></symbol>
-    <symbol id="i-briefcase" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></symbol>
-    <symbol id="i-shield" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></symbol>
-    <symbol id="i-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></symbol>
-    <symbol id="i-x" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/></symbol>
-  </defs>
-</svg>
-
 <header class="topbar">
   <div class="topbar-inner">
-    <a href="index.html" class="topbar-logo">אדורה<span class="dot"></span></a>
-    <nav class="topbar-nav">
-      <a href="index.html" class="nav-link"><svg><use href="#i-briefcase"/></svg> משרות</a>
-      <a href="teachers.html" class="nav-link"><svg><use href="#i-users"/></svg> מורים</a>
-      <a href="manager-tenders.html" class="nav-link"><svg><use href="#i-key"/></svg> מכרזי ניהול</a>
-      <a href="https://mail.google.com/mail/?view=cm&fs=1&to=meytal@edura.co.il&su=פידבק על Edura" class="nav-link" title="נשמח לשמוע אתכם — פידבק על המערכת" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg> פידבק</a>
-      <a href="chat.html" class="nav-link primary"><svg><use href="#i-bot"/></svg> בוט חיפוש</a>
+    <a class="logo" href="index.html" aria-label="חזרה לעמוד הבית">
+      <img src="assets/brand/edura-logo-header.png" alt="אדורה" />
+    </a>
+    <nav class="nav" aria-label="ניווט">
+      <a href="publish-job.html#teacher">חיפוש משרה</a>
+      <a href="publish-job.html#school">חיפוש מורים</a>
+      <a class="active" href="about.html?v=impact">מי אנחנו</a>
     </nav>
-    <button class="menu-toggle" id="menu-toggle" aria-label="תפריט">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
-    </button>
   </div>
 </header>
 
-<!-- Mobile drawer -->
-<div class="drawer-overlay" id="drawer-overlay" onclick="closeDrawer()"></div>
-<aside class="drawer" id="drawer" aria-label="תפריט ניווט">
-  <div class="drawer-head">
-    <span style="font-weight:900;font-size:18px">תפריט</span>
-    <button class="drawer-close" onclick="closeDrawer()" aria-label="סגור">×</button>
+<main>
+  <section class="hero" aria-labelledby="about-title">
+    <div>
+      <p class="kicker">מי אנחנו</p>
+      <h1 id="about-title">אדורה מבית <span>אימפקט</span></h1>
+      <p class="lead">פתרון חכם, נגיש ואנושי לעולם החינוך. מרחב אחד שמחבר בין אנשים טובים להזדמנויות נכונות.</p>
+    </div>
+    <aside class="brand-card">
+      <img src="assets/brand/edura-logo-footer-white.png" alt="אדורה" />
+      <p>לוח משרות חכם ומערכת מאץ׳ לעולם החינוך.</p>
+    </aside>
+  </section>
+
+  <section class="content" aria-label="על אדורה">
+    <article class="about-card wide">
+      <h2>אדורה נוצרה על ידי חברת אימפקט</h2>
+      <p>מתוך רצון לבנות פתרון חכם, נגיש ואנושי לעולם החינוך.</p>
+    </article>
+    <article class="about-card">
+      <h2>דרך טובה יותר להיפגש</h2>
+      <p>אנחנו מאמינים שמורים, מנהלות, מנהלים ומוסדות חינוך צריכים דרך טובה יותר להיפגש. לא עוד חיפוש ארוך, מפוזר ולא מדויק, אלא מרחב אחד שמחבר בין אנשים טובים להזדמנויות נכונות.</p>
+    </article>
+    <article class="about-card">
+      <h2>נבנתה מתוך היכרות עם השטח</h2>
+      <p>אדורה נבנתה לטובת ציבור אנשי החינוך בישראל, מתוך היכרות עם האתגרים של בתי הספר ועם הצורך ההולך וגדל בהתאמה מדויקת בין משרות, אנשים ומוסדות.</p>
+    </article>
+    <article class="about-card wide">
+      <h2>פשוט יותר, חכם יותר ומכבד יותר</h2>
+      <p>המטרה שלנו היא להפוך את חיפוש העבודה והגיוס בעולם החינוך לפשוט יותר, חכם יותר ומכבד יותר. כזה שרואה גם את הצורך של המוסד, גם את האדם שמחפש את המקום הבא שלו, וגם את הערך הגדול שיש בחיבור נכון.</p>
+    </article>
+  </section>
+
+  <div class="closing">
+    אדורה היא לא רק לוח משרות.<br />
+    היא <span>מערכת מאץ׳ חכמה</span> לעולם החינוך.
   </div>
-  <nav class="drawer-nav">
-    <a href="index.html"><svg><use href="#i-briefcase"/></svg> כל המשרות</a>
-    <a href="teachers.html"><svg><use href="#i-users"/></svg> מאגר מורים</a>
-    <a href="manager-tenders.html"><svg><use href="#i-key"/></svg> מכרזי ניהול</a>
-    <a href="saved.html"><svg><use href="#i-heart"/></svg> שמורות שלי</a>
-    <a href="publish-job.html"><svg><use href="#i-sparkle"/></svg> פרסום משרה</a>
-    <a href="cv-builder.html"><svg><use href="#i-target"/></svg> בניית קורות חיים</a>
-    <a href="about.html"><svg><use href="#i-pin"/></svg> על אדורה</a>
-    <a href="https://mail.google.com/mail/?view=cm&fs=1&to=meytal@edura.co.il&su=פידבק על Edura" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg> שלחו לי פידבק על המערכת</a>
-    <a href="chat.html" class="primary"><svg><use href="#i-bot"/></svg> בוט חיפוש חכם</a>
-  </nav>
-  <div class="drawer-foot">
-    <a href="privacy.html">פרטיות ואבטחה</a>
-    <a href="accessibility.html">נגישות</a>
-    <a href="https://mail.google.com/mail/?view=cm&fs=1&to=meytal@edura.co.il" target="_blank" rel="noopener">צור קשר</a>
-    <span>© 2026 אדורה · edura.co.il</span>
-  </div>
-</aside>
-
-<section class="hero">
-  <span class="hero-badge"><span class="dot"></span>על אדורה · שקיפות מלאה</span>
-  <h1>בית אחד <span class="accent">לכל משרות החינוך בישראל</span></h1>
-  <p class="hero-sub">מי אנחנו, מאיפה מגיעות המשרות, ומה אנחנו מבטיחים לכם שלא נעשה לעולם.</p>
-</section>
-
-<main class="wrap">
-
-  <!-- 1. מי אנחנו -->
-  <div class="section">
-    <h2><span class="num">1</span>מי אנחנו</h2>
-    <div class="founder-card">
-      <div class="founder-photo">מ"פ</div>
-      <div>
-        <div class="founder-name">מיטל פלג</div>
-        <div class="founder-role">מנהלת בית ספר · M.A. בחינוך מיוחד · מייסדת אדורה</div>
-        <p class="founder-quote">
-          אני מנהלת בית ספר תיכון מקצועי באורט בית הערבה בירושלים. כל שנה אני מחפשת מורים — וכל שנה אני שומעת את אותו דבר ממורים שמחפשים אותי: "עברתי על 8 לוחות, 14 קבוצות פייסבוק, ועדיין לא מצאתי." בניתי את אדורה כי הייתי צריכה אותה — גם בתפקיד שלי, וגם בשביל המורות והמורים שאני מקבלת לראיון.
-        </p>
-      </div>
-    </div>
-    <p style="margin-top: 22px;">
-      אדורה היא <strong>לא חברת השמה</strong>, <strong>לא סטארטאפ עם משקיעים</strong>, ולא קבוצה סגורה. זה כלי פתוח — בנוי כדי לחסוך לכם שעות של חיפוש ולחבר אתכם ישירות לבית הספר. בלי מתווכים, בלי דמי תיווך, בלי הרשמה.
-    </p>
-  </div>
-
-  <!-- 2. למה נוצר -->
-  <div class="section">
-    <h2><span class="num">2</span>למה אדורה נוצרה</h2>
-    <p>
-      <strong>הכאב של מורים:</strong> בישראל יש לפחות 10 מקומות שבהם מתפרסמות משרות הוראה — ארגון המורים, הסתדרות המורים, שתיל, EdJobs, JobMaster, אתרי עיריות, רשתות חינוך כמו אורט, עמל ואמית, וקבוצות פייסבוק. אף אחד מהם לא מאחד את הכל. מורה ממוצע מבזבז 4-6 שעות בשבוע על מעבר ביניהם.
-    </p>
-    <p>
-      <strong>הכאב של מנהלים:</strong> אנחנו מפרסמים את אותה משרה ב-3 מקומות, מקבלים פניות חופפות, ועדיין מפספסים מורים מצוינים שלא הגיעו לאף אחד מהמקורות שלנו.
-    </p>
-    <p>
-      <strong>אדורה פותרת את שניהם:</strong> מקום אחד שמרכז את כל המקורות, עם סינון חכם לפי אזור, שכבה ומקצוע — ופנייה ישירה למייל בית הספר, בלי מתווכים.
-    </p>
-  </div>
-
-  <!-- 3. איך זה עובד -->
-  <div class="section">
-    <h2><span class="num">3</span>איך זה עובד</h2>
-    <p>
-      פעמיים ביום (06:00 ו-18:00) רץ סוכן אוטומטי שאוסף משרות חדשות מהמקורות הפעילים, ובהרחבה למקורות נוספים במהלך השנה. כל משרה עוברת זיהוי אוטומטי של אזור, מקצוע, שכבה ותפקיד — ונכנסת לאתר תוך דקות.
-    </p>
-
-    <div class="steps">
-      <div class="step">
-        <div class="step-num">1</div>
-        <div>
-          <div class="step-title">איסוף אוטומטי מהמקורות</div>
-          <p class="step-text">פעמיים ביום הסוכן עובר על אתרי לוחות הדרושים ושואב את המשרות החדשות. אין צורך לפתוח 8 טאבים בעצמכם.</p>
-        </div>
-      </div>
-      <div class="step">
-        <div class="step-num">2</div>
-        <div>
-          <div class="step-title">סיווג חכם לפי אזור, מקצוע ושכבה</div>
-          <p class="step-text">כל משרה מתויגת אוטומטית — כך שתוכלו לסנן לפי "מורה למתמטיקה בירושלים, חטיבה עליונה" ולקבל בדיוק את מה שרלוונטי.</p>
-        </div>
-      </div>
-      <div class="step">
-        <div class="step-num">3</div>
-        <div>
-          <div class="step-title">פנייה ישירה לבית הספר</div>
-          <p class="step-text">לוחצים "פנייה למשרה", הפרטים נשלחים ישירות למייל של בית הספר. אנחנו לא בתווך, לא לוקחים אחוזים, ולא שומרים את הפרטים לצרכי שיווק.</p>
-        </div>
-      </div>
-      <div class="step">
-        <div class="step-num">4</div>
-        <div>
-          <div class="step-title">או — בוט חיפוש שעוזר לכם להחליט</div>
-          <p class="step-text">לא בטוחים לאיזו משרה כדאי לפנות? <a href="chat.html" class="link">בוט החיפוש</a> שואל 3-4 שאלות וממליץ על המשרות הכי מתאימות מתוך המאגר הפעיל.</p>
-        </div>
-      </div>
-    </div>
-
-    <h3>המקורות שלנו</h3>
-    <div class="sources-grid">
-      <div class="source-pill"><span class="dot"></span><div><strong>ארגון המורים</strong><span class="source-meta">igm.org.il · פעיל</span></div></div>
-      <div class="source-pill"><span class="dot"></span><div><strong>הסתדרות המורים</strong><span class="source-meta">itu.org.il · פעיל</span></div></div>
-      <div class="source-pill"><span class="dot"></span><div><strong>שתיל</strong><span class="source-meta">jobs.shatil.org.il · פעיל</span></div></div>
-      <div class="source-pill"><span class="dot"></span><div><strong>פרסום ישיר</strong><span class="source-meta">מנהלים שולחים אלינו · פעיל</span></div></div>
-      <div class="source-pill" style="opacity:.55"><span class="dot"></span><div><strong>אורט · עמל · אמית</strong><span class="source-meta">רשתות חינוך · בקרוב</span></div></div>
-      <div class="source-pill" style="opacity:.55"><span class="dot"></span><div><strong>עיריות</strong><span class="source-meta">ירושלים, ת"א, חיפה · בקרוב</span></div></div>
-      <div class="source-pill" style="opacity:.55"><span class="dot"></span><div><strong>מט"ח · ג׳וינט</strong><span class="source-meta">cet.ac.il · בקרוב</span></div></div>
-      <div class="source-pill" style="opacity:.55"><span class="dot"></span><div><strong>אחיה ידע · מנדל</strong><span class="source-meta">מכוני חינוך · בקרוב</span></div></div>
-      <div class="source-pill" style="opacity:.55"><span class="dot"></span><div><strong>EdJobs · JobMaster</strong><span class="source-meta">לוחות דרושים · בקרוב</span></div></div>
-    </div>
-
-    <p style="margin-top: 22px;">
-      בנוסף, מנהלים יכולים <a href="publish-job.html" class="link">לפרסם משרה ישירות אצלנו</a> — חינם, בלי הרשמה. הפרסום נכנס לאתר בתוך 24 שעות.
-    </p>
-  </div>
-
-  <!-- 4. שקיפות -->
-  <div class="section" id="transparency">
-    <h2><span class="num">4</span>ההבטחות שלנו</h2>
-    <p>זה חשוב לנו. הנה הבטחות ברורות שמלוות אותנו מהיום הראשון:</p>
-
-    <div class="promise dont">
-      <div class="promise-icon">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/></svg>
-        לא מוכרים נתונים
-      </div>
-      <p>לא מוכרים את המייל שלכם, לא משתפים עם צד שלישי, לא בונים קמפיינים מהפרטים שלכם.</p>
-    </div>
-
-    <div class="promise dont">
-      <div class="promise-icon">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/></svg>
-        לא שולחים ספאם
-      </div>
-      <p>אם נרשמתם להתראה יומית — תקבלו רק התראה יומית. בלי הצעות, בלי "מוצרים נלווים", בלי דיוורים מסחריים.</p>
-    </div>
-
-    <div class="promise dont">
-      <div class="promise-icon">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/></svg>
-        לא לוקחים דמי תיווך
-      </div>
-      <p>הפנייה למשרה היא ישירה, למייל של בית הספר. אנחנו לא בתווך, ולא לוקחים אחוזים מהמורה או מבית הספר.</p>
-    </div>
-
-    <div class="promise do">
-      <div class="promise-icon">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
-        כן — שמירה על הפרטים שלכם
-      </div>
-      <p>הפרטים שאתם משאירים בפנייה לבית ספר נשלחים רק לאותו בית ספר. הם לא נשארים אצלנו לצרכי שיווק.</p>
-    </div>
-
-    <div class="promise do">
-      <div class="promise-icon">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
-        כן — אפשר להסיר את עצמכם בכל רגע
-      </div>
-      <p>בכל רגע אפשר לבטל הרשמה להתראות (לינק בכל מייל) או לבקש מחיקה של פרופיל מורה — שלחו מייל ומסירים תוך 24 שעות.</p>
-    </div>
-
-    <div class="promise do">
-      <div class="promise-icon">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
-        כן — חינם, לתמיד
-      </div>
-      <p>החיפוש, הסינון, ההתראות והפנייה למשרה — חינם למורים. פרסום משרה — חינם למנהלים. לא תהיה גרסה בתשלום שתחביא תכונות מאחורי paywall.</p>
-    </div>
-  </div>
-
-  <!-- 5. צור קשר -->
-  <div class="section">
-    <h2><span class="num">5</span>צור קשר</h2>
-    <p>שאלות, הצעות, או משרה שלא הופיעה? כתבו לנו — אנחנו עונים תוך 2 ימי עסקים.</p>
-    <div class="contact-grid">
-      <a href="https://mail.google.com/mail/?view=cm&fs=1&to=meytal@edura.co.il" class="contact-link" target="_blank" rel="noopener">
-        <div class="contact-icon">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
-        </div>
-        <div>
-          <div class="label">מייל</div>
-          <div class="value">meytal@edura.co.il</div>
-        </div>
-      </a>
-      <a href="https://www.linkedin.com/in/meytal-peleg" target="_blank" rel="noopener" class="contact-link">
-        <div class="contact-icon">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M20.5 2h-17A1.5 1.5 0 0 0 2 3.5v17A1.5 1.5 0 0 0 3.5 22h17a1.5 1.5 0 0 0 1.5-1.5v-17A1.5 1.5 0 0 0 20.5 2zM8 19H5v-9h3zM6.5 8.25A1.75 1.75 0 1 1 8.3 6.5a1.78 1.78 0 0 1-1.8 1.75zM19 19h-3v-4.74c0-1.42-.6-1.93-1.38-1.93A1.74 1.74 0 0 0 13 14.19a.66.66 0 0 0 0 .14V19h-3v-9h2.9v1.3a3.11 3.11 0 0 1 2.7-1.4c1.55 0 3.36.86 3.36 3.66z"/></svg>
-        </div>
-        <div>
-          <div class="label">לינקדאין</div>
-          <div class="value">מיטל פלג</div>
-        </div>
-      </a>
-    </div>
-  </div>
-
-  <!-- Closing CTA -->
-  <div class="cta-box">
-    <h3>מוכנים להתחיל?</h3>
-    <p>אם אתם מחפשים משרה — תיכנסו ללוח. אם אתם מנהלים — תפרסמו אצלנו, חינם, בלי הרשמה.</p>
-    <div class="cta-actions">
-      <a href="index.html" class="cta-btn primary">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
-        לכל המשרות
-      </a>
-      <a href="publish-job.html" class="cta-btn secondary">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v18M3 12h18"/></svg>
-        פרסום משרה
-      </a>
-      <a href="chat.html" class="cta-btn secondary">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="10" rx="2"/><circle cx="12" cy="5" r="2"/><path d="M12 7v4"/></svg>
-        בוט חיפוש
-      </a>
-    </div>
-  </div>
-
-  <div class="updated">
-    על אדורה · עדכון אחרון: מאי 2026
-  </div>
-
 </main>
-
-<!-- ───── FOOTER ───── -->
-<footer class="site-footer">
-  <div class="footer-inner">
-    <div class="footer-col">
-      <div class="footer-brand">אדורה<span class="dot"></span></div>
-      <p class="footer-tagline">לוח המשרות הגדול בישראל לחינוך — מאות משרות מכל הזרמים, המגזרים והאזורים, מתעדכן יומי. הרשמה חינם.</p>
-    </div>
-    <div class="footer-col">
-      <h4>גלו</h4>
-      <ul>
-        <li><a href="index.html">כל המשרות</a></li>
-        <li><a href="teachers.html">מאגר מורים</a></li>
-      <li><a href="manager-tenders.html">מכרזי ניהול</a></li>
-        <li><a href="saved.html">שמורות שלי</a></li>
-        <li><a href="chat.html">בוט חיפוש</a></li>
-      </ul>
-    </div>
-    <div class="footer-col">
-      <h4>פרסום</h4>
-      <ul>
-        <li><a href="publish-job.html">פרסום משרה</a></li>
-        <li><a href="publish-job.html#teacher">פרופיל מורה</a></li>
-        <li><a href="cv-builder.html">בניית קורות חיים</a></li>
-      </ul>
-    </div>
-    <div class="footer-col">
-      <h4>אודות</h4>
-      <ul>
-        <li><a href="about.html">על אדורה</a></li>
-        <li><a href="privacy.html">פרטיות ואבטחה</a></li>
-        <li><a href="accessibility.html">הצהרת נגישות</a></li>
-        <li><a href="https://mail.google.com/mail/?view=cm&fs=1&to=meytal@edura.co.il" target="_blank" rel="noopener">יצירת קשר</a></li>
-      </ul>
-    </div>
-  </div>
-  <div class="footer-bottom">
-    <span>© 2026 אדורה · נבנה באהבה למורים ולמנהלים</span>
-    <div class="footer-socials">
-      <a href="https://mail.google.com/mail/?view=cm&fs=1&to=meytal@edura.co.il" aria-label="מייל" target="_blank" rel="noopener">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
-      </a>
-      <a href="https://api.whatsapp.com/send?phone=972536256653" target="_blank" rel="noopener" aria-label="WhatsApp">
-        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 2.1.55 4.15 1.6 5.96L2 22l4.25-1.71c1.74.95 3.71 1.45 5.79 1.45 5.46 0 9.91-4.45 9.91-9.91S17.5 2 12.04 2z"/></svg>
-      </a>
-    </div>
-  </div>
-</footer>
-
-<!-- ───── COOKIES BANNER ───── -->
-<div class="cookies-banner" id="cookies-banner" role="dialog" aria-label="שימוש בקוקיז">
-  <div class="cookies-banner-text">
-    אנחנו משתמשים בקוקיז בסיסיים לתפעול האתר ולשמירת ההעדפות שלך (סינונים, משרות שמורות). אין שיתוף עם צד שלישי. פרטים מלאים ב<a href="privacy.html">מדיניות הפרטיות</a>.
-  </div>
-  <div class="cookies-banner-actions">
-    <button class="cookies-btn primary" onclick="acceptCookies()">הבנתי</button>
-    <a class="cookies-btn secondary" href="privacy.html">קראו עוד</a>
-  </div>
-</div>
-
-<script>
-function openDrawer() {
-  document.getElementById('drawer').classList.add('open');
-  document.getElementById('drawer-overlay').classList.add('open');
-  document.body.style.overflow = 'hidden';
-}
-function closeDrawer() {
-  document.getElementById('drawer').classList.remove('open');
-  document.getElementById('drawer-overlay').classList.remove('open');
-  document.body.style.overflow = '';
-}
-window.openDrawer = openDrawer;
-window.closeDrawer = closeDrawer;
-document.getElementById('menu-toggle').addEventListener('click', openDrawer);
-
-function acceptCookies() {
-  try { localStorage.setItem('edura_cookies_accepted', '1'); } catch (e) {}
-  document.getElementById('cookies-banner').classList.remove('visible');
-}
-window.acceptCookies = acceptCookies;
-(function showCookiesIfNeeded() {
-  let accepted = false;
-  try { accepted = localStorage.getItem('edura_cookies_accepted') === '1'; } catch (e) {}
-  if (!accepted) setTimeout(() => document.getElementById('cookies-banner').classList.add('visible'), 1000);
-})();
-</script>
-<script src="analytics.js"></script>
 </body>
 </html>

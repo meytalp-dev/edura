@@ -1,0 +1,172 @@
+.edura-chat-launcher {
+  position: fixed;
+  left: 18px;
+  bottom: 18px;
+  z-index: 450;
+  width: 54px;
+  height: 54px;
+  border-radius: 999px;
+  background: #0F1B2D;
+  color: #fff;
+  display: grid;
+  place-items: center;
+  box-shadow: 0 12px 28px rgba(15, 27, 45, .18);
+  border: 1px solid rgba(255, 255, 255, .18);
+}
+
+.edura-chat-launcher::before {
+  content: "";
+  position: absolute;
+  top: 9px;
+  left: 10px;
+  width: 7px;
+  height: 7px;
+  border-radius: 999px;
+  background: #E6007E;
+}
+
+.edura-chat-launcher svg {
+  width: 28px;
+  height: 28px;
+}
+
+.edura-chat-panel {
+  position: fixed;
+  left: 18px;
+  bottom: 82px;
+  z-index: 451;
+  width: min(390px, calc(100vw - 28px));
+  height: min(620px, calc(100dvh - 110px));
+  min-height: 420px;
+  background: #fff;
+  border: 1px solid rgba(15, 27, 45, .10);
+  border-radius: 8px;
+  box-shadow: 0 22px 54px rgba(15, 27, 45, .20);
+  overflow: hidden;
+  display: none;
+  direction: rtl;
+}
+
+.edura-chat-panel.open {
+  display: flex;
+  flex-direction: column;
+}
+
+.edura-chat-head {
+  min-height: 58px;
+  padding: 10px 14px;
+  background: #0F1B2D;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.edura-chat-title {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  min-width: 0;
+  font-weight: 800;
+  font-size: 14px;
+}
+
+.edura-chat-mark {
+  width: 28px;
+  height: 28px;
+  border-radius: 999px;
+  background: #fff;
+  display: grid;
+  place-items: center;
+  color: #0F1B2D;
+  position: relative;
+}
+
+.edura-chat-mark::after {
+  content: "";
+  position: absolute;
+  top: 3px;
+  left: 4px;
+  width: 6px;
+  height: 6px;
+  border-radius: 999px;
+  background: #E6007E;
+}
+
+.edura-chat-subtitle {
+  display: block;
+  color: rgba(255,255,255,.68);
+  font-size: 11px;
+  font-weight: 500;
+  margin-top: 1px;
+}
+
+.edura-chat-close {
+  width: 34px;
+  height: 34px;
+  border-radius: 999px;
+  color: #fff;
+  background: rgba(255,255,255,.10);
+  display: grid;
+  place-items: center;
+  font-size: 22px;
+  line-height: 1;
+}
+
+.edura-chat-body {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  background: linear-gradient(180deg, #FFF2F8 0%, #fff 120px);
+}
+
+.edura-chat-body #ec-widget-root {
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+  min-height: 0;
+  width: 100%;
+  flex: 1;
+  background: transparent;
+}
+
+.edura-chat-body .ec-stream {
+  padding: 14px;
+  background: transparent;
+}
+
+.edura-chat-body .ec-bubble {
+  font-size: 13.5px;
+  line-height: 1.55;
+  border-radius: 8px;
+}
+
+.edura-chat-body .ec-action {
+  min-height: 34px;
+  padding: 7px 12px;
+  border-radius: 999px;
+  font-size: 12.5px;
+}
+
+.edura-chat-body .ec-composer {
+  padding: 10px;
+}
+
+@media (max-width: 560px) {
+  .edura-chat-launcher {
+    left: 14px;
+    bottom: 14px;
+    width: 50px;
+    height: 50px;
+  }
+
+  .edura-chat-panel {
+    left: 10px;
+    right: 10px;
+    bottom: 74px;
+    width: auto;
+    height: min(640px, calc(100dvh - 92px));
+    min-height: 360px;
+  }
+}
