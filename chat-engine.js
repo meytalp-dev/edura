@@ -9,13 +9,14 @@
  *   chat.start();
  */
 
-window.EDURA_JOBS_URL = 'data/jobs-public.json';
-window.EDURA_TEACHERS_URL = 'data/teachers.json';
-window.EDURA_FB_TEACHERS_URL = 'data/fb-teachers.json';
-window.EDURA_API_URL = 'https://script.google.com/macros/s/AKfycbxFqT828xAhAAhe9mJ6h55Kt9i6zKjcRZBscMYjrPkUV1BUuKhqT_n7ZLqC7cNZs7wR-Q/exec';
+var EDURA_CONFIG = window.EduraConfig || { data: {}, api: {} };
+window.EDURA_JOBS_URL = window.EDURA_JOBS_URL || EDURA_CONFIG.data.jobs || 'data/jobs-public.json';
+window.EDURA_TEACHERS_URL = window.EDURA_TEACHERS_URL || EDURA_CONFIG.data.teachers || 'data/teachers-public.json';
+window.EDURA_FB_TEACHERS_URL = window.EDURA_FB_TEACHERS_URL || EDURA_CONFIG.data.fbTeachers || '';
+window.EDURA_API_URL = window.EDURA_API_URL || EDURA_CONFIG.api.chat || 'https://script.google.com/macros/s/AKfycbxFqT828xAhAAhe9mJ6h55Kt9i6zKjcRZBscMYjrPkUV1BUuKhqT_n7ZLqC7cNZs7wR-Q/exec';
 // Submissions feed: משרות ומורים שמיטל אישרה ידנית דרך לינק במייל (Apps Script).
 // אותו פיד שאתר index/teachers טוענים — כדי שהבוט יראה את אותם רשומות.
-window.EDURA_SUBMISSIONS_URL = 'https://script.google.com/macros/s/AKfycbwleldcwH8c5k9OZ8EMDIKZ8veRbrtO1M7XwYFWg7HHbEV-SrZkLTElbFRiq4cHPlyarw/exec';
+window.EDURA_SUBMISSIONS_URL = window.EDURA_SUBMISSIONS_URL || EDURA_CONFIG.api.submissions || 'https://script.google.com/macros/s/AKfycbwleldcwH8c5k9OZ8EMDIKZ8veRbrtO1M7XwYFWg7HHbEV-SrZkLTElbFRiq4cHPlyarw/exec';
 
 (function () {
   'use strict';
@@ -298,7 +299,7 @@ window.EDURA_SUBMISSIONS_URL = 'https://script.google.com/macros/s/AKfycbwleldcw
           if (!this.allTeachers.length) {
             const [resA, resB, submitted] = await Promise.all([
               fetch(window.EDURA_TEACHERS_URL),
-              fetch(window.EDURA_FB_TEACHERS_URL).catch(() => null),
+              window.EDURA_FB_TEACHERS_URL ? fetch(window.EDURA_FB_TEACHERS_URL).catch(() => null) : Promise.resolve(null),
               fetchSubmittedFeed()
             ]);
             const dataA = await resA.json();

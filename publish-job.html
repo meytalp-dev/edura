@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>פרסום משרות — אדורה</title>
-<meta name="description" content="אדורה — לוח דרושים ייעודי למורים. ממלאים טופס אחד והמערכת מתאימה משרות לפי אזור, מקצוע ושכבה. בלי מתווכים." />
+<title>אדורה מאץ׳ — מציאת מורים ומשרות</title>
+<meta name="description" content="אדורה מבית אימפקט מחברת בין אנשי חינוך, משרות ומוסדות בעזרת מאץ׳ חכם לעולם החינוך." />
 <meta name="robots" content="index,follow,max-image-preview:large" />
 <meta property="og:title" content="אדורה — לוח מחפשי המשרה הגדול" />
 <meta property="og:description" content="מורים? מנהלים? נגמר הסיפור. הפסיקו לדפדף בעשרה לוחות — מצאו את משרת או מורה החלומות שלכם." />
@@ -21,9 +21,12 @@
 <meta name="twitter:description" content="מורים? מנהלים? נגמר הסיפור. הפסיקו לדפדף בעשרה לוחות — מצאו את משרת או מורה החלומות שלכם." />
 <meta name="twitter:image" content="https://edura.co.il/assets/og-publish-job.png" />
 <link rel="canonical" href="https://edura.co.il/publish-job.html" />
+<link rel="icon" type="image/png" href="assets/brand/edura-icon.png" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;600;800;900&family=Playpen+Sans+Hebrew:wght@500;700&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="assets/css/tokens.css" />
+<link rel="stylesheet" href="assets/css/base.css" />
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -32,7 +35,7 @@
   "alternateName": "Edura",
   "url": "https://edura.co.il",
   "inLanguage": "he-IL",
-  "description": "לוח דרושים ייעודי למורים",
+  "description": "מערכת מאץ׳ חכמה לעולם החינוך",
   "potentialAction": {
     "@type": "SearchAction",
     "target": "https://edura.co.il/?q={query}",
@@ -48,9 +51,8 @@
   "url": "https://edura.co.il",
   "logo": "https://edura.co.il/assets/logo.png",
   "founder": {
-    "@type": "Person",
-    "name": "מיטל פלג",
-    "url": "https://www.linkedin.com/in/meytal-peleg-839265378"
+    "@type": "Organization",
+    "name": "אימפקט"
   },
   "contactPoint": {
     "@type": "ContactPoint",
@@ -62,20 +64,20 @@
 </script>
 <style>
   :root {
-    --ink: #000000;
-    --ink-soft: #1A1A1A;
-    --ink-mute: #4A4A4A;
+    --ink: #0F1B2D;
+    --ink-soft: #26364B;
+    --ink-mute: #6B7B8E;
     --teal: #14B8A6;
     --teal-deep: #0F766E;
     --teal-pale: #F0FDFA;
     --teal-glow: #CCFBF1;
-    --lime: #EC4899;
-    --lime-bright: #F472B6;
-    --lime-glow: #FBCFE8;
-    --lime-deep: #9D174D;
-    --lime-pale: #FDF2F8;
-    --lime-soft: #FCE7F3;
-    --ink-lime: #000000;
+    --lime: #E6007E;
+    --lime-bright: #F7A4CF;
+    --lime-glow: #FFF2F8;
+    --lime-deep: #C00069;
+    --lime-pale: #FFF7FB;
+    --lime-soft: #FFE4F2;
+    --ink-lime: #0F1B2D;
     --orange: #D97706;
     --orange-soft: #FEF3C7;
     --orange-pale: #FFFBEB;
@@ -90,7 +92,7 @@
     --success-soft: #D1FAE5;
     --line: #E2E8F0;
     --line-soft: #F1F5F9;
-    --bg: #FAF9F7;
+    --bg: #FFFFFF;
     --white: #FFFFFF;
     --shadow-sm: 0 1px 3px rgba(11,42,74,.06);
     --shadow-md: 0 8px 24px rgba(11,42,74,.08);
@@ -104,7 +106,7 @@
     border-radius: 6px;
   }
   body {
-    font-family: 'Heebo', system-ui, sans-serif;
+    font-family: 'Rubik', system-ui, sans-serif;
     background: var(--bg);
     color: var(--ink);
     line-height: 1.55;
@@ -126,11 +128,11 @@
 
   /* ─── Header ─── */
   .header {
-    background: rgba(250,249,247,.85);
+    background: rgba(255,255,255,.94);
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
     border-bottom: 1px solid var(--line);
-    padding: 14px 0;
+    padding: 10px 0;
     position: sticky; top: 0; z-index: 60;
   }
   .header-inner {
@@ -144,11 +146,12 @@
     gap: 2px; text-decoration: none;
   }
   .logo-svg { height: 30px; width: auto; display: block; }
-  .logo-word { font-family: 'Heebo', sans-serif; font-weight: 900; font-size: 32px; letter-spacing: -1.2px; fill: var(--ink); }
+  .logo-word { font-family: 'Rubik', sans-serif; font-weight: 800; font-size: 32px; letter-spacing: 0; fill: var(--ink); }
   .logo-h { fill: var(--lime); }
+  .logo .brand-logo-img { width: 170px; }
   .logo-tagline {
-    font-family: 'Playpen Sans Hebrew', cursive;
-    font-size: 11.5px; color: #000; font-weight: 500;
+    font-family: 'Rubik', sans-serif;
+    font-size: 12px; color: var(--ink-mute); font-weight: 500;
     line-height: 1.1;
     white-space: nowrap;
   }
@@ -878,14 +881,43 @@
   .chat-avatar {
     width: 42px; height: 42px;
     border-radius: 50%;
-    background: linear-gradient(135deg, var(--lime), var(--lime-deep));
+    background: #fff;
+    border: 1px solid rgba(230,0,126,.18);
     display: grid; place-items: center;
-    color: white;
+    color: var(--ink);
     flex-shrink: 0;
     box-shadow: 0 4px 12px rgba(157,23,77,.20);
     position: relative;
   }
   .chat-avatar svg { width: 22px; height: 22px; }
+  .chat-smile {
+    position: relative;
+    width: 26px;
+    height: 22px;
+    display: block;
+  }
+  .chat-smile::before {
+    content: "";
+    position: absolute;
+    right: 2px;
+    top: 0;
+    width: 8px;
+    height: 8px;
+    border-radius: 999px;
+    background: var(--lime);
+  }
+  .chat-smile::after {
+    content: "";
+    position: absolute;
+    right: 2px;
+    bottom: 1px;
+    width: 21px;
+    height: 12px;
+    border-radius: 0 0 999px 999px;
+    border-bottom: 7px solid var(--lime);
+    border-left: 7px solid var(--ink);
+    transform: rotate(-3deg);
+  }
   .chat-avatar::after {
     content: '';
     position: absolute;
@@ -1396,15 +1428,147 @@
     }
   }
 </style>
+<style>
+  body.publish-bot-only {
+    background:
+      radial-gradient(circle at 76% 18%, rgba(230,0,126,.18), transparent 34%),
+      radial-gradient(circle at 12% 84%, rgba(15,27,45,.12), transparent 30%),
+      #fff;
+  }
+  body.publish-bot-only > header,
+  body.publish-bot-only > .hero,
+  body.publish-bot-only > .categories-strip,
+  body.publish-bot-only > .social-proof,
+  body.publish-bot-only > footer {
+    display: none !important;
+  }
+  body.publish-bot-only.publish-school-mode #modal-school.modal-overlay,
+  body.publish-bot-only.publish-teacher-mode #modal-teacher.modal-overlay {
+    display: flex !important;
+    position: fixed;
+    inset: 0;
+    z-index: 20;
+    padding: 24px;
+    background:
+      radial-gradient(circle at 72% 18%, rgba(230,0,126,.18), transparent 30%),
+      linear-gradient(180deg, #fff 0%, #fff7fb 100%);
+    backdrop-filter: none;
+  }
+  body.publish-bot-only.publish-school-mode #modal-school .modal--chat,
+  body.publish-bot-only.publish-teacher-mode #modal-teacher .modal--chat {
+    max-width: 760px;
+    min-height: min(760px, calc(100dvh - 48px));
+    border-radius: 10px;
+    border: 1px solid rgba(15,27,45,.08);
+    box-shadow: 0 24px 70px rgba(15,27,45,.16);
+  }
+  body.publish-bot-only #close-school,
+  body.publish-bot-only #close-teacher {
+    display: grid;
+    background: #fff;
+    box-shadow: 0 10px 26px rgba(15,27,45,.1);
+    z-index: 3;
+  }
+  .teacher-match-results {
+    width: 100%;
+    margin-top: 18px;
+    padding-top: 16px;
+    border-top: 1px solid rgba(15,27,45,.08);
+  }
+  .teacher-match-results h4 {
+    margin: 0 0 10px;
+    color: var(--ink);
+    font-size: 17px;
+    font-weight: 900;
+  }
+  .teacher-match-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 8px;
+  }
+  .teacher-match-card {
+    border: 1px solid rgba(15,27,45,.09);
+    border-radius: 8px;
+    background: #fff;
+    padding: 10px;
+    text-align: right;
+  }
+  .teacher-match-card strong {
+    display: block;
+    color: var(--ink);
+    font-size: 13px;
+    line-height: 1.3;
+  }
+  .teacher-match-card span {
+    display: block;
+    margin-top: 4px;
+    color: var(--ink-mute);
+    font-size: 11.5px;
+    font-weight: 700;
+  }
+  .teacher-match-score {
+    display: inline-flex !important;
+    margin-top: 8px !important;
+    color: #fff !important;
+    background: var(--ink);
+    border-radius: 999px;
+    padding: 3px 8px;
+    font-size: 10px !important;
+  }
+  .job-match-results {
+    width: 100%;
+    margin-top: 18px;
+    padding-top: 16px;
+    border-top: 1px solid rgba(15,27,45,.08);
+  }
+  .job-match-results h4 {
+    margin: 0 0 10px;
+    color: var(--ink);
+    font-size: 17px;
+    font-weight: 900;
+  }
+  .job-match-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 8px;
+  }
+  .job-match-card {
+    border: 1px solid rgba(15,27,45,.09);
+    border-radius: 8px;
+    background: #fff;
+    padding: 10px;
+    text-align: right;
+  }
+  .job-match-card strong {
+    display: block;
+    color: var(--ink);
+    font-size: 13px;
+    line-height: 1.3;
+  }
+  .job-match-card span {
+    display: block;
+    margin-top: 4px;
+    color: var(--ink-mute);
+    font-size: 11.5px;
+    font-weight: 700;
+  }
+  .job-match-score {
+    display: inline-flex !important;
+    margin-top: 8px !important;
+    color: #fff !important;
+    background: var(--ink);
+    border-radius: 999px;
+    padding: 3px 8px;
+    font-size: 10px !important;
+  }
+</style>
 </head>
-<body>
+<body class="publish-bot-only publish-school-mode">
 
 <header class="header">
   <div class="header-inner">
     <span class="logo" aria-label="אדורה" style="color:inherit;display:flex;align-items:center;gap:10px;">
-      <svg class="logo-svg" viewBox="0 0 130 38" aria-hidden="true">
-        <text x="65" y="29" text-anchor="middle" direction="rtl" class="logo-word">אדור<tspan class="logo-h">ה</tspan></text>
-      </svg>
+      <img class="brand-logo-img" src="assets/brand/edura-logo-header.png" alt="אדורה" />
       <span class="logo-tagline">המאצ' שלך למשרת החינוך</span>
     </span>
   </div>
@@ -1472,7 +1636,7 @@
     </a>
   </div>
   <div class="footer-signature">
-    <span>נבנה על ידי <strong>מיטל פלג</strong></span>
+    <span>אדורה מבית <strong>אימפקט</strong></span>
   </div>
 </footer>
 
@@ -1483,11 +1647,7 @@
 
     <div class="chat-shell" id="chat-teacher" data-flow="teacher">
       <div class="chat-header">
-        <div class="chat-avatar" aria-hidden="true">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
-          </svg>
-        </div>
+        <div class="chat-avatar" aria-hidden="true"><span class="chat-smile"></span></div>
         <div class="chat-meta">
           <strong id="teacher-title">אדורה</strong>
           <span>חיפוש משרה למורים · חינם</span>
@@ -1529,14 +1689,10 @@
 
     <div class="chat-shell" id="chat-school" data-flow="school">
       <div class="chat-header">
-        <div class="chat-avatar" aria-hidden="true">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
-          </svg>
-        </div>
+        <div class="chat-avatar" aria-hidden="true"><span class="chat-smile"></span></div>
         <div class="chat-meta">
           <strong id="school-title">אדורה</strong>
-          <span>פרסום משרה ב-2 דקות · חינם</span>
+          <span>מציאת מאץ׳ למורה · חינם</span>
         </div>
         <div class="chat-progress"><span class="chat-progress-fill"></span></div>
       </div>
@@ -1564,6 +1720,7 @@
       <div class="success-cta-row">
         <button type="button" class="success-cta" data-close-modal="modal-school">סגירה</button>
       </div>
+      <div class="teacher-match-results" id="school-teacher-matches" hidden></div>
     </div>
   </div>
 </div>
@@ -1571,8 +1728,10 @@
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
 <script src="copy.js"></script>
+<script src="assets/js/config.js"></script>
+<script src="assets/js/data-loader.js"></script>
 <script>
-  const SUBMISSIONS_URL = 'https://script.google.com/macros/s/AKfycbwleldcwH8c5k9OZ8EMDIKZ8veRbrtO1M7XwYFWg7HHbEV-SrZkLTElbFRiq4cHPlyarw/exec';
+  const SUBMISSIONS_URL = EduraConfig.api.submissions;
 
   // ════════════════════════════════════════════════════════════════════
   // Utilities
@@ -1620,12 +1779,12 @@
   // ─── Social proof — load real numbers from data files ────────────────
   (async function () {
     try {
-      const [jobsRes, teachersRes] = await Promise.all([
-        fetch('data/jobs.json', { cache: 'no-cache' }).catch(() => null),
-        fetch('data/teachers.json', { cache: 'no-cache' }).catch(() => null)
+      const [jobsData, teachersData] = await Promise.all([
+        EduraData.getJobs({ cache: 'no-cache' }).catch(() => null),
+        EduraData.getTeachers({ cache: 'no-cache' }).catch(() => null)
       ]);
-      if (jobsRes && jobsRes.ok) {
-        const data = await jobsRes.json();
+      if (jobsData) {
+        const data = jobsData;
         const total = data.total || (Array.isArray(data.jobs) ? data.jobs.length : 0);
         if (total) $('sp-jobs').textContent = total.toLocaleString('he-IL');
         if (data.updated_at) {
@@ -1642,8 +1801,8 @@
           }
         }
       }
-      if (teachersRes && teachersRes.ok) {
-        const data = await teachersRes.json();
+      if (teachersData) {
+        const data = teachersData;
         const total = data.total || (Array.isArray(data.teachers) ? data.teachers.length : 0);
         if (total) $('sp-teachers').textContent = total.toLocaleString('he-IL');
       }
@@ -1714,6 +1873,10 @@
   }
 
   function smartClose(modalId) {
+    if (document.body.classList.contains('publish-bot-only')) {
+      window.location.href = 'index.html';
+      return;
+    }
     closeModal(modalId);
     if (location.hash) {
       history.replaceState(null, '', location.pathname + location.search);
@@ -1730,7 +1893,9 @@
 
   // Auto-open from hash (single source of truth: load + hashchange)
   function autoOpenFromHash() {
-    const h = (location.hash || '').toLowerCase();
+    const h = (location.hash || '#school').toLowerCase();
+    document.body.classList.toggle('publish-teacher-mode', h === '#teacher');
+    document.body.classList.toggle('publish-school-mode', h !== '#teacher');
     if (h === '#teacher' && $('modal-teacher')) openModal('modal-teacher');
     else if ((h === '#school' || h === '#post-job') && $('modal-school')) openModal('modal-school');
   }
@@ -2063,13 +2228,13 @@
     { id: 'region',  type: 'chips', q: 'איזה אזור גם נחשב לכם רלוונטי?', options: REGION_OPTS, skip: true, skipLabel: 'רק העיר שציינתי' },
     { id: 'scope',   type: 'chips', q: 'איזה היקף משרה מתאים?', options: ['מלאה','חלקית','גמישה'], skip: true },
     { id: 'name',    type: 'text',  q: 'מצוין! איך קוראים לך?', placeholder: 'שם פרטי ומשפחה', required: true, autocomplete: 'name', errorMsg: 'אפשר לכתוב שם מלא?' },
-    { id: 'email',   type: 'email', q: 'לאן לשלוח לך התראות על משרות?', placeholder: 'name@example.com', required: true, autocomplete: 'email', errorMsg: 'נראה שיש טעות במייל. לנסות שוב?' },
+    { id: 'email',   type: 'email', q: 'לאן לשלוח לך התראות על משרות? אפשר גם לדלג.', placeholder: 'name@example.com', skip: true, skipLabel: 'דלגו, בלי מייל', autocomplete: 'email', errorMsg: 'נראה שיש טעות במייל. לנסות שוב?' },
     { id: 'phone',   type: 'tel',   q: 'מספר טלפון? (אופציונלי — בתי הספר יוכלו להתקשר ישירות)', placeholder: '050-1234567', skip: true, autocomplete: 'tel', errorMsg: 'מספר לא תקין. אפשר רק ספרות.' },
     { id: 'notes',   type: 'textarea', q: 'משהו נוסף שכדאי לבית הספר לדעת? (ניסיון, העדפות...)', placeholder: 'אופציונלי', skip: true, skipLabel: 'דלגו, אין לי מה להוסיף' },
     { id: 'email_opt', type: 'chips',
       q: 'רוצה לקבל מייל יומי כשנוספות משרות שמתאימות לך? (אדורה תשלח רק כשיש חדש, ואפשר לבטל בכל מייל)',
       options: ['כן, שלחו לי עדכון יומי', 'לא תודה, אכנס בעצמי'],
-      required: true },
+      skip: true, skipLabel: 'דלגו' },
     { id: 'consent', type: 'consent',
       q: 'אני מסכימ/ה שאדורה תשמור את הפרטים ותציג לי משרות מתאימות, ושבית ספר רלוונטי יוכל לפנות אליי.',
       cta: 'אישור ושליחה' },
@@ -2089,13 +2254,80 @@
     { id: 'region',   type: 'chips', q: 'באיזה אזור?', options: REGION_OPTS, skip: true },
     { id: 'sector',   type: 'chips', q: 'מגזר?', options: SECTOR_OPTS, skip: true, skipLabel: 'דלגו (ברירת מחדל: ממלכתי)' },
     { id: 'description', type: 'textarea', q: 'תיאור קצר של המשרה? (תפקיד, תכניות, ניסיון נדרש...)', placeholder: 'אופציונלי — אבל עוזר למצוא מורים מתאימים', skip: true },
-    { id: 'contactName', type: 'text', q: 'מי איש הקשר אצלכם?', placeholder: 'שם המנהל/ת או הרכז/ת', required: true, autocomplete: 'name' },
-    { id: 'email',    type: 'email', q: 'לאן מורים מתעניינים יוכלו לכתוב?', placeholder: 'contact@school.org.il', required: true, autocomplete: 'email', errorMsg: 'נראה שיש טעות במייל.' },
-    { id: 'phone',    type: 'tel',   q: 'ומספר טלפון?', placeholder: '03-1234567', required: true, autocomplete: 'tel', errorMsg: 'מספר לא תקין.' },
+    { id: 'contactName', type: 'text', q: 'מי איש הקשר אצלכם? אפשר גם לדלג.', placeholder: 'שם המנהל/ת או הרכז/ת', skip: true, skipLabel: 'דלגו', autocomplete: 'name' },
+    { id: 'email',    type: 'email', q: 'לאן מורים מתעניינים יוכלו לכתוב? אופציונלי.', placeholder: 'contact@school.org.il', skip: true, skipLabel: 'דלגו, בלי מייל', autocomplete: 'email', errorMsg: 'נראה שיש טעות במייל.' },
+    { id: 'phone',    type: 'tel',   q: 'ומספר טלפון? אופציונלי.', placeholder: '03-1234567', skip: true, skipLabel: 'דלגו', autocomplete: 'tel', errorMsg: 'מספר לא תקין.' },
     { id: 'consent',  type: 'consent',
       q: 'אני מסכימ/ה שאדורה תפרסם את המשרה ותציג אותה למורים שמחפשים משרה תואמת.',
       cta: 'פרסום משרה' },
   ];
+
+  let TEACHER_POOL = [];
+  async function loadTeacherPool() {
+    if (TEACHER_POOL.length) return TEACHER_POOL;
+    try {
+      const [teachersData, submissions] = await Promise.all([
+        EduraData.getTeachers().catch(() => ({})),
+        EduraData.getApprovedSubmissions().catch(() => ({}))
+      ]);
+      const submitted = Array.isArray(submissions.teachers) ? submissions.teachers.map(t => ({
+        name: t.name || 'מורה',
+        subject: t.subject || '',
+        level: t.level || '',
+        city: t.city || '',
+        region: t.region || '',
+        scope: t.scope || '',
+        email: t.email || '',
+        phone: t.phone || ''
+      })) : [];
+      TEACHER_POOL = [...submitted, ...(teachersData.teachers || [])].filter(t => t && (t.name || t.subject || t.city));
+    } catch (e) {
+      TEACHER_POOL = [];
+    }
+    return TEACHER_POOL;
+  }
+
+  function normMatchText(value) {
+    return String(value || '').replace(/[״"']/g, '').replace(/-/g, ' ').replace(/\s+/g, ' ').trim().toLowerCase();
+  }
+  function includesMatch(a, b) {
+    const x = normMatchText(a);
+    const y = normMatchText(b);
+    return !!x && !!y && (x.includes(y) || y.includes(x));
+  }
+  async function renderTeacherMatchesForSchool(state) {
+    const box = document.getElementById('school-teacher-matches');
+    if (!box) return;
+    const teachers = await loadTeacherPool();
+    const scored = teachers.map(t => {
+      let score = 54;
+      if (includesMatch(t.city, state.city) || includesMatch(t.region, state.city)) score += 18;
+      if (includesMatch(t.subject, state.subject)) score += 20;
+      if (includesMatch(t.level, state.level)) score += 8;
+      if (includesMatch(t.scope, state.scope)) score += 4;
+      return { t, score: Math.min(score, 96) };
+    }).filter(x => x.score >= 62)
+      .sort((a, b) => b.score - a.score)
+      .slice(0, 6);
+
+    if (!scored.length) {
+      box.hidden = false;
+      box.innerHTML = '<h4>המאץ׳ הבא בדרך</h4><p style="margin:0;color:var(--ink-mute);font-size:13px">לא נמצאו כרגע מורים מדויקים, אבל אדורה תשווה את המשרה מול המאגר כשייכנסו מועמדים חדשים.</p>';
+      return;
+    }
+    box.hidden = false;
+    box.innerHTML =
+      '<h4>מצאנו מורים שיכולים להתאים</h4>' +
+      '<div class="teacher-match-grid">' +
+        scored.map(({ t, score }) =>
+          '<article class="teacher-match-card">' +
+            '<strong>' + escapeHtml(t.name || 'מורה') + '</strong>' +
+            '<span>' + escapeHtml([t.subject, t.city || t.region, t.level].filter(Boolean).join(' · ')) + '</span>' +
+            '<span class="teacher-match-score">' + score + '% התאמה</span>' +
+          '</article>'
+        ).join('') +
+      '</div>';
+  }
 
   function ChatBot(modalId, flow, action) {
     const modal = document.getElementById(modalId);
@@ -2186,6 +2418,10 @@
 
       const submit = () => {
         const v = (input.value || '').trim();
+        const skipWords = /^(אין|לא|בלי|אין צורך|לא עכשיו|דלג|דלגו|לא חובה)$/i;
+        if (step.skip && skipWords.test(v)) {
+          return accept(step, '', '— דילגתי —', true);
+        }
         if (!v) {
           if (step.required) {
             input.focus();
@@ -2315,6 +2551,7 @@
           // Then transition to success card
           const refSpan = document.getElementById(modalId === 'modal-teacher' ? 'ref-teacher' : 'ref-school');
           if (refSpan) refSpan.textContent = refId;
+          if (modalId === 'modal-school') renderTeacherMatchesForSchool(state);
           setTimeout(() => inner.classList.add('is-success'), 800);
         } else {
           throw new Error((data && data.error) || 'שליחה נכשלה');
@@ -2380,7 +2617,7 @@
 
   // Hash-based opens (e.g., #school, #post-job, #teacher)
   function checkHashAndStart() {
-    const h = location.hash;
+    const h = (location.hash || '#school').toLowerCase();
     if (h === '#school' || h === '#post-job') {
       setTimeout(() => startChatFor('modal-school'), 100);
     } else if (h === '#teacher') {

@@ -12,9 +12,12 @@
 <meta property="og:url" content="https://edura.co.il/manager-tenders.html" />
 <meta property="og:site_name" content="אדורה" />
 <link rel="canonical" href="https://edura.co.il/manager-tenders.html" />
+<link rel="icon" type="image/png" href="assets/brand/edura-icon.png" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;800;900&family=Assistant:wght@300;400;500;600;700;800&family=Playpen+Sans+Hebrew:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="assets/css/tokens.css" />
+<link rel="stylesheet" href="assets/css/base.css" />
 <style>
   :root {
     /* ───── Edura palette (synced with index.html) ───── */
@@ -675,7 +678,7 @@
 
 <header class="topbar">
   <div class="topbar-inner">
-    <a href="index.html" class="topbar-logo">אדורה<span class="dot"></span></a>
+    <a href="index.html" class="topbar-logo" aria-label="אדורה"><img class="brand-logo-img" src="assets/brand/edura-logo-header.png" alt="אדורה" /></a>
     <div class="city-picker">
       <div class="city-pin"><svg><use href="#i-pin"/></svg></div>
       <input id="city-input" class="city-input" type="text" placeholder="באיזה אזור / עיר את/ה מחפש/ת מכרז ניהול?" autocomplete="off" />
@@ -1050,7 +1053,7 @@
 <footer class="site-footer">
   <div class="footer-inner">
     <div class="footer-col">
-      <div class="footer-brand">אדורה<span class="dot"></span></div>
+      <div class="footer-brand"><img class="brand-logo-img" src="assets/brand/edura-logo-header.png" alt="אדורה" /></div>
       <p class="footer-tagline">לוח המשרות הגדול בישראל לחינוך — מאות משרות מכל הזרמים, המגזרים והאזורים, מתעדכן יומי. הרשמה חינם.</p>
     </div>
     <div class="footer-col"><h4>גלו</h4><ul>
@@ -1086,11 +1089,12 @@ function openDrawer() { document.getElementById('drawer').classList.add('open');
 function closeDrawer() { document.getElementById('drawer').classList.remove('open'); document.getElementById('drawer-overlay').classList.remove('open'); document.body.style.overflow = ''; }
 </script>
 
+<script src="assets/js/config.js"></script>
 <script>
 /* ─── Access gate: registration required to view manager tenders ─── */
 (function () {
   const MT_GATE_KEY = 'edura:mt-access:v1';
-  const MT_SUBMISSIONS_URL = 'https://script.google.com/macros/s/AKfycbwleldcwH8c5k9OZ8EMDIKZ8veRbrtO1M7XwYFWg7HHbEV-SrZkLTElbFRiq4cHPlyarw/exec';
+  const MT_SUBMISSIONS_URL = EduraConfig.api.submissions;
 
   function isRegistered() {
     try { return !!JSON.parse(localStorage.getItem(MT_GATE_KEY) || 'null'); } catch (e) { return false; }
