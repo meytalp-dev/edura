@@ -7,12 +7,14 @@
 <meta name="description" content="אדורה מבית אימפקט היא מערכת מאץ׳ חכמה לעולם החינוך, שמחברת בין אנשי חינוך, משרות ומוסדות." />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+<link rel="icon" type="image/png" href="assets/brand/edura-icon.png" />
 <style>
   :root {
     --pink: #E6007E;
     --pink-soft: #FFF3FA;
     --ink: #0F1B2D;
+    --ink-soft: #2C3D55;
     --mute: #6B7B8E;
     --line: #E8EAED;
     --bg: #fff;
@@ -20,20 +22,21 @@
   * { box-sizing: border-box; }
   html, body { margin: 0; padding: 0; }
   body {
-    font-family: 'Heebo', -apple-system, BlinkMacSystemFont, sans-serif;
-    background: var(--bg);
+    font-family: 'Rubik', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: #fff;
     color: var(--ink);
     -webkit-font-smoothing: antialiased;
+    line-height: 1.6;
   }
   a { color: inherit; text-decoration: none; }
   .topbar {
     position: sticky;
     top: 0;
-    z-index: 10;
+    z-index: 20;
     background: rgba(255,255,255,.94);
     backdrop-filter: blur(12px);
     border-bottom: 1px solid var(--line);
-    padding: 16px 28px;
+    padding: 14px 28px;
   }
   .topbar-inner {
     max-width: 1180px;
@@ -41,19 +44,20 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 22px;
+    gap: 24px;
   }
   .logo img {
-    width: 240px;
-    max-height: 82px;
+    width: 230px;
+    max-height: 78px;
     display: block;
   }
   .nav {
     display: flex;
     align-items: center;
-    gap: 28px;
+    gap: 34px;
+    color: var(--ink-soft);
+    font-size: 16px;
     font-weight: 800;
-    color: var(--ink);
   }
   .nav a {
     position: relative;
@@ -65,7 +69,7 @@
     right: 0;
     left: 0;
     bottom: 0;
-    height: 2px;
+    height: 3px;
     border-radius: 999px;
     background: var(--pink);
     transform: scaleX(0);
@@ -77,22 +81,43 @@
   main {
     max-width: 1180px;
     margin: 0 auto;
-    padding: 72px 28px 90px;
+    padding: 44px 28px 72px;
   }
   .hero {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) minmax(260px, 390px);
-    gap: 54px;
-    align-items: center;
+    position: relative;
+    overflow: hidden;
+    border: 1px solid rgba(230,0,126,.14);
+    border-radius: 10px;
+    background:
+      linear-gradient(132deg, rgba(230,0,126,.08) 0 42%, transparent 42% 100%),
+      radial-gradient(circle at 12% 18%, rgba(230,0,126,.12), transparent 24%),
+      #fff;
+    padding: clamp(36px, 6vw, 72px);
+  }
+  .hero::after {
+    content: "";
+    position: absolute;
+    inset: auto -80px -130px auto;
+    width: 360px;
+    height: 360px;
+    border-radius: 999px;
+    background: var(--ink);
+    opacity: .12;
+    z-index: 0;
+  }
+  .hero-content {
+    position: relative;
+    z-index: 2;
+    max-width: 740px;
   }
   .kicker {
     display: inline-flex;
     align-items: center;
     gap: 10px;
+    margin: 0 0 14px;
     color: var(--pink);
-    font-size: 18px;
+    font-size: 15px;
     font-weight: 900;
-    margin: 0 0 18px;
   }
   .kicker::before {
     content: "";
@@ -103,95 +128,135 @@
   }
   h1 {
     margin: 0;
-    font-size: clamp(42px, 6vw, 76px);
-    line-height: 1.05;
+    max-width: 780px;
+    color: var(--ink);
+    font-size: clamp(42px, 6.4vw, 82px);
+    line-height: 1.02;
     letter-spacing: 0;
+    font-weight: 900;
   }
-  h1 span { color: var(--pink); display: block; }
+  h1 span {
+    display: block;
+    color: var(--pink);
+  }
   .lead {
     margin: 24px 0 0;
-    color: #34445B;
-    font-size: clamp(20px, 2vw, 27px);
-    line-height: 1.65;
+    max-width: 660px;
+    color: var(--ink-soft);
+    font-size: clamp(18px, 2vw, 24px);
+    line-height: 1.75;
     font-weight: 500;
   }
-  .brand-card {
-    background: var(--pink);
-    border-radius: 10px;
-    padding: 34px;
-    min-height: 270px;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    box-shadow: 0 24px 70px rgba(230,0,126,.22);
+  .statement {
+    margin: 44px auto 0;
+    max-width: 920px;
+    text-align: center;
   }
-  .brand-card img {
-    width: 100%;
-    max-width: 300px;
-    display: block;
+  .statement p {
+    margin: 0;
+    color: var(--ink-soft);
+    font-size: clamp(19px, 2.2vw, 28px);
+    line-height: 1.8;
+    font-weight: 500;
   }
-  .brand-card p {
-    margin: 28px 0 0;
-    color: #fff;
-    font-size: 21px;
-    line-height: 1.5;
-    font-weight: 700;
-  }
-  .content {
-    margin-top: 62px;
+  .story {
+    margin-top: 48px;
     display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 16px;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 18px;
   }
-  .about-card {
+  .story-item {
+    min-height: 240px;
+    padding: 26px 24px;
     border: 1px solid var(--line);
     border-radius: 10px;
-    padding: 26px 28px;
     background: #fff;
-    box-shadow: 0 8px 22px rgba(15,27,45,.035);
+    box-shadow: 0 10px 26px rgba(15,27,45,.04);
   }
-  .about-card.wide {
-    grid-column: 1 / -1;
-    background: linear-gradient(135deg, #fff, var(--pink-soft));
-    border-color: rgba(230,0,126,.18);
+  .story-number {
+    display: inline-grid;
+    place-items: center;
+    width: 38px;
+    height: 38px;
+    margin-bottom: 22px;
+    border-radius: 999px;
+    background: var(--ink);
+    color: #fff;
+    font-size: 15px;
+    font-weight: 900;
   }
-  .about-card h2 {
-    margin: 0 0 10px;
+  .story-item:nth-child(2) .story-number { background: var(--pink); }
+  .story-item h2 {
+    margin: 0 0 12px;
+    color: var(--ink);
     font-size: 25px;
-    line-height: 1.2;
+    line-height: 1.25;
+    font-weight: 900;
   }
-  .about-card p {
+  .story-item p {
     margin: 0;
-    color: #34445B;
-    font-size: 19px;
+    color: var(--mute);
+    font-size: 17px;
     line-height: 1.75;
     font-weight: 500;
   }
   .closing {
     margin-top: 26px;
-    padding: 32px;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 28px;
+    align-items: center;
+    padding: 34px;
     border-radius: 10px;
-    background: var(--ink);
     color: #fff;
-    font-size: clamp(28px, 3.5vw, 44px);
-    line-height: 1.25;
-    font-weight: 900;
-    text-align: center;
+    background: linear-gradient(118deg, var(--pink) 0 58%, var(--ink) 58% 100%);
   }
-  .closing span { color: var(--pink); }
+  .closing strong {
+    display: block;
+    font-size: clamp(28px, 3.8vw, 48px);
+    line-height: 1.15;
+    font-weight: 900;
+  }
+  .closing span {
+    display: block;
+    margin-top: 10px;
+    color: rgba(255,255,255,.86);
+    font-size: 19px;
+    font-weight: 600;
+  }
+  .closing img {
+    width: min(280px, 34vw);
+    display: block;
+  }
+  .site-footer {
+    margin-top: 54px;
+    padding-top: 22px;
+    border-top: 1px solid var(--line);
+    display: flex;
+    justify-content: space-between;
+    gap: 18px;
+    flex-wrap: wrap;
+    color: var(--mute);
+    font-size: 14px;
+    font-weight: 600;
+  }
   @media (max-width: 760px) {
     .topbar { padding: 12px 16px; }
-    .topbar-inner { align-items: flex-start; gap: 14px; }
-    .logo img { width: 178px; }
-    .nav { gap: 16px; font-size: 14px; flex-wrap: wrap; justify-content: flex-end; }
-    main { padding: 42px 18px 58px; }
-    .hero { grid-template-columns: 1fr; gap: 28px; }
-    .brand-card { padding: 24px; min-height: 210px; }
-    .brand-card img { max-width: 230px; }
-    .brand-card p { font-size: 17px; }
-    .content { grid-template-columns: 1fr; margin-top: 32px; }
-    .about-card { padding: 22px 20px; }
-    .about-card p { font-size: 17px; }
+    .topbar-inner { gap: 16px; align-items: flex-start; }
+    .logo img { width: 170px; }
+    .nav { gap: 16px; font-size: 13px; flex-wrap: wrap; justify-content: flex-end; }
+    main { padding: 24px 16px 46px; }
+    .hero { padding: 32px 24px 110px; }
+    .hero::after { width: 220px; height: 220px; inset: auto -92px -115px auto; }
+    .story { grid-template-columns: 1fr; margin-top: 32px; }
+    .story-item { min-height: 0; padding: 22px 20px; }
+    .closing {
+      grid-template-columns: 1fr;
+      padding: 28px 22px;
+      background: linear-gradient(145deg, var(--pink) 0 67%, var(--ink) 67% 100%);
+    }
+    .closing img { width: 210px; }
+    .site-footer { justify-content: center; text-align: center; }
   }
 </style>
 </head>
@@ -211,40 +276,47 @@
 
 <main>
   <section class="hero" aria-labelledby="about-title">
-    <div>
-      <p class="kicker">מי אנחנו</p>
-      <h1 id="about-title">אדורה מבית <span>אימפקט</span></h1>
-      <p class="lead">פתרון חכם, נגיש ואנושי לעולם החינוך. מרחב אחד שמחבר בין אנשים טובים להזדמנויות נכונות.</p>
+    <div class="hero-content">
+      <p class="kicker">אדורה מבית אימפקט</p>
+      <h1 id="about-title">מערכת מאץ׳ חכמה <span>לעולם החינוך.</span></h1>
+      <p class="lead">אדורה נוצרה מתוך רצון לבנות דרך טובה יותר, נגישה ואנושית יותר, לחבר בין אנשי חינוך, משרות ומוסדות.</p>
     </div>
-    <aside class="brand-card">
-      <img src="assets/brand/edura-logo-footer-white.png" alt="אדורה" />
-      <p>לוח משרות חכם ומערכת מאץ׳ לעולם החינוך.</p>
-    </aside>
   </section>
 
-  <section class="content" aria-label="על אדורה">
-    <article class="about-card wide">
-      <h2>אדורה נוצרה על ידי חברת אימפקט</h2>
-      <p>מתוך רצון לבנות פתרון חכם, נגיש ואנושי לעולם החינוך.</p>
+  <section class="statement" aria-label="החזון של אדורה">
+    <p>לא עוד חיפוש ארוך, מפוזר ולא מדויק. אדורה יוצרת מרחב אחד שמבין את הצורך של בית הספר, את האדם שמחפש את המקום הבא שלו, ואת הערך הגדול שיש בחיבור נכון.</p>
+  </section>
+
+  <section class="story" aria-label="איך אדורה עובדת">
+    <article class="story-item">
+      <span class="story-number">1</span>
+      <h2>נבנתה מהשטח</h2>
+      <p>מתוך היכרות עם בתי ספר, מנהלות, מנהלים ומורים, ועם הצורך ההולך וגדל בהתאמה מדויקת יותר.</p>
     </article>
-    <article class="about-card">
-      <h2>דרך טובה יותר להיפגש</h2>
-      <p>אנחנו מאמינים שמורים, מנהלות, מנהלים ומוסדות חינוך צריכים דרך טובה יותר להיפגש. לא עוד חיפוש ארוך, מפוזר ולא מדויק, אלא מרחב אחד שמחבר בין אנשים טובים להזדמנויות נכונות.</p>
+    <article class="story-item">
+      <span class="story-number">2</span>
+      <h2>מחברת נכון</h2>
+      <p>המערכת מחברת בין אזור, תפקיד, תחום חינוכי, זמינות ומה שבאמת חשוב לשני הצדדים.</p>
     </article>
-    <article class="about-card">
-      <h2>נבנתה מתוך היכרות עם השטח</h2>
-      <p>אדורה נבנתה לטובת ציבור אנשי החינוך בישראל, מתוך היכרות עם האתגרים של בתי הספר ועם הצורך ההולך וגדל בהתאמה מדויקת בין משרות, אנשים ומוסדות.</p>
-    </article>
-    <article class="about-card wide">
-      <h2>פשוט יותר, חכם יותר ומכבד יותר</h2>
-      <p>המטרה שלנו היא להפוך את חיפוש העבודה והגיוס בעולם החינוך לפשוט יותר, חכם יותר ומכבד יותר. כזה שרואה גם את הצורך של המוסד, גם את האדם שמחפש את המקום הבא שלו, וגם את הערך הגדול שיש בחיבור נכון.</p>
+    <article class="story-item">
+      <span class="story-number">3</span>
+      <h2>מכבדת אנשים</h2>
+      <p>המטרה היא להפוך חיפוש עבודה וגיוס בחינוך לפשוטים יותר, חכמים יותר ומכבדים יותר.</p>
     </article>
   </section>
 
-  <div class="closing">
-    אדורה היא לא רק לוח משרות.<br />
-    היא <span>מערכת מאץ׳ חכמה</span> לעולם החינוך.
-  </div>
+  <section class="closing" aria-label="אדורה במשפט">
+    <div>
+      <strong>אדורה היא לא רק מאץ׳ משרות.</strong>
+      <span>היא מערכת מאץ׳ חכמה שמחברת בין אנשים טובים להזדמנויות נכונות.</span>
+    </div>
+    <img src="assets/brand/edura-logo-footer-white.png" alt="אדורה" />
+  </section>
+
+  <footer class="site-footer">
+    <span>© 2026 אדורה מבית אימפקט</span>
+    <a href="index.html">חזרה לעמוד הבית</a>
+  </footer>
 </main>
 </body>
 </html>

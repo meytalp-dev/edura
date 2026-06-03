@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="he" dir="rtl">
 <head>
 <meta charset="UTF-8" />
@@ -1041,6 +1041,17 @@
     border-color: var(--lime);
     transform: translateY(-1px);
   }
+  .chat-chip.is-selected {
+    background: var(--ink-lime);
+    border-color: var(--ink-lime);
+    color: var(--white);
+    box-shadow: 0 8px 18px rgba(15,27,45,.14);
+  }
+  .chat-chip:disabled {
+    opacity: .48;
+    cursor: not-allowed;
+    transform: none;
+  }
   .chat-chip.primary {
     background: var(--ink-lime);
     color: var(--white);
@@ -1669,6 +1680,8 @@
 
       <p class="success-ref">מספר פנייה: <code id="ref-teacher">—</code></p>
 
+      <div class="job-match-results" id="teacher-job-matches" hidden></div>
+
       <div class="email-notice">
         <strong>📩 מייל אישור בדרך אליך</strong>
         <span>אמור להגיע תוך כמה דקות. <strong>אם לא הגיע — בדקו ספאם.</strong></span>
@@ -1706,8 +1719,8 @@
           <polyline points="20 6 9 17 4 12"/>
         </svg>
       </div>
-      <h3>המשרה התקבלה. עכשיו ממתינה לאישור.</h3>
-      <p style="font-size:14px;color:var(--ink-mute);line-height:1.6">תוך 24 שעות המשרה תיכנס למאגר ומורות יוכלו לפנות אליכם ישירות.</p>
+      <h3>מצאנו כיוון. עכשיו מציגים התאמות.</h3>
+      <p style="font-size:14px;color:var(--ink-mute);line-height:1.6">אדורה שומרת את הבקשה ומחברת אותה לאנשי חינוך רלוונטיים.</p>
 
       <p class="success-ref">מספר פנייה: <code id="ref-school">—</code></p>
 
@@ -2223,8 +2236,8 @@
 
   const TEACHER_FLOW = [
     { id: 'city',    type: 'chips-or-text', q: 'באיזו עיר את/ה מחפש/ת משרה?', options: CITY_OPTS, placeholder: 'או הקלידו עיר אחרת', autocomplete: 'address-level2', skip: true, skipLabel: 'גמיש/ה לכל הארץ' },
-    { id: 'subject', type: 'chips-or-text', q: 'איזה מקצוע את/ה מלמד/ת?', options: SUBJECT_HINTS, placeholder: 'או הקלידו מקצוע אחר', required: true },
-    { id: 'level',   type: 'chips', q: 'איזו שכבת גיל?', options: LEVEL_OPTS, skip: true, skipLabel: 'דלגו' },
+    { id: 'subject', type: 'multi-chips-or-text', q: 'איזה מקצוע את/ה מלמד/ת?', options: SUBJECT_HINTS, placeholder: 'או הקלידו מקצוע אחר', required: true },
+    { id: 'level',   type: 'multi-chips', q: 'איזו שכבת גיל?', options: LEVEL_OPTS, skip: true, skipLabel: 'דלגו' },
     { id: 'region',  type: 'chips', q: 'איזה אזור גם נחשב לכם רלוונטי?', options: REGION_OPTS, skip: true, skipLabel: 'רק העיר שציינתי' },
     { id: 'scope',   type: 'chips', q: 'איזה היקף משרה מתאים?', options: ['מלאה','חלקית','גמישה'], skip: true },
     { id: 'name',    type: 'text',  q: 'מצוין! איך קוראים לך?', placeholder: 'שם פרטי ומשפחה', required: true, autocomplete: 'name', errorMsg: 'אפשר לכתוב שם מלא?' },
@@ -2246,11 +2259,11 @@
 
   const SCHOOL_FLOW = [
     { id: 'city',     type: 'chips-or-text', q: 'באיזו עיר נמצא בית הספר?', options: CITY_OPTS, placeholder: 'או הקלידו עיר אחרת', required: true, autocomplete: 'address-level2', errorMsg: 'איזו עיר?' },
-    { id: 'school',   type: 'text',  q: 'מה שם בית הספר?', placeholder: 'תיכון אורט אורנית', required: true, errorMsg: 'איך קוראים לבית הספר?' },
-    { id: 'subject',  type: 'chips-or-text', q: 'איזה מקצוע מחפשים?', options: SUBJECT_HINTS, placeholder: 'או הקלידו מקצוע אחר', required: true },
+    { id: 'school',   type: 'text',  q: 'מה שם בית הספר? אפשר גם לדלג.', placeholder: 'שם בית הספר', skip: true, skipLabel: 'דלגו', errorMsg: 'איך קוראים לבית הספר?' },
+    { id: 'subject',  type: 'multi-chips-or-text', q: 'איזה מקצוע מחפשים?', options: SUBJECT_HINTS, placeholder: 'או הקלידו מקצוע אחר', required: true },
     { id: 'role',     type: 'chips', q: 'איזה תפקיד?', options: ROLE_OPTS, skip: true, skipLabel: 'דלגו (ברירת מחדל: מורה)' },
     { id: 'scope',    type: 'chips', q: 'היקף המשרה?', options: SCOPE_OPTS, skip: true },
-    { id: 'level',    type: 'chips', q: 'איזו שכבה?', options: LEVEL_OPTS, skip: true },
+    { id: 'level',    type: 'multi-chips', q: 'איזו שכבה?', options: LEVEL_OPTS, skip: true },
     { id: 'region',   type: 'chips', q: 'באיזה אזור?', options: REGION_OPTS, skip: true },
     { id: 'sector',   type: 'chips', q: 'מגזר?', options: SECTOR_OPTS, skip: true, skipLabel: 'דלגו (ברירת מחדל: ממלכתי)' },
     { id: 'description', type: 'textarea', q: 'תיאור קצר של המשרה? (תפקיד, תכניות, ניסיון נדרש...)', placeholder: 'אופציונלי — אבל עוזר למצוא מורים מתאימים', skip: true },
@@ -2258,8 +2271,8 @@
     { id: 'email',    type: 'email', q: 'לאן מורים מתעניינים יוכלו לכתוב? אופציונלי.', placeholder: 'contact@school.org.il', skip: true, skipLabel: 'דלגו, בלי מייל', autocomplete: 'email', errorMsg: 'נראה שיש טעות במייל.' },
     { id: 'phone',    type: 'tel',   q: 'ומספר טלפון? אופציונלי.', placeholder: '03-1234567', skip: true, skipLabel: 'דלגו', autocomplete: 'tel', errorMsg: 'מספר לא תקין.' },
     { id: 'consent',  type: 'consent',
-      q: 'אני מסכימ/ה שאדורה תפרסם את המשרה ותציג אותה למורים שמחפשים משרה תואמת.',
-      cta: 'פרסום משרה' },
+      q: 'אני מסכימ/ה שאדורה תשמור את הבקשה ותציג לי אנשי חינוך שמתאימים למה שחיפשתי.',
+      cta: 'להציג מאצ׳ים' },
   ];
 
   let TEACHER_POOL = [];
@@ -2295,16 +2308,98 @@
     const y = normMatchText(b);
     return !!x && !!y && (x.includes(y) || y.includes(x));
   }
+  function splitMatchTerms(value) {
+    return normMatchText(value).split(/[,;|/·]+/).map(v => v.trim()).filter(Boolean);
+  }
+  function includesAnyMatch(source, target) {
+    const terms = splitMatchTerms(target);
+    if (!terms.length) return includesMatch(source, target);
+    return terms.some(term => includesMatch(source, term));
+  }
+  function escapeHtml(value) {
+    return String(value == null ? '' : value)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
+  }
+  function dateMatchValue(item) {
+    const raw = item && (item.date_iso || item.date || item.published_at || item.created_at);
+    const time = raw ? new Date(raw).getTime() : 0;
+    return Number.isFinite(time) ? time : 0;
+  }
+  function scoreDateBoost(item) {
+    const time = dateMatchValue(item);
+    if (!time) return 0;
+    const days = (Date.now() - time) / (1000 * 60 * 60 * 24);
+    if (days <= 3) return 8;
+    if (days <= 10) return 5;
+    if (days <= 30) return 2;
+    return 0;
+  }
+  let JOB_POOL = [];
+  async function loadJobPool() {
+    if (JOB_POOL.length) return JOB_POOL;
+    try {
+      const [jobsData, submissions] = await Promise.all([
+        EduraData.getJobs({ cache: 'no-cache' }).catch(() => ({})),
+        EduraData.getApprovedSubmissions().catch(() => ({}))
+      ]);
+      const submitted = Array.isArray(submissions && submissions.jobs) ? submissions.jobs : [];
+      JOB_POOL = [...submitted, ...((jobsData && jobsData.jobs) || [])]
+        .filter(j => j && (j.subject || j.title || j.city || j.school));
+    } catch (e) {
+      JOB_POOL = [];
+    }
+    return JOB_POOL;
+  }
+  function jobMatchTitle(job) {
+    const parts = [job.subject || job.title || 'משרה', job.school || job.role].filter(Boolean);
+    return parts.join(' · ');
+  }
+  async function renderJobMatchesForTeacher(state) {
+    const box = document.getElementById('teacher-job-matches');
+    if (!box) return;
+    const jobs = await loadJobPool();
+    const scored = jobs.map(job => {
+      let score = 48 + scoreDateBoost(job);
+      if (includesAnyMatch(job.city, state.city) || includesAnyMatch(job.region, state.city) || includesAnyMatch(job.sub_area, state.city)) score += 18;
+      if (includesAnyMatch(job.subject, state.subject) || includesAnyMatch(job.title, state.subject)) score += 22;
+      if (includesAnyMatch(job.level, state.level)) score += 8;
+      if (includesAnyMatch(job.scope, state.scope)) score += 4;
+      return { job, score: Math.min(score, 98) };
+    }).filter(x => x.score >= 56)
+      .sort((a, b) => (b.score - a.score) || (dateMatchValue(b.job) - dateMatchValue(a.job)))
+      .slice(0, 6);
+
+    box.hidden = false;
+    if (!scored.length) {
+      box.innerHTML = '<h4>המאץ׳ הבא בדרך</h4><p style="margin:0;color:var(--ink-mute);font-size:13px">לא מצאנו כרגע משרות מדויקות, אבל אדורה תשווה את הפרטים שלך מול משרות חדשות ועדכניות.</p>';
+      return;
+    }
+    box.innerHTML =
+      '<h4>מצאנו משרות שיכולות להתאים</h4>' +
+      '<div class="job-match-grid">' +
+        scored.map(({ job, score }) =>
+          '<article class="job-match-card">' +
+            '<strong>' + escapeHtml(jobMatchTitle(job)) + '</strong>' +
+            '<span>' + escapeHtml([job.city || job.region, job.level, job.scope].filter(Boolean).join(' · ')) + '</span>' +
+            '<span class="job-match-score">' + score + '% התאמה</span>' +
+          '</article>'
+        ).join('') +
+      '</div>';
+  }
   async function renderTeacherMatchesForSchool(state) {
     const box = document.getElementById('school-teacher-matches');
     if (!box) return;
     const teachers = await loadTeacherPool();
     const scored = teachers.map(t => {
       let score = 54;
-      if (includesMatch(t.city, state.city) || includesMatch(t.region, state.city)) score += 18;
-      if (includesMatch(t.subject, state.subject)) score += 20;
-      if (includesMatch(t.level, state.level)) score += 8;
-      if (includesMatch(t.scope, state.scope)) score += 4;
+      if (includesAnyMatch(t.city, state.city) || includesAnyMatch(t.region, state.city)) score += 18;
+      if (includesAnyMatch(t.subject, state.subject)) score += 20;
+      if (includesAnyMatch(t.level, state.level)) score += 8;
+      if (includesAnyMatch(t.scope, state.scope)) score += 4;
       return { t, score: Math.min(score, 96) };
     }).filter(x => x.score >= 62)
       .sort((a, b) => b.score - a.score)
@@ -2338,6 +2433,23 @@
 
     let state = {};
     let stepIdx = 0;
+    let seed = null;
+
+    function readHomeSeed() {
+      try {
+        const raw = sessionStorage.getItem('eduraMatchSeed');
+        if (!raw) return null;
+        const parsed = JSON.parse(raw);
+        const expected = action === 'submit_teacher' ? 'teacher' : 'school';
+        if (!parsed || parsed.mode !== expected) return null;
+        return {
+          city: String(parsed.city || '').trim(),
+          subject: String(parsed.subject || '').trim()
+        };
+      } catch (e) {
+        return null;
+      }
+    }
 
     // Funny phrases from copy.js — fallback to dots
     const FUNNY = (window.EduraCopy && EduraCopy.funnyMarquee && EduraCopy.funnyMarquee.length)
@@ -2453,7 +2565,91 @@
 
     const renderInput = (step) => {
       inputRow.innerHTML = '';
-      if (step.type === 'chips' || step.type === 'chips-or-text') {
+      if (step.type === 'multi-chips' || step.type === 'multi-chips-or-text') {
+        const selected = new Set();
+        const chips = document.createElement('div');
+        chips.className = 'chat-chips';
+        const done = document.createElement('button');
+        done.type = 'button';
+        done.className = 'chat-chip primary';
+        done.textContent = 'המשך עם הבחירה';
+        done.disabled = !!step.required;
+
+        function selectedValue() {
+          return Array.from(selected).join(', ');
+        }
+        function selectedLabel() {
+          return Array.from(selected).join(' · ');
+        }
+        function refresh() {
+          chips.querySelectorAll('[data-multi-chip]').forEach(btn => {
+            btn.classList.toggle('is-selected', selected.has(btn.dataset.multiChip));
+          });
+          done.disabled = !!step.required && !selected.size;
+        }
+        function addCustomChip(value) {
+          const clean = String(value || '').trim();
+          if (!clean) return;
+          selected.add(clean);
+          if (!chips.querySelector('[data-multi-chip="' + CSS.escape(clean) + '"]')) {
+            const c = document.createElement('button');
+            c.className = 'chat-chip is-selected';
+            c.type = 'button';
+            c.dataset.multiChip = clean;
+            c.textContent = clean;
+            c.onclick = () => {
+              selected.has(clean) ? selected.delete(clean) : selected.add(clean);
+              refresh();
+            };
+            chips.appendChild(c);
+          }
+          refresh();
+        }
+        step.options.forEach(opt => {
+          const c = document.createElement('button');
+          c.className = 'chat-chip';
+          c.type = 'button';
+          c.dataset.multiChip = opt;
+          c.textContent = opt;
+          c.onclick = () => {
+            selected.has(opt) ? selected.delete(opt) : selected.add(opt);
+            refresh();
+          };
+          chips.appendChild(c);
+        });
+        inputRow.appendChild(chips);
+        if (step.type === 'multi-chips-or-text') {
+          const row = document.createElement('div');
+          row.className = 'chat-input-bar';
+          const input = document.createElement('input');
+          input.type = 'text';
+          input.placeholder = step.placeholder || 'אפשר להקליד אפשרות נוספת';
+          const add = document.createElement('button');
+          add.type = 'button';
+          add.className = 'chat-send-btn';
+          add.setAttribute('aria-label', 'הוסף');
+          add.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>';
+          const submitCustom = () => {
+            addCustomChip(input.value);
+            input.value = '';
+            input.focus();
+          };
+          add.onclick = submitCustom;
+          input.onkeydown = (e) => {
+            if (e.key === 'Enter') {
+              e.preventDefault();
+              submitCustom();
+            }
+          };
+          row.appendChild(input);
+          row.appendChild(add);
+          inputRow.appendChild(row);
+          setTimeout(() => input.focus({ preventScroll: true }), 60);
+        }
+        done.onclick = () => accept(step, selectedValue(), selectedLabel());
+        inputRow.appendChild(done);
+        if (step.skip) inputRow.appendChild(buildSkip(step));
+      } else if (step.type === 'chips' || step.type === 'chips-or-text') {
         const chips = document.createElement('div');
         chips.className = 'chat-chips';
         step.options.forEach(opt => {
@@ -2514,6 +2710,18 @@
       updateProgress();
       if (stepIdx >= flow.length) return finish();
       const step = flow[stepIdx];
+      const seededValue = seed && (step.id === 'city' || step.id === 'subject') ? seed[step.id] : '';
+      if (seededValue) {
+        seed[step.id] = '';
+        setTimeout(() => {
+          botSay(step.q);
+          accept(step, seededValue, seededValue);
+          if (seed && !seed.city && !seed.subject) {
+            try { sessionStorage.removeItem('eduraMatchSeed'); } catch (e) {}
+          }
+        }, delay + 220);
+        return;
+      }
       // Quick transition between questions — funny phrase appears only at finish()
       setTimeout(() => {
         botSay(step.q);
@@ -2523,7 +2731,7 @@
 
     const finish = async () => {
       if (progress) progress.style.width = '100%';
-      botSay('מעולה — שולחים עכשיו...');
+      botSay(action === 'submit_job' ? 'מעולה — אדורה מחשבת מאצ׳ים עכשיו...' : 'מעולה — שולחים עכשיו...');
       showTyping();
 
       // Build payload
@@ -2533,6 +2741,21 @@
       // המרה: chip בעברית → yes/no פשוט לשמירה בגיליון
       if (payload.email_opt) {
         payload.email_opt = String(payload.email_opt).startsWith('כן') ? 'yes' : 'no';
+      }
+
+      if (action === 'submit_job') {
+        hideTyping();
+        botSay('מצאנו כיוון. הנה התאמות ראשונות מתוך מאגר אדורה.');
+        renderTeacherMatchesForSchool(state);
+        const refSpan = document.getElementById('ref-school');
+        if (refSpan) refSpan.textContent = 'MATCH-' + Date.now().toString().slice(-6);
+        setTimeout(() => inner.classList.add('is-success'), 650);
+        fetch(SUBMISSIONS_URL, {
+          method: 'POST',
+          body: JSON.stringify(payload),
+          headers: { 'Content-Type': 'text/plain;charset=utf-8' }
+        }).catch(() => {});
+        return;
       }
 
       try {
@@ -2551,6 +2774,7 @@
           // Then transition to success card
           const refSpan = document.getElementById(modalId === 'modal-teacher' ? 'ref-teacher' : 'ref-school');
           if (refSpan) refSpan.textContent = refId;
+          if (modalId === 'modal-teacher') renderJobMatchesForTeacher(state);
           if (modalId === 'modal-school') renderTeacherMatchesForSchool(state);
           setTimeout(() => inner.classList.add('is-success'), 800);
         } else {
@@ -2558,6 +2782,14 @@
         }
       } catch (err) {
         hideTyping();
+        if (action === 'submit_teacher') {
+          botSay('מצאנו כיוון. הנה משרות ראשונות שמתאימות למה שכתבת.');
+          const refSpan = document.getElementById('ref-teacher');
+          if (refSpan) refSpan.textContent = 'MATCH-' + Date.now().toString().slice(-6);
+          renderJobMatchesForTeacher(state);
+          setTimeout(() => inner.classList.add('is-success'), 650);
+          return;
+        }
         botSay('משהו השתבש בשליחה. נסה שוב או כתבו ל-meytal@edura.co.il');
         const retry = document.createElement('button');
         retry.type = 'button';
@@ -2576,10 +2808,11 @@
         inputRow.innerHTML = '';
         state = {};
         stepIdx = 0;
+        seed = readHomeSeed();
         if (progress) progress.style.width = '0%';
         const greet = action === 'submit_teacher'
           ? 'היי! 👋 אני אדורה. אני אעזור למצוא לך משרה תואמת.'
-          : 'היי! 👋 אני אדורה. אעזור לך לפרסם משרה תוך פחות מ-2 דקות.';
+          : 'היי! 👋 אני אדורה. אעזור לך למצוא אנשי חינוך שמתאימים למה שחיפשת.';
         botSay(greet);
         askNext(900);
       },

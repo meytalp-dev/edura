@@ -111,7 +111,7 @@
     background: var(--pink-deep);
     opacity: 0;
     pointer-events: none;
-    animation: logoDotSettle .5s ease-out 1.3s forwards;
+    animation: none;
   }
 
   @keyframes logoDotSettle {
@@ -164,13 +164,40 @@
   }
 
   .edura-match-start {
-    max-width: 560px;
+    position: relative;
+    overflow: hidden;
+    width: min(100% - 32px, 1120px);
+    max-width: 1120px;
     margin: 0 auto 10px;
-    padding: 12px;
-    border: 1px solid rgba(15, 27, 45, .08);
-    border-radius: 8px;
-    background: rgba(255, 255, 255, .94);
-    box-shadow: 0 6px 16px rgba(15, 27, 45, .025);
+    padding: 14px;
+    border: 1px solid rgba(255, 255, 255, .08);
+    border-radius: 10px;
+    background:
+      radial-gradient(circle at 18% 12%, rgba(230, 0, 126, .28), transparent 26%),
+      linear-gradient(135deg, #0B1728 0%, #111B2C 58%, #E6007E 175%);
+    box-shadow: 0 18px 45px rgba(15, 27, 45, .16);
+  }
+
+  .edura-match-start::before {
+    content: "";
+    position: absolute;
+    inset: -45% -25%;
+    background: linear-gradient(115deg, transparent 34%, rgba(255,255,255,.18) 48%, rgba(255,255,255,.42) 50%, rgba(230,0,126,.18) 54%, transparent 68%);
+    transform: translateX(110%);
+    animation: eduraPanelShine 5.5s ease-in-out 1.5s infinite;
+    pointer-events: none;
+  }
+
+  .edura-match-start > * {
+    position: relative;
+    z-index: 1;
+  }
+
+  @keyframes eduraPanelShine {
+    0%, 58% { transform: translateX(110%); opacity: 0; }
+    64% { opacity: 1; }
+    82% { transform: translateX(-110%); opacity: 0; }
+    100% { transform: translateX(-110%); opacity: 0; }
   }
 
   .edura-match-head {
@@ -182,18 +209,19 @@
   }
 
   .edura-match-head strong {
-    color: var(--ink);
+    color: #fff;
     font-size: 14px;
     font-weight: 600;
   }
 
   .edura-match-pill {
     padding: 4px 10px;
-    border: 1px solid var(--pink-deep);
+    border: 1px solid rgba(255,255,255,.32);
     border-radius: 999px;
-    color: var(--ink);
+    color: #fff;
     font-size: 11.5px;
     font-weight: 600;
+    background: rgba(255,255,255,.07);
   }
 
   .edura-match-options {
@@ -206,14 +234,14 @@
   .edura-match-option {
     min-height: 36px;
     padding: 7px 9px;
-    border: 1px solid rgba(15, 27, 45, .08);
-    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, .16);
+    border-radius: 9px;
     display: inline-flex;
     align-items: center;
     justify-content: center;
     gap: 7px;
-    color: var(--ink);
-    background: rgba(255, 255, 255, .78);
+    color: #fff;
+    background: rgba(255, 255, 255, .06);
     font-size: 12px;
     font-weight: 600;
     font-family: inherit;
@@ -230,7 +258,8 @@
   .edura-match-option.active {
     border-color: var(--pink-deep);
     background: #fff;
-    box-shadow: 0 4px 12px rgba(230, 0, 126, .06);
+    color: var(--ink);
+    box-shadow: 0 8px 20px rgba(230, 0, 126, .2);
   }
 
   .edura-match-option svg {
@@ -248,10 +277,10 @@
 
   .edura-match-field {
     min-height: 36px;
-    border: 1px solid rgba(15, 27, 45, .08);
-    border-radius: 8px;
-    background: #F8F9FB;
-    color: var(--ink-mute);
+    border: 1px solid rgba(255, 255, 255, .14);
+    border-radius: 9px;
+    background: rgba(255, 255, 255, .08);
+    color: rgba(255,255,255,.66);
     display: flex;
     align-items: center;
     gap: 8px;
@@ -272,12 +301,12 @@
     border: 0;
     outline: 0;
     background: transparent;
-    color: var(--ink);
+    color: #fff;
     font: inherit;
   }
 
   .edura-match-field input::placeholder {
-    color: var(--ink-mute);
+    color: rgba(255,255,255,.66);
   }
 
   .edura-match-actions {
@@ -291,7 +320,7 @@
     min-height: 40px;
     width: min(100%, 390px);
     margin: 0 auto;
-    border-radius: 8px;
+    border-radius: 9px;
     background: var(--pink-deep);
     color: #fff;
     display: inline-flex;
@@ -302,7 +331,7 @@
     font-weight: 700;
     font-family: inherit;
     cursor: pointer;
-    box-shadow: 0 8px 18px rgba(230, 0, 126, .12);
+    box-shadow: 0 14px 30px rgba(230, 0, 126, .24);
   }
 
   .edura-match-cta[disabled] {
@@ -513,15 +542,22 @@
     gap: 8px;
   }
   .match-step:not(:last-child)::after {
-    content: "";
+    content: "←";
     position: absolute;
-    left: -8px;
-    top: 26px;
-    width: 5px;
-    height: 5px;
+    left: -13px;
+    top: 22px;
+    width: 18px;
+    height: 18px;
     border-radius: 999px;
-    background: var(--pink-deep);
-    opacity: .65;
+    display: grid;
+    place-items: center;
+    background: rgba(230, 0, 126, .08);
+    color: var(--pink-deep);
+    border: 1px solid rgba(230, 0, 126, .22);
+    font-size: 18px;
+    font-weight: 900;
+    line-height: 1;
+    opacity: .95;
   }
   .match-step:not(:last-child)::before {
     display: none;
@@ -1758,13 +1794,7 @@
     max-height: 86px;
   }
   .footer-tagline { font-size: 13px; color: rgba(255,255,255,.78); line-height: 1.6; max-width: 280px; }
-  .footer-bottom {
-    max-width: 1320px; margin: 32px auto 0;
-    padding-top: 20px; border-top: 1px solid rgba(255,255,255,.22);
-    display: flex; justify-content: space-between; align-items: center; gap: 16px;
-    flex-wrap: wrap;
-    font-size: 12px; color: rgba(255,255,255,.72);
-  }
+  .footer-bottom { display: none; }
   .footer-socials { display: flex; gap: 8px; }
   .footer-socials a {
     width: 34px; height: 34px; border-radius: 50%;
@@ -2083,8 +2113,8 @@
   }
   @keyframes eduraMatchStepIn {
     from {
-      opacity: 0;
-      transform: translateX(34px) scale(.94);
+      opacity: 1;
+      transform: translateX(22px) scale(.96);
     }
     to {
       opacity: 1;
@@ -2102,17 +2132,20 @@
     }
   }
   .match-journey-panel .match-step {
-    opacity: 0;
-    animation: eduraMatchStepIn .58s cubic-bezier(.2,.8,.2,1) forwards;
+    opacity: 1;
   }
-  .match-journey-panel .match-step:nth-child(1) { animation-delay: .05s; }
-  .match-journey-panel .match-step:nth-child(2) { animation-delay: .16s; }
-  .match-journey-panel .match-step:nth-child(3) { animation-delay: .27s; }
-  .match-journey-panel .match-step:nth-child(4) { animation-delay: .38s; }
-  .match-journey-panel .match-step:nth-child(5) { animation-delay: .49s; }
-  .match-journey-panel .match-step:nth-child(5) .match-step-visual {
-    animation: eduraMatchPulse 1.9s ease-in-out .95s both;
+
+  .jobs-search {
+    display: none !important;
   }
+  body.edura-showtime .logo-live-dot { animation: logoDotSettle .5s ease-out 1.3s forwards; }
+  body.edura-showtime .match-journey-panel .match-step { animation: eduraMatchStepIn .58s cubic-bezier(.2,.8,.2,1) forwards; }
+  body.edura-showtime .match-journey-panel .match-step:nth-child(1) { animation-delay: .05s; }
+  body.edura-showtime .match-journey-panel .match-step:nth-child(2) { animation-delay: .16s; }
+  body.edura-showtime .match-journey-panel .match-step:nth-child(3) { animation-delay: .27s; }
+  body.edura-showtime .match-journey-panel .match-step:nth-child(4) { animation-delay: .38s; }
+  body.edura-showtime .match-journey-panel .match-step:nth-child(5) { animation-delay: .49s; }
+  body.edura-showtime .match-journey-panel .match-step:nth-child(5) .match-step-visual { animation: eduraMatchPulse 1.9s ease-in-out .95s both; }
   .row-expand {
     margin: 10px auto 0;
     padding: 8px 14px 9px;
@@ -2340,7 +2373,7 @@
     animation: eduraMatchPulse 2.1s ease-in-out .95s both infinite !important;
   }
   .match-step:not(:last-child)::after {
-    animation: eduraMatchDotGlow 1.8s ease-in-out infinite;
+    animation: none !important;
   }
   .site-footer {
     background:
@@ -2423,6 +2456,223 @@
         linear-gradient(150deg, var(--pink-deep) 0 72%, var(--ink) 72% 100%) !important;
     }
   }
+  .home-search,
+  .free-search,
+  .jobs-toolbar,
+  .jobs-search {
+    display: none !important;
+  }
+
+  .topbar {
+    background:
+      linear-gradient(112deg, var(--pink-deep) 0 47%, var(--ink) 47% 100%) !important;
+    border-bottom: 0 !important;
+    box-shadow: 0 12px 30px rgba(15,27,45,.12);
+  }
+
+  .topbar::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+      background: linear-gradient(115deg, transparent 28%, rgba(255,255,255,.13) 44%, transparent 58%);
+    opacity: .6;
+    pointer-events: none;
+  }
+
+  .topbar-inner {
+    position: relative;
+    z-index: 1;
+  }
+
+  .topbar-logo .brand-logo-img {
+    width: 245px !important;
+    max-height: 82px !important;
+  }
+
+  .logo-live-dot {
+    background: #fff;
+  }
+
+  .nav-link,
+  .nav-link.primary {
+    color: rgba(255,255,255,.92) !important;
+  }
+
+  .nav-link:hover {
+    color: #fff !important;
+  }
+
+  .nav-link::after {
+    background: #fff !important;
+  }
+
+  .menu-toggle {
+    background: rgba(255,255,255,.12) !important;
+    color: #fff !important;
+  }
+
+  @media (max-width: 760px) {
+    .topbar {
+      background: linear-gradient(145deg, var(--pink-deep) 0 62%, var(--ink) 62% 100%) !important;
+    }
+    .topbar-logo .brand-logo-img {
+      width: 174px !important;
+      max-height: 62px !important;
+    }
+  }
+
+  /* Current tuning */
+  .topbar {
+    position: sticky !important;
+    top: 0;
+    z-index: 1200;
+    overflow: hidden;
+    padding: 10px 24px !important;
+    min-height: 72px !important;
+  }
+  .topbar-inner {
+    min-height: 58px !important;
+    max-width: 1180px !important;
+  }
+  .topbar-logo .brand-logo-img {
+    width: 220px !important;
+    max-height: 70px !important;
+    object-fit: contain;
+  }
+  .logo-live-dot {
+    width: 12px !important;
+    height: 12px !important;
+    background: var(--pink-deep) !important;
+    border: 2px solid #fff !important;
+    box-shadow: 0 0 0 6px rgba(255,255,255,.18), 0 0 24px rgba(230,0,126,.72) !important;
+  }
+  .title-flight-dot {
+    width: .25em !important;
+    height: .25em !important;
+    background: var(--pink-deep) !important;
+    border: 2px solid #fff !important;
+    box-shadow: 0 0 0 7px rgba(230,0,126,.12), 0 0 26px rgba(230,0,126,.62) !important;
+  }
+  .edura-match-start.match-mode-teacher {
+    background:
+      radial-gradient(circle at 18% 10%, rgba(230,0,126,.14), transparent 28%),
+      linear-gradient(135deg, #07111F 0%, #0F1B2D 64%, #111827 118%) !important;
+  }
+  .edura-match-start.match-mode-school {
+    background:
+      radial-gradient(circle at 82% 12%, rgba(255,255,255,.22), transparent 25%),
+      linear-gradient(135deg, #E6007E 0%, #D00077 58%, #A31363 116%) !important;
+  }
+  .edura-match-start.match-mode-school .edura-match-cta {
+    background: var(--ink) !important;
+    box-shadow: 0 16px 34px rgba(15,27,45,.22) !important;
+  }
+  .edura-match-start.match-mode-school .edura-match-option.active {
+    border-color: #fff !important;
+    background: #fff !important;
+    color: var(--ink) !important;
+  }
+  .edura-match-start.match-mode-school .edura-match-field,
+  .edura-match-start.match-mode-school .edura-match-option:not(.active) {
+    background: rgba(255,255,255,.12) !important;
+    border-color: rgba(255,255,255,.26) !important;
+    color: #fff !important;
+  }
+  .edura-match-start.match-mode-school .edura-match-field input::placeholder {
+    color: rgba(255,255,255,.72) !important;
+  }
+  .site-footer {
+    padding: 26px 24px 14px !important;
+    margin-top: 28px !important;
+  }
+  .footer-inner {
+    max-width: 1120px !important;
+    grid-template-columns: minmax(260px, 1fr) minmax(150px, .42fr) !important;
+    gap: 22px !important;
+  }
+  .footer-brand .brand-logo-img {
+    width: 190px !important;
+    max-height: 70px !important;
+  }
+  .footer-tagline {
+    font-size: 12px !important;
+    max-width: 250px !important;
+  }
+  .footer-col a {
+    font-size: 13px !important;
+  }
+  .footer-bottom {
+    display: none !important;
+  }
+  @media (max-width: 760px) {
+    .topbar {
+      min-height: 68px !important;
+      padding: 8px 12px !important;
+      background: var(--ink) !important;
+    }
+    .topbar::before {
+      content: "";
+      position: absolute;
+      inset: 0 auto 0 0;
+      width: 42%;
+      background: var(--pink-deep);
+      clip-path: polygon(0 0, 100% 0, 70% 100%, 0 100%);
+      pointer-events: none;
+    }
+    .topbar::after {
+      opacity: .18 !important;
+    }
+    .topbar-inner {
+      width: 100% !important;
+      max-width: none !important;
+      min-height: 52px !important;
+      gap: 8px !important;
+    }
+    .topbar-logo {
+      margin-inline-start: auto;
+      min-width: 0;
+      flex: 0 0 auto;
+    }
+    .topbar-logo .brand-logo-img {
+      width: 154px !important;
+      max-height: 52px !important;
+    }
+    .logo-live-dot {
+      width: 10px !important;
+      height: 10px !important;
+    }
+    .menu-toggle {
+      width: 46px !important;
+      height: 46px !important;
+      border-radius: 12px !important;
+      background: rgba(230,0,126,.72) !important;
+      color: #fff !important;
+    }
+    .site-footer {
+      padding: 18px 18px 12px !important;
+      background: linear-gradient(150deg, var(--pink-deep) 0 78%, var(--ink) 78% 100%) !important;
+    }
+    .footer-inner {
+      display: block !important;
+      text-align: right !important;
+    }
+    .footer-col:nth-child(2) {
+      display: none !important;
+    }
+    .footer-brand {
+      justify-content: flex-start !important;
+    }
+    .footer-brand .brand-logo-img {
+      width: 160px !important;
+      max-height: 60px !important;
+    }
+    .footer-tagline {
+      margin: 0 !important;
+      max-width: 290px !important;
+      font-size: 12px !important;
+      line-height: 1.55 !important;
+    }
+  }
 </style>
 </head>
 <body>
@@ -2490,7 +2740,7 @@
 
 <header class="topbar">
   <div class="topbar-inner">
-    <a href="/" class="topbar-logo" aria-label="אדורה"><span class="logo-live-dot" aria-hidden="true"></span><img class="brand-logo-img" src="assets/brand/edura-logo-header-dotless.png" data-full-logo="assets/brand/edura-logo-header.png" alt="אדורה" /></a>
+    <a href="/" class="topbar-logo" aria-label="אדורה"><span class="logo-live-dot" aria-hidden="true"></span><img class="brand-logo-img" src="assets/brand/edura-logo-footer-white-pink-smile.png" data-full-logo="assets/brand/edura-logo-footer-white-pink-smile.png" alt="אדורה" /></a>
     <nav class="topbar-nav" aria-label="ניווט ראשי">
       <a class="nav-link" href="publish-job.html#teacher"><svg><use href="#i-briefcase"/></svg> חיפוש משרה</a>
       <a class="nav-link" href="publish-job.html#school"><svg><use href="#i-users"/></svg> חיפוש מורים</a>
@@ -2519,9 +2769,9 @@
 <section class="edura-hero" aria-labelledby="edura-hero-title">
   <div class="edura-hero-panel">
     <div class="edura-hero-copy">
-      <p class="edura-hero-kicker">לוח משרות מעודכן <span id="today-date"></span></p>
+      <p class="edura-hero-kicker">מאץ׳ משרות מתעדכן <span id="today-date"></span></p>
       <h1 class="edura-hero-title" id="edura-hero-title">לא מחפשים משרה.<span class="hero-title-line">מוצאים מאץ׳ נכון.<span class="title-flight-dot" aria-hidden="true"></span></span></h1>
-      <p class="edura-hero-sub">אדורה מחברת בין אנשי חינוך למשרות שמתאימות באמת לפי אזור, תפקיד, ניסיון, גיל, תחום חינוכי ומה שחשוב לכם.</p>
+      <p class="edura-hero-sub">אדורה מחברת בין אנשי חינוך למשרות שמתאימות באמת לפי אזור, תפקיד, ניסיון, גיל ותחום חינוכי. המידע באתר מתעדכן יום יום וסורק את המקורות המרכזיים של עולם ההוראה, כדי לרכז לכם הזדמנויות רלוונטיות במקום אחד.</p>
     </div>
 
     <section class="match-journey" aria-label="איך המאצ׳ עובד">
@@ -2705,7 +2955,7 @@
       </div>
     </div>
     <div class="row-scroll" id="row-hot"></div>
-    <button class="row-expand" data-expand="row-hot-wrap" aria-label="צפייה בכל המשרות"><span>צפייה בכל המשרות</span><strong>⌄</strong></button>
+    <button class="row-expand" data-expand="row-hot-wrap" aria-label="טען עוד"><span>טען עוד</span><strong>⌄</strong></button>
   </div>
 
   <div class="row" id="row-fresh-wrap">
@@ -2719,7 +2969,7 @@
       </div>
     </div>
     <div class="row-scroll" id="row-fresh"></div>
-    <button class="row-expand" data-expand="row-fresh-wrap" aria-label="צפייה בכל המשרות"><span>צפייה בכל המשרות</span><strong>⌄</strong></button>
+    <button class="row-expand" data-expand="row-fresh-wrap" aria-label="טען עוד"><span>טען עוד</span><strong>⌄</strong></button>
   </div>
 
   <div class="row" id="row-all-wrap">
@@ -2733,7 +2983,7 @@
       </div>
     </div>
     <div class="row-scroll" id="row-all"></div>
-    <button class="row-expand" data-expand="row-all-wrap" aria-label="צפייה בכל המשרות"><span>צפייה בכל המשרות</span><strong>⌄</strong></button>
+    <button class="row-expand" data-expand="row-all-wrap" aria-label="טען עוד"><span>טען עוד</span><strong>⌄</strong></button>
   </div>
 
 </main>
@@ -3026,6 +3276,27 @@ function escapeHtml(s) {
     .replace(/"/g,'&quot;').replace(/'/g,'&#39;');
 }
 
+function dateValue(job) {
+  const raw = job && (job.date_iso || job.date || job.published_at || job.created_at);
+  const time = raw ? new Date(raw).getTime() : 0;
+  return Number.isFinite(time) ? time : 0;
+}
+
+function sortByNewest(a, b) {
+  return dateValue(b) - dateValue(a);
+}
+
+function formatPublishedDate(value) {
+  if (!value) return '';
+  const date = new Date(value);
+  if (!Number.isFinite(date.getTime())) return '';
+  return new Intl.DateTimeFormat('he-IL', {
+    day: 'numeric',
+    month: 'short',
+    year: 'numeric'
+  }).format(date);
+}
+
 function renderSubjectChips() {
   // Count using current city+level+query filter to give live counts
   const ctx = JOBS.filter(j =>
@@ -3171,6 +3442,7 @@ function renderJobCard(job, badge) {
   const regionLabel = (job.region && job.region !== city) ? 'אזור ' + job.region : '';
   const photo = pickPhoto(job);
   const title = buildJobTitle(job);
+  const publishedLabel = formatPublishedDate(job.date_iso || job.date || job.published_at);
 
   const metaParts = [];
   if (job.scope) metaParts.push('<strong>' + escapeHtml(job.scope) + '</strong>');
@@ -3206,6 +3478,7 @@ function renderJobCard(job, badge) {
         '</div>' +
       '</div>' +
       '<div class="job-body">' +
+        (publishedLabel ? '<div class="job-date">פורסם ' + escapeHtml(publishedLabel) + '</div>' : '') +
         '<div class="job-title">' + escapeHtml(title) + '</div>' +
         (job.school ? '<div class="job-school">' + escapeHtml(job.school) + '</div>' : '') +
         (metaHtml ? '<div class="job-meta">' + metaHtml + '</div>' : '') +
@@ -3216,8 +3489,8 @@ function renderJobCard(job, badge) {
 }
 
 function renderRows() {
-  const pool = applyFilters();
-  const today = new Date('2026-05-05');
+  const pool = applyFilters().slice().sort(sortByNewest);
+  const today = new Date();
   const sevenDaysAgo = new Date(today.getTime() - 7*24*60*60*1000);
 
   // HOT — duplicated across sources.
@@ -3235,7 +3508,8 @@ function renderRows() {
     .slice(0, 16);
 
   const allWrap = document.getElementById('row-all-wrap');
-  const allLimit = allWrap && allWrap.classList.contains('expanded') ? Math.min(pool.length, 12) : 4;
+  const expandedCount = Number(allWrap && allWrap.dataset.visibleCount || 4);
+  const allLimit = allWrap && allWrap.classList.contains('expanded') ? Math.min(pool.length, expandedCount) : 4;
   const all = pool.slice(0, allLimit);
 
   const setRow = (id, items, badge, emptyMsg) => {
@@ -3258,7 +3532,7 @@ function renderRows() {
   if (expand) {
     const isOpen = allWrap && allWrap.classList.contains('expanded');
     const label = expand.querySelector('span');
-    if (label) label.textContent = isOpen ? 'הצג פחות' : 'עוד משרות באדורה';
+    if (label) label.textContent = 'טען עוד';
   }
 }
 
@@ -3462,12 +3736,16 @@ document.getElementById('menu-toggle').addEventListener('click', openDrawer);
 function acceptCookies() {
   try { localStorage.setItem('edura_cookies_accepted', '1'); } catch (e) {}
   document.getElementById('cookies-banner').classList.remove('visible');
+  window.runEduraIntro?.();
 }
 window.acceptCookies = acceptCookies;
 (function showCookiesIfNeeded() {
   let accepted = false;
   try { accepted = localStorage.getItem('edura_cookies_accepted') === '1'; } catch (e) {}
-  if (!accepted) setTimeout(() => document.getElementById('cookies-banner').classList.add('visible'), 1000);
+  window.addEventListener('load', () => {
+    window.runEduraIntro?.();
+    if (!accepted) setTimeout(() => document.getElementById('cookies-banner').classList.add('visible'), 2100);
+  }, { once: true });
 })();
 
 // Subject free-text search
@@ -3513,8 +3791,9 @@ document.querySelectorAll('.row-expand').forEach(btn => {
   btn.addEventListener('click', () => {
     const row = document.getElementById(btn.dataset.expand);
     if (!row) return;
-    row.classList.toggle('expanded');
-    btn.setAttribute('aria-label', row.classList.contains('expanded') ? 'סגור' : 'פתח הכל');
+    row.classList.add('expanded');
+    row.dataset.visibleCount = String(Number(row.dataset.visibleCount || 4) + 8);
+    btn.setAttribute('aria-label', 'טען עוד משרות');
     renderRows();
   });
 });
@@ -3548,6 +3827,8 @@ function initHomeMatchBox() {
 
   function setMode(nextMode) {
     mode = nextMode || 'teacher';
+    box.classList.toggle('match-mode-teacher', mode === 'teacher');
+    box.classList.toggle('match-mode-school', mode === 'school');
     modeButtons.forEach(btn => {
       btn.classList.toggle('active', btn.dataset.matchMode === mode);
       btn.setAttribute('aria-pressed', btn.dataset.matchMode === mode ? 'true' : 'false');
@@ -3616,11 +3897,21 @@ loadJobs();
 </script>
 
 <script>
-window.addEventListener('load', () => {
+window.runEduraIntro = function runEduraIntro() {
+  if (window.__eduraIntroStarted) return;
+  window.__eduraIntroStarted = true;
   const dot = document.querySelector('.title-flight-dot');
   const target = document.querySelector('.logo-live-dot');
   const logo = document.querySelector('.topbar-logo .brand-logo-img');
-  if (!dot || !target || !dot.animate) return;
+  const revealSteps = () => {
+    if (logo && logo.dataset.fullLogo) logo.src = logo.dataset.fullLogo;
+    window.setTimeout(() => document.body.classList.add('edura-showtime'), 180);
+  };
+
+  if (!dot || !target || !dot.animate) {
+    revealSteps();
+    return;
+  }
 
   const dotBox = dot.getBoundingClientRect();
   const targetBox = target.getBoundingClientRect();
@@ -3640,11 +3931,9 @@ window.addEventListener('load', () => {
   });
 
   flight.addEventListener('finish', () => {
-    if (logo && logo.dataset.fullLogo) {
-      logo.src = logo.dataset.fullLogo;
-    }
+    revealSteps();
   });
-});
+};
 </script>
 
 </body>
