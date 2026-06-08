@@ -506,7 +506,9 @@ function renderCard(j) {
   if (j.region && j.region !== (j.city || '').trim()) tags.push(`<span class="tag region">אזור ${esc(j.region)}</span>`);
   if (j.scope) tags.push(`<span class="tag">${esc(j.scope)}</span>`);
   if (j.sector) tags.push(`<span class="tag">${esc(j.sector)}</span>`);
-  tags.push(`<span class="tag source-${j.source}">${esc(j.source_name || j.source)}</span>`);
+  if (j.source_name || j.source) {
+    tags.push(`<span class="tag source-${j.source || 'none'}">${esc(j.source_name || j.source)}</span>`);
+  }
 
   const contact = [];
   if (j.email) contact.push(`<a href="mailto:${esc(j.email)}">${ICON_MAIL}${esc(j.email)}</a>`);
