@@ -5,11 +5,11 @@ data/*-private.json
 
 # Full job data with school+contact details — never commit (only public split is shipped)
 data/jobs.json
-data/jobs-pending.json
+# data/jobs-pending.json — קומיט פעיל מאז 8.6.2026 (לוקדאון בוטל 19.5, staging.html זקוק לקובץ)
 
 # Full teacher data with name+email+phone — never commit (only public split is shipped)
 data/teachers.json
-data/teachers-pending.json
+# data/teachers-pending.json — קומיט פעיל מאז 8.6.2026
 data/fb-teachers.json
 data/fb-teachers-2.json
 
