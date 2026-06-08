@@ -1,0 +1,652 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>אדורה · אדמין · דשבורד מאוחד</title>
+<meta name="robots" content="noindex,nofollow" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --teal: #009DE0;
+    --teal-deep: #0077B5;
+    --pink: #FCE7F3;
+    --pink-2: #FBCFE8;
+    --pink-soft: #FDF2F8;
+    --pink-deep: #BE185D;
+    --pink-deeper: #9D174D;
+    --ink: #0E1B2C;
+    --ink-soft: #2C3D55;
+    --ink-mute: #6B7B8E;
+    --line: #E8EAED;
+    --line-soft: #F4F5F7;
+    --bg: #FFFFFF;
+    --bg-2: #F7F8FA;
+    --success: #059669;
+    --success-soft: #D1FAE5;
+    --warn: #D97706;
+    --warn-soft: #FEF3C7;
+    --error: #DC2626;
+    --error-soft: #FEE2E2;
+    --shadow-sm: 0 1px 3px rgba(14,27,44,.06);
+    --shadow-md: 0 4px 12px rgba(14,27,44,.08);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { overflow-x: hidden; }
+  body {
+    font-family: 'Heebo', system-ui, sans-serif;
+    background: var(--bg-2); color: var(--ink);
+    line-height: 1.55; padding: 16px;
+    -webkit-font-smoothing: antialiased; min-height: 100vh;
+  }
+  .container { max-width: 1200px; margin: 0 auto; }
+  a { color: inherit; text-decoration: none; }
+  button { font: inherit; cursor: pointer; border: none; background: none; padding: 0; }
+
+  /* Header */
+  header.page { margin-bottom: 18px; }
+  .crumbs { display: flex; flex-wrap: wrap; gap: 10px; font-size: 12px; color: var(--ink-mute); margin-bottom: 12px; }
+  .crumbs a { color: var(--teal-deep); font-weight: 600; }
+  .crumbs a:hover { text-decoration: underline; }
+  h1 { font-size: 26px; font-weight: 900; letter-spacing: -.5px; margin-bottom: 4px; }
+  .sub { font-size: 14px; color: var(--ink-mute); }
+
+  /* Summary bar */
+  .summary {
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px;
+    background: var(--bg); border: 1px solid var(--line);
+    border-radius: 16px; padding: 14px 16px; margin: 16px 0;
+    box-shadow: var(--shadow-sm);
+  }
+  .stat { display: flex; flex-direction: column; gap: 2px; padding: 4px 6px; }
+  .stat-num { font-size: 22px; font-weight: 900; line-height: 1; }
+  .stat-num.teal { color: var(--teal-deep); }
+  .stat-num.pink { color: var(--pink-deep); }
+  .stat-num.success { color: var(--success); }
+  .stat-num.warn { color: var(--warn); }
+  .stat-label { font-size: 11px; color: var(--ink-mute); font-weight: 700; }
+
+  /* Tabs */
+  .tabs {
+    display: flex; gap: 4px; background: var(--bg); border: 1px solid var(--line);
+    border-radius: 999px; padding: 4px; margin-bottom: 18px;
+    overflow-x: auto; scrollbar-width: none;
+  }
+  .tabs::-webkit-scrollbar { display: none; }
+  .tab-btn {
+    flex: 1; padding: 9px 16px; border-radius: 999px;
+    font-size: 13px; font-weight: 700; color: var(--ink-mute);
+    white-space: nowrap; transition: all .15s;
+  }
+  .tab-btn:hover { color: var(--ink); }
+  .tab-btn.active {
+    background: linear-gradient(135deg, var(--teal), var(--teal-deep));
+    color: #fff; box-shadow: var(--shadow-sm);
+  }
+  .tab-btn .count {
+    display: inline-block; margin-inline-start: 6px;
+    background: rgba(255,255,255,.25); padding: 1px 8px;
+    border-radius: 999px; font-size: 11px; font-weight: 800;
+  }
+  .tab-btn:not(.active) .count {
+    background: var(--line-soft); color: var(--ink-mute);
+  }
+
+  /* Toolbar */
+  .toolbar {
+    background: var(--bg); border: 1px solid var(--line);
+    border-radius: 14px; padding: 12px 14px; margin-bottom: 14px;
+    display: flex; gap: 10px; flex-wrap: wrap; align-items: center;
+    box-shadow: var(--shadow-sm);
+  }
+  .toolbar input, .toolbar select {
+    font: inherit; padding: 8px 12px; border-radius: 8px;
+    border: 1.5px solid var(--line); background: var(--bg);
+    font-size: 13px; min-width: 0;
+  }
+  .toolbar input[type="text"] { flex: 1 1 200px; }
+  .toolbar select { flex: 0 1 140px; }
+  .toolbar input:focus, .toolbar select:focus {
+    outline: none; border-color: var(--teal);
+  }
+  .clear-btn {
+    background: var(--line-soft); color: var(--ink-soft);
+    padding: 8px 14px; border-radius: 8px; font-size: 12px; font-weight: 700;
+  }
+  .clear-btn:hover { background: var(--line); }
+
+  /* Cards grid */
+  .grid {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 12px;
+  }
+  .card {
+    background: var(--bg); border: 1px solid var(--line);
+    border-radius: 14px; padding: 14px;
+    box-shadow: var(--shadow-sm); cursor: pointer;
+    transition: all .15s; display: flex; flex-direction: column;
+  }
+  .card:hover {
+    border-color: var(--teal); box-shadow: var(--shadow-md);
+    transform: translateY(-1px);
+  }
+  .card-city {
+    font-size: 18px; font-weight: 900; color: var(--teal-deep);
+    line-height: 1.1; letter-spacing: -.3px; margin-bottom: 6px;
+  }
+  .card-city.no-city { color: var(--ink-mute); font-weight: 700; font-size: 14px; }
+  .card-title {
+    font-size: 14px; font-weight: 700; color: var(--ink);
+    line-height: 1.35; margin-bottom: 8px;
+    display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .card-meta {
+    display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 8px;
+  }
+  .chip {
+    display: inline-flex; align-items: center;
+    background: var(--line-soft); color: var(--ink-soft);
+    padding: 3px 9px; border-radius: 999px;
+    font-size: 11px; font-weight: 700;
+  }
+  .chip.subject { background: var(--pink-soft); color: var(--pink-deeper); }
+  .chip.level { background: #DBEAFE; color: #1E40AF; }
+  .chip.region { background: #ECFDF5; color: #065F46; }
+  .chip.source { background: var(--warn-soft); color: #92400E; font-size: 10px; }
+  .card-foot {
+    margin-top: auto; padding-top: 8px; border-top: 1px dashed var(--line);
+    font-size: 11px; color: var(--ink-mute); display: flex; justify-content: space-between;
+  }
+
+  /* Empty state */
+  .empty {
+    background: var(--bg); border: 2px dashed var(--line);
+    border-radius: 16px; padding: 40px 20px; text-align: center;
+    color: var(--ink-mute);
+  }
+  .empty h3 { font-size: 18px; color: var(--ink-soft); margin-bottom: 6px; font-weight: 800; }
+  .empty p { font-size: 13px; max-width: 380px; margin: 0 auto; }
+
+  /* Modal */
+  .modal-bg {
+    position: fixed; inset: 0; background: rgba(14,27,44,.55);
+    display: none; align-items: center; justify-content: center;
+    padding: 16px; z-index: 100; backdrop-filter: blur(4px);
+  }
+  .modal-bg.open { display: flex; }
+  .modal {
+    background: var(--bg); border-radius: 18px; max-width: 600px;
+    width: 100%; max-height: 90vh; overflow-y: auto;
+    padding: 22px; box-shadow: 0 25px 60px rgba(14,27,44,.4);
+    position: relative;
+  }
+  .modal-close {
+    position: absolute; top: 14px; inset-inline-start: 14px;
+    width: 32px; height: 32px; border-radius: 50%;
+    background: var(--line-soft); color: var(--ink-soft);
+    font-size: 20px; font-weight: 900;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .modal-close:hover { background: var(--line); }
+  .modal h2 {
+    font-size: 20px; font-weight: 900; margin-bottom: 4px;
+    padding-inline-end: 40px;
+  }
+  .modal .modal-city { color: var(--teal-deep); font-weight: 800; }
+  .modal-meta {
+    display: flex; flex-wrap: wrap; gap: 6px; margin: 12px 0;
+  }
+  .modal dl {
+    display: grid; grid-template-columns: max-content 1fr;
+    gap: 10px 14px; margin: 16px 0;
+    font-size: 13px;
+  }
+  .modal dt { color: var(--ink-mute); font-weight: 700; }
+  .modal dd { color: var(--ink); }
+  .modal dd a { color: var(--teal-deep); font-weight: 700; }
+  .modal dd a:hover { text-decoration: underline; }
+  .modal .desc {
+    background: var(--bg-2); border-radius: 12px; padding: 14px;
+    font-size: 13px; line-height: 1.6; color: var(--ink-soft);
+    white-space: pre-line;
+  }
+  .modal .actions {
+    display: flex; gap: 8px; flex-wrap: wrap; margin-top: 16px;
+  }
+  .modal .actions a, .modal .actions button {
+    padding: 9px 16px; border-radius: 999px;
+    font-size: 13px; font-weight: 700;
+    background: var(--teal-deep); color: #fff;
+  }
+  .modal .actions a:hover { background: var(--teal); }
+  .modal .actions .secondary { background: var(--line-soft); color: var(--ink-soft); }
+  .modal .actions .secondary:hover { background: var(--line); }
+
+  /* Materials placeholder */
+  .materials-plan {
+    background: var(--bg); border: 1px solid var(--line);
+    border-radius: 16px; padding: 22px; box-shadow: var(--shadow-sm);
+    margin-bottom: 14px;
+  }
+  .materials-plan h3 {
+    font-size: 17px; font-weight: 800; margin-bottom: 12px;
+    color: var(--ink); display: flex; align-items: center; gap: 8px;
+  }
+  .materials-plan h3::before {
+    content: ''; width: 4px; height: 18px;
+    background: linear-gradient(180deg, var(--teal), var(--pink-deep));
+    border-radius: 2px;
+  }
+  .materials-plan p { font-size: 13.5px; color: var(--ink-soft); margin-bottom: 10px; }
+  .source-grid {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 10px; margin-top: 12px;
+  }
+  .source-card {
+    background: var(--bg-2); border: 1px solid var(--line);
+    border-radius: 12px; padding: 12px;
+  }
+  .source-card .name { font-weight: 800; font-size: 14px; margin-bottom: 4px; }
+  .source-card .name a { color: var(--teal-deep); }
+  .source-card .desc { font-size: 12px; color: var(--ink-mute); }
+
+  .step-list {
+    list-style: none; counter-reset: step; padding: 0;
+  }
+  .step-list li {
+    counter-increment: step; position: relative;
+    padding-inline-start: 36px; margin-bottom: 10px;
+    font-size: 13px; color: var(--ink-soft); line-height: 1.6;
+  }
+  .step-list li::before {
+    content: counter(step); position: absolute;
+    inset-inline-start: 0; top: 0;
+    width: 24px; height: 24px;
+    background: linear-gradient(135deg, var(--teal), var(--pink-deep));
+    color: #fff; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 12px; font-weight: 900;
+  }
+
+  /* Mobile */
+  @media (max-width: 640px) {
+    body { padding: 12px; }
+    h1 { font-size: 22px; }
+    .summary { grid-template-columns: repeat(2, 1fr); }
+    .stat-num { font-size: 20px; }
+    .tabs { padding: 3px; }
+    .tab-btn { padding: 8px 10px; font-size: 12px; }
+    .toolbar { padding: 10px; }
+    .toolbar select, .toolbar input[type="text"] { flex: 1 1 100%; }
+    .grid { grid-template-columns: 1fr; }
+    .modal { padding: 18px; }
+    .modal dl { grid-template-columns: 1fr; gap: 4px 0; }
+    .modal dt { margin-top: 8px; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <header class="page">
+    <div class="crumbs">
+      <a href="../">בית</a>
+      <span>·</span>
+      <span>אדמין</span>
+      <span>·</span>
+      <a href="matches.html">התאמות</a>
+      <span>·</span>
+      <a href="../staging.html">סטייג'ינג משרות</a>
+      <span>·</span>
+      <a href="../verify-teachers.html">סטייג'ינג מורים</a>
+    </div>
+    <h1>הדשבורד של אדורה</h1>
+    <div class="sub">תצוגה מאוחדת של כל המאגרים החיים · משרות בתי-ספר, מורים מחפשים, חומרי לימוד</div>
+  </header>
+
+  <div class="summary" id="summary">
+    <div class="stat"><div class="stat-num teal" id="sum-jobs">—</div><div class="stat-label">משרות בית-ספר</div></div>
+    <div class="stat"><div class="stat-num pink" id="sum-teachers">—</div><div class="stat-label">מורים מחפשים</div></div>
+    <div class="stat"><div class="stat-num success" id="sum-materials">0</div><div class="stat-label">חומרי לימוד</div></div>
+    <div class="stat"><div class="stat-num warn" id="sum-pending">—</div><div class="stat-label">ממתינים לאישור</div></div>
+  </div>
+
+  <div class="tabs" role="tablist">
+    <button class="tab-btn active" data-tab="jobs" role="tab">משרות בתי-ספר <span class="count" id="cnt-jobs">—</span></button>
+    <button class="tab-btn" data-tab="teachers" role="tab">מורים מחפשים <span class="count" id="cnt-teachers">—</span></button>
+    <button class="tab-btn" data-tab="materials" role="tab">חומרי לימוד <span class="count" id="cnt-materials">0</span></button>
+  </div>
+
+  <!-- TAB: JOBS -->
+  <section class="tab-pane" id="pane-jobs">
+    <div class="toolbar">
+      <input type="text" id="q-jobs" placeholder="חיפוש: בית ספר, עיר, מקצוע..." />
+      <select id="f-jobs-region"><option value="">כל האזורים</option></select>
+      <select id="f-jobs-level"><option value="">כל השכבות</option></select>
+      <select id="f-jobs-subject"><option value="">כל המקצועות</option></select>
+      <select id="f-jobs-source"><option value="">כל המקורות</option></select>
+      <button class="clear-btn" onclick="clearFilters('jobs')">נקה</button>
+    </div>
+    <div class="grid" id="grid-jobs"></div>
+  </section>
+
+  <!-- TAB: TEACHERS -->
+  <section class="tab-pane" id="pane-teachers" style="display:none">
+    <div class="toolbar">
+      <input type="text" id="q-teachers" placeholder="חיפוש: שם, עיר, מקצוע..." />
+      <select id="f-teachers-region"><option value="">כל האזורים</option></select>
+      <select id="f-teachers-subject"><option value="">כל המקצועות</option></select>
+      <select id="f-teachers-source"><option value="">כל המקורות</option></select>
+      <button class="clear-btn" onclick="clearFilters('teachers')">נקה</button>
+    </div>
+    <div class="grid" id="grid-teachers"></div>
+  </section>
+
+  <!-- TAB: MATERIALS -->
+  <section class="tab-pane" id="pane-materials" style="display:none">
+    <div class="materials-plan">
+      <h3>חומרי לימוד · המאגר עוד לא קיים</h3>
+      <p>הטאב הזה נועד להחזיק חומרי לימוד איכותיים שנסרקו ממקורות ציבוריים — מסוננים לפי <strong>שכבה</strong>, <strong>מקצוע</strong> ו<strong>רמה</strong>. בינתיים הוא ריק כי הסוכן הסורק עוד לא נבנה.</p>
+      <p>הצעת תכנון לסוכן ניתן לראות למטה. אחרי אישור — נכתוב את הסוכן ונפעיל אותו.</p>
+    </div>
+
+    <div class="materials-plan">
+      <h3>מקורות מועדפים</h3>
+      <p>5 מקורות רשמיים שתעדפת — איכות גבוהה, רישוי ברור, מותאמים לתכנית הלימודים:</p>
+      <div class="source-grid">
+        <div class="source-card">
+          <div class="name"><a href="https://sikumuna.co.il" target="_blank">סיכומונה</a></div>
+          <div class="desc">תקצירי לימוד לבגרות. ז-יב. כל המקצועות. אחד המאגרים הגדולים בישראל.</div>
+        </div>
+        <div class="source-card">
+          <div class="name"><a href="https://www.cet.ac.il" target="_blank">מט"ח</a></div>
+          <div class="desc">מרכז הטכנולוגיה החינוכית. ספרי לימוד דיגיטליים, סביבות לימוד.</div>
+        </div>
+        <div class="source-card">
+          <div class="name"><a href="https://ofek.cet.ac.il" target="_blank">אופק</a></div>
+          <div class="desc">פלטפורמת התכנים של מט"ח למורים. דורש הזדהות לחלק מהתכנים.</div>
+        </div>
+        <div class="source-card">
+          <div class="name"><a href="https://davidson.weizmann.ac.il" target="_blank">מכון דוידסון</a></div>
+          <div class="desc">מאגר חינוך מדעי של מכון ויצמן. שיעורים, סרטונים, פעילויות.</div>
+        </div>
+        <div class="source-card">
+          <div class="name"><a href="https://shieurprati.co.il" target="_blank">שיעור פרטי</a></div>
+          <div class="desc">שיעורים מצולמים. בעיקר תיכון. רמה משתנה.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="materials-plan">
+      <h3>ארכיטקטורת הסוכן · 4 שלבים</h3>
+      <ol class="step-list">
+        <li><strong>הגדרת מטה-קטלוג:</strong> רשימה מאומתת של ערוצי כניסה לכל מקור — קטגוריות, sitemaps, עמודי מקצוע. בלי זה הסוכן יחפש בעיוורון.</li>
+        <li><strong>סריקה מקבילה (WebFetch):</strong> סוכן פר מקור, רץ במקביל. כל סוכן מחזיר רשימת חומרים גולמית עם מטא-דאטה (כותרת, URL, מקצוע, שכבה, רמה, תקציר 2 משפטים).</li>
+        <li><strong>סינון + תיוג:</strong> סוכן שיפוט מצליב את הגולמי מול תכנית הלימודים של משרד החינוך (יחידות לימוד, נושאים בבגרות). מדרג איכות 1-5. פוסל חומר ב-AI generated, חומר חלקי, חומר ישן (לפני 2020).</li>
+        <li><strong>אישור ידני:</strong> מיטל עוברת ב-staging.html חדש (materials-pending.json) ומאשרת. רק המאושרים עוברים ל-materials.json החי שמוצג כאן.</li>
+      </ol>
+    </div>
+
+    <div class="materials-plan">
+      <h3>בעיות שכבר זיהיתי · להחליט עליהן לפני קוד</h3>
+      <ol class="step-list">
+        <li><strong>אופק וחלק ממט"ח דורשים login.</strong> הסוכן יוכל לחפש רק תכנים פתוחים. צריך לבחור מראש URL פתוחים בלבד.</li>
+        <li><strong>בלוגי מורים = פיזור.</strong> אין catalog מרכזי. אפשרות: לבקש ממיטל רשימת בלוגים מועדפים, ולסרוק אותם בלבד.</li>
+        <li><strong>"רמה" אינה אחידה.</strong> שיעורי פרטי = "תיכון", מטח = "ז-ח", סיכומונה = "יחידות". צריך מילון תרגום משותף.</li>
+        <li><strong>זכויות יוצרים.</strong> שמירת קישור + תקציר = בסדר. שמירת PDF המקור = לא. צריך להחליט אם להוריד מטא-דאטה בלבד.</li>
+      </ol>
+    </div>
+  </section>
+
+</div>
+
+<!-- Modal -->
+<div class="modal-bg" id="modal-bg" onclick="if(event.target===this) closeModal()">
+  <div class="modal" id="modal">
+    <button class="modal-close" onclick="closeModal()">×</button>
+    <div id="modal-content"></div>
+  </div>
+</div>
+
+<script>
+const STATE = {
+  jobs: { all: [], filtered: [], filters: { q:'', region:'', level:'', subject:'', source:'' } },
+  teachers: { all: [], filtered: [], filters: { q:'', region:'', subject:'', source:'' } },
+  materials: { all: [], filtered: [] }
+};
+
+// --- Load data ---
+async function loadAll() {
+  try {
+    const [jobsRes, teachersRes, pendingRes, pendingTeachersRes] = await Promise.all([
+      fetch('../data/jobs-public.json'),
+      fetch('../data/teachers-public.json'),
+      fetch('../data/jobs-pending.json').then(r => r.ok ? r : null).catch(()=>null),
+      fetch('../data/teachers-pending.json').then(r => r.ok ? r : null).catch(()=>null)
+    ]);
+    const jobs = await jobsRes.json();
+    const teachers = await teachersRes.json();
+    const pending = pendingRes && pendingRes.ok ? await pendingRes.json() : { total_pending: 0 };
+    const pendingTeachers = pendingTeachersRes && pendingTeachersRes.ok ? await pendingTeachersRes.json() : { total_pending: 0 };
+
+    STATE.jobs.all = jobs.jobs || [];
+    STATE.teachers.all = teachers.teachers || [];
+
+    document.getElementById('sum-jobs').textContent = jobs.total || STATE.jobs.all.length;
+    document.getElementById('sum-teachers').textContent = teachers.total || STATE.teachers.all.length;
+    const pendingTotal = (pending.total_pending || 0) + (pendingTeachers.total_pending || 0);
+    document.getElementById('sum-pending').textContent = pendingTotal;
+    document.getElementById('cnt-jobs').textContent = STATE.jobs.all.length;
+    document.getElementById('cnt-teachers').textContent = STATE.teachers.all.length;
+
+    populateFilters();
+    applyFilters('jobs');
+    applyFilters('teachers');
+  } catch (e) {
+    console.error(e);
+    document.getElementById('grid-jobs').innerHTML = '<div class="empty"><h3>שגיאה בטעינה</h3><p>' + e.message + '</p></div>';
+  }
+}
+
+function unique(arr, key) {
+  return Array.from(new Set(arr.map(x => x[key]).filter(Boolean))).sort((a,b) => a.localeCompare(b, 'he'));
+}
+
+function populateFilters() {
+  const jobs = STATE.jobs.all;
+  fillSelect('f-jobs-region', unique(jobs, 'region'));
+  fillSelect('f-jobs-level', unique(jobs, 'level'));
+  fillSelect('f-jobs-subject', unique(jobs, 'subject'));
+  fillSelect('f-jobs-source', unique(jobs, 'source_name'));
+
+  const teachers = STATE.teachers.all;
+  fillSelect('f-teachers-region', unique(teachers, 'region'));
+  fillSelect('f-teachers-subject', unique(teachers, 'subject'));
+  fillSelect('f-teachers-source', unique(teachers, 'source_name'));
+}
+
+function fillSelect(id, values) {
+  const sel = document.getElementById(id);
+  const first = sel.options[0];
+  sel.innerHTML = '';
+  sel.appendChild(first);
+  values.forEach(v => {
+    const o = document.createElement('option');
+    o.value = v; o.textContent = v;
+    sel.appendChild(o);
+  });
+}
+
+function applyFilters(tab) {
+  const s = STATE[tab];
+  const f = s.filters;
+  s.filtered = s.all.filter(item => {
+    if (f.region && item.region !== f.region) return false;
+    if (f.level && item.level !== f.level) return false;
+    if (f.subject && item.subject !== f.subject) return false;
+    if (f.source && item.source_name !== f.source) return false;
+    if (f.q) {
+      const q = f.q.toLowerCase();
+      const hay = [item.school, item.title, item.subject, item.city, item.name, item.description, item.snippet]
+        .filter(Boolean).join(' ').toLowerCase();
+      if (!hay.includes(q)) return false;
+    }
+    return true;
+  });
+  render(tab);
+}
+
+function render(tab) {
+  const grid = document.getElementById('grid-' + tab);
+  const items = STATE[tab].filtered;
+  if (items.length === 0) {
+    grid.innerHTML = '<div class="empty"><h3>אין תוצאות</h3><p>נסי לשנות את הסינון או לנקות אותו.</p></div>';
+    return;
+  }
+  grid.innerHTML = items.slice(0, 300).map((item, idx) => cardHTML(item, tab, idx)).join('');
+  if (items.length > 300) {
+    grid.innerHTML += `<div class="empty" style="grid-column:1/-1"><p>מציג 300 ראשונים מתוך ${items.length}. סנני להציג פחות.</p></div>`;
+  }
+  Array.from(grid.querySelectorAll('.card')).forEach(card => {
+    card.addEventListener('click', () => openModal(tab, parseInt(card.dataset.idx)));
+  });
+}
+
+function cardHTML(item, tab, idx) {
+  if (tab === 'jobs') {
+    return `<article class="card" data-idx="${idx}">
+      <div class="card-city ${item.city ? '' : 'no-city'}">${esc(item.city) || 'עיר לא זוהתה'}</div>
+      <div class="card-title">${esc(item.title || item.role || 'משרה')}</div>
+      <div class="card-meta">
+        ${item.subject ? `<span class="chip subject">${esc(item.subject)}</span>` : ''}
+        ${item.level ? `<span class="chip level">${esc(item.level)}</span>` : ''}
+        ${item.scope ? `<span class="chip">${esc(item.scope)}</span>` : ''}
+      </div>
+      <div class="card-foot">
+        <span>${esc(item.school || '')}</span>
+        <span class="chip source">${esc(item.source_name || item.source)}</span>
+      </div>
+    </article>`;
+  } else if (tab === 'teachers') {
+    return `<article class="card" data-idx="${idx}">
+      <div class="card-city ${item.city ? '' : 'no-city'}">${esc(item.city) || 'עיר לא זוהתה'}</div>
+      <div class="card-title">${esc(item.name || 'מורה')}</div>
+      <div class="card-meta">
+        ${item.subject ? `<span class="chip subject">${esc(item.subject)}</span>` : ''}
+        ${item.scope ? `<span class="chip level">${esc(item.scope)}%</span>` : ''}
+        ${item.region ? `<span class="chip region">${esc(item.region)}</span>` : ''}
+      </div>
+      <div class="card-foot">
+        <span>${esc(item.date || '')}</span>
+        <span class="chip source">${esc(item.source_name || item.source)}</span>
+      </div>
+    </article>`;
+  }
+  return '';
+}
+
+function openModal(tab, idx) {
+  const item = STATE[tab].filtered[idx];
+  const content = document.getElementById('modal-content');
+  if (tab === 'jobs') {
+    content.innerHTML = `
+      <h2><span class="modal-city">${esc(item.city || 'עיר לא זוהתה')}</span> · ${esc(item.title || 'משרה')}</h2>
+      <div class="modal-meta">
+        ${item.subject ? `<span class="chip subject">${esc(item.subject)}</span>` : ''}
+        ${item.level ? `<span class="chip level">${esc(item.level)}</span>` : ''}
+        ${item.region ? `<span class="chip region">${esc(item.region)}</span>` : ''}
+        ${item.scope ? `<span class="chip">${esc(item.scope)}</span>` : ''}
+        ${item.role ? `<span class="chip">${esc(item.role)}</span>` : ''}
+      </div>
+      <dl>
+        <dt>בית ספר</dt><dd>${esc(item.school || '—')}</dd>
+        <dt>תאריך פרסום</dt><dd>${esc(item.date || item.date_iso || '—')}</dd>
+        <dt>מקור</dt><dd>${esc(item.source_name || item.source)}</dd>
+        ${item.contact_name ? `<dt>איש קשר</dt><dd>${esc(item.contact_name)}</dd>` : ''}
+        ${item.email ? `<dt>מייל</dt><dd><a href="mailto:${esc(item.email)}">${esc(item.email)}</a></dd>` : ''}
+        ${item.phone ? `<dt>טלפון</dt><dd><a href="tel:${esc(item.phone)}">${esc(item.phone)}</a></dd>` : ''}
+        ${item.sub_area ? `<dt>אזור</dt><dd>${esc(item.sub_area)}</dd>` : ''}
+      </dl>
+      ${item.description ? `<div class="desc">${esc(item.description)}</div>` : ''}
+      <div class="actions">
+        ${item.url ? `<a href="${esc(item.url)}" target="_blank">פתחי במקור</a>` : ''}
+        <button class="secondary" onclick="closeModal()">סגירה</button>
+      </div>
+    `;
+  } else if (tab === 'teachers') {
+    content.innerHTML = `
+      <h2><span class="modal-city">${esc(item.city || 'עיר לא זוהתה')}</span> · ${esc(item.name || 'מורה')}</h2>
+      <div class="modal-meta">
+        ${item.subject ? `<span class="chip subject">${esc(item.subject)}</span>` : ''}
+        ${item.level ? `<span class="chip level">${esc(item.level)}</span>` : ''}
+        ${item.region ? `<span class="chip region">${esc(item.region)}</span>` : ''}
+        ${item.scope ? `<span class="chip">${esc(item.scope)}%</span>` : ''}
+      </div>
+      <dl>
+        <dt>שם</dt><dd>${esc(item.name || '—')}</dd>
+        <dt>תאריך</dt><dd>${esc(item.date || item.date_iso || '—')}</dd>
+        <dt>מקור</dt><dd>${esc(item.source_name || item.source)}</dd>
+        ${item.email ? `<dt>מייל</dt><dd><a href="mailto:${esc(item.email)}">${esc(item.email)}</a></dd>` : ''}
+        ${item.phone ? `<dt>טלפון</dt><dd><a href="tel:${esc(item.phone)}">${esc(item.phone)}</a></dd>` : ''}
+        ${item.sub_area ? `<dt>אזור</dt><dd>${esc(item.sub_area)}</dd>` : ''}
+      </dl>
+      <div class="actions">
+        ${item.url ? `<a href="${esc(item.url)}" target="_blank">פתחי במקור</a>` : ''}
+        <button class="secondary" onclick="closeModal()">סגירה</button>
+      </div>
+    `;
+  }
+  document.getElementById('modal-bg').classList.add('open');
+}
+function closeModal() {
+  document.getElementById('modal-bg').classList.remove('open');
+}
+
+function esc(s) {
+  if (s == null) return '';
+  return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+function clearFilters(tab) {
+  Object.keys(STATE[tab].filters).forEach(k => STATE[tab].filters[k] = '');
+  document.getElementById('q-' + tab).value = '';
+  ['region','level','subject','source'].forEach(k => {
+    const el = document.getElementById('f-' + tab + '-' + k);
+    if (el) el.value = '';
+  });
+  applyFilters(tab);
+}
+
+// --- Wire up ---
+document.addEventListener('DOMContentLoaded', () => {
+  loadAll();
+
+  document.querySelectorAll('.tab-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      const tab = btn.dataset.tab;
+      document.querySelectorAll('.tab-pane').forEach(p => p.style.display = 'none');
+      document.getElementById('pane-' + tab).style.display = '';
+    });
+  });
+
+  ['jobs', 'teachers'].forEach(tab => {
+    const q = document.getElementById('q-' + tab);
+    if (q) q.addEventListener('input', e => { STATE[tab].filters.q = e.target.value; applyFilters(tab); });
+    ['region','level','subject','source'].forEach(k => {
+      const el = document.getElementById('f-' + tab + '-' + k);
+      if (el) el.addEventListener('change', e => { STATE[tab].filters[k] = e.target.value; applyFilters(tab); });
+    });
+  });
+
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') closeModal();
+  });
+});
+</script>
+</body>
+</html>
