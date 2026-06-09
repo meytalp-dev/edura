@@ -310,14 +310,14 @@
   <div class="summary" id="summary">
     <div class="stat"><div class="stat-num teal" id="sum-jobs">—</div><div class="stat-label">משרות בית-ספר</div></div>
     <div class="stat"><div class="stat-num pink" id="sum-teachers">—</div><div class="stat-label">מורים מחפשים</div></div>
-    <div class="stat"><div class="stat-num success" id="sum-materials">0</div><div class="stat-label">חומרי לימוד</div></div>
+    <div class="stat"><div class="stat-num success" id="sum-matches">—</div><div class="stat-label">התאמות מלאות</div></div>
     <div class="stat"><div class="stat-num warn" id="sum-pending">—</div><div class="stat-label">ממתינים לאישור</div></div>
   </div>
 
   <div class="tabs" role="tablist">
     <button class="tab-btn active" data-tab="jobs" role="tab">משרות בתי-ספר <span class="count" id="cnt-jobs">—</span></button>
     <button class="tab-btn" data-tab="teachers" role="tab">מורים מחפשים <span class="count" id="cnt-teachers">—</span></button>
-    <button class="tab-btn" data-tab="materials" role="tab">חומרי לימוד <span class="count" id="cnt-materials">0</span></button>
+    <button class="tab-btn" data-tab="matches" role="tab">התאמות <span class="count" id="cnt-matches">—</span></button>
   </div>
 
   <!-- TAB: JOBS -->
@@ -345,7 +345,22 @@
     <div class="grid" id="grid-teachers"></div>
   </section>
 
-  <!-- TAB: MATERIALS -->
+  <!-- TAB: MATCHES -->
+  <section class="tab-pane" id="pane-matches" style="display:none">
+    <div class="materials-plan" style="background:linear-gradient(135deg,#ECFDF5,#F0FDFA);border-color:#A7F3D0">
+      <h3 style="color:#065F46">קריטריון: עיר זהה + מקצוע מתאים + שכבה זהה</h3>
+      <p style="color:#065F46">מוצגות רק התאמות שבהן <strong>שלושת התנאים מתקיימים בו-זמנית</strong>. מקצועות כלליים ("מורה" / "כללי" / "אחר") לא נחשבים. אם תרצי לראות התאמות רכות יותר (גם בלי שכבה, גם לפי אזור) — יש את <a href="matches.html" style="color:#065F46;font-weight:800;text-decoration:underline">matches.html</a> הוותיק.</p>
+    </div>
+    <div class="toolbar">
+      <input type="text" id="q-matches" placeholder="חיפוש: שם מורה, עיר, מקצוע..." />
+      <select id="f-matches-region"><option value="">כל האזורים</option></select>
+      <select id="f-matches-subject"><option value="">כל המקצועות</option></select>
+      <button class="clear-btn" onclick="clearFilters('matches')">נקה</button>
+    </div>
+    <div class="grid" id="grid-matches"></div>
+  </section>
+
+  <!-- TAB: MATERIALS (hidden — kept for reference, not in nav) -->
   <section class="tab-pane" id="pane-materials" style="display:none">
     <div class="materials-plan">
       <h3>חומרי לימוד · המאגר עוד לא קיים</h3>
@@ -415,8 +430,37 @@
 const STATE = {
   jobs: { all: [], filtered: [], filters: { q:'', region:'', level:'', subject:'', source:'' } },
   teachers: { all: [], filtered: [], filters: { q:'', region:'', subject:'', source:'' } },
+  matches: { all: [], filtered: [], filters: { q:'', region:'', subject:'' } },
   materials: { all: [], filtered: [] }
 };
+
+// === Subject + level synonyms (compatible with matching.js) ===
+const SUBJECT_SYNONYMS = [
+  ['מתמטיקה','מתימטיקה','חשבון'],
+  ['פיזיקה','פיסיקה'],
+  ['תנ"ך','תנך','תושב"ע','תושבע'],
+  ['מדעים','מדע וטכנולוגיה','מדע ותכנולוגיה'],
+  ['מדעי המחשב','מחשבים','תקשוב'],
+  ['חינוך מיוחד','חנ"מ','חנמ','מורת שילוב','מורה שילוב','לקויות למידה','לקות למידה','הוראה מתקנת','הוראה משלבת'],
+  ['חינוך גופני','חנ"ג','חינוך גופני בנות','חינוך גופני בנים'],
+  ['מחנך/ת','מחנכת','מחנך','מורה מחנכת'],
+  ['יועצ/ת חינוכי/ת','יועץ/ת','יועץ','יועצת','ייעוץ','ייעוץ חינוכי'],
+];
+const LEVEL_SYNONYMS = [
+  ['יסודי','בית ספר יסודי','יסודית'],
+  ['חטיבת ביניים','חט"ב','חטב','חטיבה'],
+  ['תיכון','על-יסודי','על יסודי','תיכונית','חטיבה עליונה'],
+  ['גן','גני ילדים','גן ילדים','גנים'],
+  ['חינוך מיוחד','חנ"מ','חנמ'],
+];
+const GENERIC_SUBJECTS = new Set(['מורה','מורים','כללי','אחר','']);
+const _subjMap = new Map();
+SUBJECT_SYNONYMS.forEach(g => g.forEach(s => _subjMap.set(s.trim().toLowerCase(), g[0])));
+const _levelMap = new Map();
+LEVEL_SYNONYMS.forEach(g => g.forEach(s => _levelMap.set(s.trim().toLowerCase(), g[0])));
+function canonSubject(s) { const n = (s||'').trim().toLowerCase(); return _subjMap.get(n) || n; }
+function canonLevel(s)   { const n = (s||'').trim().toLowerCase(); return _levelMap.get(n) || n; }
+function strOf(v) { return Array.isArray(v) ? (v[0]||'') : (v||''); }
 
 // --- Load data ---
 async function loadAll() {
@@ -435,24 +479,60 @@ async function loadAll() {
     STATE.jobs.all = jobs.jobs || [];
     STATE.teachers.all = teachers.teachers || [];
 
+    computeMatches();
+
     document.getElementById('sum-jobs').textContent = jobs.total || STATE.jobs.all.length;
     document.getElementById('sum-teachers').textContent = teachers.total || STATE.teachers.all.length;
+    document.getElementById('sum-matches').textContent = STATE.matches.all.length;
     const pendingTotal = (pending.total_pending || 0) + (pendingTeachers.total_pending || 0);
     document.getElementById('sum-pending').textContent = pendingTotal;
     document.getElementById('cnt-jobs').textContent = STATE.jobs.all.length;
     document.getElementById('cnt-teachers').textContent = STATE.teachers.all.length;
+    document.getElementById('cnt-matches').textContent = STATE.matches.all.length;
 
     populateFilters();
     applyFilters('jobs');
     applyFilters('teachers');
+    applyFilters('matches');
   } catch (e) {
     console.error(e);
-    document.getElementById('grid-jobs').innerHTML = '<div class="empty"><h3>שגיאה בטעינה</h3><p>' + e.message + '</p></div>';
+    document.getElementById('grid-jobs').innerHTML = '<div class="empty"><h3>שגיאה בטעינה</h3><p>' + (e.message || e) + '</p></div>';
   }
 }
 
+function computeMatches() {
+  const out = [];
+  const teachers = STATE.teachers.all;
+  const jobs = STATE.jobs.all;
+  for (const t of teachers) {
+    const tc = strOf(t.city).trim();
+    if (!tc) continue;
+    const ts = canonSubject(strOf(t.subject));
+    if (!ts || GENERIC_SUBJECTS.has(ts)) continue;
+    const tl = canonLevel(strOf(t.level));
+    if (!tl) continue;
+    for (const j of jobs) {
+      const jc = strOf(j.city).trim();
+      if (jc !== tc) continue;
+      const js = canonSubject(strOf(j.subject));
+      if (!js || GENERIC_SUBJECTS.has(js)) continue;
+      if (js !== ts && !js.includes(ts) && !ts.includes(js)) continue;
+      const jl = canonLevel(strOf(j.level));
+      if (jl !== tl) continue;
+      out.push({ teacher: t, job: j, city: tc, subject: ts, level: tl });
+    }
+  }
+  STATE.matches.all = out;
+}
+
 function unique(arr, key) {
-  return Array.from(new Set(arr.map(x => x[key]).filter(Boolean))).sort((a,b) => a.localeCompare(b, 'he'));
+  const set = new Set();
+  arr.forEach(x => {
+    const v = x[key];
+    if (Array.isArray(v)) v.forEach(s => { if (s) set.add(String(s)); });
+    else if (v) set.add(String(v));
+  });
+  return Array.from(set).sort((a, b) => a.localeCompare(b, 'he'));
 }
 
 function populateFilters() {
@@ -466,6 +546,17 @@ function populateFilters() {
   fillSelect('f-teachers-region', unique(teachers, 'region'));
   fillSelect('f-teachers-subject', unique(teachers, 'subject'));
   fillSelect('f-teachers-source', unique(teachers, 'source_name'));
+
+  const matches = STATE.matches.all;
+  const matchRegions = new Set();
+  const matchSubjects = new Set();
+  matches.forEach(m => {
+    const r = strOf(m.job.region) || strOf(m.teacher.region);
+    if (r) matchRegions.add(r);
+    if (m.subject) matchSubjects.add(m.subject);
+  });
+  fillSelect('f-matches-region', Array.from(matchRegions).sort((a,b)=>a.localeCompare(b,'he')));
+  fillSelect('f-matches-subject', Array.from(matchSubjects).sort((a,b)=>a.localeCompare(b,'he')));
 }
 
 function fillSelect(id, values) {
@@ -483,19 +574,35 @@ function fillSelect(id, values) {
 function applyFilters(tab) {
   const s = STATE[tab];
   const f = s.filters;
-  s.filtered = s.all.filter(item => {
-    if (f.region && item.region !== f.region) return false;
-    if (f.level && item.level !== f.level) return false;
-    if (f.subject && item.subject !== f.subject) return false;
-    if (f.source && item.source_name !== f.source) return false;
-    if (f.q) {
-      const q = f.q.toLowerCase();
-      const hay = [item.school, item.title, item.subject, item.city, item.name, item.description, item.snippet]
-        .filter(Boolean).join(' ').toLowerCase();
-      if (!hay.includes(q)) return false;
-    }
-    return true;
-  });
+  if (tab === 'matches') {
+    s.filtered = s.all.filter(m => {
+      const r = strOf(m.job.region) || strOf(m.teacher.region);
+      if (f.region && r !== f.region) return false;
+      if (f.subject && m.subject !== f.subject) return false;
+      if (f.q) {
+        const q = f.q.toLowerCase();
+        const hay = [m.teacher.name, m.job.school, m.city, m.subject, m.level, m.job.title]
+          .filter(Boolean).join(' ').toLowerCase();
+        if (!hay.includes(q)) return false;
+      }
+      return true;
+    });
+  } else {
+    s.filtered = s.all.filter(item => {
+      const r = strOf(item.region);
+      if (f.region && r !== f.region) return false;
+      if (f.level && item.level !== f.level) return false;
+      if (f.subject && item.subject !== f.subject) return false;
+      if (f.source && item.source_name !== f.source) return false;
+      if (f.q) {
+        const q = f.q.toLowerCase();
+        const hay = [item.school, item.title, item.subject, item.city, item.name, item.description, item.snippet]
+          .filter(Boolean).join(' ').toLowerCase();
+        if (!hay.includes(q)) return false;
+      }
+      return true;
+    });
+  }
   render(tab);
 }
 
@@ -531,17 +638,32 @@ function cardHTML(item, tab, idx) {
       </div>
     </article>`;
   } else if (tab === 'teachers') {
+    const tregion = strOf(item.region);
     return `<article class="card" data-idx="${idx}">
       <div class="card-city ${item.city ? '' : 'no-city'}">${esc(item.city) || 'עיר לא זוהתה'}</div>
       <div class="card-title">${esc(item.name || 'מורה')}</div>
       <div class="card-meta">
         ${item.subject ? `<span class="chip subject">${esc(item.subject)}</span>` : ''}
         ${item.scope ? `<span class="chip level">${esc(item.scope)}%</span>` : ''}
-        ${item.region ? `<span class="chip region">${esc(item.region)}</span>` : ''}
+        ${tregion ? `<span class="chip region">${esc(tregion)}</span>` : ''}
       </div>
       <div class="card-foot">
         <span>${esc(item.date || '')}</span>
-        <span class="chip source">${esc(item.source_name || item.source)}</span>
+        ${item.source_name || item.source ? `<span class="chip source">${esc(item.source_name || item.source)}</span>` : ''}
+      </div>
+    </article>`;
+  } else if (tab === 'matches') {
+    const t = item.teacher, j = item.job;
+    const tname = strOf(t.name) || 'מורה';
+    return `<article class="card" data-idx="${idx}">
+      <div class="card-city">${esc(item.city)}</div>
+      <div class="card-title">${esc(tname)} ↔ ${esc(strOf(j.school) || 'בית ספר')}</div>
+      <div class="card-meta">
+        <span class="chip subject">${esc(item.subject)}</span>
+        <span class="chip level">${esc(item.level)}</span>
+      </div>
+      <div class="card-foot">
+        <span style="font-size:11px">${esc(strOf(j.title).slice(0, 50))}</span>
       </div>
     </article>`;
   }
@@ -577,24 +699,52 @@ function openModal(tab, idx) {
       </div>
     `;
   } else if (tab === 'teachers') {
+    const tregion = strOf(item.region);
     content.innerHTML = `
       <h2><span class="modal-city">${esc(item.city || 'עיר לא זוהתה')}</span> · ${esc(item.name || 'מורה')}</h2>
       <div class="modal-meta">
         ${item.subject ? `<span class="chip subject">${esc(item.subject)}</span>` : ''}
         ${item.level ? `<span class="chip level">${esc(item.level)}</span>` : ''}
-        ${item.region ? `<span class="chip region">${esc(item.region)}</span>` : ''}
+        ${tregion ? `<span class="chip region">${esc(tregion)}</span>` : ''}
         ${item.scope ? `<span class="chip">${esc(item.scope)}%</span>` : ''}
       </div>
       <dl>
         <dt>שם</dt><dd>${esc(item.name || '—')}</dd>
         <dt>תאריך</dt><dd>${esc(item.date || item.date_iso || '—')}</dd>
-        <dt>מקור</dt><dd>${esc(item.source_name || item.source)}</dd>
+        ${(item.source_name||item.source) ? `<dt>מקור</dt><dd>${esc(item.source_name || item.source)}</dd>` : ''}
         ${item.email ? `<dt>מייל</dt><dd><a href="mailto:${esc(item.email)}">${esc(item.email)}</a></dd>` : ''}
         ${item.phone ? `<dt>טלפון</dt><dd><a href="tel:${esc(item.phone)}">${esc(item.phone)}</a></dd>` : ''}
         ${item.sub_area ? `<dt>אזור</dt><dd>${esc(item.sub_area)}</dd>` : ''}
       </dl>
       <div class="actions">
         ${item.url ? `<a href="${esc(item.url)}" target="_blank">פתחי במקור</a>` : ''}
+        <button class="secondary" onclick="closeModal()">סגירה</button>
+      </div>
+    `;
+  } else if (tab === 'matches') {
+    const t = item.teacher, j = item.job;
+    const tname = strOf(t.name) || 'מורה';
+    const jschool = strOf(j.school) || 'בית ספר';
+    const wa = strOf(t.phone) ? `https://api.whatsapp.com/send?phone=972${strOf(t.phone).replace(/^0/, '').replace(/-/g, '')}&text=${encodeURIComponent('שלום ' + tname + ', מצאנו עבורך משרה ב-' + jschool + ' (' + item.city + ') ל' + item.subject)}` : '';
+    content.innerHTML = `
+      <h2><span class="modal-city">${esc(item.city)}</span> · התאמה</h2>
+      <div class="modal-meta">
+        <span class="chip subject">${esc(item.subject)}</span>
+        <span class="chip level">${esc(item.level)}</span>
+      </div>
+      <dl>
+        <dt>מורה</dt><dd><strong>${esc(tname)}</strong></dd>
+        ${strOf(t.email) ? `<dt>מייל מורה</dt><dd><a href="mailto:${esc(strOf(t.email))}">${esc(strOf(t.email))}</a></dd>` : ''}
+        ${strOf(t.phone) ? `<dt>טלפון מורה</dt><dd><a href="tel:${esc(strOf(t.phone))}">${esc(strOf(t.phone))}</a></dd>` : ''}
+        <dt>בית ספר</dt><dd><strong>${esc(jschool)}</strong></dd>
+        ${strOf(j.title) ? `<dt>כותרת המשרה</dt><dd>${esc(strOf(j.title))}</dd>` : ''}
+        ${strOf(j.email) ? `<dt>מייל בית ספר</dt><dd><a href="mailto:${esc(strOf(j.email))}">${esc(strOf(j.email))}</a></dd>` : ''}
+        ${strOf(j.phone) ? `<dt>טלפון בית ספר</dt><dd><a href="tel:${esc(strOf(j.phone))}">${esc(strOf(j.phone))}</a></dd>` : ''}
+        ${strOf(j.scope) ? `<dt>היקף</dt><dd>${esc(strOf(j.scope))}</dd>` : ''}
+      </dl>
+      ${strOf(j.description) ? `<div class="desc">${esc(strOf(j.description))}</div>` : ''}
+      <div class="actions">
+        ${wa ? `<a href="${esc(wa)}" target="_blank">וואטסאפ למורה</a>` : ''}
         <button class="secondary" onclick="closeModal()">סגירה</button>
       </div>
     `;
@@ -634,7 +784,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
-  ['jobs', 'teachers'].forEach(tab => {
+  ['jobs', 'teachers', 'matches'].forEach(tab => {
     const q = document.getElementById('q-' + tab);
     if (q) q.addEventListener('input', e => { STATE[tab].filters.q = e.target.value; applyFilters(tab); });
     ['region','level','subject','source'].forEach(k => {
